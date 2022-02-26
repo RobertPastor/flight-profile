@@ -1,0 +1,1 @@
+web: gunicorn flight-profile.wsgi --log-file -
