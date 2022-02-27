@@ -30,12 +30,14 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'flight-profile.herokuapp.com']
 # Application definition
 
 INSTALLED_APPS = [
+    'trajectory',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
 ]
 
 MIDDLEWARE = [
@@ -72,14 +74,16 @@ WSGI_APPLICATION = 'FlightProfile.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
+''' you need to create the database before in pgAdmin4 '''
+''' superuser is admin '''
+''' password is bobby1xx '''
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'flight',
         'USER': 'postgres',
         'PASSWORD': 'bobby1xx',
-        'HOST': 'localhost',
+        'HOST': '127.0.0.1',
         'PORT': '5432',    }
 }
 
