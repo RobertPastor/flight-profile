@@ -33,7 +33,7 @@ import os
 
 BADA_381_DATA_FILES = 'Bada381DataFiles'
 
-from trajectory.models import Aircrafts
+from trajectory.models import Aircraft
 
 
 class BadaSynonymAircraft(object):
@@ -139,7 +139,7 @@ class BadaAircraftDatabase(object):
                                                                         OPFfilePrefix = OPFfilePrefix,
                                                                         useSynonym = useSynonym)
                     ''' load database table '''
-                    aircraft = Aircrafts(AircraftICAOcode=aircraftICAOcode, Manufacturer = manufacturer, AircraftModel = aircraftFullName , AircraftFile= OPFfilePrefix, useSynonym=useSynonym)
+                    aircraft = Aircraft(AircraftICAOcode=aircraftICAOcode, Manufacturer = manufacturer, AircraftModel = aircraftFullName , AircraftFile= OPFfilePrefix, useSynonym=useSynonym)
                     aircraft.save()
                         
             f.close()

@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Aircrafts',
+            name='Aircraft',
             fields=[
                 ('AircraftICAOcode', models.CharField(max_length=100, primary_key=True, serialize=False)),
                 ('Manufacturer', models.CharField(max_length=100)),
