@@ -12,5 +12,14 @@ class Aircraft(models.Model):
 class WayPoint(models.Model):
     WayPointName = models.CharField(max_length = 100, primary_key = True)
     Type = models.CharField(max_length = 100)
+    Continent = models.CharField(max_length = 100)
+    Latitude = models.FloatField(blank = False)
+    Longitude = models.FloatField(blank = False)
+
+class Airport(models.Model):
+    AirportICAOcode = models.CharField(max_length = 100, primary_key = True)
+    AirportName = models.CharField(max_length = 100, unique = True)
     Latitude = models.FloatField()
     Longitude = models.FloatField()
+    FieldElevationAboveSeaLevelMeters = models.FloatField(blank = False)
+    Continent = models.CharField(max_length = 100)

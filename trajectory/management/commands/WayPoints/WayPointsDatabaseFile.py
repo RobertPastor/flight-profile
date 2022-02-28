@@ -145,8 +145,9 @@ class WayPointsDatabase(object):
             else:
                 WayPointName = str(rowValues[0]).strip().upper()
                 if not(WayPointName in self.WayPointsDict.keys()):
-                
+                    ''' it is a new waypoint '''
                     wayPointDict = {}
+                    
                     for column in self.ColumnNames:
                         if column == 'Latitude' or column == 'Longitude':
                             ''' replace degree character '''
@@ -158,13 +159,17 @@ class WayPointsDatabase(object):
                             strLatLong = str(strLatLong).strip().replace("'", '-').replace(' ','').replace('"','')
                             #print 'lat-long= '+ strLatLong
                             wayPointDict[column] = convertDegreeMinuteSecondToDecimal(strLatLong)
-    
+                            
                         else:
                             wayPointDict[column] = str(rowValues[self.ColumnNames[column]]).strip()
     
                     ''' create a way point '''    
+                    Continent = 'unknown'
+                    if (wayPointDict['Latitude'] >= 20. and wayPointDict['Longitude'] >= -170. and wayPointDict['Longitude'] <= -50.):
+                        Continent = 'North America'
                     wayPoint = WayPoint(WayPointName = wayPointDict['WayPoint'],
                                         Type = 'WayPoint',
+                                        Continent = Continent,
                                         Latitude = wayPointDict['Latitude'],
                                         Longitude = wayPointDict['Longitude'])
                     wayPoint.save()
