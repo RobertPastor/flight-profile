@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link type="text/css" rel="stylesheet" href="/static/trajectory/css/og/og.css" />
     <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/og/og.umd.js"></script>
-    <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/og/og.umd.js"></script>
+    <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/og/og.umd.js.map"></script>
     <title>Trajectory Homepage</title>
     
     <script>
@@ -32,15 +32,55 @@
             autoActivated: true,
             viewExtent: [-130. , 25. , -70. , 50. ]
         });
+    	
+        document.getElementById("btnOSM").onclick = function () {
+            
+        	new og.layer.Vector("Markers", {
+                clampToGround: true
+            })
+                .addTo(globus.planet)
+                .add(new og.Entity({
+                    lonlat: [-84.428067, 33.636719],
+                    label: {
+                        text: "Atlanta",
+                        outline: 0.77,
+                        outlineColor: "rgba(255,255,255,.4)",
+                        size: 27,
+                        color: "black",
+                        offset: [10, -2]
+                    },
+                    billboard: {
+                        src: "/static/trajectory/images/marker.png",
+                        width: 32,
+                        height: 32,
+                        offset: [0, 32]
+                    }
+                }));
+        	
+        };
     })
     </script>
 </head>
 <body>
-
-    <h1>Welcome to the Flight Profile tool.</h1>
-     
-    <div id="globus" style="width:100%;height:100%"></div>
- 
+	<table>
+		<tr>
+			<td>
+				<div>
+					<h3>Welcome to the Flight Profile tool.</h3>
+				</div>
+			</td>
+			<td>
+				<div>
+    				<button id="btnOSM" style="position: absolute; left:0; margin:10px;">Show Airports</button>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td span='2'>
+				<div id="globus" style="width:100%;height:100%"></div>
+			</td>
+		</tr>
+	</table>
 
 </body>
 </html>
