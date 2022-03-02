@@ -17,6 +17,10 @@ from django.contrib import admin
 from django.urls import re_path
 from django.urls import include
 
+from django.views.generic.base import RedirectView
+from django.contrib.staticfiles.storage import staticfiles_storage
+
+
 from . import views
 
 urlpatterns = [
@@ -24,5 +28,8 @@ urlpatterns = [
 
     re_path(r'trajectory/', include('trajectory.urls')),
     re_path(r'admin/', admin.site.urls),
+    re_path(r'favicon.ico',
+        RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
+    ),
 ]
 
