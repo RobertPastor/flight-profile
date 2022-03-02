@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link type="text/css" rel="stylesheet" href="/static/trajectory/css/og/og.css" />
+    <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/og/og.umd.js"></script>
+    <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/og/og.umd.js"></script>
+    <title>Trajectory Homepage</title>
+    
+    <script>
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+    	  //the event occurred
+    	
+        let osm = new og.layer.XYZ("OpenStreetMap", {
+            isBaseLayer: true,
+            url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            visibility: true,
+            attribution: 'Data @ OpenStreetMap contributors, ODbL'
+        });
+    	// a HTMLDivElement which its id is `globus`
+        let globus = new og.Globe({
+            "target": "globus", 
+            "name": "Earth",
+            "terrain": new og.terrain.GlobusTerrain(),
+            "layers": [osm],
+            autoActivated: true,
+            viewExtent: [-130. , 25. , -70. , 50. ]
+        });
+    })
+    </script>
+</head>
+<body>
+
+    <h1>Welcome to the Flight Profile tool.</h1>
+     
+    <div id="globus" style="width:100%;height:100%"></div>
+ 
+
+</body>
+</html>

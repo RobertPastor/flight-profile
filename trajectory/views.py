@@ -6,9 +6,6 @@ from django.http import HttpResponse
 #from trajectory.models import SiteMessage
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the trajectory index.")
-
 # Create your views here.
 def indexTrajectory(request):
     # return HttpResponse('Hello from Python!')
@@ -23,3 +20,11 @@ def indexTrajectory(request):
     
     context = {'siteMessages' : siteMessages}
     return HttpResponse(template.render(context, request))
+
+def index(request):
+    # create a function
+    # create a dictionary to pass
+    # data to the template
+    context ={}
+    # return response with template and context
+    return render(request, "index.html", context)
