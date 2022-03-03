@@ -45,7 +45,7 @@
             
         	if (show) {
 			show = false;
-			
+			document.getElementById("btnOSM").innerText = "Hide Airports";
 			layerVector.add(new og.Entity({
 				    lonlat: [-84.428067, 33.636719],
 				    label: {
@@ -65,6 +65,7 @@
 				}));
 		} else {
 			show = true;
+			document.getElementById("btnOSM").innerText = "Show Airports";
 			let entities = layerVector.getEntities();
 			layerVector.removeEntities(entities);
 		}
