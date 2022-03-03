@@ -41,11 +41,11 @@
 	    
 	let show = true;
     	
-        document.getElementById("btnOSM").onclick = function () {
+        document.getElementById("btnAirports").onclick = function () {
             
         	if (show) {
 			show = false;
-			document.getElementById("btnOSM").innerText = "Hide Airports";
+			document.getElementById("btnAirports").innerText = "Hide Airports";
 			layerVector.add(new og.Entity({
 				    lonlat: [-84.428067, 33.636719],
 				    label: {
@@ -65,7 +65,7 @@
 				}));
 		} else {
 			show = true;
-			document.getElementById("btnOSM").innerText = "Show Airports";
+			document.getElementById("btnAirports").innerText = "Show Airports";
 			let entities = layerVector.getEntities();
 			layerVector.removeEntities(entities);
 		}
@@ -76,19 +76,24 @@
 <body>
 	<table>
 		<tr>
-			<td>
+			<td width="30%">
 				<div>
 					<h3>Welcome to the Flight Profile tool.</h3>
 				</div>
 			</td>
-			<td>
+			<td width="30%">
 				<div>
-    				<button id="btnOSM" style="position: absolute; left:0; margin:10px;">Show Airports</button>
+    					<button id="btnAirports" >Show Airports</button>
+				</div>
+			</td>
+			<td width="30%">
+				<div>
+    					<button id="btnWayPoints" >Show WayPoints</button>
 				</div>
 			</td>
 		</tr>
 		<tr>
-			<td span='2'>
+			<td span='3'>
 				<div id="globus" style="width:100%;height:100%"></div>
 			</td>
 		</tr>
