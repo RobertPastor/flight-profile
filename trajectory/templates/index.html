@@ -23,6 +23,7 @@
             visibility: true,
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
         });
+	    
     	// a HTMLDivElement which its id is `globus`
         let globus = new og.Globe({
             "target": "globus", 
@@ -32,31 +33,41 @@
             autoActivated: true,
             viewExtent: [-130. , 25. , -70. , 50. ]
         });
+	    
+	let layerVector = new og.layer.Vector("Airports", {
+                clampToGround: true
+            });:
+	layerVector.addTo(globus.planet);
+	    
+	let show = true;
     	
         document.getElementById("btnOSM").onclick = function () {
             
-        	new og.layer.Vector("Markers", {
-                clampToGround: true
-            })
-                .addTo(globus.planet)
-                .add(new og.Entity({
-                    lonlat: [-84.428067, 33.636719],
-                    label: {
-                        text: "Atlanta",
-                        outline: 0.77,
-                        outlineColor: "rgba(255,255,255,.4)",
-                        size: 27,
-                        color: "black",
-                        offset: [10, -2]
-                    },
-                    billboard: {
-                        src: "/static/trajectory/images/marker.png",
-                        width: 32,
-                        height: 32,
-                        offset: [0, 32]
-                    }
-                }));
-        	
+        	if (show) {
+			show = false;
+			
+			layerVector.add(new og.Entity({
+				    lonlat: [-84.428067, 33.636719],
+				    label: {
+					text: "Atlanta",
+					outline: 0.77,
+					outlineColor: "rgba(255,255,255,.4)",
+					size: 27,
+					color: "black",
+					offset: [10, -2]
+				    },
+				    billboard: {
+					src: "/static/trajectory/images/marker.png",
+					width: 32,
+					height: 32,
+					offset: [0, 32]
+				    }
+				}));
+		} else {
+			show = true;
+			let entities = layerVector.getEntities();
+			layerVector.removeEntities(entities);
+		}
         };
     })
     </script>
