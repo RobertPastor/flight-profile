@@ -6,7 +6,6 @@ from django.shortcuts import render
 def indexOld(request):
     return HttpResponse("Hello, world. You're at the FlightProfile index.")
 
-
 def index(request):
     # create a function
     # create a dictionary to pass

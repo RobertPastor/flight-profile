@@ -9,9 +9,9 @@ function stopBusyAnimation(){
 
 function loadOneAirport( layerVector, airport ) {
 	
-	let longitude = parseFloat(airport.Longitude);
+	let longitude = airport.Longitude;
 	var latitude = parseFloat(airport.Latitude);
-	var name = (airport.AirportName);
+	var name = parseFloat(airport.AirportName);
 	
 	layerVector.add(new og.Entity({
 		    lonlat: [longitude, latitude],
@@ -65,7 +65,7 @@ function airports(globus) {
 			// use ajax to get the data 
 			$.ajax( {
 				method: 'get',
-				url :  "airports",
+				url :  "trajectory/airports",
 				async : true,
 				success: function(data, status) {
 								

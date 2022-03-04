@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from django.template import loader
 from django.core import serializers
-from django.http import HttpResponse
+from django.http import HttpResponse , JsonResponse
+
+import json
+import logging
+logger = logging.getLogger(__name__)
 
 #from trajectory.models import SiteMessage
-
+from trajectory.models import Airport
 
 # Create your views here.
 def indexTrajectory(request):
@@ -28,3 +32,25 @@ def index(request):
     context ={}
     # return response with template and context
     return render(request, "index.html", context)
+
+def getAirportsFromDB():
+    
+    airportsList = []
+    for airport in Airport.objects.all():
+        logger.debug (airport.AirportICAOcode)
+        if str(airport.AirportICAOcode).startswith("C"):
+            airportsList.append({
+                "AirportICAOcode" : airport.AirportICAOcode ,
+                "AirportName": airport.AirportName,
+                "Longitude": airport.Longitude,
+                "Latitude": airport.Latitude
+                } )
+    return airportsList
+
+def getAirports(request):
+    logger.debug ("get Airports")
+    if (request.method == 'GET'):
+        logger.debug("get request received - airports")
+        airports = getAirportsFromDB()
+        response_data = {'airports': airports}
+        return JsonResponse(response_data)
