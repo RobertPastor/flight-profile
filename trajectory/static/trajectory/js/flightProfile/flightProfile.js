@@ -39,7 +39,7 @@ function flightprofile(globus) {
 								height: 32,
 								offset: [0, 32]
 							})
-						layerKML.addKmlFromUrl( url = dataJson["kmlURL"] , color = '#194a8d' );	
+						layerKML.addKmlFromUrl( url = dataJson["kmlURL"] , color = '#194a8d' , billboard = billBoard);	
 					},
 					error: function(data, status) {
 						console.log("Error - delete old bookings: " + status + " SVP veuillez contactez votre administrateur");
