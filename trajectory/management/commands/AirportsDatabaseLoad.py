@@ -15,4 +15,4 @@ class Command(BaseCommand):
         else:
             print("airports database does not exists")
             
-            
+        return

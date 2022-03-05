@@ -65,7 +65,7 @@ function airports(globus) {
 			// use ajax to get the data 
 			$.ajax( {
 				method: 'get',
-				url :  "airports",
+				url :  "trajectory/airports",
 				async : true,
 				success: function(data, status) {
 								
@@ -78,7 +78,6 @@ function airports(globus) {
 				},
 				complete : stopBusyAnimation,
 			} );
-			
 			
 			
 		} else {

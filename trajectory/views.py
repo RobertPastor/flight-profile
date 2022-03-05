@@ -54,3 +54,10 @@ def getAirports(request):
         airports = getAirportsFromDB()
         response_data = {'airports': airports}
         return JsonResponse(response_data)
+    
+def getFlightProfile(request):
+    logger.debug ("get Flight Profile")
+    if (request.method == 'GET'):
+        fileName = "A319-KATL-PANC-Atlanta-Hartsfield-Jackson-Atlanta-Intl-Rwy-08L-Anchorage-Ted-Stevens-Anchorage-Intl-rwy-07L-16-Jan-2022-11h28m27.kml"
+        response_data = {'kmlURL': "/static/trajectory/kml/" + fileName}
+        return JsonResponse(response_data)
