@@ -93,11 +93,12 @@ class AirportsDatabase(object):
 
     def read(self):
         try:
-            dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), fieldnames=fieldNames)
+            dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), delimiter = ";", fieldnames=fieldNames)
             for row in dictReader:
                 print ( row )
                 airportDict = {}
                 for field in fieldNames:
+                    print (field , row[field])
                     airportDict[field] = row[field]
                     if 'Country' in field:
                         country = row[field]

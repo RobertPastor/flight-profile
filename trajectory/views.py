@@ -38,7 +38,7 @@ def getAirportsFromDB():
     airportsList = []
     for airport in Airport.objects.all():
         logger.debug (airport.AirportICAOcode)
-        if str(airport.AirportICAOcode).startswith("C"):
+        if str(airport.AirportICAOcode).startswith("K") and str(airport.AirportName).endswith("Intl"):
             airportsList.append({
                 "AirportICAOcode" : airport.AirportICAOcode ,
                 "AirportName": airport.AirportName,

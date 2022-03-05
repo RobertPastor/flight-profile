@@ -19,7 +19,7 @@ function loadOneAirport( layerVector, airport ) {
 					text: name,
 					outline: 0.77,
 					outlineColor: "rgba(255,255,255,.4)",
-					size: 27,
+					size: 12,
 					color: "black",
 					offset: [10, -2]
 				    },
