@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function stopBusyAnimation(){
 	console.log("stop busy anymation");
-	
 }
 
 var imagesIndex = 0;
@@ -37,8 +36,8 @@ function stopWorker() {
     console.log("worker is stopped !!!");
     // hide the progress bars
     
-    $("#workerId").hide();
-    $("#progressId").hide();
+    //$("#workerId").hide();
+    //$("#progressId").hide();
 }
 
 function initWorker() {

@@ -25,8 +25,8 @@ function loadOneAirport( layerVector, airport ) {
 				    },
 			billboard: {
 					src: "/static/trajectory/images/plane.png",
-					width: 32,
-					height: 32,
+					width: 16,
+					height: 16,
 					offset: [0, 32]
 				    }
 	}));
