@@ -1,15 +1,19 @@
+
+
 document.addEventListener('DOMContentLoaded', (event) => {
     //the event occurred
+	
+	
 		  
 	let MinLongitude = -130.
 	let MinLatitude = 25.
 	let MaxLongitude = -70.
 	let MaxLatitude = 50.
 	let viewExtent = [MinLongitude , MinLatitude, MaxLongitude, MaxLatitude]
-	init(viewExtent);
+	initMain(viewExtent);
 })
 
-function init(viewExtent) {
+function initMain(viewExtent) {
 	
 	let osm = new og.layer.XYZ("OpenStreetMap", {
             isBaseLayer: true,
@@ -31,6 +35,8 @@ function init(viewExtent) {
 	airports(globus);
 	// load a flight profile
 	flightprofile(globus);
+	// load the waypoints
+	wayPoints(globus, viewExtent)
 	
 }
 

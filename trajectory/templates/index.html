@@ -19,12 +19,20 @@
     <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/main.js"></script>
     <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/airports/airports.js"></script>
     <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/flightProfile/flightProfile.js"></script>
+    <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/waypoints/waypoints.js"></script>
     
     <title>Flight Profile</title>
     
 </head>
 <body>
+	
 	<table width="100%">
+		<tr>
+			<td colspan='4' >
+                <progress id="workerId" class="progressBar" max="100" value="0">
+                  <span id="workerVal">0</span>%</progress>
+    		</td>
+		</tr>
 		<tr>
 			<td width="25%">
 				<div>

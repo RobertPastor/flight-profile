@@ -3,12 +3,11 @@ from django.template import loader
 from django.core import serializers
 from django.http import HttpResponse , JsonResponse
 
-import json
 import logging
 logger = logging.getLogger(__name__)
 
 #from trajectory.models import SiteMessage
-from trajectory.models import Airport
+from trajectory.models import Airport, WayPoint
 
 # Create your views here.
 def indexTrajectory(request):
@@ -60,4 +59,38 @@ def getFlightProfile(request):
     if (request.method == 'GET'):
         fileName = "A319-KATL-PANC-Atlanta-Hartsfield-Jackson-Atlanta-Intl-Rwy-08L-Anchorage-Ted-Stevens-Anchorage-Intl-rwy-07L-16-Jan-2022-11h28m27.kml"
         response_data = {'kmlURL': "/static/trajectory/kml/" + fileName}
+        return JsonResponse(response_data)
+    
+def getWayPointsFromDB(viewExtent):
+    wayPointsList = []
+    for waypoint in WayPoint.objects.all():
+        logger.debug (waypoint.WayPointName)
+        if waypoint.Latitude >= viewExtent["minlatitude"] and \
+            waypoint.Latitude <= viewExtent["maxlatitude"] and \
+            waypoint.Longitude >= viewExtent["minlongitude"] and \
+            waypoint.Longitude <= viewExtent["maxlongitude"] :
+            wayPointsList.append({
+                "name" : waypoint.WayPointName ,
+                "Longitude": waypoint.Longitude,
+                "Latitude": waypoint.Latitude
+                } )
+    print ( "length of waypoints list = {0}".format(len(wayPointsList)))
+    return wayPointsList
+    
+
+def getWayPoints(request):
+    logger.debug ("get WayPoints")
+    if (request.method == 'GET'):
+        logger.debug("get request received - WayPoints")
+        
+        viewExtent = {
+           "minlatitude" : int(request.GET['minlatitude']),
+           "maxlatitude" : int(request.GET['maxlatitude']),
+           "minlongitude" : int(request.GET['minlongitude']),
+           "maxlongitude" : int(request.GET['maxlongitude'])
+        }
+        logger.debug(viewExtent)
+        print ( viewExtent )
+        waypoints = getWayPointsFromDB(viewExtent)
+        response_data = {'waypoints': waypoints}
         return JsonResponse(response_data)
