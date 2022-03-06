@@ -11,7 +11,7 @@ function loadOneAirport( layerVector, airport ) {
 	
 	let longitude = parseFloat(airport.Longitude);
 	var latitude = parseFloat(airport.Latitude);
-	var name = (airport.AirportName);
+	var name = airport.AirportName;
 	
 	layerVector.add(new og.Entity({
 		    lonlat: [longitude, latitude],

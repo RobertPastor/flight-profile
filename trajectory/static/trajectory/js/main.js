@@ -2,8 +2,6 @@
 
 document.addEventListener('DOMContentLoaded', (event) => {
     //the event occurred
-	
-	
 		  
 	let MinLongitude = -130.
 	let MinLatitude = 25.

@@ -132,6 +132,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 import django_heroku
 django_heroku.settings(locals())
 
+'''
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -153,3 +154,4 @@ LOGGING = {
         },
     },
 }
+'''

@@ -23,13 +23,13 @@ function loadOneWayPoint( layerWayPoints, waypoint ) {
 					outlineColor: "rgba(255,255,255,.4)",
 					size: 12,
 					color: "black",
-					offset: [10, -2]
+					offset: [0, -2]
 				    },
 			billboard: {
 					src: "/static/trajectory/images/marker.png",
 					width: 16,
 					height: 16,
-					offset: [0, 32]
+					offset: [0, -2]
 				    }
 	}));
 				
@@ -66,6 +66,12 @@ function wayPoints(globus, viewExtent) {
     	
 	document.getElementById("btnWayPoints").onclick = function () {
 
+		let extent = layerWayPoints.getExtent();
+		console.log( "min latitude = " + extent.getSouth());
+		console.log( "max latitude = " + extent.getNorth());
+		console.log( "min longitude = " + extent.getEast());
+		console.log( "max latitude = " + extent.getWest());
+		
 		if (show) {
 			show = false;
 			document.getElementById("btnWayPoints").innerText = "Hide WayPoints";
@@ -91,7 +97,6 @@ function wayPoints(globus, viewExtent) {
 				},
 				complete : stopBusyAnimation,
 			} );
-			
 			
 		} else {
 			show = true;

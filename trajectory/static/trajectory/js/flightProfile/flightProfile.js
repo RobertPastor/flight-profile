@@ -62,6 +62,47 @@ function initWorker() {
     }
 }
 
+function loadOneRay( rayLayer, placeMark ) {
+	
+	let ellipsoid = new og.Ellipsoid(6378137.0, 6356752.3142);
+	
+	let latitude = parseFloat(placeMark["latitude"])
+	let longitude = parseFloat(placeMark["longitude"])
+	let height = parseFloat(placeMark["height"])
+	
+	let lonlat = new og.LonLat(longitude, latitude , 0.);
+	//coordinate above Bochum to allow a upwards direction of ray
+	let lonlatAir = new og.LonLat(longitude, latitude , height);
+	
+	//coordinates of Bochum in Cartesian
+	let cart = ellipsoid.lonLatToCartesian(lonlat);
+	let cartAir = ellipsoid.lonLatToCartesian(lonlatAir);
+	
+	let entity = new og.Entity( {
+		ray: {
+			startPosition: cart,
+			endPosition: cartAir,
+			length: height,
+			startColor: "blue",
+			endColor: "green",
+			thickness: 5
+		}
+	} );
+	
+	rayLayer.add(entity);
+
+}
+
+function addRays ( rayLayer , placeMarks ) {
+	
+	// add the waypoints
+	for (var placeMarkId = 0; placeMarkId < placeMarks.length; placeMarkId++ ) {
+		// insert one waypoint
+		loadOneRay( rayLayer, placeMarks[placeMarkId] );
+	}
+	
+}
+
 function flightprofile(globus) {
 	
 	console.log("start flight profile");
@@ -75,7 +116,11 @@ function flightprofile(globus) {
 		color: '#6689db'
 	} ) ;
 	layerKML.addTo(globus.planet);
-	    
+	
+	//polygonOffsetUnits is needed to hide rays behind globe
+	let rayLayer = new og.layer.Vector("rays", { polygonOffsetUnits: 0 });
+	rayLayer.addTo(globus.planet);
+
 	let first = true;
 	let show = true;
 	document.getElementById("btnFlightProfile").onclick = function () {
@@ -102,6 +147,7 @@ function flightprofile(globus) {
 						var dataJson = eval(data);
 						console.log( dataJson["kmlURL"] );
 						layerKML.addKmlFromUrl( url = dataJson["kmlURL"] );
+						addRays( rayLayer , dataJson["placeMarks"] );
 						setTimeout(
 							function(){ stopWorker(); }
 						, 10000);

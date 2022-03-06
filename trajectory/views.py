@@ -1,7 +1,12 @@
+import os
+from FlightProfile.settings import BASE_DIR
 from django.shortcuts import render
 from django.template import loader
 from django.core import serializers
 from django.http import HttpResponse , JsonResponse
+
+from xml.dom import minidom
+from django.core.files import File
 
 import logging
 logger = logging.getLogger(__name__)
@@ -33,7 +38,6 @@ def index(request):
     return render(request, "index.html", context)
 
 def getAirportsFromDB():
-    
     airportsList = []
     for airport in Airport.objects.all():
         logger.debug (airport.AirportICAOcode)
@@ -54,22 +58,59 @@ def getAirports(request):
         response_data = {'airports': airports}
         return JsonResponse(response_data)
     
+def getPlaceMarks(fileName):
+    placeMarksList = []
+    print ( BASE_DIR )
+    filePath = os.path.join ( BASE_DIR , os.path.join ( "trajectory/static/trajectory/kml"  , fileName ) )
+    print ( filePath )
+    if (os.path.isfile(filePath)):
+        print ( "file = {0} does exist".format(filePath))
+        f = open(filePath)
+        file = File(f)
+        parseXml = minidom.parse(file)
+        #use getElementsByTagName() to get tag
+        placeMarks = parseXml.getElementsByTagName('Placemark')
+        for placeMark in placeMarks:
+            name = ""
+            try:
+                name = placeMark.getElementsByTagName("name")[0].childNodes[0].data
+                #print ( name )
+            except Exception:
+                name = ""
+            point = placeMark.getElementsByTagName("Point")[0]
+            coordinates = point.getElementsByTagName("coordinates")[0].childNodes[0].data
+            #print ( coordinates )
+            placeMarksList.append({ 
+                "name": name,
+                "longitude": str(coordinates).split(",")[0],
+                "latitude": str(coordinates).split(",")[1],
+                "height": str(coordinates).split(",")[2]
+            })
+    else:
+        print ( "file = {0} does not exist".format(filePath))
+    print ( "length place marks = {0}".format(len ( placeMarksList )) )
+    return placeMarksList
+    
 def getFlightProfile(request):
     logger.debug ("get Flight Profile")
     if (request.method == 'GET'):
         fileName = "A319-KATL-PANC-Atlanta-Hartsfield-Jackson-Atlanta-Intl-Rwy-08L-Anchorage-Ted-Stevens-Anchorage-Intl-rwy-07L-16-Jan-2022-11h28m27.kml"
-        response_data = {'kmlURL': "/static/trajectory/kml/" + fileName}
+        response_data = {
+            'kmlURL': "/static/trajectory/kml/" + fileName,
+            'placeMarks' : getPlaceMarks(fileName)}
         return JsonResponse(response_data)
     
 def getWayPointsFromDB(viewExtent):
     wayPointsList = []
     for waypoint in WayPoint.objects.all():
         logger.debug (waypoint.WayPointName)
+        '''
         if waypoint.Latitude >= viewExtent["minlatitude"] and \
             waypoint.Latitude <= viewExtent["maxlatitude"] and \
             waypoint.Longitude >= viewExtent["minlongitude"] and \
             waypoint.Longitude <= viewExtent["maxlongitude"] :
-            wayPointsList.append({
+        '''
+        wayPointsList.append({
                 "name" : waypoint.WayPointName ,
                 "Longitude": waypoint.Longitude,
                 "Latitude": waypoint.Latitude
