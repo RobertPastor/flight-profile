@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	let MaxLatitude = 50.
 	let viewExtent = [MinLongitude , MinLatitude, MaxLongitude, MaxLatitude]
 	initMain(viewExtent);
+	
 })
 
 function initMain(viewExtent) {
@@ -37,6 +38,15 @@ function initMain(viewExtent) {
 	flightprofile(globus);
 	// load the waypoints
 	wayPoints(globus, viewExtent)
+	
+	globus.planet.renderer.events.on("add", function (e) {
+		
+		console.log("add event");
+		if (e.pickingObject instanceof Layer) {
+            console.log(e.pickingObject.name);
+        }
+
+    });
 	
 }
 

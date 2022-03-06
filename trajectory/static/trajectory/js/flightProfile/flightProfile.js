@@ -102,7 +102,9 @@ function flightprofile(globus) {
 						var dataJson = eval(data);
 						console.log( dataJson["kmlURL"] );
 						layerKML.addKmlFromUrl( url = dataJson["kmlURL"] );
-						setTimeout(stopWorker(), 3000);
+						setTimeout(
+							function(){ stopWorker(); }
+						, 10000);
 						
 					},
 					error: function(data, status) {
