@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 }); 
 
 function stopBusyAnimation(){
-	console.log("stop busy anymation");
+	console.log("stop busy animation");
 }
 
 var imagesIndex = 0;
@@ -78,18 +78,35 @@ function loadOneRay( rayLayer, placeMark ) {
 	let cart = ellipsoid.lonLatToCartesian(lonlat);
 	let cartAir = ellipsoid.lonLatToCartesian(lonlatAir);
 	
-	let entity = new og.Entity( {
-		ray: {
-			startPosition: cart,
-			endPosition: cartAir,
-			length: height,
-			startColor: "blue",
-			endColor: "green",
-			thickness: 5
-		}
-	} );
+	if ( placeMark["name"].length > 0 ) {
+		let offset = [10, 10]
+		if ( placeMark["name"].startsWith("turn") ) {
+			offset = [10, -20]
+		} 
+		rayLayer.add(new og.Entity({
+			cartesian : cartAir,
+			label: {
+					text: placeMark["name"],
+					outline: 0.77,
+					outlineColor: "rgba(255,255,255,.4)",
+					size: 14,
+					color: "black",
+					offset: offset
+				    }
+		}));
+	}
 	
-	rayLayer.add(entity);
+	rayLayer.add ( new og.Entity({
+			ray: {
+				startPosition: cart,
+				endPosition: cartAir,
+				length: height,
+				startColor: "blue",
+				endColor: "green",
+				thickness: 5
+			}
+		})
+	);
 
 }
 
@@ -100,7 +117,6 @@ function addRays ( rayLayer , placeMarks ) {
 		// insert one waypoint
 		loadOneRay( rayLayer, placeMarks[placeMarkId] );
 	}
-	
 }
 
 function flightprofile(globus) {
@@ -120,7 +136,7 @@ function flightprofile(globus) {
 	//polygonOffsetUnits is needed to hide rays behind globe
 	let rayLayer = new og.layer.Vector("rays", { polygonOffsetUnits: 0 });
 	rayLayer.addTo(globus.planet);
-
+	
 	let first = true;
 	let show = true;
 	document.getElementById("btnFlightProfile").onclick = function () {
@@ -149,7 +165,9 @@ function flightprofile(globus) {
 						layerKML.addKmlFromUrl( url = dataJson["kmlURL"] );
 						addRays( rayLayer , dataJson["placeMarks"] );
 						setTimeout(
-							function(){ stopWorker(); }
+							function(){ 
+								stopWorker(); 
+							}
 						, 10000);
 						
 					},
@@ -164,11 +182,13 @@ function flightprofile(globus) {
 				
 			} else {
 				layerKML.setVisibility(true);
+				rayLayer.setVisibility(true);
 			}
 		} else {
 			show = true;
 			document.getElementById("btnFlightProfile").innerText = "Show Flight Profile";
 			layerKML.setVisibility(false);
+			rayLayer.setVisibility(false);
 		}
 	};
 }
