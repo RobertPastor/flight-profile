@@ -23,3 +23,4 @@ class Airport(models.Model):
     Longitude = models.FloatField()
     FieldElevationAboveSeaLevelMeters = models.FloatField(blank = False)
     Continent = models.CharField(max_length = 100)
+    

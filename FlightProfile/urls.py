@@ -20,16 +20,14 @@ from django.urls import include
 from django.views.generic.base import RedirectView
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-
 from . import views
 
 urlpatterns = [
 
     re_path(r'^trajectory/', include('trajectory.urls')),
+    re_path(r'^airline/' , include('airline.urls')),
     re_path(r'admin/', admin.site.urls),
-    re_path(r'favicon.ico',
-        RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
-    ),
+    re_path(r'favicon.ico', RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")), ),
     re_path('', views.index, name='index'),
 
 ]

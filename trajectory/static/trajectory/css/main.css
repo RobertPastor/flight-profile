@@ -1,7 +1,12 @@
 progress {
-  background-color: #788F3A;
-  border: 0;
-  height: 5px;
-  width: 100%;
-  border-radius: 9px;
+	 background: blue;
+	 background-color:yellow;
+	 border: 1px;
+	 height: 5px;
+	 width: 90%;
+	 border-radius: 3px;
+}
+
+table {
+	 width: 100%;
 }

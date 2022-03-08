@@ -61,6 +61,13 @@ function wayPoints(globus, viewExtent) {
             clampToGround: true,
             });
 	layerWayPoints.addTo(globus.planet);
+	
+	layerWayPoints.events.on("postdraw", function (e) {
+		console.log("event is postdraw")
+		if (e.pickingObject instanceof og.Layer) {
+			console.log("picking object is instance of layer")
+		}
+	});
 	    
 	let show = true;
     	

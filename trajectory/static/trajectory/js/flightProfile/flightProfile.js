@@ -80,7 +80,8 @@ function loadOneRay( rayLayer, placeMark ) {
 	
 	if ( placeMark["name"].length > 0 ) {
 		let offset = [10, 10]
-		if ( placeMark["name"].startsWith("turn") ) {
+		if ( placeMark["name"].startsWith("turn") || placeMark["name"].startsWith("ground-run") 
+			|| placeMark["name"].startsWith("climb-ramp") ) {
 			offset = [10, -20]
 		} 
 		rayLayer.add(new og.Entity({
@@ -89,7 +90,7 @@ function loadOneRay( rayLayer, placeMark ) {
 					text: placeMark["name"],
 					outline: 0.77,
 					outlineColor: "rgba(255,255,255,.4)",
-					size: 14,
+					size: 12,
 					color: "black",
 					offset: offset
 				    }
@@ -136,6 +137,13 @@ function flightprofile(globus) {
 	//polygonOffsetUnits is needed to hide rays behind globe
 	let rayLayer = new og.layer.Vector("rays", { polygonOffsetUnits: 0 });
 	rayLayer.addTo(globus.planet);
+	
+	rayLayer.events.on("postdraw", function (e) {
+		console.log("event is post draw")
+		if (e.pickingObject instanceof og.Layer) {
+			console.log("picking object is instance of layer")
+		}
+	});
 	
 	let first = true;
 	let show = true;
