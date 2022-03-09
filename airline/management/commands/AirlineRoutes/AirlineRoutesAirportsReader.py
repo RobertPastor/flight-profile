@@ -64,6 +64,7 @@ class AirlineRoutesDataBase(object):
                         route[HeaderNames[index]] = str(cell)
                         
                     index = index + 1
+                print ( route )
                 airlineRoute = AirlineRoute(
                     DepartureAirport = route[HeaderNames[0]],
                     DepartureAirportICAOCode = route[HeaderNames[1]],

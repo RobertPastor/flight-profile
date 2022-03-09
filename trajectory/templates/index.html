@@ -20,6 +20,8 @@
     <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/flightProfile/flightProfile.js"></script>
     <script charset="utf-8" type="text/javascript" src="/static/trajectory/js/waypoints/waypoints.js"></script>
     
+    <script charset="utf-8" type="text/javascript" src="/static/airline/js/airlineRoutes/airlineRoutes.js"></script>
+    
     <title>Flight Profile</title>
     
 </head>
@@ -27,36 +29,58 @@
 	
 	<table>
 		<tr>
-			<td colspan='4' width="100%">
+			<td colspan='5' width="100%">
                 <progress id="workerId" class="progressBar" max="100" value="0"></progress>
                   <span id="workerVal">0</span>
     		</td>
 		</tr>
 		<tr>
-			<td width="25%">
+			<td width="20%">
 				<div>
-					<h3>Welcome to the Flight Profile tool.</h3>
+					<h3>Welcome to the Airline Fleet Assignment tool.</h3>
 				</div>
 			</td>
-			<td width="25%">
+			<td width="20%">
+				<div>
+    				<button id="btnAirlineRoutes" >Show Airline Routes</button>
+				</div>
+			</td>
+			<td width="20%">
 				<div>
     				<button id="btnAirports" >Show Airports</button>
 				</div>
 			</td>
-			<td width="25%">
+			<td width="20%">
 				<div>
     				<button id="btnWayPoints" >Show WayPoints</button>
 				</div>
 			</td>
-			<td width="25%">
+			<td width="20%">
 				<div>
     				<button id="btnFlightProfile" >Show Flight Profile</button>
 				</div>
 			</td>
 		</tr>
 		<tr>
-			<td colspan='4'>
+			<td colspan='5'>
 				<div id="globus" ></div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan='5'>
+				<table id="tableAirlineRoutesId">
+					<thead>
+						<tr>
+							<th>Departure Airport</th>
+							<th>Departure Airport ICAO Code</th>
+							<th>Arrival Airport</th>
+							<th>Arrival Airport ICAO Code</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+					</tbody>
+				</table>
 			</td>
 		</tr>
 	</table>

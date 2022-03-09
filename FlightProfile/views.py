@@ -1,10 +1,7 @@
-from django.http import HttpResponse
 
 # import Http Response from django
 from django.shortcuts import render
 
-def indexOld(request):
-    return HttpResponse("Hello, world. You're at the FlightProfile index.")
 
 def index(request):
     # create a function

@@ -7,6 +7,9 @@ class AirlineRoute(models.Model):
     DepartureAirportICAOCode = models.CharField(max_length = 50)
     ArrivalAirport = models.CharField(max_length = 500)
     ArrivalAirportICAOCode = models.CharField(max_length = 50)
+    
+    class Meta:
+        unique_together = (('DepartureAirportICAOCode', 'ArrivalAirportICAOCode'),)
 
     def getDepartureAirportICAOcode(self):
         return self.departureAirportICAOcode
@@ -18,4 +21,4 @@ class AirlineRoute(models.Model):
         return self.departureAirportICAOcode + "-" + self.arrivalAirportICAOcode
     
     def __str__(self):
-        return "departure airport= {0} - arrival airport= {1}".format(self.departureAirportICAOcode, self.arrivalAirportICAOcode)
+        return "departure airport= {0} - arrival airport= {1}".format(self.DepartureAirportICAOCode, self.ArrivalAirportICAOCode)

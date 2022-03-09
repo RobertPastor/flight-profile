@@ -25,7 +25,7 @@ function initMain(viewExtent) {
     let globus = new og.Globe({
             "target": "globus", 
             "name": "Earth",
-            "terrain": new og.terrain.GlobusTerrain(),
+            "terrain": new og.terrain.EmptyTerrain(),
             "layers": [osm],
             "autoActivated": true,
             "viewExtent": viewExtent
@@ -36,6 +36,7 @@ function initMain(viewExtent) {
 	flightprofile(globus);
 	// load the waypoints
 	wayPoints(globus, viewExtent)
+		
 	
 	/*
 	globus.planet.renderer.events.on("postdraw", function (e) {
