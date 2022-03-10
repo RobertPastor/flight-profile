@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 #from trajectory.models import SiteMessage
 from trajectory.models import Airport, WayPoint
+from airline.models import AirlineRoute
 
 # Create your views here.
 def indexTrajectory(request):
@@ -41,13 +42,15 @@ def getAirportsFromDB():
     airportsList = []
     for airport in Airport.objects.all():
         logger.debug (airport.AirportICAOcode)
-        if str(airport.AirportICAOcode).startswith("K") and str(airport.AirportName).endswith("Intl"):
-            airportsList.append({
-                "AirportICAOcode" : airport.AirportICAOcode ,
-                "AirportName": airport.AirportName,
-                "Longitude": airport.Longitude,
-                "Latitude": airport.Latitude
-                } )
+        for airlineRoute in AirlineRoute.objects.all():
+            
+            if (airport.AirportICAOcode == airlineRoute.getDepartureAirportICAOcode()) or (airport.AirportICAOcode == airlineRoute.getArrivalAirportICAOcode() ):
+                airportsList.append({
+                    "AirportICAOcode" : airport.AirportICAOcode ,
+                    "AirportName": airport.AirportName,
+                    "Longitude": airport.Longitude,
+                    "Latitude": airport.Latitude
+                    } )
     return airportsList
 
 def getAirports(request):

@@ -12,6 +12,7 @@ function stopBusyAnimation(){
 
 function addOneAirlineRoute( oneAirlineRoute ) {
 	
+	
 	$("#tableAirlineRoutesId").find('tbody')
     .append($('<tr>')
         .append($('<td>')
@@ -31,11 +32,11 @@ function addOneAirlineRoute( oneAirlineRoute ) {
 
 function addAirlineRoutes(airlineRoutesArray) {
 	
+	$('#tableAirlineRoutesId tbody').empty();
 	for (var airlineRouteId = 0; airlineRouteId < airlineRoutesArray.length; airlineRouteId++ ) {
 		// insert one waypoint
 		addOneAirlineRoute( airlineRoutesArray[airlineRouteId] );
 	}
-	
 }
 
 
@@ -75,6 +76,7 @@ function loadAirlineRoutes() {
 
 		} else {
 			show = true;
+			document.getElementById("btnAirlineRoutes").innerText = "Show Airline Routes";
 			$('#tableAirlineRoutesId').hide();
 		}
 	}

@@ -7,13 +7,13 @@ function stopBusyAnimation(){
 	console.log("stop busy anymation");
 }
 
-function loadOneAirport( layerVector, airport ) {
+function loadOneAirport( layerAirports, airport ) {
 	
 	let longitude = parseFloat(airport.Longitude);
 	var latitude = parseFloat(airport.Latitude);
 	var name = airport.AirportName;
 	
-	layerVector.add(new og.Entity({
+	layerAirports.add(new og.Entity({
 		    lonlat: [longitude, latitude],
 			label: {
 					text: name,
@@ -33,7 +33,7 @@ function loadOneAirport( layerVector, airport ) {
 				
 }
 
-function loadAirports(layerVector, dataJson) {
+function loadAirports(layerAirports, dataJson) {
 	
 	// get all airports
 	var airports = eval(dataJson['airports']);
@@ -41,7 +41,7 @@ function loadAirports(layerVector, dataJson) {
 	// add the reservations
 	for (var airportId = 0; airportId < airports.length; airportId++ ) {
 		// insert one reservation
-		loadOneAirport( layerVector, airports[airportId] );
+		loadOneAirport( layerAirports, airports[airportId] );
 	}
 	
 }
@@ -49,7 +49,7 @@ function loadAirports(layerVector, dataJson) {
 function airports(globus) {
 	
 	console.log("start airports");
-	let layerVector = new og.layer.Vector("Airports", {
+	let layerAirports = new og.layer.Vector("Airports", {
 			billboard: { 
 				src: '/static/trajectory/images/plane.png', 
 				color: '#6689db' ,
@@ -58,39 +58,43 @@ function airports(globus) {
 				},
             clampToGround: true,
     });
-	layerVector.addTo(globus.planet);
+	layerAirports.addTo(globus.planet);
 	    
 	let show = true;
+	let first = true;
     	
     document.getElementById("btnAirports").onclick = function () {
             
         if (show) {
 			show = false;
-			document.getElementById("btnAirports").innerText = "Hide Airports";
+			document.getElementById("btnAirports").innerText = "Hide Airline Airports";
 			
-			// use ajax to get the data 
-			$.ajax( {
-				method: 'get',
-				url :  "trajectory/airports",
-				async : true,
-				success: function(data, status) {
-								
-					//alert("Data: " + data + "\nStatus: " + status);
-					var dataJson = eval(data);
-					loadAirports( layerVector, dataJson );	
-				},
-				error: function(data, status) {
-					console.log("Error - delete old bookings: " + status + " SVP veuillez contactez votre administrateur");
-				},
-				complete : stopBusyAnimation,
-			} );
-			
+			if (first) {
+				first = false;
+				// use ajax to get the data 
+				$.ajax( {
+					method: 'get',
+					url :  "trajectory/airports",
+					async : true,
+					success: function(data, status) {
+									
+						//alert("Data: " + data + "\nStatus: " + status);
+						var dataJson = eval(data);
+						loadAirports( layerAirports, dataJson );	
+					},
+					error: function(data, status) {
+						console.log("Error - delete old bookings: " + status + " SVP veuillez contactez votre administrateur");
+					},
+					complete : stopBusyAnimation,
+				} );
+			} else {
+				layerAirports.setVisibility(true);
+			}
 			
 		} else {
 			show = true;
-			document.getElementById("btnAirports").innerText = "Show Airports";
-			let entities = layerVector.getEntities();
-			layerVector.removeEntities(entities);
+			document.getElementById("btnAirports").innerText = "Show Airline Airports";
+			layerAirports.setVisibility(false);
 		}
     };
 }

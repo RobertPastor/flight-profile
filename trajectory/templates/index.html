@@ -26,48 +26,45 @@
     
 </head>
 <body>
-	
+	<div>
 	<table>
 		<tr>
-			<td colspan='5' width="100%">
+			<td colspan='4' width="100%">
                 <progress id="workerId" class="progressBar" max="100" value="0"></progress>
                   <span id="workerVal">0</span>
     		</td>
 		</tr>
 		<tr>
-			<td width="20%">
+			<td colspan="4" width="100%">
 				<div>
-					<h3>Welcome to the Airline Fleet Assignment tool.</h3>
+					<span>Welcome to the Airline Fleet Assignment tool.</span>
 				</div>
 			</td>
-			<td width="20%">
+		</tr>
+		<tr>
+			<td width="25%">
 				<div>
     				<button id="btnAirlineRoutes" >Show Airline Routes</button>
 				</div>
 			</td>
-			<td width="20%">
+			<td width="25%">
 				<div>
-    				<button id="btnAirports" >Show Airports</button>
+    				<button id="btnAirports" >Show Airline Airports</button>
 				</div>
 			</td>
-			<td width="20%">
+			<td width="25%">
 				<div>
-    				<button id="btnWayPoints" >Show WayPoints</button>
+    				<button id="btnWayPoints" >Show Airline WayPoints</button>
 				</div>
 			</td>
-			<td width="20%">
+			<td width="25%">
 				<div>
     				<button id="btnFlightProfile" >Show Flight Profile</button>
 				</div>
 			</td>
 		</tr>
 		<tr>
-			<td colspan='5'>
-				<div id="globus" ></div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan='5'>
+			<td colspan='4'>
 				<table id="tableAirlineRoutesId">
 					<thead>
 						<tr>
@@ -83,7 +80,13 @@
 				</table>
 			</td>
 		</tr>
+		<tr>
+			<td colspan='4' width="100%">
+				<div id="globus" ></div>
+			</td>
+		</tr>
+		
 	</table>
-
+	</div>
 </body>
 </html>

@@ -72,16 +72,12 @@ function wayPoints(globus, viewExtent) {
 	let show = true;
     	
 	document.getElementById("btnWayPoints").onclick = function () {
-
-		let extent = layerWayPoints.getExtent();
-		console.log( "min latitude = " + extent.getSouth());
-		console.log( "max latitude = " + extent.getNorth());
-		console.log( "min longitude = " + extent.getEast());
-		console.log( "max latitude = " + extent.getWest());
+		
+		console.log( globus.planet.getViewExtent() )
 		
 		if (show) {
 			show = false;
-			document.getElementById("btnWayPoints").innerText = "Hide WayPoints";
+			document.getElementById("btnWayPoints").innerText = "Hide Airline WayPoints";
 			
 			// use ajax to get the data 
 			data = 'minlatitude=' + viewExtent[1].toString() + "&"
@@ -107,7 +103,7 @@ function wayPoints(globus, viewExtent) {
 			
 		} else {
 			show = true;
-			document.getElementById("btnWayPoints").innerText = "Show WayPoints";
+			document.getElementById("btnWayPoints").innerText = "Show Airline WayPoints";
 			let entities = layerWayPoints.getEntities();
 			layerWayPoints.removeEntities(entities);
 		}

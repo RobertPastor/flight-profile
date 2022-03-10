@@ -30,6 +30,7 @@ function initMain(viewExtent) {
             "autoActivated": true,
             "viewExtent": viewExtent
     });
+	
 	// load the airports
 	airports(globus);
 	// load a flight profile
