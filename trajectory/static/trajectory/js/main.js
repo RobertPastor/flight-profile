@@ -39,16 +39,16 @@ function initMain(viewExtent) {
 	wayPoints(globus, viewExtent)
 		
 	
-	/*
-	globus.planet.renderer.events.on("postdraw", function (e) {
+	
+	globus.planet.events.on("layeradd", function (e) {
 		
-		console.log("postdraw event");
+		console.log("layeradd event");
 		if (e.pickingObject instanceof og.Layer) {
             console.log(e.pickingObject.name);
         }
 
     });
-	*/
+	
 }
 
 

@@ -3,6 +3,7 @@ body {
 	width: 100%;
 	font-family: arial, serif;
 	font-size: 12px;
+	margin-left: calc(100vw - 100%);
 }
 button {
 	font-family: arial, serif;
@@ -16,6 +17,14 @@ progress {
 	 width: 90%;
 	 border-radius: 3px;
 	 border: 1px;
+}
+
+/* use z-index and show above the nav bar => 
+because it will be hidden at the end of the images loading process */
+.progressBar {
+    width : 100%;
+    z-index: 20 ;
+    vertical-align: top;
 }
 
 table {
