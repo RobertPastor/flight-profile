@@ -24,7 +24,7 @@ function loadOneAirport( layerAirports, airport ) {
 					offset: [10, -2]
 				    },
 			billboard: {
-					src: "/static/trajectory/images/plane.png",
+					src: "/static/images/plane.png",
 					width: 16,
 					height: 16,
 					offset: [0, 32]
@@ -50,12 +50,6 @@ function airports(globus) {
 	
 	console.log("start airports");
 	let layerAirports = new og.layer.Vector("Airports", {
-			billboard: { 
-				src: '/static/trajectory/images/plane.png', 
-				color: '#6689db' ,
-				width : 4,
-				height : 4
-				},
             clampToGround: true,
     });
 	layerAirports.addTo(globus.planet);

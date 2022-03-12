@@ -64,7 +64,7 @@ def getAirports(request):
 def getPlaceMarks(fileName):
     placeMarksList = []
     print ( BASE_DIR )
-    filePath = os.path.join ( BASE_DIR , os.path.join ( "trajectory/static/trajectory/kml"  , fileName ) )
+    filePath = os.path.join ( BASE_DIR , os.path.join ( "trajectory/static/kml"  , fileName ) )
     print ( filePath )
     if (os.path.isfile(filePath)):
         print ( "file = {0} does exist".format(filePath))
@@ -99,7 +99,7 @@ def getFlightProfile(request):
     if (request.method == 'GET'):
         fileName = "A319-KATL-PANC-Atlanta-Hartsfield-Jackson-Atlanta-Intl-Rwy-08L-Anchorage-Ted-Stevens-Anchorage-Intl-rwy-07L-16-Jan-2022-11h28m27.kml"
         response_data = {
-            'kmlURL': "/static/trajectory/kml/" + fileName,
+            'kmlURL': "/static/kml/" + fileName,
             'placeMarks' : getPlaceMarks(fileName)}
         return JsonResponse(response_data)
     

@@ -26,7 +26,7 @@ function loadOneWayPoint( layerWayPoints, waypoint ) {
 					offset: [0, -2]
 				    },
 			billboard: {
-					src: "/static/trajectory/images/marker.png",
+					src: "/static/images/marker.png",
 					width: 16,
 					height: 16,
 					offset: [0, -2]

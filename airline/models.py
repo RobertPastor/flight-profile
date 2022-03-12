@@ -22,3 +22,53 @@ class AirlineRoute(models.Model):
     
     def __str__(self):
         return "departure airport= {0} - arrival airport= {1}".format(self.DepartureAirportICAOCode, self.ArrivalAirportICAOCode)
+
+
+class AirlineAircraft(models.Model):
+    
+    aircraftICAOcode = models.CharField(max_length = 50, primary_key = True)
+    aircraftFullName = models.CharField(max_length = 500)
+    numberOfAircraftsInService = models.IntegerField(default = 0)
+    maximumOfPassengers = models.IntegerField(default = 0)
+    costsFlyingPerHoursDollars = models.FloatField(default = 0)
+    
+    landingLengthMeters = models.FloatField(default = 0)
+    takeOffMTOWLengthMeters = models.FloatField(default = 0)
+    
+        
+    def __str__(self):
+        return "{0}-{1}".format(self.aircraftFullName, self.aircraftICAOcode)
+        
+    def hasICAOcode(self):
+        return ( len ( self.aircraftICAOcode ) > 0 )
+        
+    def getAircraftFullName(self):
+        return self.aircraftFullName
+    
+    def getNumberOfAircraftInstances(self):
+        return self.numberOfAircraftsInService
+    
+    def getMaximumNumberOfPassengers(self):
+        return self.maximumOfPassengers
+    
+    def getCostsFlyingPerHoursDollars(self):
+        return self.costsFlyingPerHoursDollars
+    
+    ''' added as an extension from other databases '''
+    def setAircraftICAOcode(self, acICAOcode):
+        self.aircraftICAOcode = acICAOcode
+    
+    def getAircraftICAOcode(self):
+        return self.aircraftICAOcode
+    
+    def setLandingLengthMeters(self, lengthMeters):
+        self.landingLengthMeters = lengthMeters
+    
+    def setTakeOffMTOWLengthMeters(self, lenghtMeters):
+        self.takeOffMTOWLengthMeters = lenghtMeters
+    
+    def getLandingLengthMeters(self):
+        return self.landingLengthMeters
+    
+    def getTakeOffMTOWLengthMeters(self):
+        return self.takeOffMTOWLengthMeters

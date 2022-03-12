@@ -3,7 +3,7 @@
 heroku login 
 -> opens a web browser and connect using your smartphone authenticator code specific to heroku
 
-# list the available commands
+# list all available commands
 
 heroku run python manage.py -help
 

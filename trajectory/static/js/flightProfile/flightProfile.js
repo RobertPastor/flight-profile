@@ -46,7 +46,7 @@ function initWorker() {
         console.log("Yes! Web worker is supported !");
         // Some code.....
         if (typeof (worker) == "undefined") {
-            worker = new Worker("/static/trajectory/js/worker/worker.js");
+            worker = new Worker("/static/js/worker/worker.js");
             worker.onmessage = function (event) {
 
                 var workerProgressBar = document.getElementById('workerId');
@@ -108,7 +108,6 @@ function loadOneRay( rayLayer, placeMark ) {
 			}
 		})
 	);
-
 }
 
 function addRays ( rayLayer , placeMarks ) {
@@ -125,7 +124,7 @@ function flightprofile(globus) {
 	console.log("start flight profile");
 	let layerKML = new og.layer.KML( "FlightProfile" , {
 		billboard: { 
-			src: '/static/trajectory/images/move_down_icon.png', 
+			src: '/static/images/move_down_icon.png', 
 			color: '#6689db' ,
 			width : 4,
 			height : 4

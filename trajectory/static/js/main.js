@@ -25,7 +25,7 @@ function initMain(viewExtent) {
     let globus = new og.Globe({
             "target": "globus", 
             "name": "Earth",
-            "terrain": new og.terrain.EmptyTerrain(),
+            "terrain": new og.terrain.GlobusTerrain(),
             "layers": [osm],
             "autoActivated": true,
             "viewExtent": viewExtent
@@ -33,12 +33,12 @@ function initMain(viewExtent) {
 	
 	// load the airports
 	airports(globus);
-	// load a flight profile
-	flightprofile(globus);
+	
 	// load the waypoints
 	wayPoints(globus, viewExtent)
-		
 	
+	// load a flight profile
+	flightprofile(globus);
 	
 	globus.planet.events.on("layeradd", function (e) {
 		
@@ -46,7 +46,6 @@ function initMain(viewExtent) {
 		if (e.pickingObject instanceof og.Layer) {
             console.log(e.pickingObject.name);
         }
-
     });
 	
 }
