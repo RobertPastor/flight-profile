@@ -8,12 +8,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	let MaxLongitude = -70.
 	let MaxLatitude = 50.
 	let viewExtent = [MinLongitude , MinLatitude, MaxLongitude, MaxLatitude]
-	initMain(viewExtent);
+	setTimeout( function() {
+		initMain(viewExtent);
+		} , 1000 );
 	
 })
 
 function initMain(viewExtent) {
-	
+	console.log(" init Main ");
 	let osm = new og.layer.XYZ("OpenStreetMap", {
             isBaseLayer: true,
             url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",

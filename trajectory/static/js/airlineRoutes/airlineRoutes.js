@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	  console.log("Airline Routes js is loaded");
+	  console.log("Airline Routes.js is loaded");
 	  $('#tableAirlineRoutesId').hide();
 
 	  loadAirlineRoutes();
@@ -42,10 +42,13 @@ function addAirlineRoutes(airlineRoutesArray) {
 function loadAirlineRoutes() {
 	
 	let show = true;
+	$("#trAirlineRoutesId").hide();
+
 	document.getElementById("btnAirlineRoutes").onclick = function () {
 		
 		if (show) {
-			
+			$("#trAirlineRoutesId").show();
+
 			show = false;
 			// change name on the button
 			document.getElementById("btnAirlineRoutes").innerText = "Hide Airline Routes";
@@ -79,6 +82,8 @@ function loadAirlineRoutes() {
 
 			show = true;
 			document.getElementById("btnAirlineRoutes").innerText = "Show Airline Routes";
+			
+			$("#trAirlineRoutesId").hide();
 			$('#tableAirlineRoutesId').hide();
 		}
 	}

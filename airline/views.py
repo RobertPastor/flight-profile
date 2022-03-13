@@ -18,6 +18,7 @@ def getAirlineRoutesFromDB():
                 } )
     return airlineRoutesList
 
+
 def getAirlineRoutes(request):
     logger.debug ("get Airline Routes")
     if (request.method == 'GET'):
@@ -25,6 +26,7 @@ def getAirlineRoutes(request):
         airlineRoutes = getAirlineRoutesFromDB()
         response_data = {'airlineRoutes': airlineRoutes}
         return JsonResponse(response_data)
+    
     
 def getAirlineFleetFromDB():
     airlineFleetList = []

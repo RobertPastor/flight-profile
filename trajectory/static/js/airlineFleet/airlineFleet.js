@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	  console.log("Airline Fleet js is loaded");
+	  console.log("Airline Fleet.js is loaded");
 	  loadAirlineFleet();
 }); 
 
@@ -39,12 +39,14 @@ function addAirlineFleetArray(airlineFleetArray) {
 
 function loadAirlineFleet() {
 	
+	$("#trAirlineFleetId").hide();
 	$('#tableAirlineFleetId').hide();
 	
 	let show = true;
 	document.getElementById("btnAirlineFleet").onclick = function () {
 		
 		if (show) {
+			$("#trAirlineFleetId").show();
 			$('#tableAirlineFleetId').show();
 						
 			show = false;
@@ -77,9 +79,10 @@ function loadAirlineFleet() {
 			});
 
 		} else {
-
 			show = true;
 			document.getElementById("btnAirlineFleet").innerText = "Show Airline Fleet";
+			
+			$("#trAirlineFleetId").hide();
 			$('#tableAirlineFleetId').hide();
 		}
 	}

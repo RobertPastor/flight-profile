@@ -6,7 +6,7 @@ body {
 
 .bodyDivOverlay {
 	position: fixed; /* Sit on top of the page content */
-	display: block; /* Hidden by default */
+	display: block; /* displayed by default */
 	z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
 	cursor: pointer; /* Add a pointer on hover */
 }
@@ -31,14 +31,18 @@ because it will be hidden at the end of the images loading process */
     width : 100%;
 }
 
-table, th, td{
-	border:1px solid blue;
+table, th, td {
 	background-color: white;
 	opacity: 1.0;
+	border: 1px solid blue;
 }
 
 th {
 	background-color: yellow;
 	font-weight: bold ;
+}
+
+.tableAirlineRoutesClass , .tableAirlineFleetClass {
+	border: 1px solid blue;
 }
 
