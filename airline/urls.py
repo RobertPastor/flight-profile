@@ -4,4 +4,5 @@ from . import views
 
 urlpatterns = [
     re_path(r'^airlineRoutes$' , views.getAirlineRoutes , name='getAirlineRoutes'),
+    re_path(r'^airlineFleet$' , views.getAirlineFleet , name='getAirlineFleet'),
 ]

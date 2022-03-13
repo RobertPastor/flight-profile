@@ -22,16 +22,20 @@
     <script charset="utf-8" type="text/javascript" src="/static/js/waypoints/waypoints.js"></script>
     
     <script charset="utf-8" type="text/javascript" src="/static/js/airlineRoutes/airlineRoutes.js"></script>
+    <script charset="utf-8" type="text/javascript" src="/static/js/airlineFleet/airlineFleet.js"></script>
     
     <title>Flight Profile</title>
     
 </head>
 <body>
-	<div id="bodyDivId">
+
+	<div id="globus" ></div>
+
+	<div class="bodyDivOverlay">
 	
 		<table id="mainTableId">
 			<tr>
-				<td colspan='5' >
+				<td colspan='6' >
 	                <progress id="workerId" class="progressBar" max="100" value="0">
 	                  <span id="workerVal">0</span>
 	                </progress>
@@ -40,7 +44,12 @@
 			<tr>
 				<td>
 					<div>
-						<span>Welcome to the Airline Fleet Assignment tool.</span>
+						<span>Welcome to the Airline Fleet Management tool.</span>
+					</div>
+				</td>
+				<td>
+					<div>
+	    				<button id="btnAirlineFleet" >Show Airline Fleet</button>
 					</div>
 				</td>
 				<td>
@@ -65,7 +74,7 @@
 				</td>
 			</tr>
 			<tr>
-			 	<td colspan='5'>
+			 	<td colspan='6'>
 				 	<div id="overlayId">
 						<table id="tableAirlineRoutesId">
 									<thead>
@@ -77,7 +86,27 @@
 										</tr>
 									</thead>
 									<tbody>
-									
+
+									</tbody>
+						</table>
+					</div>
+				</td>
+			 </tr>
+			 <tr>
+			 	<td colspan='6'>
+				 	<div id="overlayId">
+						<table id="tableAirlineFleetId">
+									<thead>
+										<tr>
+											<th>Aircraft ICAO Code</th>
+											<th>Aircraft Full Name</th>
+											<th>Number of Aircrafts</th>
+											<th>Max Number of Passengers</th>
+											<th>Costs Flying Hours (Dollars)</th>
+										</tr>
+									</thead>
+									<tbody>
+
 									</tbody>
 						</table>
 					</div>
@@ -85,8 +114,7 @@
 			 </tr>
 		</table>
 			
-		<div id="globus" ></div>
-		
 	</div>
+	
 </body>
 </html>

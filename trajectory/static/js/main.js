@@ -31,10 +31,10 @@ function initMain(viewExtent) {
             "viewExtent": viewExtent
     });
 	
-	// load the airports
+	// load the airline airports
 	airports(globus);
 	
-	// load the waypoints
+	// load the airline routes waypoints
 	wayPoints(globus, viewExtent)
 	
 	// load a flight profile

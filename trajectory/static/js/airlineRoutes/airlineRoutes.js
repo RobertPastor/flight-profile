@@ -12,7 +12,6 @@ function stopBusyAnimation(){
 
 function addOneAirlineRoute( oneAirlineRoute ) {
 	
-	
 	$("#tableAirlineRoutesId").find('tbody')
     .append($('<tr>')
         .append($('<td>')
@@ -46,8 +45,6 @@ function loadAirlineRoutes() {
 	document.getElementById("btnAirlineRoutes").onclick = function () {
 		
 		if (show) {
-			// overlay effect
-			document.getElementById("overlayId").style.display = "block";
 			
 			show = false;
 			// change name on the button
@@ -79,7 +76,6 @@ function loadAirlineRoutes() {
 			});
 
 		} else {
-			document.getElementById("overlayId").style.display = "none";
 
 			show = true;
 			document.getElementById("btnAirlineRoutes").innerText = "Show Airline Routes";
