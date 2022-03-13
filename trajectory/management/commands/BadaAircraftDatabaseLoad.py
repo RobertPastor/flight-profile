@@ -1,12 +1,13 @@
 
 from django.core.management.base import BaseCommand
-
 from trajectory.management.commands.BadaAircraftDatabase.BadaAircraftDatabaseFile import BadaAircraftDatabase
+from trajectory.models import Aircraft
 
 class Command(BaseCommand):
     help = 'Reads the Synonym file and load the Aircrafts table'
 
     def handle(self, *args, **options):
+        Aircraft.objects.all().delete()
         acBD = BadaAircraftDatabase()
         if (acBD.exists()):
             print("acBD exists")

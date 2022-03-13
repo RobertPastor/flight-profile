@@ -3383,7 +3383,7 @@
 3481;Pope Field;Fort Bragg;United States;POB;KPOB;35.170883;-79.014472;217;-5;A
 3482;Dalhart Muni;Dalhart;United States;DHT;KDHT;36.022586;-102.547278;3991;-6;A
 3483;Laughlin Afb;Del Rio;United States;DLF;KDLF;29.359486;-100.777975;1082;-6;A
-3484;Los Angeles Intl;Los Angeles;United States;LAX;KLAX;33.942536;-118.408075;126;-8;A
+3484;Los Angeles-Los Angeles Intl;Los Angeles;United States;LAX;KLAX;33.942536;-118.408075;126;-8;A
 3485;Anniston Metro;Anniston;United States;ANB;KANB;33.588167;-85.858111;612;-6;A
 3486;Cleveland Hopkins Intl;Cleveland;United States;CLE;KCLE;41.411689;-81.849794;791;-5;A
 3487;Dover Afb;Dover;United States;DOV;KDOV;39.129539;-75.465958;28;-5;A
@@ -3449,7 +3449,7 @@
 3547;Hickory Rgnl;Hickory;United States;HKY;KHKY;35.741147;-81.38955;1189;-5;A
 3548;Albert Whitted;St. Petersburg;United States;SPG;KSPG;27.765111;-82.626972;7;-5;A
 3549;Page Fld;Fort Myers;United States;FMY;KFMY;26.586611;-81.86325;17;-5;A
-3550;George Bush Intercontinental;Houston;United States;IAH;KIAH;29.984433;-95.341442;97;-6;A
+3550;Houston George Bush Intl;Houston;United States;IAH;KIAH;29.984433;-95.341442;97;-6;A
 3551;Millinocket Muni;Millinocket;United States;MLT;KMLT;45.647836;-68.685561;408;-5;A
 3552;Andrews Afb;Camp Springs;United States;ADW;KADW;38.810806;-76.867028;280;-5;A
 3553;Smith Reynolds;Winston-salem;United States;INT;KINT;36.133722;-80.222;969;-5;A
@@ -3476,7 +3476,7 @@
 3574;Alice Intl;Alice;United States;ALI;KALI;27.740889;-98.026944;178;-6;A
 3575;Moody Afb;Valdosta;United States;VAD;KVAD;30.967833;-83.193;233;-5;A
 3576;Miami Intl;Miami;United States;MIA;KMIA;25.79325;-80.290556;8;-5;A
-3577;Seattle Tacoma Intl;Seattle;United States;SEA;KSEA;47.449;-122.309306;433;-8;A
+3577;Seattle-Seattle Tacoma Intl;Seattle;United States;SEA;KSEA;47.449;-122.309306;433;-8;A
 3578;Lovell Fld;Chattanooga;United States;CHA;KCHA;35.035278;-85.203808;683;-5;A
 3579;Igor I Sikorsky Mem;Stratford;United States;BDR;KBDR;41.163472;-73.126167;9;-5;A
 3580;Jackson Evers Intl;Jackson;United States;JAN;KJAN;32.311167;-90.075889;346;-6;A
@@ -3581,7 +3581,7 @@
 3679;Millville Muni;Millville;United States;MIV;KMIV;39.367806;-75.072222;85;-5;A
 3680;Sheppard Afb Wichita Falls Muni;Wichita Falls;United States;SPS;KSPS;33.988797;-98.491894;1019;-6;A
 3681;Cincinnati Muni Lunken Fld;Cincinnati;United States;LUK;KLUK;39.103333;-84.418611;483;-5;A
-3682;Hartsfield Jackson Atlanta Intl;Atlanta;United States;ATL;KATL;33.636719;-84.428067;1026;-5;A
+3682;Atlanta-Hartsfield Jackson Atlanta Intl;Atlanta;United States;ATL;KATL;33.636719;-84.428067;1026;-5;A
 3683;Castle;Merced;United States;MER;KMER;37.380481;-120.568189;189;-8;A
 3684;Mc Clellan Afld;Sacramento;United States;MCC;KMCC;38.667639;-121.400611;75;-8;A
 3685;Gerald R Ford Intl;Grand Rapids;United States;GRR;KGRR;42.880833;-85.522806;794;-5;A
@@ -3613,7 +3613,7 @@
 3711;Burlington Intl;Burlington;United States;BTV;KBTV;44.471861;-73.153278;335;-5;A
 3712;Jacksonville Intl;Jacksonville;United States;JAX;KJAX;30.494056;-81.687861;30;-5;A
 3713;Durango La Plata Co;Durango;United States;DRO;KDRO;37.151516;-107.75377;6685;-7;A
-3714;Washington Dulles Intl;Washington;United States;IAD;KIAD;38.944533;-77.455811;313;-5;A
+3714;Washington Dulles Airport Intl;Washington;United States;IAD;KIAD;38.944533;-77.455811;313;-5;A
 3715;Easterwood Fld;College Station;United States;CLL;KCLL;30.588583;-96.363833;321;-6;A
 3716;Felts Fld;Spokane;United States;SFF;KSFF;47.682819;-117.322558;1953;-8;A
 3717;General Mitchell Intl;Milwaukee;United States;MKE;KMKE;42.947222;-87.896583;723;-6;A
@@ -3673,7 +3673,7 @@
 3771;Plattsburgh Intl;Plattsburgh;United States;PBG;KPBG;44.650944;-73.468139;234;-5;A
 3772;Phillips Aaf;Aberdeen;United States;APG;KAPG;39.466219;-76.168808;57;-5;A
 3773;Tucumcari Muni;Tucumcari;United States;TCC;KTCC;35.182777;-103.603186;4065;-7;A
-3774;Ted Stevens Anchorage Intl;Anchorage;United States;ANC;PANC;61.174361;-149.996361;152;-9;A
+3774;Alaska Anchorage-Ted Stevens Anchorage Intl;Anchorage;United States;ANC;PANC;61.174361;-149.996361;152;-9;A
 3775;Robert Gray Aaf;Killeen;United States;GRK;KGRK;31.06725;-97.828917;1015;-6;A
 3776;Black Rock;Zuni Pueblo;United States;ZUN;KZUN;35.083228;-108.791778;6454;-7;A
 3777;Bellingham Intl;Bellingham;United States;BLI;KBLI;48.792694;-122.537528;170;-8;A
@@ -3696,7 +3696,7 @@
 3794;King Salmon;King Salmon;United States;AKN;PAKN;58.676778;-156.649278;68;-9;A
 3795;Muir Aaf;Muir;United States;MUI;KMUI;40.434811;-76.569411;489;-5;A
 3796;Kapalua;Lahania-kapalua;United States;JHM;PHJH;20.962936;-156.673031;256;-10;N
-3797;John F Kennedy Intl;New York;United States;JFK;KJFK;40.639751;-73.778925;13;-5;A
+3797;New York-John F Kennedy Intl;New York;United States;JFK;KJFK;40.639751;-73.778925;13;-5;A
 3798;Homestead Arb;Homestead;United States;HST;KHST;25.48855;-80.383567;6;-5;A
 3799;Riverside Muni;Riverside;United States;RAL;KRAL;33.951875;-117.445103;818;-8;A
 3800;Sherman Aaf;Fort Leavenworth;United States;FLV;KFLV;39.368332;-94.914686;772;-6;A
@@ -3729,7 +3729,7 @@
 3827;Norfolk Ns;Norfolk;United States;NGU;KNGU;36.937644;-76.289289;15;-5;A
 3828;Westover Arb Metropolitan;Chicopee Falls;United States;CEF;KCEF;42.194014;-72.534783;241;-5;A
 3829;Lubbock Preston Smith Intl;Lubbock;United States;LBB;KLBB;33.663639;-101.822778;3282;-6;A
-3830;Chicago Ohare Intl;Chicago;United States;ORD;KORD;41.978603;-87.904842;668;-6;A
+3830;Chicago O'Hare Intl;Chicago;United States;ORD;KORD;41.978603;-87.904842;668;-6;A
 3831;Boca Raton;Boca Raton;United States;BCT;KBCT;26.3785;-80.107694;13;-5;A
 3832;Fairbanks Intl;Fairbanks;United States;FAI;PAFA;64.815114;-147.856267;434;-9;A
 3833;Quantico Mcaf;Quantico;United States;NYG;KNYG;38.501683;-77.305333;11;-5;A
