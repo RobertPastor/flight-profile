@@ -28,6 +28,8 @@ progress {
 /* use z-index and show above the nav bar => 
 because it will be hidden at the end of the images loading process */
 .progressBar {
+	background: blue;
+	background-color:yellow;
     width : 100%;
 }
 
@@ -44,5 +46,9 @@ th {
 
 .tableAirlineRoutesClass , .tableAirlineFleetClass {
 	border: 1px solid blue;
+}
+
+.aircraftSelectionClass, .routesSelectionClass , .launchComputeClass{
+	display: none;
 }
 

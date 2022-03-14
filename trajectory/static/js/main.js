@@ -10,12 +10,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	let viewExtent = [MinLongitude , MinLatitude, MaxLongitude, MaxLatitude]
 	setTimeout( function() {
 		initMain(viewExtent);
-		} , 1000 );
+		} , 500 );
 	
 })
 
 function initMain(viewExtent) {
-	console.log(" init Main ");
+	console.log("init Main ");
 	let osm = new og.layer.XYZ("OpenStreetMap", {
             isBaseLayer: true,
             url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -40,7 +40,10 @@ function initMain(viewExtent) {
 	wayPoints(globus, viewExtent)
 	
 	// load a flight profile
-	flightprofile(globus);
+	showFlightProfile(globus);
+	
+	// compute Flight Profile
+	computeFlightProfile(globus);
 	
 	globus.planet.events.on("layeradd", function (e) {
 		

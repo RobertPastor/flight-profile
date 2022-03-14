@@ -3,7 +3,7 @@ var worker = undefined;
 
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	  console.log("KML flight profile js is loaded");
+	  console.log("show KML flight profile js is loaded");
 }); 
 
 function stopBusyAnimation(){
@@ -84,6 +84,7 @@ function loadOneRay( rayLayer, placeMark ) {
 			|| placeMark["name"].startsWith("climb-ramp") ) {
 			offset = [10, -20]
 		} 
+		
 		rayLayer.add(new og.Entity({
 			cartesian : cartAir,
 			label: {
@@ -95,6 +96,7 @@ function loadOneRay( rayLayer, placeMark ) {
 					offset: offset
 				    }
 		}));
+		
 	}
 	
 	rayLayer.add ( new og.Entity({
@@ -119,9 +121,10 @@ function addRays ( rayLayer , placeMarks ) {
 	}
 }
 
-function flightprofile(globus) {
+function showFlightProfile(globus) {
 	
-	console.log("start flight profile");
+	console.log("start show flight profile");
+	
 	let layerKML = new og.layer.KML( "FlightProfile" , {
 		billboard: { 
 			src: '/static/images/move_down_icon.png', 
@@ -146,14 +149,14 @@ function flightprofile(globus) {
 	
 	let first = true;
 	let show = true;
-	document.getElementById("btnFlightProfile").onclick = function () {
+	document.getElementById("btnShowFlightProfile").onclick = function () {
 		
 		if (show) {
 			show = false;
-			document.getElementById("btnFlightProfile").innerText = "Hide Flight Profile";
+			document.getElementById("btnShowFlightProfile").innerText = "Hide Flight Profile";
 			if (first) {
 				first = false
-				document.getElementById("btnFlightProfile").disabled = true
+				document.getElementById("btnShowFlightProfile").disabled = true
 
 				// init progress bar.
 				initProgressBar();
@@ -162,7 +165,7 @@ function flightprofile(globus) {
 				// use ajax to get the data 
 				$.ajax( {
 					method: 'get',
-					url :  "trajectory/flightprofile",
+					url :  "trajectory/showFlightProfile",
 					async : true,
 					success: function(data, status) {
 									
@@ -183,7 +186,7 @@ function flightprofile(globus) {
 					},
 					complete : function() {
 						stopBusyAnimation();
-						document.getElementById("btnFlightProfile").disabled = false
+						document.getElementById("btnShowFlightProfile").disabled = false
 					},
 				} );
 				
@@ -193,7 +196,7 @@ function flightprofile(globus) {
 			}
 		} else {
 			show = true;
-			document.getElementById("btnFlightProfile").innerText = "Show Flight Profile";
+			document.getElementById("btnShowFlightProfile").innerText = "Show Flight Profile";
 			layerKML.setVisibility(false);
 			rayLayer.setVisibility(false);
 		}

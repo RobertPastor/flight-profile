@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 #from trajectory.models import SiteMessage
 from trajectory.models import Airport, WayPoint
-from airline.models import AirlineRoute
+from airline.models import AirlineRoute, AirlineAircraft
+from airline.views import getAirlineRoutesFromDB
 
 # Create your views here.
 def indexTrajectory(request):
@@ -53,6 +54,7 @@ def getAirportsFromDB():
                     } )
     return airportsList
 
+
 def getAirports(request):
     logger.debug ("get Airports")
     if (request.method == 'GET'):
@@ -60,6 +62,7 @@ def getAirports(request):
         airports = getAirportsFromDB()
         response_data = {'airports': airports}
         return JsonResponse(response_data)
+    
     
 def getPlaceMarks(fileName):
     placeMarksList = []
@@ -94,14 +97,16 @@ def getPlaceMarks(fileName):
     print ( "length place marks = {0}".format(len ( placeMarksList )) )
     return placeMarksList
     
-def getFlightProfile(request):
-    logger.debug ("get Flight Profile")
+    
+def showFlightProfile(request):
+    logger.debug ("show Flight Profile")
     if (request.method == 'GET'):
         fileName = "A319-KATL-PANC-Atlanta-Hartsfield-Jackson-Atlanta-Intl-Rwy-08L-Anchorage-Ted-Stevens-Anchorage-Intl-rwy-07L-16-Jan-2022-11h28m27.kml"
         response_data = {
             'kmlURL': "/static/kml/" + fileName,
             'placeMarks' : getPlaceMarks(fileName)}
         return JsonResponse(response_data)
+    
     
 def getWayPointsFromDB(viewExtent):
     wayPointsList = []
@@ -138,3 +143,27 @@ def getWayPoints(request):
         waypoints = getWayPointsFromDB(viewExtent)
         response_data = {'waypoints': waypoints}
         return JsonResponse(response_data)
+  
+    
+def getAirlineAircraftsFromDB():
+    airlineAircraftsList = []
+    for airlineAircraft in AirlineAircraft.objects.all():
+        print (str(airlineAircraft))
+        airlineAircraftsList.append({
+            "airlineAircraftICAOcode" : airlineAircraft.aircraftICAOcode,
+            "airlineAircraftFullName" : airlineAircraft.aircraftFullName
+            })
+    print ("length of airline aircrafts list = {0}".format(len(airlineAircraftsList)))
+    return airlineAircraftsList
+
+
+def computeFlightProfile(request):
+    logger.debug ("compute Flight Profile")
+    if (request.method == 'GET'):
+        airlineAircraftsList = getAirlineAircraftsFromDB()
+        airlineRoutesList = getAirlineRoutesFromDB()
+        response_data = {
+            'airlineAircrafts': airlineAircraftsList,
+            'airlineRoutes': airlineRoutesList}
+        return JsonResponse(response_data)
+
