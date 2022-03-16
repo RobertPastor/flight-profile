@@ -6,9 +6,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	  loadAirlineRoutes();
 }); 
 
-function stopBusyAnimation(){
-	console.log("stop busy animation");
-}
 
 function addOneAirlineRoute( oneAirlineRoute ) {
 	

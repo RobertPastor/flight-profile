@@ -3,9 +3,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	  console.log("airports js is loaded");
 }); 
 
-function stopBusyAnimation(){
-	console.log("stop busy anymation");
-}
+
 
 function loadOneAirport( layerAirports, airport ) {
 	
@@ -64,6 +62,12 @@ function airports(globus) {
 			document.getElementById("btnAirports").innerText = "Hide Airline Airports";
 			
 			if (first) {
+				document.getElementById("btnAirports").disabled = true;
+				
+				// init progress bar.
+				initProgressBar();
+				initWorker();
+				
 				first = false;
 				// use ajax to get the data 
 				$.ajax( {
@@ -79,7 +83,10 @@ function airports(globus) {
 					error: function(data, status) {
 						console.log("Error - delete old bookings: " + status + " SVP veuillez contactez votre administrateur");
 					},
-					complete : stopBusyAnimation,
+					complete : function() {
+						stopBusyAnimation();
+						document.getElementById("btnAirports").disabled = false
+					}
 				} );
 			} else {
 				layerAirports.setVisibility(true);

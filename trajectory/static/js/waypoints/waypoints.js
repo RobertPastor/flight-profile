@@ -5,10 +5,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 }); 
 
 
-function stopBusyAnimation(){
-	console.log("stop busy anymation");
-}
-
 function loadOneWayPoint( layerWayPoints, waypoint ) {
 	
 	let longitude = parseFloat(waypoint.Longitude);
@@ -45,7 +41,6 @@ function loadWayPoints(layerWayPoints, dataJson) {
 		// insert one waypoint
 		loadOneWayPoint( layerWayPoints, waypoints[wayPointId] );
 	}
-	
 }
 
 function wayPoints(globus, viewExtent) {
@@ -74,16 +69,21 @@ function wayPoints(globus, viewExtent) {
 	document.getElementById("btnWayPoints").onclick = function () {
 		
 		console.log( globus.planet.getViewExtent() )
+		let viewExtent = globus.planet.getViewExtent() 
+		let northEast = viewExtent["northEast"]
+		let southWest = viewExtent["southWest"]
 		
 		if (show) {
+			document.getElementById("btnWayPoints").disabled = true
+			
 			show = false;
 			document.getElementById("btnWayPoints").innerText = "Hide Airline WayPoints";
 			
 			// use ajax to get the data 
-			data = 'minlatitude=' + viewExtent[1].toString() + "&"
-			data += 'maxlatitude=' + viewExtent[3].toString() + "&"
-			data += 'minlongitude=' + viewExtent[0].toString() + "&"
-			data += 'maxlongitude=' + viewExtent[2].toString()
+			data = 'minlatitude=' + parseInt(southWest["lat"]).toString() + "&"
+			data += 'maxlatitude=' + parseInt(northEast["lat"]).toString() + "&"
+			data += 'minlongitude=' + parseInt(southWest["lon"]).toString() + "&"
+			data += 'maxlongitude=' + parseInt(northEast["lon"]).toString()
 			$.ajax( {
 				method: 'get',
 				url :  "trajectory/waypoints",
@@ -98,7 +98,10 @@ function wayPoints(globus, viewExtent) {
 				error: function(data, status) {
 					console.log("Error - delete old bookings: " + status + " SVP veuillez contactez votre administrateur");
 				},
-				complete : stopBusyAnimation,
+				complete : function() {
+					stopBusyAnimation();
+					document.getElementById("btnWayPoints").disabled = false
+				}
 			} );
 			
 		} else {

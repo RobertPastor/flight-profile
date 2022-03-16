@@ -76,7 +76,6 @@ function computeFlightProfile(globus) {
 					},
 			});
 			
-			
 		} 
 	} 
 	

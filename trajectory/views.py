@@ -99,7 +99,7 @@ def getPlaceMarks(fileName):
     
     
 def showFlightProfile(request):
-    logger.debug ("show Flight Profile")
+    print ("show Flight Profile")
     if (request.method == 'GET'):
         fileName = "A319-KATL-PANC-Atlanta-Hartsfield-Jackson-Atlanta-Intl-Rwy-08L-Anchorage-Ted-Stevens-Anchorage-Intl-rwy-07L-16-Jan-2022-11h28m27.kml"
         response_data = {

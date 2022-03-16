@@ -24,6 +24,13 @@ class AirlineRoute(models.Model):
         return "departure airport= {0} - arrival airport= {1}".format(self.DepartureAirportICAOCode, self.ArrivalAirportICAOCode)
 
 
+class AirlineRouteWayPoints(models.Model):
+    Route = models.ForeignKey(AirlineRoute, on_delete=models.CASCADE)
+    Order = models.IntegerField()
+    # linked to the WayPoint class in the trajectory
+    WayPoint = models.CharField(max_length = 100)
+    
+
 class AirlineAircraft(models.Model):
     
     aircraftICAOcode = models.CharField(max_length = 50, primary_key = True)
@@ -72,3 +79,5 @@ class AirlineAircraft(models.Model):
     
     def getTakeOffMTOWLengthMeters(self):
         return self.takeOffMTOWLengthMeters
+    
+

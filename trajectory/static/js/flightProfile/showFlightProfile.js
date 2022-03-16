@@ -1,66 +1,11 @@
 
-var worker = undefined;
+
 
 document.addEventListener('DOMContentLoaded', (event) => { 
        
 	  console.log("show KML flight profile js is loaded");
 }); 
 
-function stopBusyAnimation(){
-	console.log("stop busy animation");
-}
-
-var imagesIndex = 0;
-
-function updateProgress() {
-    var progressBar = document.getElementById('progressId');
-    progressBar.value = String(imagesIndex++);
-    var progressValue = document.getElementById('progressVal');
-    if (progressValue != undefined) {
-        progressValue.innerHTML = String(imagesIndex);
-    }
-}
-
-function initProgressBar() {
-    // Gets the number of image elements
-    var numberOfSteps = 100;
-    var progressBar = document.getElementById('progressId');
-    if (progressBar != undefined) {
-        progressBar.max = String(numberOfSteps);
-    }
-}
-
-function stopWorker() {
-    worker.terminate();
-    worker = undefined;
-    console.log("worker is stopped !!!");
-    // hide the progress bars
-    
-    //$("#workerId").hide();
-    //$("#progressId").hide();
-}
-
-function initWorker() {
-	
-	if (typeof (Worker) !== "undefined") {
-        console.log("Yes! Web worker is supported !");
-        // Some code.....
-        if (typeof (worker) == "undefined") {
-            worker = new Worker("/static/js/worker/worker.js");
-            worker.onmessage = function (event) {
-
-                var workerProgressBar = document.getElementById('workerId');
-                workerProgressBar.value = event.data;
-
-                var workerProgressValue = document.getElementById('workerVal');
-                workerProgressValue.innerHTML = event.data;
-            };
-        }
-    } else {
-        // Sorry! No Web Worker support..
-		console.log("Sorry! no web worker support ...");
-    }
-}
 
 function loadOneRay( rayLayer, placeMark ) {
 	
@@ -96,7 +41,6 @@ function loadOneRay( rayLayer, placeMark ) {
 					offset: offset
 				    }
 		}));
-		
 	}
 	
 	rayLayer.add ( new og.Entity({
