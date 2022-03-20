@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 def getAirlineRoutesFromDB():
     airlineRoutesList = []
     for airlineRoute in AirlineRoute.objects.all():
-        logger.debug ( str ( airlineRoute ) )
+        #logger.debug ( str ( airlineRoute ) )
         airlineRoutesList.append({
                 "DepartureAirport" : airlineRoute.DepartureAirport ,
                 "DepartureAirportICAOCode": airlineRoute.DepartureAirportICAOCode,

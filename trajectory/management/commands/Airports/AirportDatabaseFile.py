@@ -60,6 +60,7 @@ import os
 import csv
 
 from trajectory.models import Airport
+from airline.models import AirlineRoute
 
 fieldNames = ["Airport ID", "Airport Name" , "City", "Country", "IATA/FAA", "ICAO Code",
                 "LatitudeDegrees", "LongitudeDegrees", "AltitudeFeet", "TimeZone", "DST"]
@@ -87,11 +88,13 @@ class AirportsDatabase(object):
         self.FilePath = (self.airportsFilesFolder + os.path.sep + self.FilePath)
         print ( self.className + ': file path= {0}'.format(self.FilePath) )
         
+        
     def exists(self):
         return os.path.exists(self.airportsFilesFolder) and os.path.isfile(self.FilePath)
 
 
-    def read(self):
+    def read(self, airlineRoutesAirportsList):
+        ''' read and loaf only airports that are defined in the airline routes '''
         try:
             dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), delimiter = ";", fieldnames=fieldNames)
             for row in dictReader:
@@ -107,19 +110,23 @@ class AirportsDatabase(object):
                 self.airportsDb[row["ICAO Code"]] = airportDict
                 print ( row["ICAO Code"] )
                 try:
-                    airport = Airport(AirportICAOcode = row["ICAO Code"],
-                                       AirportName = row["Airport Name"],
-                                       Latitude = float(row["LatitudeDegrees"]),
-                                       Longitude = float(row["LongitudeDegrees"]),
-                                       Continent = row["Country"],
-                                       FieldElevationAboveSeaLevelMeters = float(row["AltitudeFeet"])*feetToMeters)
-                    airport.save()
+                    ''' read and loaf only airports that are defined in the airline routes '''
+                    if ( row["ICAO Code"] in airlineRoutesAirportsList ):
+                        ''' record only airports that are in the airline routes '''
+                        airport = Airport(AirportICAOcode = row["ICAO Code"],
+                                           AirportName = row["Airport Name"],
+                                           Latitude = float(row["LatitudeDegrees"]),
+                                           Longitude = float(row["LongitudeDegrees"]),
+                                           Continent = row["Country"],
+                                           FieldElevationAboveSeaLevelMeters = float(row["AltitudeFeet"])*feetToMeters)
+                        airport.save()
                 except Exception as e:
                     print ( e )
             return True
         except Exception as e:
             print ( e )
             return False
+            
             
     def getAirportsFromCountry(self, Country = ''):
         for row in self.airportsDb.values():

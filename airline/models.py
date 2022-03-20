@@ -23,6 +23,21 @@ class AirlineRoute(models.Model):
     def __str__(self):
         return "departure airport= {0} - arrival airport= {1}".format(self.DepartureAirportICAOCode, self.ArrivalAirportICAOCode)
 
+    def getAirportsList(self):
+        airlineRoutes = AirlineRoute.objects.all()
+        airportsICAOcodeList = []
+        for airlineRoute in airlineRoutes:
+            adep = airlineRoute.DepartureAirportICAOCode
+            if ( adep in airportsICAOcodeList ) == False :
+                print ( adep )
+                airportsICAOcodeList.append(adep)
+            ades = airlineRoute.ArrivalAirportICAOCode
+            if ( ades in airportsICAOcodeList ) == False :
+                print ( ades )
+                airportsICAOcodeList.append(ades)
+            
+        return airportsICAOcodeList
+
 
 class AirlineRouteWayPoints(models.Model):
     Route = models.ForeignKey(AirlineRoute, on_delete=models.CASCADE)
