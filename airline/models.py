@@ -1,5 +1,5 @@
 from django.db import models
-
+from trajectory.models import WayPoint
 # Create your models here.
 
 class AirlineRoute(models.Model):
@@ -44,7 +44,7 @@ class AirlineRouteWayPoints(models.Model):
     Order = models.IntegerField()
     # linked to the WayPoint class in the trajectory
     WayPoint = models.CharField(max_length = 100)
-    
+            
 
 class AirlineAircraft(models.Model):
     

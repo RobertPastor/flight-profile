@@ -96,7 +96,7 @@ function wayPoints(globus, viewExtent) {
 					loadWayPoints ( layerWayPoints , dataJson );	
 				},
 				error: function(data, status) {
-					console.log("Error - delete old bookings: " + status + " SVP veuillez contactez votre administrateur");
+					console.log("Error - Show Airline WayPoints : " + status + " Please contact your admin");
 				},
 				complete : function() {
 					stopBusyAnimation();

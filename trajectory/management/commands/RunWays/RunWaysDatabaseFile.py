@@ -106,9 +106,11 @@ class RunWaysDatabase(object):
                     len(str(rowValues[self.ColumnNames['he_heading_degT']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['he_latitude_deg']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['he_longitude_deg']]).strip()) > 0 ):
-                    
+                   
                 print ( runwayDict['le_ident'] )
-                print ( runwayDict['airport_ident'],)
+                print ( runwayDict['he_ident'] )
+                print ( runwayDict['airport_ident'])
+                '''
                 print ( runwayDict['length_ft'] )
                 print ( runwayDict['le_heading_degT'] )
                 print ( runwayDict['le_latitude_deg'] )
@@ -120,6 +122,7 @@ class RunWaysDatabase(object):
                 print ( runwayDict['he_heading_degT'] )
                 print ( runwayDict['he_latitude_deg'] )
                 print ( runwayDict['he_longitude_deg'] )
+                '''
                 return runwayDict
         return {}
     

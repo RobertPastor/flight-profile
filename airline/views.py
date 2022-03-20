@@ -31,7 +31,7 @@ def getAirlineRoutes(request):
 def getAirlineFleetFromDB():
     airlineFleetList = []
     for airlineAircraft in AirlineAircraft.objects.all():
-        logger.debug ( str ( airlineAircraft ) )
+        #logger.debug ( str ( airlineAircraft ) )
         airlineFleetList.append({
             "AircraftICAOcode" : airlineAircraft.aircraftICAOcode,
             "AircraftFullName" : airlineAircraft.aircraftFullName,

@@ -43,7 +43,7 @@ function initMain(viewExtent) {
 	showFlightProfile(globus);
 	
 	// compute Flight Profile
-	computeFlightProfile(globus);
+	launchFlightProfile(globus);
 	
 	globus.planet.events.on("layeradd", function (e) {
 		

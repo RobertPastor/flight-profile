@@ -36,25 +36,75 @@ function populateAirlineRoutesSelector( airlineRoutesArray ) {
 	}
 }
 
-function computeFlightProfile(globus) {
+function loadOneFlightProfileWayPoint( layerWayPoints, waypoint ) {
+	
+	let longitude = parseFloat(waypoint.Longitude);
+	let latitude = parseFloat(waypoint.Latitude);
+	let name = waypoint.name;
+	
+	layerWayPoints.add(new og.Entity({
+		    lonlat: [longitude, latitude],
+			label: {
+					text: name,
+					outline: 0.77,
+					outlineColor: "rgba(255,255,255,.4)",
+					size: 12,
+					color: "black",
+					offset: [0, -2]
+				    },
+			billboard: {
+					src: "/static/images/marker.png",
+					width: 16,
+					height: 16,
+					offset: [0, -2]
+				    }
+	}));
+				
+}
+
+function loadFlightProfileWayPoints( layerWayPoints, dataJson) {
+	
+	// get all waypoints
+	var waypoints = eval(dataJson['waypoints']);
+
+	// add the waypoints
+	for (var wayPointId = 0; wayPointId < waypoints.length; wayPointId++ ) {
+		// insert one waypoint
+		loadOneFlightProfileWayPoint( layerWayPoints, waypoints[wayPointId] );
+	}
+}
+
+
+function launchFlightProfile(globus) {
 	
 	console.log( "compute flight profile ");
 	
+	let layerFlightProfileWayPoints = new og.layer.Vector("FlightProfileWayPoints", {
+			billboard: { 
+				src: '/static/trajectory/images/marker.png', 
+				color: '#6689db' ,
+				width : 4,
+				height : 4
+				},
+            clampToGround: true,
+            });
+	layerFlightProfileWayPoints.addTo(globus.planet);
+	    
 	$("#trComputeFlightProfileId").hide();
 	$("#aircraftSelectionId").hide();
 	$("#routesSelectionId").hide();
 	
 	let show = true;
-	document.getElementById("btnComputeFlightProfile").onclick = function () {
+	document.getElementById("btnLaunchFlightProfile").onclick = function () {
 
 		if (show) {
 			show = false;
-			document.getElementById("btnComputeFlightProfile").disabled = true
+			document.getElementById("btnLaunchFlightProfile").disabled = true
 
 			// use ajax to get the data 
 			$.ajax( {
 					method: 'get',
-					url :  "trajectory/computeFlightProfile",
+					url :  "trajectory/launchFlightProfile",
 					async : true,
 					success: function(data, status) {
 									
@@ -68,15 +118,42 @@ function computeFlightProfile(globus) {
 						
 					},
 					error: function(data, status) {
-						console.log("Error - delete old bookings: " + status + " SVP veuillez contactez votre administrateur");
+						console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
 					},
 					complete : function() {
 						stopBusyAnimation();
-						document.getElementById("btnShowFlightProfile").disabled = false
+						document.getElementById("btnLaunchFlightProfile").disabled = false
 					},
 			});
-			
 		} 
 	} 
 	
+	//document.getElementById("btnComputeFlightProfile").disabled = true
+	document.getElementById("btnComputeFlightProfile").onclick = function () {
+	
+		console.log ("button compte flight profile pressed");
+	
+		document.getElementById("btnComputeFlightProfile").disabled = true
+		let aircraft = $("#airlineAircraftId option:selected").val()
+		let route =  $("#airlineRouteId option:selected").val()
+		$.ajax( {
+					method: 'get',
+					url :  "trajectory/computeFlightProfile",
+					async : true,
+					data: 'aircraft=' + aircraft + '&route=' + route ,
+					success: function(data, status) {
+						
+						//alert("Data: " + data + "\nStatus: " + status);
+						var dataJson = eval(data);
+						loadFlightProfileWayPoints(layerFlightProfileWayPoints, dataJson)
+					},
+					error: function(data, status) {
+						console.log("Error - compute Flight Profile: " + status + " Please contact your admin");
+					},
+					complete : function() {
+						stopBusyAnimation();
+						document.getElementById("btnComputeFlightProfile").disabled = false
+					},
+			});
+	}
 }

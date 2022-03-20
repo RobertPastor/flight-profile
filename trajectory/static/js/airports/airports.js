@@ -81,7 +81,7 @@ function airports(globus) {
 						loadAirports( layerAirports, dataJson );	
 					},
 					error: function(data, status) {
-						console.log("Error - delete old bookings: " + status + " SVP veuillez contactez votre administrateur");
+						console.log("Error - show Airports : " + status + " Please contact your admin");
 					},
 					complete : function() {
 						stopBusyAnimation();

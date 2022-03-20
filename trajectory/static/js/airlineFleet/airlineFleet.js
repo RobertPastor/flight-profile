@@ -70,7 +70,7 @@ function loadAirlineFleet() {
 							
 						},
 						error: function(data, status) {
-							console.log("Error - status: " + status + " SVP veuillez contactez votre administrateur");
+							console.log("Error - show Airline Fleet - status: " + status + " Please contact your admin");
 						},
 						complete : function() {
 							stopBusyAnimation();

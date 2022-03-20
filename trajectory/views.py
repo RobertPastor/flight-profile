@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 #from trajectory.models import SiteMessage
 from trajectory.models import Airport, WayPoint
-from airline.models import AirlineRoute, AirlineAircraft
+from airline.models import AirlineRoute, AirlineAircraft, AirlineRouteWayPoints
 from airline.views import getAirlineRoutesFromDB
 
 # Create your views here.
@@ -148,17 +148,17 @@ def getWayPoints(request):
 def getAirlineAircraftsFromDB():
     airlineAircraftsList = []
     for airlineAircraft in AirlineAircraft.objects.all():
-        print (str(airlineAircraft))
+        #print (str(airlineAircraft))
         airlineAircraftsList.append({
             "airlineAircraftICAOcode" : airlineAircraft.aircraftICAOcode,
             "airlineAircraftFullName" : airlineAircraft.aircraftFullName
             })
-    print ("length of airline aircrafts list = {0}".format(len(airlineAircraftsList)))
+    #print ("length of airline aircrafts list = {0}".format(len(airlineAircraftsList)))
     return airlineAircraftsList
 
 
-def computeFlightProfile(request):
-    logger.debug ("compute Flight Profile")
+def launchFlightProfile(request):
+    logger.debug ("launch Flight Profile")
     if (request.method == 'GET'):
         airlineAircraftsList = getAirlineAircraftsFromDB()
         airlineRoutesList = getAirlineRoutesFromDB()
@@ -166,4 +166,29 @@ def computeFlightProfile(request):
             'airlineAircrafts': airlineAircraftsList,
             'airlineRoutes': airlineRoutesList}
         return JsonResponse(response_data)
+    
+    
+def computeFlightProfile(request):
+    logger.debug ("compute Flight Profile")
+    routeWayPointsList = []
+    if (request.method == 'GET'):
+        aircraftICAOcode = request.GET['aircraft']
+        print ( aircraftICAOcode )
+        airlineRoute = request.GET['route']
+        print ( airlineRoute )
+        print ( str(airlineRoute).split("-")[0] )
+        print ( str(airlineRoute).split("-")[1] )
+        airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode=str(airlineRoute).split("-")[0] , ArrivalAirportICAOCode=str(airlineRoute).split("-")[1]).first()
+        if (airlineRoute):
+            print ( airlineRoute )
+            airlineRouteWayPoints = AirlineRouteWayPoints.objects.filter(Route=airlineRoute).order_by('Order')
+            for airlineRouteWayPoint in airlineRouteWayPoints:
+                wayPoint = WayPoint.objects.filter(WayPointName = airlineRouteWayPoint.WayPoint).first()
+                if wayPoint:
+                    routeWayPointsList.append({
+                            "name" : wayPoint.WayPointName ,
+                            "Longitude": wayPoint.Longitude,
+                            "Latitude": wayPoint.Latitude
+                            })
 
+    return JsonResponse({'waypoints': routeWayPointsList})
