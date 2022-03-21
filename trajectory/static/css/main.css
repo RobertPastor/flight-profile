@@ -52,3 +52,16 @@ th {
 	display: none;
 }
 
+.question_mark_bg {
+	background-color:	#60D6A7;
+}
+
+.question_mark {
+	background:         url('/static/images/help-icon.png');
+    background-color:	#60D6A7;
+    background-repeat:  no-repeat;
+    cursor:             pointer;
+    height:             32px;
+    width:              32px;
+    margin:             0 auto 0 auto;	
+}

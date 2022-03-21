@@ -167,20 +167,30 @@ def launchFlightProfile(request):
             'airlineRoutes': airlineRoutesList}
         return JsonResponse(response_data)
     
+def getAirport(airportICAOcode):
+    for airport in Airport.objects.all():
+        if (airport.AirportICAOcode == airportICAOcode ):
+            return { "AirportICAOcode" : airport.AirportICAOcode ,
+                     "AirportName"     : airport.AirportName,
+                     "Longitude"       : airport.Longitude,
+                     "Latitude"        : airport.Latitude         }
+    return {}
     
 def computeFlightProfile(request):
     logger.debug ("compute Flight Profile")
     routeWayPointsList = []
     if (request.method == 'GET'):
         aircraftICAOcode = request.GET['aircraft']
-        print ( aircraftICAOcode )
+        #print ( aircraftICAOcode )
         airlineRoute = request.GET['route']
-        print ( airlineRoute )
-        print ( str(airlineRoute).split("-")[0] )
-        print ( str(airlineRoute).split("-")[1] )
-        airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode=str(airlineRoute).split("-")[0] , ArrivalAirportICAOCode=str(airlineRoute).split("-")[1]).first()
+        #print ( airlineRoute )
+        #print ( str(airlineRoute).split("-")[0] )
+        #print ( str(airlineRoute).split("-")[1] )
+        departureAirportICAOcode = str(airlineRoute).split("-")[0]
+        arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
+        airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
         if (airlineRoute):
-            print ( airlineRoute )
+            #print ( airlineRoute )
             airlineRouteWayPoints = AirlineRouteWayPoints.objects.filter(Route=airlineRoute).order_by('Order')
             for airlineRouteWayPoint in airlineRouteWayPoints:
                 wayPoint = WayPoint.objects.filter(WayPointName = airlineRouteWayPoint.WayPoint).first()
@@ -191,4 +201,6 @@ def computeFlightProfile(request):
                             "Latitude": wayPoint.Latitude
                             })
 
-    return JsonResponse({'waypoints': routeWayPointsList})
+    return JsonResponse({'departureAirport': getAirport(departureAirportICAOcode),
+                         'arrivalAirport': getAirport(arrivalAirportICAOcode),
+                         'waypoints': routeWayPointsList})

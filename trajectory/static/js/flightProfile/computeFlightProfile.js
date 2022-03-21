@@ -74,6 +74,31 @@ function loadFlightProfileWayPoints( layerWayPoints, dataJson) {
 	}
 }
 
+function loadFlightProfileOneAirport( layerAirports, airport ) {
+	
+	let longitude = parseFloat(airport.Longitude);
+	var latitude = parseFloat(airport.Latitude);
+	var name = airport.AirportName;
+	
+	layerAirports.add(new og.Entity({
+		    lonlat: [longitude, latitude],
+			label: {
+					text: name,
+					outline: 0.77,
+					outlineColor: "rgba(255,255,255,.4)",
+					size: 12,
+					color: "black",
+					offset: [10, -2]
+				    },
+			billboard: {
+					src: "/static/images/plane.png",
+					width: 16,
+					height: 16,
+					offset: [0, 32]
+				    }
+	}));
+				
+}
 
 function launchFlightProfile(globus) {
 	
@@ -143,9 +168,19 @@ function launchFlightProfile(globus) {
 					data: 'aircraft=' + aircraft + '&route=' + route ,
 					success: function(data, status) {
 						
+						let entities = layerFlightProfileWayPoints.getEntities();
+						if ( Array.isArray(entities) && ( entities.length > 0 ) ) {
+							layerFlightProfileWayPoints.removeEntities(entities) 
+						}
+						
 						//alert("Data: " + data + "\nStatus: " + status);
 						var dataJson = eval(data);
 						loadFlightProfileWayPoints(layerFlightProfileWayPoints, dataJson)
+						
+						// load departure airport
+						loadFlightProfileOneAirport( layerFlightProfileWayPoints, dataJson["departureAirport"] )
+						loadFlightProfileOneAirport( layerFlightProfileWayPoints, dataJson["arrivalAirport"] )
+						
 					},
 					error: function(data, status) {
 						console.log("Error - compute Flight Profile: " + status + " Please contact your admin");

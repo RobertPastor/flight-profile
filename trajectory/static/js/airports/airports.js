@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	  console.log("airports js is loaded");
 }); 
 
-
-
 function loadOneAirport( layerAirports, airport ) {
 	
 	let longitude = parseFloat(airport.Longitude);
