@@ -1,5 +1,4 @@
 from django.db import models
-from trajectory.models import WayPoint
 # Create your models here.
 
 class AirlineRoute(models.Model):

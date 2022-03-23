@@ -139,7 +139,10 @@ class BadaAircraftDatabase(object):
                                                                         OPFfilePrefix = OPFfilePrefix,
                                                                         useSynonym = useSynonym)
                     ''' load database table '''
-                    aircraft = Aircraft(AircraftICAOcode=aircraftICAOcode, Manufacturer = manufacturer, AircraftModel = aircraftFullName , AircraftFile= OPFfilePrefix, useSynonym=useSynonym)
+                    aircraft = Aircraft(AircraftICAOcode=aircraftICAOcode, 
+                                        Manufacturer = manufacturer, 
+                                        AircraftModel = str(aircraftFullName).strip() , 
+                                        AircraftFile= OPFfilePrefix, useSynonym=useSynonym)
                     aircraft.save()
                         
             f.close()

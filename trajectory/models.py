@@ -9,6 +9,8 @@ class Aircraft(models.Model):
     AircraftFile = models.CharField(max_length = 100)
     useSynonym = models.BooleanField(default = False)
     
+    def __str__(self):
+        return "{0}-{1}-{2}".format(self.AircraftICAOcode, self.Manufacturer, self.AircraftModel)
 
 class WayPoint(models.Model):
     WayPointName = models.CharField(max_length = 100, primary_key = True)
@@ -26,7 +28,8 @@ class Airport(models.Model):
     FieldElevationAboveSeaLevelMeters = models.FloatField(blank = False)
     Continent = models.CharField(max_length = 100)
     
-    
+    def __str__(self):
+        return "{0}-{1}".format(self.AirportICAOcode, self.AirportName)
 '''
     The Charles De Gaulle airport has 2 configurations, depending on the wind directions.
     However, in both configurations Eastward and Westward of Charles de Gaulle:
@@ -54,4 +57,7 @@ class RunWay(models.Model):
     TrueHeadingDegrees = models.FloatField(blank = False)
     LatitudeDegrees = models.FloatField(blank = False)
     LongitudeDegrees = models.FloatField(blank = False)
+    
+    def __str__(self):
+        return "{0}/{1}".format(self.Airport.AirportICAOcode, self.Name)
     
