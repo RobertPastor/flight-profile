@@ -9,3 +9,4 @@ heroku run python manage.py -help
 
 # run one command
 heroku run python manage.py WayPointsDatabaseLoad -a flight-profile 
+
