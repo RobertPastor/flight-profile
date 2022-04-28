@@ -26,4 +26,16 @@ PS C:\Users\rober\Documents\04 - Workspace\flight-profile>
 
 password = bobby1xx
 
+# heroku commands
+=================
+
+PS C:\Users\rober\Documents\04 - Workspace\flight-profile> heroku run python manage.py makemigrations -a flight-profile
+ »   Warning: heroku update available from 7.59.2 to 7.59.4.
+Running python manage.py makemigrations on ⬢ flight-profile... up, run.1277 (Free)
+No changes detected
+PS C:\Users\rober\Documents\04 - Workspace\flight-profile>
+
+
+
+
 
