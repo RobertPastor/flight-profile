@@ -134,16 +134,16 @@ class BadaAircraftDatabase(object):
                     if aircraftICAOcode in self.aircraftDict:
                         print ( self.className + ': aircraft ICAO code already in Database' )
                     else:
-                        self.aircraftDict[aircraftICAOcode] = BadaSynonymAircraft(aircraftICAOcode = aircraftICAOcode,
-                                                                        aircraftFullName = aircraftFullName,
-                                                                        OPFfilePrefix = OPFfilePrefix,
-                                                                        useSynonym = useSynonym)
-                    ''' load database table '''
-                    aircraft = Aircraft(AircraftICAOcode=aircraftICAOcode, 
+
+                        ''' load database table '''
+                        aircraft = BadaSynonymAircraft(
+                                        AircraftICAOcode = aircraftICAOcode, 
                                         Manufacturer = manufacturer, 
                                         AircraftModel = str(aircraftFullName).strip() , 
-                                        AircraftFile= OPFfilePrefix, useSynonym=useSynonym)
-                    aircraft.save()
+                                        AircraftFile = OPFfilePrefix, 
+                                        useSynonym = useSynonym)
+                        self.aircraftDict[aircraftICAOcode] = aircraft
+                        aircraft.save()
                         
             f.close()
             print ( self.className + ': number of aircrafts in db= {0}'.format(len(self.aircraftDict)) )

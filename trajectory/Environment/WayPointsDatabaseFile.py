@@ -30,7 +30,7 @@ read an EXCEL file containing the way points
 
 import os
 
-from trajectory.models  import AirlineWayPoint
+from Home.Guidance.WayPointFile import WayPoint
 from xlrd import open_workbook
 
 fieldNames = ['WayPoint', 'Country' , 'Type', 'Latitude', 'Longitude' , 'Name']
@@ -114,14 +114,11 @@ class WayPointsDatabase(object):
         self.FilesFolder = os.path.dirname(__file__)
 
         print ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
-        self.FilePath = os.path.abspath(self.FilesFolder + os.path.sep + self.FilePath)
+        self.FilePath = os.path.abspath(self.FilesFolder+ os.path.sep + self.FilePath)
         print ( self.className + ': file path= {0}'.format(self.FilePath) )
 
         self.WayPointsDict = {}
         self.ColumnNames = {}
-
-    def exists(self):
-        return os.path.exists(self.FilesFolder) and os.path.isfile(self.FilePath)
 
     
     def read(self):
@@ -145,9 +142,8 @@ class WayPointsDatabase(object):
             else:
                 WayPointName = str(rowValues[0]).strip().upper()
                 if not(WayPointName in self.WayPointsDict.keys()):
-                    ''' it is a new waypoint '''
+                
                     wayPointDict = {}
-                    
                     for column in self.ColumnNames:
                         if column == 'Latitude' or column == 'Longitude':
                             ''' replace degree character '''
@@ -159,20 +155,15 @@ class WayPointsDatabase(object):
                             strLatLong = str(strLatLong).strip().replace("'", '-').replace(' ','').replace('"','')
                             #print 'lat-long= '+ strLatLong
                             wayPointDict[column] = convertDegreeMinuteSecondToDecimal(strLatLong)
-                            
+    
                         else:
                             wayPointDict[column] = str(rowValues[self.ColumnNames[column]]).strip()
     
                     ''' create a way point '''    
-                    Continent = 'unknown'
-                    if (wayPointDict['Latitude'] >= 20. and wayPointDict['Longitude'] >= -170. and wayPointDict['Longitude'] <= -50.):
-                        Continent = 'North America'
-                    wayPoint = AirlineWayPoint(WayPointName = wayPointDict['WayPoint'],
-                                        Type = 'WayPoint',
-                                        Continent = Continent,
-                                        Latitude = wayPointDict['Latitude'],
-                                        Longitude = wayPointDict['Longitude'])
-                    wayPoint.save()
+                    wayPoint = WayPoint(wayPointDict['WayPoint'],
+                                        wayPointDict['Latitude'],
+                                        wayPointDict['Longitude'])
+                    self.WayPointsDict[WayPointName] = wayPoint
                 else:
                     print ("duplicates found in Way Points database - way Point= {0}".format(WayPointName))
         return True

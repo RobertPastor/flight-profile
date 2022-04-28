@@ -1,14 +1,14 @@
 
 from django.core.management.base import BaseCommand
 from trajectory.management.commands.Airports.AirportDatabaseFile import AirportsDatabase
-from trajectory.models import Airport
+from trajectory.models import AirlineAirport
 from airline.models import AirlineRoute
 
 class Command(BaseCommand):
     help = 'Reads the Synonym file and load the Aircrafts table'
 
     def handle(self, *args, **options):
-        Airport.objects.all().delete()
+        AirlineAirport.objects.all().delete()
         
         ''' load only airports defined in the airline routes '''
         airlineRoutes = AirlineRoute()

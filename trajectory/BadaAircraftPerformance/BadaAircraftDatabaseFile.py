@@ -30,13 +30,15 @@ this class is aware of the synonym file structure
 
 '''
 import os
+from trajectory.models import BadaSynonymAircraft
 
 BADA_381_DATA_FILES = 'Bada381DataFiles'
 
+'''
 class BadaSynonymAircraft(object):
-    ''' 
-    this class stores the data provided in the synonym file for one aircraft 
-    '''
+    
+    # this class stores the data provided in the synonym file for one aircraft  
+    
     def __init__(self, 
                  aircraftICAOcode , 
                  aircraftFullName ,
@@ -58,7 +60,8 @@ class BadaSynonymAircraft(object):
     def getAircraftOPFfilePrefix(self):
         return self.OPFfilePrefix
     
-
+'''
+    
 class BadaAircraftDatabase(object):
     ''' this class is responsible for reading the synonym file '''
     
@@ -128,10 +131,14 @@ class BadaAircraftDatabase(object):
                     if aircraftICAOcode in self.aircraftDict:
                         print ( self.className + ': aircraft ICAO code already in Database' )
                     else:
-                        self.aircraftDict[aircraftICAOcode] = BadaSynonymAircraft(aircraftICAOcode = aircraftICAOcode,
-                                                                        aircraftFullName = aircraftFullName,
-                                                                        OPFfilePrefix = OPFfilePrefix,
-                                                                        useSynonym = useSynonym)         
+                        
+                        badaSynonymAircraft = BadaSynonymAircraft(      AircraftICAOcode = aircraftICAOcode,
+                                                                        AircraftModel = aircraftFullName,
+                                                                        AircraftFile = OPFfilePrefix,
+                                                                        useSynonym = useSynonym)
+                        
+                        self.aircraftDict[aircraftICAOcode] = badaSynonymAircraft
+                        
             f.close()
             print ( self.className + ': number of aircrafts in db= {0}'.format(len(self.aircraftDict)) )
             return True

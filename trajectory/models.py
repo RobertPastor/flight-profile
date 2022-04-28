@@ -1,8 +1,13 @@
 from django.db import models
+import os
 
+from trajectory.Guidance.Haversine import points2distanceMeters
+
+BADA_381_DATA_FILES = 'Bada381DataFiles'
+OPFfileExtension = '.OPF'
 # Create your models here.
 
-class Aircraft(models.Model):
+class BadaSynonymAircraft(models.Model):
     AircraftICAOcode = models.CharField(max_length = 100, primary_key = True)
     Manufacturer = models.CharField(max_length = 100)
     AircraftModel = models.CharField(max_length = 100)
@@ -11,16 +16,44 @@ class Aircraft(models.Model):
     
     def __str__(self):
         return "{0}-{1}-{2}".format(self.AircraftICAOcode, self.Manufacturer, self.AircraftModel)
+    
+    def getAircraftPerformanceFile(self):
+        OPFfilePrefix = self.AircraftFile    
+        filePath = os.path.join ( os.path.dirname(__file__) , BADA_381_DATA_FILES , OPFfilePrefix + OPFfileExtension )
+        print ( filePath )
+        return filePath
+        
+    def aircraftPerformanceFileExists(self):
+        filePath = self.getAircraftPerformanceFile()
+        return os.path.exists(filePath) and os.path.isfile(filePath)
+    
+    def getICAOcode(self):
+        return self.AircraftICAOcode
+    
+    def getAircraftFullName(self):
+        return self.AircraftModel
+    
+    def getAircraftOPFfilePrefix(self):
+        return self.AircraftFile
 
-class WayPoint(models.Model):
+
+class AirlineWayPoint(models.Model):
     WayPointName = models.CharField(max_length = 100, primary_key = True)
     Type = models.CharField(max_length = 100)
     Continent = models.CharField(max_length = 100)
     Latitude = models.FloatField(blank = False)
     Longitude = models.FloatField(blank = False)
+    
+    '''
+    def getDistanceMetersTo(self, nextWayPoint):
+        if isinstance(nextWayPoint, WayPoint)==True:
+            return points2distanceMeters([self.LatitudeDegrees,self.LongitudeDegrees],
+                                         [nextWayPoint.LatitudeDegrees, nextWayPoint.LongitudeDegrees])
+        return 0.0
+    '''
 
 
-class Airport(models.Model):
+class AirlineAirport(models.Model):
     AirportICAOcode = models.CharField(max_length = 100, primary_key = True)
     AirportName = models.CharField(max_length = 100, unique = True)
     Latitude = models.FloatField()
@@ -48,11 +81,11 @@ class Airport(models.Model):
     2) end - if landing runway - is the location where after the touch down and deceleration, the ac reaches the taxi speed
      
 '''
-class RunWay(models.Model):
+class AirlineRunWay(models.Model):
     ''' example : 08R/26L and 09L/27R '''
     Name = models.CharField(max_length = 10)
     ''' foreign key on the related airport '''
-    Airport = models.ForeignKey(Airport, on_delete=models.CASCADE)
+    Airport = models.ForeignKey(AirlineAirport, on_delete=models.CASCADE)
     LengthFeet = models.FloatField(blank = False)
     TrueHeadingDegrees = models.FloatField(blank = False)
     LatitudeDegrees = models.FloatField(blank = False)

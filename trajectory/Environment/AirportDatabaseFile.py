@@ -59,8 +59,7 @@ Sample entries
 import os
 import csv
 
-from trajectory.models import AirlineAirport
-from airline.models import AirlineRoute
+from trajectory.Guidance.WayPointFile import Airport
 
 fieldNames = ["Airport ID", "Airport Name" , "City", "Country", "IATA/FAA", "ICAO Code",
                 "LatitudeDegrees", "LongitudeDegrees", "AltitudeFeet", "TimeZone", "DST"]
@@ -87,51 +86,28 @@ class AirportsDatabase(object):
         print ( self.className + ': file folder= {0}'.format(self.airportsFilesFolder) )
         self.FilePath = (self.airportsFilesFolder + os.path.sep + self.FilePath)
         print ( self.className + ': file path= {0}'.format(self.FilePath) )
-        
-        
-    def exists(self):
-        return os.path.exists(self.airportsFilesFolder) and os.path.isfile(self.FilePath)
 
-
-    def read(self, airlineRoutesAirportsList):
-        ''' read and loaf only airports that are defined in the airline routes '''
+    def read(self):
         try:
-            dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), delimiter = ";", fieldnames=fieldNames)
+            dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), fieldnames=fieldNames)
             for row in dictReader:
-                print ( row )
-                airportDict = {}
+                airport = {}
                 for field in fieldNames:
-                    print (field , row[field])
-                    airportDict[field] = row[field]
+                    airport[field] = row[field]
                     if 'Country' in field:
                         country = row[field]
                         if not(country in self.countriesDb):
                             self.countriesDb.append(country)
-                self.airportsDb[row["ICAO Code"]] = airportDict
-                print ( row["ICAO Code"] )
-                try:
-                    ''' read and loaf only airports that are defined in the airline routes '''
-                    if ( row["ICAO Code"] in airlineRoutesAirportsList ):
-                        ''' record only airports that are in the airline routes '''
-                        airport = AirlineAirport(AirportICAOcode = row["ICAO Code"],
-                                           AirportName = row["Airport Name"],
-                                           Latitude = float(row["LatitudeDegrees"]),
-                                           Longitude = float(row["LongitudeDegrees"]),
-                                           Continent = row["Country"],
-                                           FieldElevationAboveSeaLevelMeters = float(row["AltitudeFeet"])*feetToMeters)
-                        airport.save()
-                except Exception as e:
-                    print ( e )
+                self.airportsDb[row["ICAO Code"]] = airport
             return True
         except Exception as e:
             print ( e )
             return False
             
-            
     def getAirportsFromCountry(self, Country = ''):
         for row in self.airportsDb.values():
             if row['Country'] == Country and len(row['ICAO Code'])>0 :
-                airport = AirlineAirport(
+                airport = Airport(
                                 Name=row['City']+'-'+row['Airport Name'] ,
                                 LatitudeDegrees = row['LatitudeDegrees'] , 
                                 LongitudeDegrees = row['LongitudeDegrees'] , 
@@ -144,7 +120,7 @@ class AirportsDatabase(object):
     def getAirports(self):
         for row in self.airportsDb.values():
             if len(row['ICAO Code'])>0 and len(row['Country'])>0:
-                airport = AirlineAirport(
+                airport = Airport(
                                     Name = row['City']+'-'+row['Airport Name'] ,
                                     LatitudeDegrees = row['LatitudeDegrees'] , 
                                     LongitudeDegrees = row['LongitudeDegrees'] , 
@@ -188,7 +164,7 @@ class AirportsDatabase(object):
         ''' internal airport is a dictionary '''
         for key, airportInternal in self.airportsDb.items():
             if key == ICAOcode:
-                airport = AirlineAirport(
+                airport = Airport(
                                 Name = airportInternal['City']+'-'+airportInternal["Airport Name"] ,
                                 LatitudeDegrees = airportInternal["LatitudeDegrees"] , 
                                 LongitudeDegrees = airportInternal["LongitudeDegrees"] , 

@@ -29,7 +29,7 @@ Created on 8 avr. 2015
 
 import os
 from xlrd import open_workbook
-from trajectory.models import AirlineRunWay, AirlineAirport
+from trajectory.Environment.RunWayFile import RunWay
 
 
 fieldNames = ['id' , 'airport_ref', 'airport_ident' , 'length_ft' , 'width_ft' ,
@@ -40,7 +40,7 @@ fieldNames = ['id' , 'airport_ref', 'airport_ident' , 'length_ft' , 'width_ft' ,
               'he_elevation_ft' , 'he_heading_degT', 'he_displaced_threshold_ft' ]
 
     
-class RunWaysDatabase(object):
+class RunWayDataBase(object):
     FilePath = ''
     #runWaysDb = {}
     
@@ -58,9 +58,6 @@ class RunWaysDatabase(object):
 
         #self.runWaysDb = {}
         
-    def exists(self):
-        return os.path.exists(self.FilePath) and os.path.isfile(self.FilePath)
-        
     def getInternalRunWays(self, rowValues):
         '''
         in one row there might be TWO run-ways
@@ -68,9 +65,9 @@ class RunWaysDatabase(object):
         #print ( 'id content= {0}'.format( rowValues[self.ColumnNames['id']] ) )
         #print ( type ( rowValues[self.ColumnNames['id']] ) )
         id_content = str( int ( rowValues[self.ColumnNames['id']] ) )
-        runwayDict = {}
         if len(id_content.strip())> 0:
                 
+            runwayDict = {}
             for column in self.ColumnNames:
                 if column == 'id':
                     runwayDict[column] = int(rowValues[self.ColumnNames[column]])
@@ -91,41 +88,54 @@ class RunWaysDatabase(object):
                 else:
                     # string fields
                     runwayDict[column] = str(rowValues[self.ColumnNames[column]]).strip()
-                    
             ''' we have transformed the row values into a Dictionary => now create the run-ways '''
+            keyOne = ''
+            keyTwo = ''
+            runwayOne = None
+            runwayTwo = None
             if (len(str(rowValues[self.ColumnNames['le_ident']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['airport_ident']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['length_ft']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['le_heading_degT']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['le_latitude_deg']]).strip()) > 0 and
-                    len(str(rowValues[self.ColumnNames['le_longitude_deg']]).strip()) > 0  and
-                
-                    len(str(rowValues[self.ColumnNames['he_ident']]).strip()) > 0 and
+                    len(str(rowValues[self.ColumnNames['le_longitude_deg']]).strip()) > 0 ):
+                    
+                runwayOne = RunWay(Name                =   runwayDict['le_ident'],
+                                    airportICAOcode     =   runwayDict['airport_ident'],
+                                    LengthFeet          =   runwayDict['length_ft'],
+                                    TrueHeadingDegrees  =   runwayDict['le_heading_degT'],
+                                    LatitudeDegrees     =   runwayDict['le_latitude_deg'],
+                                    LongitudeDegrees    =   runwayDict['le_longitude_deg'])
+                    
+                keyOne = runwayDict['le_ident']
+
+                    
+            if (len(str(rowValues[self.ColumnNames['he_ident']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['airport_ident']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['length_ft']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['he_heading_degT']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['he_latitude_deg']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['he_longitude_deg']]).strip()) > 0 ):
-                   
-                print ( runwayDict['le_ident'] )
-                print ( runwayDict['he_ident'] )
-                print ( runwayDict['airport_ident'])
-                '''
-                print ( runwayDict['length_ft'] )
-                print ( runwayDict['le_heading_degT'] )
-                print ( runwayDict['le_latitude_deg'] )
-                print ( runwayDict['le_longitude_deg'] )
-                
-                print ( runwayDict['he_ident'] )
-                print ( runwayDict['airport_ident'] )
-                print ( runwayDict['length_ft'] )
-                print ( runwayDict['he_heading_degT'] )
-                print ( runwayDict['he_latitude_deg'] )
-                print ( runwayDict['he_longitude_deg'] )
-                '''
-                return runwayDict
-        return {}
+                    
+                runwayTwo = RunWay(Name                =   runwayDict['he_ident'],
+                                    airportICAOcode     =   runwayDict['airport_ident'],
+                                    LengthFeet          =   runwayDict['length_ft'],
+                                    TrueHeadingDegrees  =   runwayDict['he_heading_degT'],
+                                    LatitudeDegrees     =   runwayDict['he_latitude_deg'],
+                                    LongitudeDegrees    =   runwayDict['he_longitude_deg'])
+                                    
+                keyTwo = runwayDict['he_ident']
+
+        runwayDict = {}
+        if len(keyOne)>0 and not(runwayOne is None):
+            runwayDict[keyOne] = runwayOne
+        if len(keyTwo)>0 and not(runwayTwo is None):
+            runwayDict[keyTwo] = runwayTwo
+        return runwayDict
     
+    
+    def getAirportRunways(self, airportICAOcode, runwayLengthFeet = 0.0):
+        return None
         
     def hasRunWays(self, airportICAOcode):
         assert not(self.sheet is None)
@@ -148,7 +158,6 @@ class RunWaysDatabase(object):
                 runwaysDict.update(self.getInternalRunWays(rowValues))
         
         return runwaysDict        
-
 
     def getRunWays(self, airportICAOcode):
         assert not(self.sheet is None)
@@ -179,9 +188,7 @@ class RunWaysDatabase(object):
         return runwaysDict
         
         
-    def read(self, airlineRoutesAirportsList):
-        
-        
+    def read(self):
         ''' this method does not read the whole file - only the headers '''
         print (self.FilePath)
         assert len(self.FilePath)>0 and os.path.isfile(self.FilePath) 
@@ -200,38 +207,8 @@ class RunWaysDatabase(object):
                     else:
                         self.ColumnNames[column] = index
                     index += 1
-            else:
-                ''' reading a row with runways '''
-                runwayDict = self.getInternalRunWays(rowValues)
-                if ( "airport_ident" in runwayDict ) and ( runwayDict['airport_ident'] in airlineRoutesAirportsList ):
-                    
-                    airport = AirlineAirport.objects.filter(AirportICAOcode = runwayDict['airport_ident']).first()
-
-                    ''' some airports have only one runway '''
-                    if ( len(runwayDict['le_ident']) > 0 ) and airport:
-                        
-                        runWay = AirlineRunWay ( 
-                            Name = runwayDict['le_ident'],
-                            Airport = airport,
-                            LengthFeet = runwayDict['length_ft'],
-                            TrueHeadingDegrees = runwayDict['le_heading_degT'],
-                            LatitudeDegrees = runwayDict['le_latitude_deg'],
-                            LongitudeDegrees = runwayDict['le_longitude_deg']
-                            )
-                        runWay.save()
-                        
-                    if ( len(runwayDict['he_ident']) > 0 ) and airport:
-                        
-                        runWay = AirlineRunWay ( 
-                            Name = runwayDict['he_ident'],
-                            Airport = airport,
-                            LengthFeet = runwayDict['length_ft'],
-                            TrueHeadingDegrees = runwayDict['he_heading_degT'],
-                            LatitudeDegrees = runwayDict['he_latitude_deg'],
-                            LongitudeDegrees = runwayDict['he_longitude_deg']
-                            )
-                        runWay.save()
-                
+                break
+        
         return True
     
     

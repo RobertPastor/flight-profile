@@ -1,5 +1,6 @@
 from django.db import models
 # Create your models here.
+from trajectory.models import AirlineAirport, AirlineRunWay
 
 class AirlineRoute(models.Model):
     DepartureAirport = models.CharField(max_length = 500)
@@ -22,6 +23,7 @@ class AirlineRoute(models.Model):
     def __str__(self):
         return "departure airport= {0} - arrival airport= {1}".format(self.DepartureAirportICAOCode, self.ArrivalAirportICAOCode)
 
+
     def getAirportsList(self):
         airlineRoutes = AirlineRoute.objects.all()
         airportsICAOcodeList = []
@@ -36,6 +38,31 @@ class AirlineRoute(models.Model):
                 airportsICAOcodeList.append(ades)
             
         return airportsICAOcodeList
+    
+    
+    def getRouteAsString(self):
+        strRoute = "ADEP/" + self.DepartureAirportICAOCode 
+        Adep = AirlineAirport.objects.all().filter(AirportICAOcode=self.DepartureAirportICAOCode).first()
+        if ( Adep ):
+            AdepRunway = AirlineRunWay.objects.all().filter(Airport=Adep).first()
+            if AdepRunway  and ( len ( AdepRunway.Name ) > 0):
+                strRoute += "/" + AdepRunway.Name
+            
+        strRoute += "-"
+        for airlineRouteWayPoint in AirlineRouteWayPoints.objects.all().filter(Route=self).order_by("Order"):
+            strRoute += airlineRouteWayPoint.WayPoint
+            strRoute += "-"
+        
+        strRoute += "ADES/" + self.ArrivalAirportICAOCode
+        Ades = AirlineAirport.objects.all().filter(AirportICAOcode=self.ArrivalAirportICAOCode).first()
+        if ( Ades ):
+            AdesRunWay = AirlineRunWay.objects.all().filter(Airport=Ades).first()
+            if AdesRunWay and ( len (AdesRunWay.Name ) > 0):
+                strRoute += "/" + AdesRunWay.Name 
+            
+        #print ( strRoute )
+        return strRoute
+  
 
 
 class AirlineRouteWayPoints(models.Model):
@@ -44,6 +71,18 @@ class AirlineRouteWayPoints(models.Model):
     # linked to the WayPoint class in the trajectory
     WayPoint = models.CharField(max_length = 100)
             
+    def getWayPointsListAsString(self):
+        routeAsString = ""
+        first = True
+        for wayPoint in AirlineRouteWayPoints.objects.all().filter(Route=self).order_by("Order"):
+            if (first):
+                routeAsString += str(wayPoint.WayPoint).strip()
+                first = False
+            else:
+                routeAsString += "-" + str(wayPoint.WayPoint).strip()
+        print ( routeAsString )
+        return routeAsString
+        
 
 class AirlineAircraft(models.Model):
     

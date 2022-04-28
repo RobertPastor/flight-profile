@@ -97,12 +97,84 @@ function loadFlightProfileOneAirport( layerAirports, airport ) {
 					offset: [0, 32]
 				    }
 	}));
-				
+}
+
+function loadOneRay( rayLayer, placeMark ) {
+	
+	let ellipsoid = new og.Ellipsoid(6378137.0, 6356752.3142);
+	
+	let latitude = parseFloat(placeMark["latitude"])
+	let longitude = parseFloat(placeMark["longitude"])
+	let height = parseFloat(placeMark["height"])
+	
+	let lonlat = new og.LonLat(longitude, latitude , 0.);
+	//coordinate above Bochum to allow a upwards direction of ray
+	let lonlatAir = new og.LonLat(longitude, latitude , height);
+	
+	//coordinates of Bochum in Cartesian
+	let cart = ellipsoid.lonLatToCartesian(lonlat);
+	let cartAir = ellipsoid.lonLatToCartesian(lonlatAir);
+	
+	if ( placeMark["name"].length > 0 ) {
+		let offset = [10, 10]
+		if ( placeMark["name"].startsWith("turn") || placeMark["name"].startsWith("ground-run") 
+			|| placeMark["name"].startsWith("climb-ramp") ) {
+			offset = [10, -20]
+		} 
+		
+		rayLayer.add(new og.Entity({
+			cartesian : cartAir,
+			label: {
+					text: placeMark["name"],
+					outline: 0.77,
+					outlineColor: "rgba(255,255,255,.4)",
+					size: 12,
+					color: "black",
+					offset: offset
+				    }
+		}));
+	}
+	
+	rayLayer.add ( new og.Entity({
+			ray: {
+				startPosition: cart,
+				endPosition: cartAir,
+				length: height,
+				startColor: "blue",
+				endColor: "green",
+				thickness: 5
+			}
+		})
+	);
+}
+
+function addRays ( rayLayer , placeMarks ) {
+	
+	// add the waypoints
+	for (var placeMarkId = 0; placeMarkId < placeMarks.length; placeMarkId++ ) {
+		// insert one waypoint
+		loadOneRay( rayLayer, placeMarks[placeMarkId] );
+	}
 }
 
 function launchFlightProfile(globus) {
 	
 	console.log( "compute flight profile ");
+	
+	let layerKML = new og.layer.KML( "FlightProfile" , {
+		billboard: { 
+			src: '/static/images/move_down_icon.png', 
+			color: '#6689db' ,
+			width : 4,
+			height : 4
+			},
+		color: '#6689db'
+	} ) ;
+	layerKML.addTo(globus.planet);
+	
+	//polygonOffsetUnits is needed to hide rays behind globe
+	let rayLayer = new og.layer.Vector("rays", { polygonOffsetUnits: 0 });
+	rayLayer.addTo(globus.planet);
 	
 	let layerFlightProfileWayPoints = new og.layer.Vector("FlightProfileWayPoints", {
 			billboard: { 
@@ -168,6 +240,17 @@ function launchFlightProfile(globus) {
 					data: 'aircraft=' + aircraft + '&route=' + route ,
 					success: function(data, status) {
 						
+						var dataJson = eval(data);
+						console.log( dataJson["kmlURL"] );
+						layerKML.addKmlFromUrl( url = dataJson["kmlURL"] );
+						addRays( rayLayer , dataJson["placeMarks"] );
+						setTimeout(
+							function(){ 
+								stopWorker(); 
+							}
+						, 10000);
+						
+						/*
 						let entities = layerFlightProfileWayPoints.getEntities();
 						if ( Array.isArray(entities) && ( entities.length > 0 ) ) {
 							layerFlightProfileWayPoints.removeEntities(entities) 
@@ -180,6 +263,8 @@ function launchFlightProfile(globus) {
 						// load departure airport
 						loadFlightProfileOneAirport( layerFlightProfileWayPoints, dataJson["departureAirport"] )
 						loadFlightProfileOneAirport( layerFlightProfileWayPoints, dataJson["arrivalAirport"] )
+						
+						*/
 						
 					},
 					error: function(data, status) {

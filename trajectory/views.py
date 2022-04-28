@@ -1,4 +1,6 @@
 import os
+import time
+
 from FlightProfile.settings import BASE_DIR
 from django.shortcuts import render
 from django.template import loader
@@ -11,10 +13,12 @@ from django.core.files import File
 import logging
 logger = logging.getLogger(__name__)
 
-#from trajectory.models import SiteMessage
-from trajectory.models import Airport, WayPoint
-from airline.models import AirlineRoute, AirlineAircraft, AirlineRouteWayPoints
+from airline.models import AirlineRoute, AirlineAircraft
 from airline.views import getAirlineRoutesFromDB
+from trajectory.models import AirlineWayPoint, AirlineAirport
+from trajectory.models import BadaSynonymAircraft
+from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.Guidance.FlightPathFile import FlightPath
 
 # Create your views here.
 def indexTrajectory(request):
@@ -41,7 +45,7 @@ def index(request):
 
 def getAirportsFromDB():
     airportsList = []
-    for airport in Airport.objects.all():
+    for airport in AirlineAirport.objects.all():
         logger.debug (airport.AirportICAOcode)
         for airlineRoute in AirlineRoute.objects.all():
             
@@ -110,7 +114,7 @@ def showFlightProfile(request):
     
 def getWayPointsFromDB(viewExtent):
     wayPointsList = []
-    for waypoint in WayPoint.objects.all():
+    for waypoint in AirlineWayPoint.objects.all():
         logger.debug (waypoint.WayPointName)
         '''
         if waypoint.Latitude >= viewExtent["minlatitude"] and \
@@ -123,7 +127,7 @@ def getWayPointsFromDB(viewExtent):
                 "Longitude": waypoint.Longitude,
                 "Latitude": waypoint.Latitude
                 } )
-    print ( "length of waypoints list = {0}".format(len(wayPointsList)))
+    #print ( "length of waypoints list = {0}".format(len(wayPointsList)))
     return wayPointsList
     
 
@@ -139,7 +143,7 @@ def getWayPoints(request):
            "maxlongitude" : int(request.GET['maxlongitude'])
         }
         logger.debug(viewExtent)
-        print ( viewExtent )
+        #print ( viewExtent )
         waypoints = getWayPointsFromDB(viewExtent)
         response_data = {'waypoints': waypoints}
         return JsonResponse(response_data)
@@ -167,8 +171,9 @@ def launchFlightProfile(request):
             'airlineRoutes': airlineRoutesList}
         return JsonResponse(response_data)
     
+    
 def getAirport(airportICAOcode):
-    for airport in Airport.objects.all():
+    for airport in AirlineAirport.objects.all():
         if (airport.AirportICAOcode == airportICAOcode ):
             return { "AirportICAOcode" : airport.AirportICAOcode ,
                      "AirportName"     : airport.AirportName,
@@ -176,31 +181,61 @@ def getAirport(airportICAOcode):
                      "Latitude"        : airport.Latitude         }
     return {}
     
+    
 def computeFlightProfile(request):
+    t0 = time.clock()
+    
     logger.debug ("compute Flight Profile")
+    print ( "compute Flight Profile" )
     routeWayPointsList = []
     if (request.method == 'GET'):
         aircraftICAOcode = request.GET['aircraft']
-        #print ( aircraftICAOcode )
-        airlineRoute = request.GET['route']
-        #print ( airlineRoute )
-        #print ( str(airlineRoute).split("-")[0] )
-        #print ( str(airlineRoute).split("-")[1] )
-        departureAirportICAOcode = str(airlineRoute).split("-")[0]
-        arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
-        airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
-        if (airlineRoute):
-            #print ( airlineRoute )
-            airlineRouteWayPoints = AirlineRouteWayPoints.objects.filter(Route=airlineRoute).order_by('Order')
-            for airlineRouteWayPoint in airlineRouteWayPoints:
-                wayPoint = WayPoint.objects.filter(WayPointName = airlineRouteWayPoint.WayPoint).first()
-                if wayPoint:
-                    routeWayPointsList.append({
-                            "name" : wayPoint.WayPointName ,
-                            "Longitude": wayPoint.Longitude,
-                            "Latitude": wayPoint.Latitude
-                            })
+        badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
+        if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
 
+            print ( aircraftICAOcode )
+            airlineRoute = request.GET['route']
+            print ( airlineRoute )
+            print ( str(airlineRoute).split("-")[0] )
+            print ( str(airlineRoute).split("-")[1] )
+            departureAirportICAOcode = str(airlineRoute).split("-")[0]
+            arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
+            airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
+            if (airlineRoute):
+                #print ( airlineRoute )
+                routeAsString = airlineRoute.getRouteAsString()
+                print ( routeAsString )
+                acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                print ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                print ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
+
+                flightPath = FlightPath(
+                                route = routeAsString, 
+                                aircraftICAOcode = aircraftICAOcode,
+                                RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet()/100., 
+                                cruiseMach = acPerformance.getMaxOpMachNumber(), 
+                                takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
+
+                flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                print ( 'simulation duration= ' + str(time.clock()-t0) + ' seconds' )
+    
+                print ( "=========== Flight Plan create output files  =========== " )
+    
+                kmlFileName = flightPath.createFlightOutputFiles()
+                print ( kmlFileName )
+                print ( "=========== Flight Plan end  =========== "  )
+                
+                response_data = {
+                    'kmlURL': "/static/kml/" + kmlFileName,
+                    'placeMarks' : getPlaceMarks(kmlFileName)}
+                return JsonResponse(response_data)
+
+            else:
+                print ('airline route not found = {0}'.format(airlineRoute))
+        else:
+            print ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))
+            print ("or aircraft performance file = {0} not found".format(badaAircraft))
+            
     return JsonResponse({'departureAirport': getAirport(departureAirportICAOcode),
                          'arrivalAirport': getAirport(arrivalAirportICAOcode),
                          'waypoints': routeWayPointsList})

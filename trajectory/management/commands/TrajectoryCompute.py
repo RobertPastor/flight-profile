@@ -1,37 +1,53 @@
 
+import time
+
 from django.core.management.base import BaseCommand
-from trajectory.models import Aircraft, Airport, RunWay
+from trajectory.models import BadaSynonymAircraft
 from airline.models import AirlineRoute
+from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.Guidance.FlightPathFile import FlightPath
+
 
 class Command(BaseCommand):
     help = 'Reads the Synonym file and load the Aircrafts table'
 
     def handle(self, *args, **options):
-        acICAOcode = 'A320'
+        t0 = time.clock()
+        
+        aircraftICAOcode = 'A320'
         route = 'KATL-KLAX'
-        badaAircraft = Aircraft.objects.all().filter(AircraftICAOcode=acICAOcode).first()
-        if ( badaAircraft ):
+        badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
+        if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
             print ( badaAircraft )
             Adep = str(route).split("-")[0]
             Ades = str(route).split("-")[1]
             airlineRoute = AirlineRoute.objects.all().filter(DepartureAirportICAOCode=Adep, ArrivalAirportICAOCode=Ades).first()
             if ( airlineRoute ):
-                print ( airlineRoute )
-                Adep = Airport.objects.all().filter(AirportICAOcode=Adep).first()
-                Ades = Airport.objects.all().filter(AirportICAOcode=Ades).first()
-                if ( Adep and Ades ):
-                    print ("Adep= {0} - Ades= {1}".format(Adep,Ades)  )
-                    AdepRunWay = RunWay.objects.all().filter(Airport=Adep).first()
-                    AdesRunWay = RunWay.objects.all().filter(Airport=Ades).first()
-                    if ( AdepRunWay and AdesRunWay):
-                        print ("Adep runway= {0} - Ades runway= {1}".format(AdepRunWay,AdesRunWay))
-                    else:
-                        print ("either Adep runway or Ades runway not found")
-                else:
-                    print ("either Adep or Ades not found in Airport database")
+                routeAsString = airlineRoute.getRouteAsString()
+                print ( routeAsString )
+                acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                print ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                print ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
+
+                flightPath = FlightPath(
+                                route = routeAsString, 
+                                aircraftICAOcode = aircraftICAOcode,
+                                RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet()/100., 
+                                cruiseMach = acPerformance.getMaxOpMachNumber(), 
+                                takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
+
+                flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                print ( 'simulation duration= ' + str(time.clock()-t0) + ' seconds' )
+    
+                print ( "=========== Flight Plan create output files  =========== " )
+    
+                flightPath.createFlightOutputFiles()
+                print ( "=========== Flight Plan end  =========== "  )
+                
             else:
                 print ('airline route not found = {0}'.format(route))
         else:
-            print ("aircraft with ICAO code = {0} not found".format(acICAOcode))
+            print ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))
+            print ("or aircraft performance file = {0} not found".format(badaAircraft))
             
             
