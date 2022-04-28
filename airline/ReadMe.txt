@@ -36,6 +36,16 @@ No changes detected
 PS C:\Users\rober\Documents\04 - Workspace\flight-profile>
 
 
+PS C:\Users\rober\Documents\04 - Workspace\flight-profile> heroku run python manage.py migrate -a flight-profile
+ »   Warning: heroku update available from 7.59.2 to 7.59.4.
+Running python manage.py migrate on ⬢ flight-profile... up, run.6957 (Free)
+Operations to perform:
+  Apply all migrations: admin, airline, auth, contenttypes, sessions, trajectory
+Running migrations:
+  No migrations to apply.
+PS C:\Users\rober\Documents\04 - Workspace\flight-profile>
+
+
 
 
 
