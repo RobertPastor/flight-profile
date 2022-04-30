@@ -231,8 +231,14 @@ function launchFlightProfile(globus) {
 		console.log ("button compte flight profile pressed");
 	
 		document.getElementById("btnComputeFlightProfile").disabled = true
+		
 		let aircraft = $("#airlineAircraftId option:selected").val()
 		let route =  $("#airlineRouteId option:selected").val()
+		
+		// init progress bar.
+		initProgressBar();
+		initWorker();
+		
 		$.ajax( {
 					method: 'get',
 					url :  "trajectory/computeFlightProfile",
@@ -241,30 +247,19 @@ function launchFlightProfile(globus) {
 					success: function(data, status) {
 						
 						var dataJson = eval(data);
-						console.log( dataJson["kmlURL"] );
-						layerKML.addKmlFromUrl( url = dataJson["kmlURL"] );
-						addRays( rayLayer , dataJson["placeMarks"] );
-						setTimeout(
-							function(){ 
-								stopWorker(); 
-							}
-						, 10000);
-						
-						/*
-						let entities = layerFlightProfileWayPoints.getEntities();
-						if ( Array.isArray(entities) && ( entities.length > 0 ) ) {
-							layerFlightProfileWayPoints.removeEntities(entities) 
+						if ( dataJson.hasOwnProperty("errors") ) {
+							alert ( dataJson["errors"] )
+						} else {
+							console.log( dataJson["kmlURL"] );
+							layerKML.addKmlFromUrl( url = dataJson["kmlURL"] );
+							addRays( rayLayer , dataJson["placeMarks"] );
+							setTimeout(
+								function(){ 
+									stopWorker(); 
+								}
+							, 10000);
 						}
-						
-						//alert("Data: " + data + "\nStatus: " + status);
-						var dataJson = eval(data);
-						loadFlightProfileWayPoints(layerFlightProfileWayPoints, dataJson)
-						
-						// load departure airport
-						loadFlightProfileOneAirport( layerFlightProfileWayPoints, dataJson["departureAirport"] )
-						loadFlightProfileOneAirport( layerFlightProfileWayPoints, dataJson["arrivalAirport"] )
-						
-						*/
+					
 						
 					},
 					error: function(data, status) {
