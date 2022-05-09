@@ -80,10 +80,8 @@ class GroundTrackOutput(object):
         
     def write(self, ElapsedTimeSeconds, 
               WayPointName,
-              
               LongitudeDegrees,
               LatitudeDegrees, 
-              
               AltitudeAboveSeaLevelMeters,
               deltaDistanceMeters,
               cumulatedDistanceMeters,

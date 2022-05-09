@@ -187,7 +187,7 @@ def computeFlightProfile(request):
     
     logger.debug ("compute Flight Profile")
     print ( "compute Flight Profile" )
-    routeWayPointsList = []
+    #routeWayPointsList = []
     if (request.method == 'GET'):
         aircraftICAOcode = request.GET['aircraft']
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()

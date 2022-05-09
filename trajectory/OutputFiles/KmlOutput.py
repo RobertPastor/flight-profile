@@ -90,11 +90,19 @@ class KmlOutput():
         
         self.documentElement.appendChild(placemarkElement)
 
+    def cleanKmlFolder(self):
+        self.FilesFolder = os.path.dirname(__file__)
+        self.FilesFolder =  os.path.join( self.FilesFolder , '..' , 'static' , 'kml')
+        for f in os.listdir(self.FilesFolder):
+            os.remove(os.path.join(self.FilesFolder, f))
         
     def close(self):
         ''' always write in the static kml folder '''
         self.FilesFolder = os.path.dirname(__file__)
         self.FilesFolder =  os.path.join( self.FilesFolder , '..' , 'static' , 'kml')
+        ''' clean the output folder '''
+        self.cleanKmlFolder()
+        
         self.filePath = os.path.join( self.FilesFolder , self.fileName )
         print ( self.className + ': file path= {0}'.format(self.filePath) )
         kmlFile = open(self.filePath, 'wb')
