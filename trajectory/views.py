@@ -2,7 +2,6 @@ import os
 import time
 
 from FlightProfile.settings import BASE_DIR
-from django.shortcuts import render
 from django.template import loader
 from django.core import serializers
 from django.http import HttpResponse , JsonResponse
@@ -41,7 +40,7 @@ def index(request):
     # data to the template
     context ={}
     # return response with template and context
-    return render(request, "index.html", context)
+    #return render(request, "index.html", context)
 
 def getAirportsFromDB():
     airportsList = []

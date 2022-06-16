@@ -1,0 +1,155 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    
+    
+    <title>Flight Profile</title>
+    
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel='shortcut icon' type='image/x-icon' href="{% static 'images/favicon.ico' %}" />
+   
+    <link type="text/css" rel="stylesheet" href="/static/css/jquery/jquery-ui.css" />
+    <script type="text/javascript" src="/static/js/jquery/jquery-2.2.1.js"></script>
+ 	<script type="text/javascript" src="/static/js/jquery/jquery-ui.js"></script>
+   
+	<link type="text/css" rel="stylesheet" href="/static/css/w3/w3.css" />
+    <link type="text/css" rel="stylesheet" href="/static/css/main.css" />
+	
+    <link type="text/css" rel="stylesheet" href="/static/css/maplibre/maplibre-gl-1.14.0.css" />
+    <script charset="utf-8" type="text/javascript" src="/static/js/maplibre/maplibre-gl-1.14.0.js"></script>
+    
+    <script charset="utf-8" type="text/javascript" src="/static/js/main-maplibre.js"></script>
+    <script charset="utf-8" type="text/javascript" src="/static/js/help/help.js"></script>
+
+    <script charset="utf-8" type="text/javascript" src="/static/js/airlineFleet/airlineFleet.js"></script>
+    <script charset="utf-8" type="text/javascript" src="/static/js/airlineRoutes/airlineRoutes.js"></script>
+
+	<style>
+		body { margin: 0; padding: 0; }
+		#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+	</style>
+    
+</head>
+<body>
+
+	<div id="map">
+	    <a href="https://www.maptiler.com" target="_blank" style="position:absolute;left:10px;bottom:10px;z-index:999;"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"></a>
+	</div>
+	<p>
+		<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>
+	</p>
+	
+	<div class="bodyDivOverlay">
+	
+		<table id="mainTableId">
+			<tr>
+				<td colspan='5' >
+    				<div id="workerId" class="w3-container w3-green" style="width:50%">50%</div>
+	    		</td>
+	    		<td class="question_mark_bg" colspan="1">
+					<div class="question_mark" onclick="showHelp()" title="click to obtain some help"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div>
+						<span>Welcome to the Airline Fleet Management tool.</span>
+					</div>
+				</td>
+				<td>
+					<div>
+	    				<button id="btnAirlineFleet" >Show Airline Fleet</button>
+					</div>
+				</td>
+				<td>
+					<div>
+	    				<button id="btnAirlineRoutes" >Show Airline Routes</button>
+					</div>
+				</td>
+				<td>
+					<div>
+	    				<button id="btnAirports" >Show Airline Airports</button>
+					</div>
+				</td>
+				<td>
+					<div>
+	    				<button id="btnWayPoints" >Show Airline WayPoints</button>
+					</div>
+				</td>
+				
+				<td>
+					<div>
+	    				<button id="btnLaunchFlightProfile" >Compute Flight Profile</button>
+					</div>
+				</td>
+			</tr>
+			<tr id="trAirlineRoutesId">
+			 	<td colspan='6'>
+				 	<div id="overlayId">
+						<table id="tableAirlineRoutesId" class="tableAirlineRoutesClass">
+									<thead>
+										<tr>
+											<th>Departure Airport</th>
+											<th>Departure Airport ICAO Code</th>
+											<th>Arrival Airport</th>
+											<th>Arrival Airport ICAO Code</th>
+										</tr>
+									</thead>
+									<tbody>
+
+									</tbody>
+						</table>
+					</div>
+				</td>
+			 </tr>
+			 <tr id="trAirlineFleetId">
+			 	<td colspan='6'>
+				 	<div id="overlayId">
+						<table id="tableAirlineFleetId" class="tableAirlineFleetClass">
+									<thead>
+										<tr>
+											<th>Aircraft ICAO Code</th>
+											<th>Aircraft Full Name</th>
+											<th>Number of Aircrafts</th>
+											<th>Max Number of Passengers</th>
+											<th>Costs Flying Hours (Dollars)</th>
+										</tr>
+									</thead>
+									<tbody>
+
+									</tbody>
+						</table>
+					</div>
+				</td>
+			 </tr>
+			 
+			 <tr id="trComputeFlightProfileId">
+			 	<td colspan='6'>
+			 		<div id="aircraftSelectionId" class="aircraftSelectionClass">
+			 			<label>Select an aircraft -> </label>
+			 			<select name="airlineAircraftName" id="airlineAircraftId">
+			 			</select>
+			 		</div>
+			 		<div id="routesSelectionId" class="routesSelectionClass">
+			 			<label>Select a Route -> </label>
+			 			<select name="airlineRouteName" id="airlineRouteId">
+			 			</select>
+			 		</div>
+			 		<div id="launchComputeId" class="launchComputeClass">
+			 			<label>Click to launch the computation -> </label>
+	    				<button id="btnComputeFlightProfile" >Compute Flight Profile</button>
+			 		</div>
+			 	</td>
+			 </tr>
+			 
+		</table>
+			
+	</div>
+	<div id="helpDiv" style="display: none;"></div>
+	
+</body>
+</html>

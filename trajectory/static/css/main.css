@@ -57,11 +57,12 @@ th {
 }
 
 .question_mark {
-	background:         url('/static/images/help-icon.png');
+	background:         url('/static/images/Question-mark-icon.png');
     background-color:	#60D6A7;
     background-repeat:  no-repeat;
     cursor:             pointer;
     height:             32px;
     width:              32px;
-    margin:             0 auto 0 auto;	
+    margin:             0 auto 0 auto;
+    display:			block;
 }

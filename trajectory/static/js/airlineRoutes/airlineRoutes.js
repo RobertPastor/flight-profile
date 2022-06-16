@@ -35,7 +35,6 @@ function addAirlineRoutes(airlineRoutesArray) {
 	}
 }
 
-
 function loadAirlineRoutes() {
 	
 	let show = true;
