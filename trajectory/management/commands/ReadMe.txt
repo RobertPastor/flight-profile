@@ -3,10 +3,16 @@
 heroku login 
 -> opens a web browser and connect using your smartphone authenticator code specific to heroku
 
-# list all available commands
 
-heroku run python manage.py -help
+ cd "C:\Users\rober\Documents\04 - Workspace\flight-profile"
+ 
+# list all available commands
+heroku run python manage.py makemigrations -a flight-profile
+heroku run python manage.py migrate -a flight-profile
+
+heroku run python manage.py -a flight-profile --help
 
 # run one command
 heroku run python manage.py WayPointsDatabaseLoad -a flight-profile 
 
+heroku run python manage.py AirportsDatabaseLoad -a flight-profile 

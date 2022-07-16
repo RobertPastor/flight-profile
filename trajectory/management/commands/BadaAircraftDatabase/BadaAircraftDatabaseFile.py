@@ -33,34 +33,8 @@ import os
 
 BADA_381_DATA_FILES = 'Bada381DataFiles'
 
-from trajectory.models import Aircraft
+from trajectory.models import BadaSynonymAircraft
 
-
-class BadaSynonymAircraft(object):
-    ''' 
-    this class stores the data provided in the synonym file for one aircraft 
-    '''
-    def __init__(self, 
-                 aircraftICAOcode , 
-                 aircraftFullName ,
-                 OPFfilePrefix ,
-                 useSynonym):
-        
-        self.className = self.__class__.__name__
-        self.aircraftICAOcode = aircraftICAOcode
-        self.aircraftFullName = aircraftFullName
-        self.OPFfilePrefix = OPFfilePrefix
-        self.useSynonym = useSynonym
-
-    def getICAOcode(self):
-        return self.aircraftICAOcode
-    
-    def getAircraftFullName(self):
-        return self.aircraftFullName
-    
-    def getAircraftOPFfilePrefix(self):
-        return self.OPFfilePrefix
-    
 
 class BadaAircraftDatabase(object):
     ''' this class is responsible for reading the synonym file '''
@@ -136,12 +110,9 @@ class BadaAircraftDatabase(object):
                     else:
 
                         ''' load database table '''
-                        aircraft = BadaSynonymAircraft(
-                                        AircraftICAOcode = aircraftICAOcode, 
-                                        Manufacturer = manufacturer, 
-                                        AircraftModel = str(aircraftFullName).strip() , 
-                                        AircraftFile = OPFfilePrefix, 
-                                        useSynonym = useSynonym)
+                        #aircraft = BadaSynonymAircraft( AircraftICAOcode=str(aircraftICAOcode).strip() , Manufacturer=manufacturer, AircraftModel=str(aircraftFullName).strip() ,
+                        #                                AircraftFile=OPFfilePrefix, useSynonym=useSynonym)
+                        aircraft = BadaSynonymAircraft( str(aircraftICAOcode).strip() , manufacturer , str(aircraftFullName).strip() , OPFfilePrefix, useSynonym)
                         self.aircraftDict[aircraftICAOcode] = aircraft
                         aircraft.save()
                         

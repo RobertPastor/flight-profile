@@ -8,6 +8,7 @@ OPFfileExtension = '.OPF'
 # Create your models here.
 
 class BadaSynonymAircraft(models.Model):
+    
     AircraftICAOcode = models.CharField(max_length = 100, primary_key = True)
     Manufacturer = models.CharField(max_length = 100)
     AircraftModel = models.CharField(max_length = 100)
