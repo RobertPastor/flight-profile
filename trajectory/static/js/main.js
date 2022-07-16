@@ -14,8 +14,26 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	let viewExtent = [MinLongitude , MinLatitude, MaxLongitude, MaxLatitude]
 	setTimeout( function() {
 			initMain(viewExtent);
-		} , 500 );
+		} , 1500 );
 })
+
+function initTools(globus, viewExtent) {
+	
+	$('#bodyDivOverlayId').show();
+			
+			// load the airline airports
+			airports(globus);
+			
+			// load the airline routes waypoints
+			wayPoints(globus, viewExtent)
+			
+			// load a flight profile
+			showFlightProfile(globus);
+			
+			// compute Flight Profile
+			launchFlightProfile(globus);
+	
+}
 
 function initMain(viewExtent) {
 	console.log("init Main ");
@@ -37,22 +55,9 @@ function initMain(viewExtent) {
     });
 	
 	setTimeout( function() {
-			$('#bodyDivOverlayId').show();
-			// load the airline airports
-			airports(globus);
-			
-			// load the airline routes waypoints
-			wayPoints(globus, viewExtent)
-			
-			// load a flight profile
-			showFlightProfile(globus);
-			
-			// compute Flight Profile
-			launchFlightProfile(globus);
-		} , 
-	500 );
+			initTools (globus, viewExtent);
+		} , 	500 );
 		
-	
 	
 	globus.planet.events.on("layeradd", function (e) {
 		
