@@ -157,29 +157,6 @@ function addRays ( rayLayer , placeMarks ) {
 	}
 }
 
-function removeAllChilds (parent) {
-    while (parent.lastChild) {
-        parent.removeChild(parent.lastChild);
-    }
-};
-
-function showErrors ( jsonErrors ) {
-	
-	const dialog = document.getElementById("dialogId");
-	removeAllChilds(dialog)
-	$("#dialogId")
-			.dialog({
-               autoOpen: false,
-			   title: "Compute Flight Profile Error",
-			   modal: true,
-               hide: "puff",
-               show : "slide",
-               height: 200      
-            })
-			.html(JSON.stringify(jsonErrors))
-			.dialog('open'); 
-}
-
 function launchFlightProfile(globus) {
 	
 	console.log( "compute flight profile ");
@@ -281,8 +258,7 @@ function launchFlightProfile(globus) {
 						
 						var dataJson = eval(data);
 						if ( dataJson.hasOwnProperty("errors") ) {
-							showErrors( dataJson["errors"] );
-							
+							alert ( dataJson["errors"] )
 						} else {
 							console.log( dataJson["kmlURL"] );
 							layerKML.addKmlFromUrl( url = dataJson["kmlURL"] );

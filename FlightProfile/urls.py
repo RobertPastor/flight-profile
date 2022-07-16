@@ -27,7 +27,7 @@ urlpatterns = [
     re_path(r'^trajectory/', include('trajectory.urls')),
     re_path(r'^airline/' , include('airline.urls')),
     re_path(r'admin/', admin.site.urls),
-    re_path(r'favicon.ico', RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")), ),
+    #re_path(r'favicon.ico', RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")), ),
     re_path('', views.index, name='index'),
 
 ]

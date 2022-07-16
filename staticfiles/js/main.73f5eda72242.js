@@ -21,17 +21,17 @@ function initTools(globus, viewExtent) {
 	
 	$('#bodyDivOverlayId').show();
 			
-	// load the airline airports
-	airports(globus);
+			// load the airline airports
+			airports(globus);
 			
-	// load the airline routes waypoints
-	wayPoints(globus, viewExtent)
+			// load the airline routes waypoints
+			wayPoints(globus, viewExtent)
 			
-	// load a flight profile
-	showFlightProfile(globus);
+			// load a flight profile
+			showFlightProfile(globus);
 			
-	// compute Flight Profile
-	launchFlightProfile(globus);
+			// compute Flight Profile
+			launchFlightProfile(globus);
 	
 }
 
