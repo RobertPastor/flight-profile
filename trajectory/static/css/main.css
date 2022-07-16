@@ -6,8 +6,8 @@ body {
 
 .bodyDivOverlay {
 	position: fixed; /* Sit on top of the page content */
-	display: block; /* displayed by default */
-	z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+	display: none; /* displayed by default */
+	z-index: 10; /* Specify a stack order in case you're using a different order for other elements */
 	cursor: pointer; /* Add a pointer on hover */
 }
 
@@ -61,8 +61,8 @@ th {
     background-color:	#60D6A7;
     background-repeat:  no-repeat;
     cursor:             pointer;
-    height:             32px;
-    width:              32px;
+    height:             24px;
+    width:              24px;
     margin:             0 auto 0 auto;
     display:			block;
 }

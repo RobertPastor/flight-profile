@@ -4,13 +4,16 @@ var worker = undefined;
 document.addEventListener('DOMContentLoaded', (event) => {
     //the event occurred
 		  
+	// hide the overlay
+	$('#bodyDivOverlayId').hide();
+		  
 	let MinLongitude = -130.
 	let MinLatitude = 25.
 	let MaxLongitude = -70.
 	let MaxLatitude = 50.
 	let viewExtent = [MinLongitude , MinLatitude, MaxLongitude, MaxLatitude]
 	setTimeout( function() {
-		initMain(viewExtent);
+			initMain(viewExtent);
 		} , 500 );
 })
 
@@ -33,17 +36,23 @@ function initMain(viewExtent) {
             "viewExtent": viewExtent
     });
 	
-	// load the airline airports
-	airports(globus);
+	setTimeout( function() {
+			$('#bodyDivOverlayId').show();
+			// load the airline airports
+			airports(globus);
+			
+			// load the airline routes waypoints
+			wayPoints(globus, viewExtent)
+			
+			// load a flight profile
+			showFlightProfile(globus);
+			
+			// compute Flight Profile
+			launchFlightProfile(globus);
+		} , 
+	500 );
+		
 	
-	// load the airline routes waypoints
-	wayPoints(globus, viewExtent)
-	
-	// load a flight profile
-	showFlightProfile(globus);
-	
-	// compute Flight Profile
-	launchFlightProfile(globus);
 	
 	globus.planet.events.on("layeradd", function (e) {
 		
@@ -66,7 +75,7 @@ function initProgressBar() {
     var numberOfSteps = 100;
     var progressBar = document.getElementById('workerId');
     if (progressBar) {
-        progressBar.style.width = "0" + '%';
+        //progressBar.style.width = "0" + '%';
     }
 }
 
@@ -92,10 +101,10 @@ function initWorker() {
 				//console.log(`message received - ${event.data}`);
 
                 var progressBar = document.getElementById('workerId');
-				if (progressBar) {
-					progressBar.style.width = event.data + '%';
-					progressBar.innerText = event.data + '%';
-				}
+				//if (progressBar) {
+				//	progressBar.style.width = event.data + '%';
+				//	progressBar.innerText = event.data + '%';
+				//}
             };
         }
     } else {

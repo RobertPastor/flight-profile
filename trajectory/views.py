@@ -235,7 +235,7 @@ def computeFlightProfile(request):
             print ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))
             print ("or aircraft performance file = {0} not found".format(badaAircraft))
             response_data = {
-                'errors' : 'Aircraft performance file {0} not found'.format(aircraftICAOcode)}
+                'errors' : 'Aircraft performance file {0} not found - please select another aircraft'.format(aircraftICAOcode)}
             return JsonResponse(response_data)
             
     return JsonResponse({'errors': "expecting GET method"})

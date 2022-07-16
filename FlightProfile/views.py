@@ -9,5 +9,5 @@ def index(request):
     # data to the template
     context ={}
     # return response with template and context
-    #return render(request, "index-og.html", context)
-    return render(request, "index-maplibre.html", context)
+    return render(request, "index-og.html", context)
+    #return render(request, "index-maplibre.html", context)

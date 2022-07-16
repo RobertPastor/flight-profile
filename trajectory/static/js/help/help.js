@@ -21,7 +21,7 @@ function Help () {
 		this.helpArray.push(htmlContent);
 
 		this.helpArray.push("<h3>Goals</h3>");
-		this.helpArray.push("The solution allows to manage an airline, its fleet, the routes, the wayPoints , etc...<br>");
+		this.helpArray.push("The solution allows to manage an airline, its fleet, the airways , the routes, the wayPoints , etc...<br>");
 		
 		this.helpArray.push("<h3>Airline Fleet</h3>");
 		this.helpArray.push("The fleet is composed of types of aircrafts, number of available aircrafts, number of seats, etc...<br>");

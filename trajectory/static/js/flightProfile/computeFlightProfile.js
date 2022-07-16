@@ -196,7 +196,12 @@ function launchFlightProfile(globus) {
 
 		if (show) {
 			show = false;
-			document.getElementById("btnLaunchFlightProfile").disabled = true
+			//document.getElementById("btnLaunchFlightProfile").disabled = true
+			
+			$('#tableFlightProfileId').show();
+			
+			// change name on the button
+			document.getElementById("btnLaunchFlightProfile").innerText = "Hide Flight Profile";
 
 			// use ajax to get the data 
 			$.ajax( {
@@ -222,7 +227,12 @@ function launchFlightProfile(globus) {
 						document.getElementById("btnLaunchFlightProfile").disabled = false
 					},
 			});
-		} 
+		} else {
+			show = true;
+			//document.getElementById("btnLaunchFlightProfile").disabled = true
+			document.getElementById("btnLaunchFlightProfile").innerText = "Show Flight Profile";
+			$('#tableFlightProfileId').hide();
+		}
 	} 
 	
 	//document.getElementById("btnComputeFlightProfile").disabled = true
@@ -260,7 +270,6 @@ function launchFlightProfile(globus) {
 							, 10000);
 						}
 					
-						
 					},
 					error: function(data, status) {
 						console.log("Error - compute Flight Profile: " + status + " Please contact your admin");

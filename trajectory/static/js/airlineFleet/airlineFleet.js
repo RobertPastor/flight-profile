@@ -39,20 +39,19 @@ function addAirlineFleetArray(airlineFleetArray) {
 
 function loadAirlineFleet() {
 	
-	$("#trAirlineFleetId").hide();
 	$('#tableAirlineFleetId').hide();
 	
 	let show = true;
 	document.getElementById("btnAirlineFleet").onclick = function () {
 		
 		if (show) {
-			$("#trAirlineFleetId").show();
+			
 			$('#tableAirlineFleetId').show();
 						
 			show = false;
 			// change name on the button
 			document.getElementById("btnAirlineFleet").innerText = "Hide Airline Fleet";
-			$('#tableAirlineRoutesId').show();
+						
 			// disable the button 
 			document.getElementById("btnAirlineFleet").disabled = true
 
@@ -82,7 +81,6 @@ function loadAirlineFleet() {
 			show = true;
 			document.getElementById("btnAirlineFleet").innerText = "Show Airline Fleet";
 			
-			$("#trAirlineFleetId").hide();
 			$('#tableAirlineFleetId').hide();
 		}
 	}

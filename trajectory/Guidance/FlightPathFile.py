@@ -551,7 +551,7 @@ class FlightPath(FlightPlan):
         kmlFileName = self.finalRoute.createKmlOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
         ''' add a prefix to the file path to identify the departure and arrival airport '''
         
-        self.aircraft.createStateVectorOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
+        #self.aircraft.createStateVectorOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
         print (  '{0} - final route length= {1:.2f} nautics'.format(self.className, self.finalRoute.getLengthMeters()*Meter2NauticalMiles) )
         return kmlFileName
 
