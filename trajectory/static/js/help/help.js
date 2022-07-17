@@ -15,7 +15,7 @@ function Help () {
 
 	this.init = function() {
 
-		var htmlContent = "This help is displayed ........ each time the user clicks on the question mark ";
+		var htmlContent = "This help is displayed each time the user clicks on the question mark ";
 		htmlContent += '<img src="/static/images/question-mark.png" style="width:24px;height:24px;border:0">';
 		htmlContent += "available in the upper right corner of the page.<br>";
 		this.helpArray.push(htmlContent);
@@ -25,7 +25,6 @@ function Help () {
 		
 		this.helpArray.push("<h3>Airline Fleet</h3>");
 		this.helpArray.push("The fleet is composed of types of aircrafts, number of available aircrafts, number of seats, etc...<br>");
-
 
 	};
 }
