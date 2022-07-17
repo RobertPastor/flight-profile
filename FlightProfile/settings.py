@@ -139,6 +139,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'console': {
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
         },
         'file': {
@@ -148,10 +149,15 @@ LOGGING = {
         },
     },
     'loggers': {
+        'root': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
         'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
         },
     },
 }

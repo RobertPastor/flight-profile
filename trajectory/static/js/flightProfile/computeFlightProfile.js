@@ -296,7 +296,8 @@ function launchFlightProfile(globus) {
 					
 					},
 					error: function(data, status) {
-						console.log("Error - compute Flight Profile: " + status + " Please contact your admin");
+						alert("Error - compute Flight Profile: " + status + " Please contact your admin");
+						showErrors( eval(data) );
 					},
 					complete : function() {
 						stopBusyAnimation();
