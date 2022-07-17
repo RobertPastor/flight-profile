@@ -182,7 +182,6 @@ def getAirport(airportICAOcode):
     
     
 def computeFlightProfile(request):
-    t0 = time.clock()
     
     logger.setLevel(logging.INFO)
     logger.info ("compute Flight Profile")
@@ -221,7 +220,6 @@ def computeFlightProfile(request):
                                 takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
 
                 flightPath.computeFlight(deltaTimeSeconds = 1.0)
-                logger.info ( 'simulation duration= ' + str(time.clock()-t0) + ' seconds' )
     
                 logger.info ( "=========== Flight Plan create output files  =========== " )
     
