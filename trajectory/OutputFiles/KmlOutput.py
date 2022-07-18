@@ -29,9 +29,7 @@ create a KML output file that is readable in Google Earth
 '''
 import os
 import xml.dom.minidom
-from trajectory.models import KMLoutputFile 
-from django.core.files.base import ContentFile
-from django.core.files.temp import NamedTemporaryFile
+
 
 class KmlOutput():
     
@@ -108,8 +106,6 @@ class KmlOutput():
         ''' always write in the static kml folder '''
         self.FilesFolder = os.path.dirname(__file__)
         self.FilesFolder =  os.path.join( self.FilesFolder , '..' , 'static' , 'kml')
-        ''' clean the output folder '''
-        self.cleanKmlFolder()
         
         #self.filePath = os.path.join( self.FilesFolder , self.fileName )
         self.filePath = os.path.join( "/static/kml" , self.fileName)
