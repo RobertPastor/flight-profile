@@ -96,6 +96,7 @@ class KmlOutput():
         
         self.documentElement.appendChild(placemarkElement)
 
+    ''' warning - this folder cleaning does not work in heroku '''
     def cleanKmlFolder(self):
         self.FilesFolder = os.path.dirname(__file__)
         self.FilesFolder =  os.path.join( self.FilesFolder , '..' , 'static' , 'kml')
