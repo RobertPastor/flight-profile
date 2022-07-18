@@ -36,7 +36,7 @@ from trajectory.Guidance.GraphFile import Graph
 from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 
 
-from trajectory.Environment.Constants import Meter2Feet, Knots2MetersPerSecond , MeterPerSecond2Knots 
+from trajectory.Environment.Constants import  MeterPerSecond2Knots 
 
 class GroundRunLeg(Graph):
     '''
@@ -82,13 +82,13 @@ class GroundRunLeg(Graph):
         runwayTrueHeadingDegrees = self.runway.getTrueHeadingDegrees()
         
         ''' run-way end point '''
-        strRunWayEndPointName = self.airport.getName() + '-' + 'Rwy'+'-'+self.runway.getName()
+        strRunWayEndPointName = self.runway.getName()  + '-' + self.airport.getName() 
         runWayEndPoint = WayPoint (Name = strRunWayEndPointName, 
                                     LatitudeDegrees = self.runway.getLatitudeDegrees(),
                                     LongitudeDegrees = self.runway.getLongitudeDegrees(),
                                     AltitudeMeanSeaLevelMeters =self.airport.getFieldElevationAboveSeaLevelMeters())
         
-        strTouchDownWayPointName = self.airport.getName() + '-' + 'Rwy'+'-' + self.runway.getName() + '-' + 'touch-down'
+        strTouchDownWayPointName = self.runway.getName() + '-touch-down-' + self.airport.getName() 
         touchDownWayPoint = runWayEndPoint.getWayPointAtDistanceBearing(Name = strTouchDownWayPointName, 
                                                                         DistanceMeters = landingLengthMeters, 
                                                                         BearingDegrees = runwayTrueHeadingDegrees)
@@ -116,7 +116,7 @@ class GroundRunLeg(Graph):
         runwayTrueHeadingDegrees = math.fmod(runwayTrueHeadingDegrees + 180.0, 360.0)
 
         ''' run-way end point '''
-        strRunWayEndPointName = 'touch-down-rwy-'+ self.runway.getName() + '-' + self.airport.getName()
+        strRunWayEndPointName = self.runway.getName() + '-touch-down-'+  self.airport.getName()
         ''' rename the initial way point '''
         initialWayPoint.setName(strRunWayEndPointName)
 
@@ -168,7 +168,7 @@ class GroundRunLeg(Graph):
             index += 1
   
         #print '============ end of arrival ground run ======================'
-        strRunWayEndPointName = self.airport.getName() + '-' + 'rwy'+'-' + self.runway.getName()
+        strRunWayEndPointName = self.runway.getName() + '-' + self.airport.getName() 
         intermediateWayPoint.setName(Name = strRunWayEndPointName)
         
     
@@ -184,7 +184,7 @@ class GroundRunLeg(Graph):
         elapsedTimeSeconds = elapsedTimeSeconds
 
         ''' run-way end point '''
-        strRunWayEndPointName = self.airport.getName() + '-' + 'Rwy'+'-'+self.runway.getName()
+        strRunWayEndPointName =  self.runway.getName() + '-' + self.airport.getName()  
         runWayEndPoint = WayPoint (Name=strRunWayEndPointName, 
                                     LatitudeDegrees=self.runway.getLatitudeDegrees(),
                                     LongitudeDegrees=self.runway.getLongitudeDegrees(),
