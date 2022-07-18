@@ -29,6 +29,9 @@ create a KML output file that is readable in Google Earth
 '''
 import os
 import xml.dom.minidom
+from trajectory.models import KMLoutputFile 
+from django.core.files.base import ContentFile
+from django.core.files.temp import NamedTemporaryFile
 
 class KmlOutput():
     
@@ -36,7 +39,12 @@ class KmlOutput():
     kmlDoc = None
     documentElement = None
     
-    def __init__(self, fileName):
+    def __init__(self, fileName, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcode):
+        
+        self.AbortedFlight = abortedFlight
+        self.AircraftICAOcode = aircraftICAOcode
+        self.AdepICAOcode = AdepICAOcode
+        self.AdesICAOcode = AdesICAOcode
         
         self.className = self.__class__.__name__
 
@@ -103,11 +111,13 @@ class KmlOutput():
         ''' clean the output folder '''
         self.cleanKmlFolder()
         
-        self.filePath = os.path.join( self.FilesFolder , self.fileName )
+        #self.filePath = os.path.join( self.FilesFolder , self.fileName )
+        self.filePath = os.path.join( "/static/kml" , self.fileName)
+        #self.filePath = "static/kml/" + self.fileName
         print ( self.className + ': file path= {0}'.format(self.filePath) )
-        kmlFile = open(self.filePath, 'wb')
-        kmlFile.write(self.kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8'))
-        kmlFile.close()
+        
+        kmlXmlDocument = self.kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8')
+        return kmlXmlDocument
         
     def getFilePath(self):
         return self.filePath
@@ -116,8 +126,5 @@ class KmlOutput():
         return self.fileName
 
         
-#============================================
-if __name__ == '__main__':
-    
-    ''' create an KML file with all the way points '''
+
     

@@ -1,5 +1,5 @@
 
-import time
+
 
 from django.core.management.base import BaseCommand
 from trajectory.models import BadaSynonymAircraft
@@ -12,7 +12,6 @@ class Command(BaseCommand):
     help = 'Reads the Synonym file and load the Aircrafts table'
 
     def handle(self, *args, **options):
-        t0 = time.clock()
         
         aircraftICAOcode = 'A320'
         route = 'KATL-KLAX'
@@ -37,7 +36,6 @@ class Command(BaseCommand):
                                 takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
 
                 flightPath.computeFlight(deltaTimeSeconds = 1.0)
-                print ( 'simulation duration= ' + str(time.clock()-t0) + ' seconds' )
     
                 print ( "=========== Flight Plan create output files  =========== " )
     

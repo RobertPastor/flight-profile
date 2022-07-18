@@ -1,16 +1,12 @@
-import os
-import time
 
-from FlightProfile.settings import BASE_DIR
+from xml.dom import minidom
+import logging
+logger = logging.getLogger(__name__)
+import xmltodict
+
 from django.template import loader
 from django.core import serializers
 from django.http import HttpResponse , JsonResponse
-
-from xml.dom import minidom
-from django.core.files import File
-
-import logging
-logger = logging.getLogger(__name__)
 
 from airline.models import AirlineRoute, AirlineAircraft
 from airline.views import getAirlineRoutesFromDB
@@ -67,19 +63,15 @@ def getAirports(request):
         return JsonResponse(response_data)
     
     
-def getPlaceMarks(fileName):
+def getPlaceMarks(XmlDocument):
     placeMarksList = []
-    print ( BASE_DIR )
-    filePath = os.path.join ( BASE_DIR , os.path.join ( "trajectory/static/kml"  , fileName ) )
-    print ( filePath )
-    if (os.path.isfile(filePath)):
-        print ( "file = {0} does exist".format(filePath))
-        f = open(filePath)
-        file = File(f)
-        parseXml = minidom.parse(file)
-        #use getElementsByTagName() to get tag
-        placeMarks = parseXml.getElementsByTagName('Placemark')
-        for placeMark in placeMarks:
+    #print ( BASE_DIR )
+    #filePath = os.path.join ( BASE_DIR , os.path.join ( "trajectory/static/kml"  , fileName ) )
+    
+    parseXml = minidom.parseString(XmlDocument)
+    #use getElementsByTagName() to get tag
+    placeMarks = parseXml.getElementsByTagName('Placemark')
+    for placeMark in placeMarks:
             name = ""
             try:
                 name = placeMark.getElementsByTagName("name")[0].childNodes[0].data
@@ -95,8 +87,7 @@ def getPlaceMarks(fileName):
                 "latitude": str(coordinates).split(",")[1],
                 "height": str(coordinates).split(",")[2]
             })
-    else:
-        print ( "file = {0} does not exist".format(filePath))
+   
     print ( "length place marks = {0}".format(len ( placeMarksList )) )
     return placeMarksList
     
@@ -204,6 +195,7 @@ def computeFlightProfile(request):
             departureAirportICAOcode = str(airlineRoute).split("-")[0]
             arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
             airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
+            
             if (airlineRoute):
                 #print ( airlineRoute )
                 routeAsString = airlineRoute.getRouteAsString()
@@ -223,17 +215,26 @@ def computeFlightProfile(request):
     
                 logger.info ( "=========== Flight Plan create output files  =========== " )
     
-                kmlFileName = flightPath.createFlightOutputFiles()
-                logger.info ( kmlFileName )
-                logger.info ( "=========== Flight Plan end  =========== "  )
-                
-                response_data = {
-                    'kmlURL': "/static/kml/" + kmlFileName,
-                    'placeMarks' : getPlaceMarks(kmlFileName)}
-                return JsonResponse(response_data)
+                kmlXmlDocument = flightPath.createFlightOutputFiles()
+                if ( kmlXmlDocument ):
+                    logger.info ( "=========== Flight Plan end  =========== "  )
+                                        
+                    response_data = {
+                                'kmlXMLjson': xmltodict.parse( kmlXmlDocument ),
+                                'placeMarks' : getPlaceMarks(kmlXmlDocument)}
+                    return JsonResponse(response_data)
+                else:
+                    logger.info ('Error while retrieving the KML document')
+                    response_data = {
+                    'errors' : 'Error while retrieving the KML document'}
+                    return JsonResponse(response_data)
 
             else:
                 logger.info ('airline route not found = {0}'.format(airlineRoute))
+                response_data = {
+                'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
+                return JsonResponse(response_data)
+                
         else:
             logger.info ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))
             logger.info ("or aircraft performance file = {0} not found".format(badaAircraft))

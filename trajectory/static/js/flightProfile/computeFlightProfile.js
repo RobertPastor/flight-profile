@@ -180,9 +180,7 @@ function showErrors ( jsonErrors ) {
 			.dialog('open'); 
 }
 
-function launchFlightProfile(globus) {
-	
-	console.log( "compute flight profile ");
+function createKMLLayer(globus) {
 	
 	let layerKML = new og.layer.KML( "FlightProfile" , {
 		billboard: { 
@@ -194,11 +192,22 @@ function launchFlightProfile(globus) {
 		color: '#6689db'
 	} ) ;
 	layerKML.addTo(globus.planet);
+	return layerKML;
+}
+
+function createRayLayer(globus) {
 	
 	//polygonOffsetUnits is needed to hide rays behind globe
 	let rayLayer = new og.layer.Vector("rays", { polygonOffsetUnits: 0 });
 	rayLayer.addTo(globus.planet);
+	return rayLayer;
+}
+
+function launchFlightProfile(globus) {
 	
+	console.log( "compute flight profile ");
+	
+	/**
 	let layerFlightProfileWayPoints = new og.layer.Vector("FlightProfileWayPoints", {
 			billboard: { 
 				src: '/static/trajectory/images/marker.png', 
@@ -209,12 +218,17 @@ function launchFlightProfile(globus) {
             clampToGround: true,
             });
 	layerFlightProfileWayPoints.addTo(globus.planet);
+	*/
 	    
 	$("#trComputeFlightProfileId").hide();
 	$("#aircraftSelectionId").hide();
 	$("#routesSelectionId").hide();
 	
 	let show = true;
+	
+	/**
+	* monitor the button used to sjow the table with the inputs
+	**/
 	document.getElementById("btnLaunchFlightProfile").onclick = function () {
 
 		if (show) {
@@ -258,6 +272,10 @@ function launchFlightProfile(globus) {
 		}
 	} 
 	
+	/**
+	* monitor the button used to launch the profile computation
+	**/
+	let once = false;
 	//document.getElementById("btnComputeFlightProfile").disabled = true
 	document.getElementById("btnComputeFlightProfile").onclick = function () {
 	
@@ -284,14 +302,22 @@ function launchFlightProfile(globus) {
 							showErrors( dataJson["errors"] );
 							
 						} else {
-							console.log( dataJson["kmlURL"] );
-							layerKML.addKmlFromUrl( url = dataJson["kmlURL"] );
+							
+							let layerKML = createKMLLayer(globus);
+							
+							//layerKML.clear();
+							// convert JSON to XML
+							var x2js = new X2JS();
+							var xml = x2js.js2xml(dataJson["kmlXMLjson"]);
+							
+							let parser = new DOMParser();
+							let xmlDoc = parser.parseFromString(xml, "text/xml");
+							
+							layerKML.addKmlFromXml( kmlAsXml = xmlDoc );
+							
+							let rayLayer = createRayLayer(globus)
 							addRays( rayLayer , dataJson["placeMarks"] );
-							setTimeout(
-								function(){ 
-									stopWorker(); 
-								}
-							, 10000);
+							
 						}
 					
 					},

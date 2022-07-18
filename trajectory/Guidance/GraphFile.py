@@ -227,6 +227,12 @@ class Graph(object):
     
     
     def createKmlOutputFile(self, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde):
+        
+        self.AbortedFlight = abortedFlight
+        self.AircraftICAOcode = aircraftICAOcode
+        self.AdepICAOcode = AdepICAOcode
+        self.AdesICAOcode = AdesICAOcde
+        
         assert ( type(abortedFlight) == bool )
         if self.getNumberOfVertices() > 1:
             ''' need at least two vertices '''
@@ -246,17 +252,18 @@ class Graph(object):
             strFileName = str(strFileName).replace(' ', '-')
             strFileName += '-{0}.kml'.format(datetime.now().strftime("%d-%b-%Y-%Hh%Mm%S"))
             
-            kmlOutputFile = KmlOutput(strFileName)
+            kmlOutputFile = KmlOutput(strFileName, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde)
             for vertex in self.getVertices():
                 wayPoint = vertex.getWeight()
                 kmlOutputFile.write(wayPoint.getName(),
                                     wayPoint.getLongitudeDegrees(),
                                     wayPoint.getLatitudeDegrees(), 
                                     wayPoint.getAltitudeMeanSeaLevelMeters())
-            kmlOutputFile.close()
+            kmlXmlDocument = kmlOutputFile.close()
             print ( "{0} - {1}".format(self.className , strFileName) )
-            return strFileName
+            return kmlXmlDocument
     
+        return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")
     
     def createXlsxOutputFile(self, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcode):
         assert (type(abortedFlight) == bool )
