@@ -27,6 +27,7 @@ Created on 31 December 2014
 Manage the ground run phase
 '''
 import math
+import logging
 from trajectory.aerocalc.airspeed import tas2cas
 
 from trajectory.Environment.RunWayFile import RunWay
@@ -66,7 +67,7 @@ class GroundRunLeg(Graph):
         
         assert (isinstance(runway, RunWay) and not(runway is None))
         self.runway = runway
-        print ( self.className + ': ground run - run-way true heading= ' + str(self.runway.getTrueHeadingDegrees()) + ' degrees' )
+        logging.info ( self.className + ': ground run - run-way true heading= ' + str(self.runway.getTrueHeadingDegrees()) + ' degrees' )
         
         assert (isinstance(aircraft, BadaAircraft) and not(aircraft is None))
         self.aircraft = aircraft
@@ -140,7 +141,7 @@ class GroundRunLeg(Graph):
                                                                     distanceToLastFixMeters = 0.0)
             distanceStillToFlyMeters -= deltaDistanceMeters
             #trueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
-            #print 'true air speed= ' + str(trueAirSpeedMetersSecond) + ' meters/second'
+            #logging.info 'true air speed= ' + str(trueAirSpeedMetersSecond) + ' meters/second'
             
             ''' name of the next point '''
             Name = ''
@@ -167,7 +168,7 @@ class GroundRunLeg(Graph):
             ''' increment the index '''
             index += 1
   
-        #print '============ end of arrival ground run ======================'
+        #logging.info '============ end of arrival ground run ======================'
         strRunWayEndPointName = self.runway.getName() + '-' + self.airport.getName() 
         intermediateWayPoint.setName(Name = strRunWayEndPointName)
         
@@ -210,7 +211,7 @@ class GroundRunLeg(Graph):
         These V speeds are normally published as IAS rather than CAS so they can be read directly from the airspeed indicator.
         '''
         VStallSpeedCASKnots = self.aircraft.computeStallSpeedCasKnots()
-        print ( self.className + ': V stall Calibrated AirSpeed= {0:.2f} knots'.format(VStallSpeedCASKnots) )
+        logging.info ( self.className + ': V stall Calibrated AirSpeed= {0:.2f} knots'.format(VStallSpeedCASKnots) )
         ''' loop until Stall CAS reached '''
         endOfSimulation = False
         while ((endOfSimulation == False) and
@@ -234,7 +235,7 @@ class GroundRunLeg(Graph):
             trueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
             assert (((self.airport.getFieldElevationAboveSeaLevelMeters() - 10.0) <= altitudeMeters) and
                     ( altitudeMeters <= (self.airport.getFieldElevationAboveSeaLevelMeters() + 10.0)))
-            #print self.className + ': delta distance= ' + str(deltaDistanceMeters) + ' meters'
+            #logging.info self.className + ': delta distance= ' + str(deltaDistanceMeters) + ' meters'
             # name of the next point            
             totalLegDistanceMeters += deltaDistanceMeters
             distanceStillToFlyMeters -= deltaDistanceMeters

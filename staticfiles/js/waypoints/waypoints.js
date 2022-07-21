@@ -28,7 +28,6 @@ function loadOneWayPoint( layerWayPoints, waypoint ) {
 					offset: [0, -2]
 				    }
 	}));
-				
 }
 
 function loadWayPoints(layerWayPoints, dataJson) {

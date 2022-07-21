@@ -28,6 +28,7 @@ from trajectory.BadaAircraftPerformance.BadaAircraftDatabaseFile import BadaAirc
 
 Kilogram2Pounds = 2.20462262 # 1 kilogram = 2.204 lbs
 
+import logging
 
 class AircraftMass(object):
     '''
@@ -60,11 +61,11 @@ class AircraftMass(object):
         
     def setAircraftMassKilograms(self, massKilograms):
         assert (self.minimumMassKilograms <= massKilograms) and (massKilograms <= self.maximumMassKilograms)
-        print ( self.className + ' ==========================================================' )
-        print ( self.className + ': set Aircraft Mass= {0:.2f} kilograms - Mass= {1:.2f} pounds'.format(massKilograms, massKilograms*Kilogram2Pounds) )
+        logging.info ( self.className + ' ==========================================================' )
+        logging.info ( self.className + ': set Aircraft Mass= {0:.2f} kilograms - Mass= {1:.2f} pounds'.format(massKilograms, massKilograms*Kilogram2Pounds) )
         self.initialMassKilograms = massKilograms
         self.currentMassKilograms = massKilograms
-        print ( self.className + ' ==========================================================' )
+        logging.info ( self.className + ' ==========================================================' )
 
     def getCurrentMassKilograms(self):
         return self.currentMassKilograms
@@ -82,7 +83,7 @@ class AircraftMass(object):
         return self.referenceMassKilograms
     
     def computeInitialFuelMassKilograms(self, flightPathRangeMeters):
-        print ( self.className + ': compute Fuel mass in KiloGrams for flight path range= ' + str(flightPathRangeMeters) + ' meters' )
+        logging.info ( self.className + ': compute Fuel mass in KiloGrams for flight path range= ' + str(flightPathRangeMeters) + ' meters' )
         '''
         SFC Specific Fuel Consumption 
         SFC is defined as the mass flow rate of fuel per unit of thrust (lbm/s/lbf or kg/s/N).
@@ -98,7 +99,7 @@ class AircraftMass(object):
         The maximal total range is the distance an aircraft can fly between take-off and landing.
         '''
         assert isinstance(rangeMeters, float)
-        print ( self.className + ': compute aircraft mass - from the range expressed in Meters ' )
+        logging.info ( self.className + ': compute aircraft mass - from the range expressed in Meters ' )
         return self.referenceMassKilogramms
     
     
@@ -116,9 +117,9 @@ class AircraftMass(object):
 
     
     def dump(self):
-        print ( self.className + ': aircraft reference mass= {0:.2f} kilograms'.format(self.referenceMassKilograms) )
-        print ( self.className + ': aircraft minimum mass= {0:.2f} kilograms'.format(self.minimumMassKilograms))
-        print ( self.className + ': aircraft maximum mass= {0:.2f} kilograms'.format(self.maximumMassKilograms))
-        print ( self.className + ': aircraft maximum pay load mass= {0:.2f} kilograms'.format(self.maximumPayLoadMassKilograms))
+        logging.info ( self.className + ': aircraft reference mass= {0:.2f} kilograms'.format(self.referenceMassKilograms) )
+        logging.info ( self.className + ': aircraft minimum mass= {0:.2f} kilograms'.format(self.minimumMassKilograms))
+        logging.info ( self.className + ': aircraft maximum mass= {0:.2f} kilograms'.format(self.maximumMassKilograms))
+        logging.info ( self.className + ': aircraft maximum pay load mass= {0:.2f} kilograms'.format(self.maximumPayLoadMassKilograms))
         
         

@@ -32,6 +32,7 @@ Created on 9 December 2014
  start point has field elevation above mean sea level
 
 '''
+import logging
 
 from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 from trajectory.Guidance.WayPointFile import WayPoint, Airport
@@ -84,7 +85,7 @@ class ClimbRamp(Graph):
         
         ''' from the run-way , we get the orientation or run-way true heading in degrees '''
         runWayOrientationDegrees = self.runway.getTrueHeadingDegrees()     
-        print ( self.className + ': run-way orientation degrees= ' + str(runWayOrientationDegrees) + ' degrees' )
+        logging.info ( self.className + ': run-way orientation degrees= ' + str(runWayOrientationDegrees) + ' degrees' )
                 
         ''' climb ramp length in meters '''
         ClimbSlopeLengthMeters = climbRampLengthNautics * NauticalMiles2Meter

@@ -37,6 +37,7 @@ purpose : build a fix list from a route expressed as a sequence of names
 
 '''
 import math
+import logging
 
 from trajectory.models import  AirlineWayPoint, AirlineAirport, AirlineRunWay
 from trajectory.Guidance.WayPointFile import WayPoint, Airport
@@ -74,7 +75,7 @@ class FixList(object):
         self.arrivalRunwayName = ""
         
         assert isinstance(strRoute, (str))
-        print (self.className + ': route= ' + strRoute)
+        logging.info (self.className + ': route= ' + strRoute)
         self.strRoute = strRoute
         
         
@@ -101,7 +102,7 @@ class FixList(object):
 
     def createFixList(self):
 
-        #print self.className + ': ================ get Fix List ================='
+        #logging.info self.className + ': ================ get Fix List ================='
         self.fixList = []
         index = 0
         for fix in self.strRoute.split('-'):
@@ -113,7 +114,7 @@ class FixList(object):
                     ''' ADEP is the first fix of the route '''
                     if len(str(fix).split('/')) >= 2:
                         self.departureAirportICAOcode = str(fix).split('/')[1]
-                        print (self.className + ': departure airport= {0}'.format( self.departureAirportICAOcode))
+                        logging.info (self.className + ': departure airport= {0}'.format( self.departureAirportICAOcode))
     
                     self.departureRunwayName = ''
                     if len(str(fix).split('/')) >= 3:
@@ -129,7 +130,7 @@ class FixList(object):
                     ''' ADES is the last fix of the route '''
                     if len(str(fix).split('/')) >= 2:
                         self.arrivalAirportICAOcode = str(fix).split('/')[1]
-                        print (self.className + ': arrival airport= {0}'.format( self.arrivalAirportICAOcode))
+                        logging.info (self.className + ': arrival airport= {0}'.format( self.arrivalAirportICAOcode))
 
                     self.arrivalRunwayName = ''
                     if len(str(fix).split('/')) >= 3:
@@ -142,7 +143,7 @@ class FixList(object):
             else:
                 ''' do not take the 1st one (ADEP) and the last one (ADES) '''
                 constraintFound, levelConstraint, speedConstraint = analyseConstraint(index, fix)
-                #print self.className + ': constraint found= {0}'.format(constraintFound)
+                #logging.info self.className + ': constraint found= {0}'.format(constraintFound)
                 if constraintFound == True:
                     constraint = {}
                     constraint['fixIndex'] = index
@@ -217,7 +218,7 @@ class FlightPlan(FixList):
             #wayPoint = wayPointsDb.getWayPoint(fix)
             airlineWayPoint = AirlineWayPoint.objects.all().filter(WayPointName=fix).first()
             if not(airlineWayPoint is None) and isinstance(airlineWayPoint, AirlineWayPoint):
-                #print wayPoint
+                #logging.info wayPoint
                 self.wayPointsDict[fix] = WayPoint(Name = airlineWayPoint.WayPointName, 
                                                    LatitudeDegrees = airlineWayPoint.Latitude,
                                                    LongitudeDegrees = airlineWayPoint.Longitude,
@@ -240,7 +241,7 @@ class FlightPlan(FixList):
         
         #self.arrivalRunway =  runwaysDb.getFilteredRunWays(airportICAOcode = self.arrivalAirportICAOcode, runwayName = self.arrivalRunwayName)
         arrivalRunway = AirlineRunWay.objects.all().filter(Airport=arrivalAirport, Name=self.arrivalRunwayName).first()
-        print ( "Arrival RunWay = {0}".format(arrivalRunway) )
+        logging.info ( "Arrival RunWay = {0}".format(arrivalRunway) )
         assert ( not (arrivalRunway is None) and isinstance(arrivalRunway, AirlineRunWay ))
         
         self.arrivalRunway = RunWay(Name = arrivalRunway.Name,
@@ -275,7 +276,7 @@ class FlightPlan(FixList):
                                     LongitudeDegrees = departureRunway.LongitudeDegrees)
         
 
-        #print self.className + ': fix list= ' + str(self.fixList)
+        #logging.info self.className + ': fix list= ' + str(self.fixList)
         assert (self.allAnglesLessThan90degrees(minIntervalNautics = 10.0))
        
         
@@ -342,29 +343,29 @@ class FlightPlan(FixList):
                              thirdWayPoint, 
                              maxAngleDifferenceDegrees = 45.0):
         
-        print (self.className + ': {0} - {1} - {2}'.format(firstWayPoint.getName(), secondWayPoint.getName(), thirdWayPoint.getName()) )
+        logging.info (self.className + ': {0} - {1} - {2}'.format(firstWayPoint.getName(), secondWayPoint.getName(), thirdWayPoint.getName()) )
         firstAngleDegrees = firstWayPoint.getBearingDegreesTo(secondWayPoint)
         secondAngleDegrees = secondWayPoint.getBearingDegreesTo(thirdWayPoint)
                 
         assert (firstAngleDegrees >= 0.0) and (secondAngleDegrees >= 0.0)
         
-        print ( self.className + ': first angle= {0:.2f} degrees and second angle= {1:.2f} degrees'.format(firstAngleDegrees, secondAngleDegrees) )
+        logging.info ( self.className + ': first angle= {0:.2f} degrees and second angle= {1:.2f} degrees'.format(firstAngleDegrees, secondAngleDegrees) )
         firstAngleRadians = math.radians(firstAngleDegrees)
         secondAngleRadians = math.radians(secondAngleDegrees)
 
         angleDifferenceDegrees = math.degrees(math.atan2(math.sin(secondAngleRadians-firstAngleRadians), math.cos(secondAngleRadians-firstAngleRadians))) 
-        print (self.className + ': difference= {0:.2f} degrees'.format(angleDifferenceDegrees) )
+        logging.info (self.className + ': difference= {0:.2f} degrees'.format(angleDifferenceDegrees) )
         
         if abs(angleDifferenceDegrees) > maxAngleDifferenceDegrees:
-            print ( self.className + ': WARNING - angle difference=  {0:.2f} greater to {1:.2f} degrees'.format(angleDifferenceDegrees, maxAngleDifferenceDegrees) )
+            logging.info ( self.className + ': WARNING - angle difference=  {0:.2f} greater to {1:.2f} degrees'.format(angleDifferenceDegrees, maxAngleDifferenceDegrees) )
             return False
         
         firstIntervalDistanceNm = firstWayPoint.getDistanceMetersTo(secondWayPoint) * Meter2NauticalMiles
         secondIntervalDistanceNm = secondWayPoint.getDistanceMetersTo(thirdWayPoint) * Meter2NauticalMiles
         if (firstIntervalDistanceNm < 20.0):
-            print ( self.className + ': WARNING - distance between {0} and {1} less than 20 Nm = {2:.2f}'.format(firstWayPoint.getName(), secondWayPoint.getName(), firstIntervalDistanceNm) )
+            logging.info ( self.className + ': WARNING - distance between {0} and {1} less than 20 Nm = {2:.2f}'.format(firstWayPoint.getName(), secondWayPoint.getName(), firstIntervalDistanceNm) )
         if (secondIntervalDistanceNm < 20.0):
-            print ( self.className + ': WARNING - distance between {0} and {1} less than 20 Nm = {2:.2f}'.format(secondWayPoint.getName(), thirdWayPoint.getName(), secondIntervalDistanceNm) )
+            logging.info ( self.className + ': WARNING - distance between {0} and {1} less than 20 Nm = {2:.2f}'.format(secondWayPoint.getName(), thirdWayPoint.getName(), secondIntervalDistanceNm) )
 
         return True
 
@@ -385,7 +386,7 @@ class FlightPlan(FixList):
         secondWayPoint = self.wayPointsDict[self.fixList[secondIndex]]
         IntervalDistanceNm = firstWayPoint.getDistanceMetersTo(secondWayPoint) * Meter2NauticalMiles
         if IntervalDistanceNm < minIntervalNautics:
-            print ( self.className + ': WARNING - distance between {0} and {1} less than 10 Nm = {2:.2f}'.format(firstWayPoint.getName(), secondWayPoint.getName(), IntervalDistanceNm) )
+            logging.info ( self.className + ': WARNING - distance between {0} and {1} less than 10 Nm = {2:.2f}'.format(firstWayPoint.getName(), secondWayPoint.getName(), IntervalDistanceNm) )
             return True
         return False
 
@@ -400,25 +401,25 @@ class FlightPlan(FixList):
             index = 0
             oneFixSuppressed = False
             for fix in self.fixList:
-                print ( self.className + ': fix= {0}'.format(fix) )
+                logging.info ( self.className + ': fix= {0}'.format(fix) )
                 
                 if index == 1 and not(self.departureAirport is None):
                     firstWayPoint = self.departureAirport
-                    print ( firstWayPoint )
+                    logging.info ( firstWayPoint )
                     secondWayPoint = self.wayPointsDict[self.fixList[index-1]]
-                    print ( secondWayPoint )
+                    logging.info ( secondWayPoint )
                     thirdWayPoint = self.wayPointsDict[self.fixList[index]]
-                    print ( thirdWayPoint )
+                    logging.info ( thirdWayPoint )
                     if (self.isDistanceLessThan(firstIndex = index-1, 
                                              secondIndex = index, 
                                              minIntervalNautics = minIntervalNautics) == True):
                         ''' suppress the point from the fix list '''
-                        print ( self.className + ': fix suppressed= {0}'.format(self.fixList[index]) )
+                        logging.info ( self.className + ': fix suppressed= {0}'.format(self.fixList[index]) )
                         self.fixList.pop(index)
                         oneFixSuppressed = True
                         
                     if oneFixSuppressed:
-                        print ( self.className + ': start the whole loop again from the very beginning ' )
+                        logging.info ( self.className + ': start the whole loop again from the very beginning ' )
                         break
                     else:
                         self.checkAnglesGreaterTo(firstWayPoint, 
@@ -429,29 +430,29 @@ class FlightPlan(FixList):
                 if index >= 2:
                     
                     firstWayPoint = self.wayPointsDict[self.fixList[index-2]]
-                    print ( firstWayPoint )
+                    logging.info ( firstWayPoint )
                     secondWayPoint = self.wayPointsDict[self.fixList[index-1]]
-                    print ( secondWayPoint )
+                    logging.info ( secondWayPoint )
                     if (self.isDistanceLessThan(firstIndex = index - 2, 
                                              secondIndex = index - 1, 
                                              minIntervalNautics = minIntervalNautics) == True):
                         ''' suppress the point from the fix list '''
-                        print ( self.className + ': fix suppressed= {0}'.format(self.fixList[index-1]) )
+                        logging.info ( self.className + ': fix suppressed= {0}'.format(self.fixList[index-1]) )
                         self.fixList.pop(index-1)
                         oneFixSuppressed = True
                         
                     thirdWayPoint = self.wayPointsDict[self.fixList[index]]
-                    print ( thirdWayPoint )
+                    logging.info ( thirdWayPoint )
                     if (self.isDistanceLessThan(firstIndex = index - 1, 
                                              secondIndex = index, 
                                              minIntervalNautics = minIntervalNautics) == True) and not (self.indexIsTheLast(index)):
                         ''' suppress the point from the fix list '''
-                        print ( self.className + ': fix suppressed= {0}'.format(self.fixList[index]) )
+                        logging.info ( self.className + ': fix suppressed= {0}'.format(self.fixList[index]) )
                         self.fixList.pop(index)
                         oneFixSuppressed = True
                     
                     if oneFixSuppressed:
-                        print ( self.className + ': start the whole loop again from the very beginning ' )
+                        logging.info ( self.className + ': start the whole loop again from the very beginning ' )
                         break
                     else:
                         self.checkAnglesGreaterTo(firstWayPoint, 
@@ -459,7 +460,7 @@ class FlightPlan(FixList):
                                               thirdWayPoint,
                                               maxAngleDifferenceDegrees = 30.0)
     
-                print ( self.className + '============ index = {0} ==========='.format(index) )
+                logging.info ( self.className + '============ index = {0} ==========='.format(index) )
                 index += 1
         return True
     
@@ -476,7 +477,7 @@ class FlightPlan(FixList):
         lengthMeters = 0.0
         index = 0
         for fix in self.fixList:
-            #print fix
+            #logging.info fix
             if not(self.departureAirport is None) and isinstance(self.departureAirport, Airport ): 
                 if index == 0:
                     lengthMeters += self.departureAirport.getDistanceMetersTo(self.wayPointsDict[fix])
@@ -498,7 +499,7 @@ class FlightPlan(FixList):
             
         ''' add distance from last fix to arrival airport if applicable '''
         if not(self.arrivalAirport is None) and isinstance(self.arrivalAirport, Airport):
-            #print self.className + ': last fix= ' + self.fixList[-1]
+            #logging.info self.className + ': last fix= ' + self.fixList[-1]
             if len(self.wayPointsDict) > 0:
                 lengthMeters += self.wayPointsDict[self.fixList[-1]].getDistanceMetersTo(self.arrivalAirport)
             else:
@@ -525,17 +526,17 @@ class FlightPlan(FixList):
             return 0.0
 
         for index in range(fixListIndex, len(self.fixList)):
-            #print index
+            #logging.info index
             if index == fixListIndex:
                 firstWayPoint = currentPosition
             else:
                 firstWayPoint = self.wayPointsDict[self.fixList[index]]
-            #print firstWayPoint
+            #logging.info firstWayPoint
             if index + 1 < len(self.fixList):
                 secondWayPoint = self.wayPointsDict[self.fixList[index+1]]
-                #print secondWayPoint
+                #logging.info secondWayPoint
                 lengthMeters += firstWayPoint.getDistanceMetersTo(secondWayPoint)
-                #print self.className + ': first wayPoint= {0} - second wayPoint= {1}'.format(firstWayPoint, secondWayPoint)
+                #logging.info self.className + ': first wayPoint= {0} - second wayPoint= {1}'.format(firstWayPoint, secondWayPoint)
         
         ''' do not count distance from last fix to arrival airport '''
 #         if not(self.arrivalAirport is None):

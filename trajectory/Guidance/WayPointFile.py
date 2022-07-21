@@ -25,10 +25,14 @@ Created on 13 juil. 2014
         
 '''
 
+import math
+import logging
+
+
 from trajectory.Guidance.Haversine import points2distanceMeters, points2bearingDegrees, LatitudeLongitudeAtDistanceBearing
 from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
 
-import math
+from trajectory.Environment.RunWaysDatabaseFile import RunWayDataBase
 
 
 
@@ -123,11 +127,11 @@ class WayPoint(GeographicalPoint):
         return WayPoint(Name, latitudeDegrees, longitudeDegrees)    
     
     def dump(self):
-        print ( "WayPoint Name= ", self.Name, " Lat-deg= ",self.LatitudeDegrees, " Long-deg= ",self.LongitudeDegrees, " flight-level= ", self.AltitudeMeanSeaLevelMeters, " meters" )
+        logging.info ( "WayPoint Name= ", self.Name, " Lat-deg= ",self.LatitudeDegrees, " Long-deg= ",self.LongitudeDegrees, " flight-level= ", self.AltitudeMeanSeaLevelMeters, " meters" )
         if isinstance(self, Airport):
-            print ( "way point is an airport" )
+            logging.info ( "way point is an airport" )
         if self.isTopOfDescent==True:
-            print ( "way Point is Top Of Descent !!! " )
+            logging.info ( "way Point is Top Of Descent !!! " )
 
 
 class Airport(WayPoint):
@@ -199,8 +203,8 @@ class Airport(WayPoint):
     
     def dump(self):
         WayPoint.dump(self)
-        print ( "airport field Elevation above Sea Level Meters=",self.fieldElevationAboveSeaLevelMeters, " meters" )
-        print ( 'airport ICAO code= ' + self.ICAOcode )
+        logging.info ( "airport field Elevation above Sea Level Meters=",self.fieldElevationAboveSeaLevelMeters, " meters" )
+        logging.info ( 'airport ICAO code= ' + self.ICAOcode )
 
 
 

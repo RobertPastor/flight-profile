@@ -205,6 +205,17 @@ function createRayLayer(globus) {
 
 function launchFlightProfile(globus) {
 	
+	
+	globus.planet.events.on("layeradd", function (e) {
+		
+		console.log("layeradd event");
+		if (e.pickingObject instanceof og.Layer) {
+            console.log(e.pickingObject.name);
+			
+        }
+		stopBusyAnimation();
+    });
+	
 	console.log( "compute flight profile ");
 	
 	/**
@@ -299,13 +310,13 @@ function launchFlightProfile(globus) {
 						
 						var dataJson = eval(data);
 						if ( dataJson.hasOwnProperty("errors") ) {
+							stopBusyAnimation();
 							showErrors( dataJson["errors"] );
 							
 						} else {
 							
 							let layerKML = createKMLLayer(globus);
 							
-							//layerKML.clear();
 							// convert JSON to XML
 							var x2js = new X2JS();
 							var xml = x2js.js2xml(dataJson["kmlXMLjson"]);
@@ -319,14 +330,13 @@ function launchFlightProfile(globus) {
 							addRays( rayLayer , dataJson["placeMarks"] );
 							
 						}
-					
 					},
 					error: function(data, status) {
 						alert("Error - compute Flight Profile: " + status + " Please contact your admin");
 						showErrors( eval(data) );
 					},
 					complete : function() {
-						stopBusyAnimation();
+						//stopBusyAnimation();
 						document.getElementById("btnComputeFlightProfile").disabled = false
 					},
 			});

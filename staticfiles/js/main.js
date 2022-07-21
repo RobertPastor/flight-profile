@@ -7,11 +7,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	// hide the overlay
 	$('#bodyDivOverlayId').hide();
 		  
-	let MinLongitude = -130.
-	let MinLatitude = 25.
-	let MaxLongitude = -70.
-	let MaxLatitude = 50.
-	let viewExtent = [MinLongitude , MinLatitude, MaxLongitude, MaxLatitude]
+	var MinLongitude = -130.
+	var MinLatitude = 25.
+	var MaxLongitude = -70.
+	var MaxLatitude = 50.
+	var viewExtent = [MinLongitude , MinLatitude, MaxLongitude, MaxLatitude]
 	setTimeout( function() {
 			initMain(viewExtent);
 		} , 1500 );
@@ -21,21 +21,25 @@ function initTools(globus, viewExtent) {
 	
 	$('#bodyDivOverlayId').show();
 			
-			// load the airline airports
-			airports(globus);
+	// load the airline airports
+	airports(globus);
 			
-			// load the airline routes waypoints
-			wayPoints(globus, viewExtent)
+	// load the airline routes waypoints
+	wayPoints(globus, viewExtent)
 			
-			// load a flight profile
-			showFlightProfile(globus);
+	// load a flight profile
+	showFlightProfile(globus);
 			
-			// compute Flight Profile
-			launchFlightProfile(globus);
+	// compute Flight Profile
+	launchFlightProfile(globus);
+	
+	// load airline routes
+	loadAirlineRoutes(globus);
 	
 }
 
 function initMain(viewExtent) {
+	
 	console.log("init Main ");
 	let osm = new og.layer.XYZ("OpenStreetMap", {
             isBaseLayer: true,
@@ -74,7 +78,6 @@ function stopBusyAnimation(){
 	initProgressBar();
 }
 
-
 function initProgressBar() {
     // Gets the number of image elements
     var numberOfSteps = 100;
@@ -92,7 +95,6 @@ function stopWorker() {
     console.log("worker is stopped !!!");
     // hide the progress bars
 }
-
 
 function initWorker() {
 	

@@ -25,8 +25,7 @@ Created on Mar 18, 2015
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import time
-import unittest
+import logging
 from datetime import datetime
 
 from trajectory.Guidance.WayPointFile import WayPoint, Airport
@@ -173,7 +172,7 @@ class Graph(object):
     
     
     def addEdge(self, baseEdge):
-        '''print 'Graph: add edge'''
+        '''logging.info 'Graph: add edge'''
         if (isinstance(baseEdge, Edge)):
             self._edge.append(baseEdge)
             ''' update the graph length '''
@@ -260,7 +259,7 @@ class Graph(object):
                                     wayPoint.getLatitudeDegrees(), 
                                     wayPoint.getAltitudeMeanSeaLevelMeters())
             kmlXmlDocument = kmlOutputFile.close()
-            print ( "{0} - {1}".format(self.className , strFileName) )
+            logging.info ( "{0} - {1}".format(self.className , strFileName) )
             return kmlXmlDocument
     
         return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")

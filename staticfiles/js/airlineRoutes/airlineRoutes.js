@@ -35,7 +35,7 @@ function addAirlineRoutes(airlineRoutesArray) {
 	}
 }
 
-function loadAirlineRoutes() {
+function loadAirlineRoutes(globus) {
 	
 	let show = true;
 	$("#trAirlineRoutesId").hide();

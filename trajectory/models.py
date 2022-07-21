@@ -97,12 +97,5 @@ class AirlineRunWay(models.Model):
         return "{0}/{1}".format(self.Airport.AirportICAOcode, self.Name)
     
     
-class KMLoutputFile(models.Model):
-    CreatedDate = models.DateField(default=timezone.now, null=False)
-    FileName = models.CharField(max_length = 5000, null=False)
-    KmlFile = models.FileField(upload_to='static/kml', null=True)
-    AircraftICAOcode = models.CharField(max_length = 100, null=False)
-    DepartureAirportICAOcode = models.CharField(max_length = 100, null=False)
-    ArrivalAirportICAOcode = models.CharField(max_length = 100, null=False)
-    ComputeAborted = models.BooleanField(default=False)
+
     

@@ -138,6 +138,9 @@ def getWayPoints(request):
         response_data = {'waypoints': waypoints}
         return JsonResponse(response_data)
   
+
+
+    
     
 def getAirlineAircraftsFromDB():
     airlineAircraftsList = []

@@ -57,8 +57,8 @@ function wayPoints(globus, viewExtent) {
             });
 	layerWayPoints.addTo(globus.planet);
 	
-	layerWayPoints.events.on("postdraw", function (e) {
-		console.log("event is postdraw")
+	layerWayPoints.events.on("add", function (e) {
+		console.log("event is add")
 		if (e.pickingObject instanceof og.Layer) {
 			console.log("picking object is instance of layer")
 		}

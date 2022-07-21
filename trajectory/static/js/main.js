@@ -17,7 +17,7 @@ function initProgressBar() {
     var numberOfSteps = 100;
     var progressBar = document.getElementById('workerId');
     if (progressBar) {
-        //progressBar.style.width = "0" + '%';
+        progressBar.style.width = "0" + '%';
     }
 }
 
@@ -42,10 +42,10 @@ function initWorker() {
 				//console.log(`message received - ${event.data}`);
 
                 var progressBar = document.getElementById('workerId');
-				//if (progressBar) {
-				//	progressBar.style.width = event.data + '%';
-				//	progressBar.innerText = event.data + '%';
-				//}
+				if (progressBar) {
+					progressBar.style.width = event.data + '%';
+					//progressBar.innerText = event.data + '%';
+				}
             };
         }
     } else {
@@ -68,6 +68,9 @@ function initTools(globus, viewExtent) {
 			
 	// compute Flight Profile
 	launchFlightProfile(globus);
+	
+	// load routes
+	loadAirlineRoutes(globus);
 	
 	$('#bodyDivOverlayId').show();
 }
@@ -96,13 +99,6 @@ function initMain(viewExtent) {
 		initTools (globus, viewExtent);
 	} , 1500 );
 	
-	globus.planet.events.on("layeradd", function (e) {
-		
-		console.log("layeradd event");
-		if (e.pickingObject instanceof og.Layer) {
-            console.log(e.pickingObject.name);
-        }
-    });
 }
 
 

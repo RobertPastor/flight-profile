@@ -9,6 +9,6 @@ urlpatterns = [
     re_path(r'^waypoints$' , views.getWayPoints , name='getWayPoints'),
     re_path(r'^showFlightProfile$' , views.showFlightProfile , name='showFlightProfile'),
     re_path(r'^launchFlightProfile$' , views.launchFlightProfile , name='launchFlightProfile'),
-    re_path(r'^computeFlightProfile$' , views.computeFlightProfile , name='computeFlightProfile')
+    re_path(r'^computeFlightProfile$' , views.computeFlightProfile , name='computeFlightProfile'),
 
 ]
