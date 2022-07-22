@@ -127,7 +127,7 @@ class ClimbRamp(Graph):
             ''' name the next way-point '''
             Name = ''
             if index == 0:
-                Name = 'climb-ramp-pt-{0}-{1:.2f}-meters'.format(index, cumulatedLegDistanceMeters)
+                Name = 'climbRamp-{0:.2f}-meters'.format( cumulatedLegDistanceMeters)
             #bearingDegrees = math.fmod ( runWayOrientationDegrees + 180.0 , 360.0 ) + 180.0
             bearingDegrees = runWayOrientationDegrees
             newIntermediateWayPoint = intermediateWayPoint.getWayPointAtDistanceBearing(Name = Name, 
@@ -147,7 +147,7 @@ class ClimbRamp(Graph):
             index += 1
             
         ''' set name of the last point '''
-        Name = 'climb-ramp-pt-{0}-{1:.2f}-meters'.format(index, cumulatedLegDistanceMeters)
+        Name = 'climbRamp-{0:.2f}-meters'.format( cumulatedLegDistanceMeters)
         newIntermediateWayPoint.setName(Name = Name)
  
  

@@ -117,8 +117,8 @@ function loadOneRay( rayLayer, placeMark ) {
 	
 	if ( placeMark["name"].length > 0 ) {
 		let offset = [10, 10]
-		if ( placeMark["name"].startsWith("turn") || placeMark["name"].startsWith("ground-run") 
-			|| placeMark["name"].startsWith("climb-ramp") ) {
+		if ( placeMark["name"].includes("turn") || placeMark["name"].includes("ground") 
+			|| placeMark["name"].includes("climb") || placeMark["name"].includes("touch") ) {
 			offset = [10, -20]
 		} 
 		

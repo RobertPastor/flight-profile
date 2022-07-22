@@ -156,7 +156,7 @@ class DescentGlideSlope(Graph):
             Name = ''
             ''' only the first and the last point has a name '''
             if index == 0:
-                Name = 'slope-pt-{0}-{1:.2f}-Nm'.format(index, flownDistanceMeters*Meter2NauticalMiles)
+                Name = 'slope-{0:.1f}-Nm'.format( flownDistanceMeters*Meter2NauticalMiles)
             newIntermediatePoint = intermediateWayPoint.getWayPointAtDistanceBearing( Name = Name, 
                                                                                   DistanceMeters = deltaDistanceMeters, 
                                                                                   BearingDegrees = self.bearingDegrees)
@@ -172,7 +172,7 @@ class DescentGlideSlope(Graph):
             index += 1
             
         ''' set the name of the last point '''
-        Name = 'slope-pt-{0}-{1:.2f}-Nm'.format(index, flownDistanceMeters*Meter2NauticalMiles)
+        Name = 'slope-{0:.1f}-Nm'.format( flownDistanceMeters*Meter2NauticalMiles)
         if not(newIntermediatePoint is None):
             newIntermediatePoint.setName(Name = Name)
   

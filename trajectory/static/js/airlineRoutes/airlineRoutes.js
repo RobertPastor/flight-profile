@@ -1,3 +1,5 @@
+let LayerNamePrefix = "Route-WayPoints-"
+
 document.addEventListener('DOMContentLoaded', (event) => { 
        
 	  console.log("Airline Routes.js is loaded");
@@ -32,10 +34,16 @@ function loadOneRouteWayPoint( layerRouteWayPoints, waypoint ) {
 
 function removeRouteWayPointsLayer( globus , layerName ) {
 	
-	let layer = globus.planet.getLayerByName( layerName );
-	let entities = layer.getEntities();
-	layer.removeEntities(entities);
-	
+	try {
+		let layer = globus.planet.getLayerByName( layerName );
+		if (layer) {
+			
+			let entities = layer.getEntities();
+			layer.removeEntities(entities);
+		}
+	} catch (err) {
+		console.log("layer is probably not existing")
+	}
 }
 
 
@@ -68,6 +76,7 @@ function loadRouteWayPoints( globus, airlineRoutesWaypointsArray , layerName) {
 }
 
 function loadOneAirlineRoute(globus, id) {
+	
 	let arr = id.split("-")
 	let Adep = arr[1]
 	console.log(Adep)
@@ -83,7 +92,7 @@ function loadOneAirlineRoute(globus, id) {
 					//alert("Data: " + data + "\nStatus: " + status);
 					var dataJson = eval(data);		
 					var airlineRoutesWaypointsArray = dataJson["airlineRouteWayPoints"]
-					var layerName =  "Route-WayPoints-"+ Adep + "-" + Ades
+					var layerName =  LayerNamePrefix + Adep + "-" + Ades;
 					loadRouteWayPoints(globus, airlineRoutesWaypointsArray , layerName )
 							
 			},
@@ -100,12 +109,15 @@ function loadOneAirlineRoute(globus, id) {
 
 function showHideWayPoints(globus, domElement) {
 	
-	let id = domElement.id 
-	let value = document.getElementById(id).value 
+	let id = domElement.id ;
+	let value = document.getElementById(id).value ;
+	
 	if (value == "Show") {
 		document.getElementById(id).value = "Hide"
 		console.log(id)
-		loadOneAirlineRoute(globus, id)
+		loadOneAirlineRoute(globus, id);
+		domElement.style.backgroundColor = "green";
+		
 	} else {
 		document.getElementById(id).value = "Show"
 		let arr = id.split("-")
@@ -114,8 +126,10 @@ function showHideWayPoints(globus, domElement) {
 		let Ades = arr[2]
 		console.log(Ades)
 		
-		let layerName = "Route-WayPoints-"+ Adep + "-" + Ades;
+		let layerName =  LayerNamePrefix + Adep + "-" + Ades;
 		removeRouteWayPointsLayer( globus , layerName )
+		domElement.style.backgroundColor = "yellow";
+
 	}
 }
 
@@ -149,6 +163,9 @@ function addOneAirlineRoute( globus, oneAirlineRoute ) {
 	var elemButton = document.getElementById('buttonRouteId');
 	elemButton.id = "buttonRouteId-"+oneAirlineRoute["DepartureAirportICAOCode"]+"-"+oneAirlineRoute["ArrivalAirportICAOCode"];
 	
+	/**
+	* on click function forwarding the globus argument
+	*/
 	$('#'+elemButton.id).click(function () {
 		console.log("button clicked") 
 		showHideWayPoints(globus, this);
@@ -157,7 +174,7 @@ function addOneAirlineRoute( globus, oneAirlineRoute ) {
 }
 
 /**
-* only the name of the departure and arrival airports
+* display only the names of the departure and arrival airports
 */
 function addAirlineRoutes(globus, airlineRoutesArray) {
 	
@@ -166,6 +183,30 @@ function addAirlineRoutes(globus, airlineRoutesArray) {
 		// insert one waypoint
 		addOneAirlineRoute( globus, airlineRoutesArray[airlineRouteId] );
 	}
+}
+
+function removeOneAirlineRoute ( globus, oneAirlineRoute ) {
+	
+	let Adep = oneAirlineRoute["DepartureAirportICAOCode"];
+	let Ades = oneAirlineRoute["ArrivalAirportICAOCode"];
+	try {
+		
+		let layerName = LayerNamePrefix + Adep + "-" + Ades;
+		removeRouteWayPointsLayer( globus , layerName )
+		
+	} catch (err) {
+		console.log(JSON.stringify(err));
+	}
+	
+}
+
+function removeGlobusRoutesWayPointsLayers( globus , airlineRoutesArray) {
+	
+	for (var airlineRouteId = 0; airlineRouteId < airlineRoutesArray.length; airlineRouteId++ ) {
+		// insert one waypoint
+		removeOneAirlineRoute( globus, airlineRoutesArray[airlineRouteId] );
+	}
+	
 }
 
 function loadAirlineRoutes(globus) {
@@ -181,6 +222,7 @@ function loadAirlineRoutes(globus) {
 			show = false;
 			// change name on the button
 			document.getElementById("btnAirlineRoutes").innerText = "Hide Airline Routes";
+			document.getElementById("btnAirlineRoutes").style.backgroundColor = "green";
 			$('#tableAirlineRoutesId').show();
 			// disable the button 
 			document.getElementById("btnAirlineRoutes").disabled = true
@@ -195,7 +237,7 @@ function loadAirlineRoutes(globus) {
 							//alert("Data: " + data + "\nStatus: " + status);
 							var dataJson = eval(data);		
 							var airlineRoutesArray = dataJson["airlineRoutes"]
-							addAirlineRoutes(globus, airlineRoutesArray)
+							addAirlineRoutes(  globus, airlineRoutesArray )
 							
 						},
 						error: function(data, status) {
@@ -211,6 +253,30 @@ function loadAirlineRoutes(globus) {
 
 			show = true;
 			document.getElementById("btnAirlineRoutes").innerText = "Show Airline Routes";
+			document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
+
+			// only to retrieve the list of Adep Ades
+			// use ajax to get the data 
+			$.ajax( {
+						method: 'get',
+						url :  "airline/airlineRoutes",
+						async : true,
+						success: function(data, status) {
+										
+							//alert("Data: " + data + "\nStatus: " + status);
+							var dataJson = eval(data);		
+							var airlineRoutesArray = dataJson["airlineRoutes"]
+							removeGlobusRoutesWayPointsLayers (  globus, airlineRoutesArray )
+							
+						},
+						error: function(data, status) {
+							console.log("Error - show Airline Routes : " + status + " Please contact your admin");
+						},
+						complete : function() {
+							stopBusyAnimation();
+							document.getElementById("btnAirlineRoutes").disabled = false
+						},
+			});
 			
 			$("#trAirlineRoutesId").hide();
 			$('#tableAirlineRoutesId').hide();

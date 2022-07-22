@@ -89,7 +89,7 @@ class GroundRunLeg(Graph):
                                     LongitudeDegrees = self.runway.getLongitudeDegrees(),
                                     AltitudeMeanSeaLevelMeters =self.airport.getFieldElevationAboveSeaLevelMeters())
         
-        strTouchDownWayPointName = self.runway.getName() + '-touch-down-' + self.airport.getName() 
+        strTouchDownWayPointName = self.runway.getName() + '-touchDown-' + self.airport.getName() 
         touchDownWayPoint = runWayEndPoint.getWayPointAtDistanceBearing(Name = strTouchDownWayPointName, 
                                                                         DistanceMeters = landingLengthMeters, 
                                                                         BearingDegrees = runwayTrueHeadingDegrees)
@@ -117,7 +117,7 @@ class GroundRunLeg(Graph):
         runwayTrueHeadingDegrees = math.fmod(runwayTrueHeadingDegrees + 180.0, 360.0)
 
         ''' run-way end point '''
-        strRunWayEndPointName = self.runway.getName() + '-touch-down-'+  self.airport.getName()
+        strRunWayEndPointName = self.runway.getName() + '-touchDown-'+  self.airport.getName()
         ''' rename the initial way point '''
         initialWayPoint.setName(strRunWayEndPointName)
 
@@ -146,7 +146,7 @@ class GroundRunLeg(Graph):
             ''' name of the next point '''
             Name = ''
             if index == 0:
-                Name = 'ground-run-pt-{0}-{1:.2f}-meters'.format(index-1, deltaDistanceMeters)
+                Name = 'groundRun-{0:.1f}-meters'.format( deltaDistanceMeters)
             #bearingDegrees = math.fmod ( runwayTrueHeadingDegrees + 180.0 , 360.0 )
             bearingDegrees = runwayTrueHeadingDegrees
             newIntermediateWayPoint = intermediateWayPoint.getWayPointAtDistanceBearing(Name = Name, 
@@ -243,7 +243,7 @@ class GroundRunLeg(Graph):
             
             Name = ''
             if index == 1:
-                Name = 'ground-run-pt-{0}-{1:.2f}-meters'.format(index-1, totalLegDistanceMeters)
+                Name = 'groundRun-{0:.1f}-meters'.format( totalLegDistanceMeters)
             #bearingDegrees = math.fmod ( runwayTrueHeadingDegrees + 180.0 , 360.0 )
             bearingDegrees = runwayTrueHeadingDegrees
             newIntermediateWayPoint = intermediateWayPoint.getWayPointAtDistanceBearing(Name = Name, 
@@ -266,7 +266,7 @@ class GroundRunLeg(Graph):
             index += 1
             
         ''' rename last point as take-off '''
-        intermediateWayPoint.setName(Name = 'Take-Off-{0:.2f}-meters'.format(totalLegDistanceMeters))
+        intermediateWayPoint.setName(Name = 'TakeOff-{0:.1f}-meters'.format(totalLegDistanceMeters))
    
    
     def getElapsedTimeSeconds(self):

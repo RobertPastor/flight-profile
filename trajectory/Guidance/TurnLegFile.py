@@ -309,7 +309,7 @@ class TurnLeg(Graph):
                         continueTurning = (currentHeadingDegrees >= self.finalHeadingDegrees)
                 
             ''' define the name of the new way-point '''
-            name = 'turn-pt-{0}-{1:.2f}-degrees'.format(index, currentHeadingDegrees)
+            name = 'turn-{0}-{1:.1f}-degrees'.format(index, currentHeadingDegrees)
             ''' patch do not define a name as it slows opening the KML file in Google Earth '''
             name = ''
             #logging.info self.className + ' next way-point= ' + name
@@ -350,7 +350,7 @@ class TurnLeg(Graph):
             
             
         ''' set name of last point '''
-        name = 'turn-pt-{0}-{1:.2f}-degrees'.format(index, currentHeadingDegrees)
+        name = 'turn-{0:.1f}-degrees'.format(currentHeadingDegrees)
         newIntermediateWayPoint.setName(name)
         ''' reverse the list if needed => and build the route  '''
         if self.reverse == True:
@@ -420,7 +420,7 @@ class TurnLeg(Graph):
             #logging.info self.className + ': distance flown when 1 degrees of heading angle changes= '+ str(distanceMeters) + ' meters'
                 
             ''' define the name of the new way-point '''
-            name = 'turn-pt-{0}-{1:.2f}-degrees'.format(index, angleDegrees)
+            name = 'turn-{0:.1f}-degrees'.format( angleDegrees )
             #logging.info self.className + ' next way-point= ' + name
             
             ''' convert heading into bearing '''
@@ -549,7 +549,7 @@ class TurnLeg(Graph):
                         continueTurning = (currentHeadingDegrees >= self.finalHeadingDegrees)
                 
             ''' define the name of the new way-point '''
-            name = 'turn-pt-{0}-{1:.2f}-degrees'.format(index, currentHeadingDegrees)
+            name = 'turn-{0:.1f}-degrees'.format( currentHeadingDegrees)
             #logging.info self.className + ' next way-point= ' + name
             ''' convert heading into bearing '''
             bearingDegrees = math.fmod ( currentHeadingDegrees + 180.0 , 360.0 ) - 180.0
