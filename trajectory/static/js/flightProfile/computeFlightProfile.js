@@ -151,7 +151,7 @@ function loadOneRay( rayLayer, placeMark ) {
 function addRays ( rayLayer , placeMarks ) {
 	
 	// add the waypoints
-	for (var placeMarkId = 0; placeMarkId < placeMarks.length; placeMarkId++ ) {
+	for (let placeMarkId = 0; placeMarkId < placeMarks.length; placeMarkId++ ) {
 		// insert one waypoint
 		loadOneRay( rayLayer, placeMarks[placeMarkId] );
 	}
@@ -201,6 +201,133 @@ function createRayLayer(globus) {
 	let rayLayer = new og.layer.Vector("rays", { polygonOffsetUnits: 0 });
 	rayLayer.addTo(globus.planet);
 	return rayLayer;
+}
+
+	
+
+function displayD3LineChart( arrayAltitudeMSLtime ) {
+	
+	// set the dimensions and margins of the graph
+	var margin = {top: 10, right: 50, bottom: 10, left: 50}
+    var width = 700 - margin.left - margin.right;
+    var height = 700 - margin.top - margin.bottom;
+	
+	var data =  arrayAltitudeMSLtime["groundTrack"] 
+	
+	var parentDiv = document.getElementById("globusDivId");
+	
+	width = parentDiv.clientWidth - margin.left - margin.right; 
+	height = parentDiv.clientHeight - margin.top - margin.bottom;
+	
+	var topTable = document.getElementById("mainTableId")
+	height = height - topTable.clientHeight
+
+	// append the svg object to the body of the page
+	var svg = d3.select("#d3vizId")
+		.data(data)
+		.append("svg")
+		.attr("width", width)
+		.attr("height", height)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			  
+	let maxX = arrayAltitudeMSLtime["maxElapsedTimeSeconds"]
+		
+	// Add X axis --> it is a integer format
+	var x = d3.scaleLinear()
+				.domain([1,maxX ])
+				.range([ 0, width ]);
+	
+	// .attr("transform", "translate(0," + height + ")")
+	svg.append("g")
+			.call(d3.axisBottom(x));
+			
+	let maxY = arrayAltitudeMSLtime["MaxAltitudeMSLmeters"]
+	
+	// Add Y axis
+	var y = d3.scaleLinear()
+			.domain([0, maxY + 1000])
+			.range([ height, 0 ]);
+			
+	svg.append("g")
+			.call(d3.axisLeft(y));
+			
+	// This allows to find the closest X index of the mouse:
+	var bisect = d3.bisector(function(d) { return d.x; }).left;
+
+	// Create the circle that travels along the curve of chart
+	var focus = svg
+			.append('g')
+			.append('circle')
+			.style("fill", "yellow")
+			.attr("stroke", "black")
+			.attr('r', 8.5)
+			.style("opacity", 0)
+
+	// Create the text that travels along the curve of chart
+	var focusText = svg
+			.append('g')
+			.append('text')
+			.style("opacity", 0)
+			.attr("text-anchor", "left")
+			.attr("alignment-baseline", "middle")
+
+	// Add the line
+	 svg
+		.append("path")
+		.attr("d", d3.line()
+		  .x(function(d) { 
+				return x(d.x) 
+			})
+		  .y(function(d) { 
+				return y(d.y) 
+			})
+		  )
+
+	// Create a rect on top of the svg area: this rectangle recovers mouse position
+	svg
+		.append('rect')
+		.style("fill", "none")
+		.style("pointer-events", "all")
+		.attr('width', width)
+		.attr('height', height)
+		.on('mouseover', mouseover)
+		.on('mousemove', mousemove)
+		.on('mouseout', mouseout);
+
+
+	// What happens when the mouse move -> show the annotations at the right positions.
+	function mouseover() {
+				focus.style("opacity", 1)
+				focusText.style("opacity",1)
+	}
+
+	function mousemove(domElement) {
+		// recover coordinate we need
+		var x0 = x.invert(d3.pointer(domElement)[0]);
+		var i = bisect(data, x0, 1);
+		try {
+			selectedData = data[i]
+			focus
+					  .attr("cx", x(selectedData.x))
+					  .attr("cy", y(selectedData.y))
+			focusText
+					  .html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
+					  .attr("x", x(selectedData.x)+15)
+					  .attr("y", y(selectedData.y))
+		} catch (err) {
+			
+		}
+	}
+				
+	function mouseout() {
+		focus.style("opacity", 0)
+		focusText.style("opacity", 0)
+	}
+
+	// show the svg
+	$("#d3vizId").show();
+	$("#globusDivId").hide()
 }
 
 function launchFlightProfile(globus) {
@@ -282,6 +409,7 @@ function launchFlightProfile(globus) {
 			$('#tableFlightProfileId').hide();
 		}
 	} 
+	 
 	
 	/**
 	* monitor the button used to launch the profile computation
@@ -328,6 +456,9 @@ function launchFlightProfile(globus) {
 							
 							let rayLayer = createRayLayer(globus)
 							addRays( rayLayer , dataJson["placeMarks"] );
+							
+							let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"]
+							displayD3LineChart(arrayAltitudeMSLtime);
 							
 						}
 					},

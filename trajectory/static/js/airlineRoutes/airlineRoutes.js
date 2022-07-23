@@ -40,6 +40,7 @@ function removeRouteWayPointsLayer( globus , layerName ) {
 			
 			let entities = layer.getEntities();
 			layer.removeEntities(entities);
+			layer.remove();
 		}
 	} catch (err) {
 		console.log("layer is probably not existing")
@@ -113,12 +114,14 @@ function showHideWayPoints(globus, domElement) {
 	let value = document.getElementById(id).value ;
 	
 	if (value == "Show") {
+		
 		document.getElementById(id).value = "Hide"
 		console.log(id)
 		loadOneAirlineRoute(globus, id);
 		domElement.style.backgroundColor = "green";
 		
 	} else {
+		
 		document.getElementById(id).value = "Show"
 		let arr = id.split("-")
 		let Adep = arr[1]
@@ -162,6 +165,15 @@ function addOneAirlineRoute( globus, oneAirlineRoute ) {
 	
 	var elemButton = document.getElementById('buttonRouteId');
 	elemButton.id = "buttonRouteId-"+oneAirlineRoute["DepartureAirportICAOCode"]+"-"+oneAirlineRoute["ArrivalAirportICAOCode"];
+	
+	let layerName = LayerNamePrefix + oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"] 
+	let layer = globus.planet.getLayerByName( layerName );
+	if (layer) {
+		// layer is existing -> hide it
+		document.getElementById(elemButton.id).value = "Hide"
+		document.getElementById(elemButton.id).style.backgroundColor = "green";
+		
+	}
 	
 	/**
 	* on click function forwarding the globus argument
@@ -224,6 +236,7 @@ function loadAirlineRoutes(globus) {
 			document.getElementById("btnAirlineRoutes").innerText = "Hide Airline Routes";
 			document.getElementById("btnAirlineRoutes").style.backgroundColor = "green";
 			$('#tableAirlineRoutesId').show();
+			
 			// disable the button 
 			document.getElementById("btnAirlineRoutes").disabled = true
 
@@ -266,7 +279,8 @@ function loadAirlineRoutes(globus) {
 							//alert("Data: " + data + "\nStatus: " + status);
 							var dataJson = eval(data);		
 							var airlineRoutesArray = dataJson["airlineRoutes"]
-							removeGlobusRoutesWayPointsLayers (  globus, airlineRoutesArray )
+							//removeGlobusRoutesWayPointsLayers (  globus, airlineRoutesArray );
+							//showRoutesWayPointsLayers ( globus, airlineRoutesArray );
 							
 						},
 						error: function(data, status) {

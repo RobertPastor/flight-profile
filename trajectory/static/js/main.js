@@ -87,7 +87,7 @@ function initMain(viewExtent) {
 	
     // a HTMLDivElement which its id is `globus`
     var globus = new og.Globe({
-            "target": "globus", 
+            "target": "globusDivId", 
             "name": "Earth",
             "terrain": new og.terrain.GlobusTerrain(),
             "layers": [osm],

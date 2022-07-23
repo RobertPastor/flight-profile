@@ -512,7 +512,6 @@ class FlightPath(FlightPlan):
         assert not( self.departureAirport is None)
         
         try:
-        
             if self.isDomestic() or self.isOutBound():
                 initialHeadingDegrees , initialWayPoint = self.buildDeparturePhase()
           
@@ -549,12 +548,23 @@ class FlightPath(FlightPlan):
     def createFlightOutputFiles(self):
         ''' build outputs '''
         #self.finalRoute.createXlsxOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
-        kmlFile = self.finalRoute.createKmlOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
+        kmlXmlDocument = self.finalRoute.createKmlOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
         ''' add a prefix to the file path to identify the departure and arrival airport '''
         
         #self.aircraft.createStateVectorOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
         logging.info (  '{0} - final route length= {1:.2f} nautics'.format(self.className, self.finalRoute.getLengthMeters()*Meter2NauticalMiles) )
-        return kmlFile
+        return kmlXmlDocument
+    
+    
+    def createCsvAltitudeTimeProfile(self):
+        csvAltitudeTimeProfile = self.finalRoute.createCsvAltitudeTimeProfile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
+        return csvAltitudeTimeProfile
+    
+    
+    def createKmlXmlDocument(self):
+        kmlXmlDocument = self.finalRoute.createKmlOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
+        return kmlXmlDocument
+    
 
     def getAircraftCurrentMassKilograms(self):
         return self.aircraft.getAircraftCurrentMassKilograms()

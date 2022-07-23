@@ -91,7 +91,7 @@ def getPlaceMarks(XmlDocument):
     print ( "length place marks = {0}".format(len ( placeMarksList )) )
     return placeMarksList
     
-    
+
 def showFlightProfile(request):
     print ("show Flight Profile")
     if (request.method == 'GET'):
@@ -100,7 +100,7 @@ def showFlightProfile(request):
             'kmlURL': "/static/kml/" + fileName,
             'placeMarks' : getPlaceMarks(fileName)}
         return JsonResponse(response_data)
-    
+
     
 def getWayPointsFromDB(viewExtent):
     wayPointsList = []
@@ -138,10 +138,7 @@ def getWayPoints(request):
         response_data = {'waypoints': waypoints}
         return JsonResponse(response_data)
   
-
-
-    
-    
+  
 def getAirlineAircraftsFromDB():
     airlineAircraftsList = []
     for airlineAircraft in AirlineAircraft.objects.all():
@@ -217,14 +214,17 @@ def computeFlightProfile(request):
                 flightPath.computeFlight(deltaTimeSeconds = 1.0)
     
                 logger.info ( "=========== Flight Plan create output files  =========== " )
+                csvAltitudeMSLTimeGroundTrack = flightPath.createCsvAltitudeTimeProfile()
     
-                kmlXmlDocument = flightPath.createFlightOutputFiles()
-                if ( kmlXmlDocument ):
+                kmlXmlDocument = flightPath.createKmlXmlDocument()
+                if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack):
                     logger.info ( "=========== Flight Plan end  =========== "  )
                                         
                     response_data = {
                                 'kmlXMLjson': xmltodict.parse( kmlXmlDocument ),
-                                'placeMarks' : getPlaceMarks(kmlXmlDocument)}
+                                'placeMarks' : getPlaceMarks(kmlXmlDocument) ,
+                                'csvAltitudeMSLtime' : csvAltitudeMSLTimeGroundTrack
+                                }
                     return JsonResponse(response_data)
                 else:
                     logger.info ('Error while retrieving the KML document')

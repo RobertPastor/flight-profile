@@ -264,6 +264,7 @@ class Graph(object):
     
         return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")
     
+    
     def createXlsxOutputFile(self, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcode):
         assert (type(abortedFlight) == bool )
         
@@ -317,6 +318,47 @@ class Graph(object):
                 index += 1
             groundTrackOutput.close()
             
+            
+    def createCsvAltitudeTimeProfile(self, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcode):
+        assert (type(abortedFlight) == bool )
+        
+        groundTrack = list()
+        maxAltitudeMSLmeters = 0.0
+        maxElapsedTimeSeconds = 0.0
+        
+        counter = 0
+        
+        if self.getNumberOfVertices() > 1:
+            ''' need at least two vertices '''
+            tail = self.getVertex(0)
+            head = self.getLastVertex()
+            assert isinstance(tail.getWeight(), WayPoint)
+            assert isinstance(head.getWeight(), WayPoint)
+            
+            ''' loop '''
+            for vertex in self.getVertices():
+                ''' build an edge having two consecutive vertices as tail and head '''
+                    
+                wayPoint = vertex.getWeight()
+                if ( wayPoint.getAltitudeMeanSeaLevelMeters() > maxAltitudeMSLmeters):
+                    maxAltitudeMSLmeters = wayPoint.getAltitudeMeanSeaLevelMeters()
+                
+                maxElapsedTimeSeconds = wayPoint.getElapsedTimeSeconds()
+                
+                outputWayPoint = {
+                    "x"  : wayPoint.getElapsedTimeSeconds(),
+                    "y"  : round ( wayPoint.getAltitudeMeanSeaLevelMeters() , 1 )
+                    }
+                #outputWayPoint = [wayPoint.getElapsedTimeSeconds(), wayPoint.getAltitudeMeanSeaLevelMeters()]
+                if ( counter % 10 ) == 0:
+                    groundTrack.append(outputWayPoint)
+                counter = counter + 1
+                
+        return {
+            "groundTrack" : groundTrack,
+            "MaxAltitudeMSLmeters" : maxAltitudeMSLmeters,
+            "maxElapsedTimeSeconds" : maxElapsedTimeSeconds
+            }
             
     def getLengthMeters(self):
         return self.lengthMeters
