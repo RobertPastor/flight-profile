@@ -5,6 +5,7 @@ Created on 29 août 2021
 '''
 
 import os
+import logging
 
 from xlrd import open_workbook
 from airline.models import AirlineAircraft
@@ -27,9 +28,9 @@ class AirlineFleetDataBase(object):
         #self.FilesFolder = os.getcwd()
         self.FilesFolder = os.path.dirname(__file__)
 
-        print ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
+        logging.info ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
         self.FilePath = os.path.abspath(self.FilesFolder+ os.path.sep + self.FilePath)
-        print ( self.className + ': file path= {0}'.format(self.FilePath) )
+        logging.info ( self.className + ': file path= {0}'.format(self.FilePath) )
         
         
     def exists(self):
@@ -38,28 +39,28 @@ class AirlineFleetDataBase(object):
 
     def read(self, badaAircraftDatabase):
         ''' this method reads the whole file - not only the headers '''
-        print (self.FilePath)
+        logging.info (self.FilePath)
         assert len(self.FilePath)>0 and os.path.isfile(self.FilePath) 
         book = open_workbook(self.FilePath, formatting_info=True)
         ''' assert there is only one sheet '''
         self.sheet = book.sheet_by_index(0)
-        #print ( 'Sheet contains - number of rows = {0}'.format(self.sheet.nrows))
+        #logging.info ( 'Sheet contains - number of rows = {0}'.format(self.sheet.nrows))
         for row in range(self.sheet.nrows):
-            #print ( '--> row --> {0}'.format(row) )
+            #logging.info ( '--> row --> {0}'.format(row) )
             rowValues = self.sheet.row_values(row, start_colx=0, end_colx=self.sheet.ncols)
             if row == 0:
                 self.ColumnNames = {}
                 index = 0
                 for column in rowValues:
                     if column not in HeaderNames:
-                        print ( self.className + ': ERROR - expected Fleet column name= {0} not in Header names'.format(column) )
+                        logging.info ( self.className + ': ERROR - expected Fleet column name= {0} not in Header names'.format(column) )
                         return False
                     else:
                         self.ColumnNames[column] = index
                     index += 1
 
             else:
-                #print ( str(row) )
+                #logging.info ( str(row) )
                 index = 0
                 aircraftFullName = ""
                 nbAvailableAircrafts = 0
@@ -68,26 +69,26 @@ class AirlineFleetDataBase(object):
                 for cell in rowValues:
                     if index == 0:
                         if len(str(cell))>0:
-                            #print ( cell )
+                            #logging.info ( cell )
                             aircraftFullName = str(cell).strip()
                         index = index + 1
                     else:
                         if (HeaderNames[index] == "In service"):
                             if len (str(cell).strip()) > 0 :
-                                #print ( str(cell).strip() )
-                                #print ( type ( str(cell).strip() ) )
+                                #logging.info ( str(cell).strip() )
+                                #logging.info ( type ( str(cell).strip() ) )
                                 nbAvailableAircrafts = float(str(cell).strip())
                                 nbAvailableAircrafts = int ( nbAvailableAircrafts )
                             
                         if (HeaderNames[index] == "Passengers Total"):
                             if len (str(cell).strip()) > 0 :
-                                #print ( str(cell).strip() )
+                                #logging.info ( str(cell).strip() )
                                 nbMaxPassengers = float(str(cell).strip())
                                 nbMaxPassengers = int ( nbMaxPassengers )
 
                         if (HeaderNames[index] == "Costs per flying hours dollars"):
                             if len (str(cell).strip()) > 0 :
-                                #print ( cell )
+                                #logging.info ( cell )
                                 assert ( type (str(cell).strip() == float ))
                                 costsFlyingDollars = float( str(cell).strip() )
                             
@@ -95,9 +96,9 @@ class AirlineFleetDataBase(object):
                         
                 ''' one ac per row '''
                 aircraftICAOcode = badaAircraftDatabase.getAircraftICAOcode(aircraftFullName)
-                print ( aircraftFullName )
+                logging.info ( aircraftFullName )
                 if (aircraftICAOcode):
-                    print ("aircraft ICAO code found = {0} for aircraft full name = {1}".format(aircraftICAOcode, aircraftFullName))
+                    logging.info ("aircraft ICAO code found = {0} for aircraft full name = {1}".format(aircraftICAOcode, aircraftFullName))
                     airlineAircraft = AirlineAircraft( 
                         aircraftICAOcode = aircraftICAOcode, 
                         aircraftFullName = aircraftFullName, 
@@ -114,10 +115,10 @@ class AirlineFleetDataBase(object):
         index = 0
         ''' use a copy '''
         for airlineAircraft in list ( self.FleetAircrafts ):
-            print ( airlineAircraft.getAircraftFullName() )
+            logging.info ( airlineAircraft.getAircraftFullName() )
             for acFullName in listOfFullNames:
                 if acFullName == airlineAircraft.getAircraftFullName():
-                    print ( "aircraft found -> {0}".format( acFullName ) )
+                    logging.info ( "aircraft found -> {0}".format( acFullName ) )
 
                     self.FleetAircrafts.pop(index)
                     break
@@ -127,7 +128,7 @@ class AirlineFleetDataBase(object):
     
     def dump(self):
         for aircraft in self.FleetAircraftTypes:
-            print ( 'fleet aircraft type -> {0}'.format( aircraft ))
+            logging.info ( 'fleet aircraft type -> {0}'.format( aircraft ))
                 
     def getAirlineAircrafts(self):
         for airlineAircraft in self.FleetAircrafts:

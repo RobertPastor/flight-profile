@@ -27,12 +27,11 @@ Created on 12 juil. 2014
 @note:  create an Xlsx file
 
 '''
-
+import logging
 from datetime import datetime
 
 import xlsxwriter
 import os
-import unittest
 
 
 class XlsxOutput():
@@ -54,12 +53,12 @@ class XlsxOutput():
         
         self.FilesFolder = os.path.dirname(__file__)
         
-        print ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
+        logging.info ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
         self.filePath = os.path.abspath(self.FilesFolder + os.path.sep + ".." + os.path.sep + "ResultsFiles" + os.path.sep + self.filePath)
-        print ( self.className + ': file path= {0}'.format(self.filePath) )
+        logging.info ( self.className + ': file path= {0}'.format(self.filePath) )
 
         self.filePath = self.filePath + '-{0}.xlsx'.format(datetime.now().strftime("%d-%b-%Y-%Hh%Mm%S"))
-        print ( self.className + ': file path= {0}'.format(self.filePath) )
+        logging.info ( self.className + ': file path= {0}'.format(self.filePath) )
 
         self.workbook = xlsxwriter.Workbook(self.filePath)
         self.worksheet = self.workbook.add_worksheet(sheetName)

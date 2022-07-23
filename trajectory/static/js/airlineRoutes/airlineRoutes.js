@@ -32,21 +32,6 @@ function loadOneRouteWayPoint( layerRouteWayPoints, waypoint ) {
 	}));
 }
 
-function removeRouteWayPointsLayer( globus , layerName ) {
-	
-	try {
-		let layer = globus.planet.getLayerByName( layerName );
-		if (layer) {
-			
-			let entities = layer.getEntities();
-			layer.removeEntities(entities);
-			layer.remove();
-		}
-	} catch (err) {
-		console.log("layer is probably not existing")
-	}
-}
-
 
 function loadRouteWayPoints( globus, airlineRoutesWaypointsArray , layerName) {
 	
@@ -130,7 +115,8 @@ function showHideWayPoints(globus, domElement) {
 		console.log(Ades)
 		
 		let layerName =  LayerNamePrefix + Adep + "-" + Ades;
-		removeRouteWayPointsLayer( globus , layerName )
+		// function defined in main.js
+		removeLayer( globus , layerName )
 		domElement.style.backgroundColor = "yellow";
 
 	}
@@ -172,7 +158,6 @@ function addOneAirlineRoute( globus, oneAirlineRoute ) {
 		// layer is existing -> hide it
 		document.getElementById(elemButton.id).value = "Hide"
 		document.getElementById(elemButton.id).style.backgroundColor = "green";
-		
 	}
 	
 	/**
@@ -204,7 +189,7 @@ function removeOneAirlineRoute ( globus, oneAirlineRoute ) {
 	try {
 		
 		let layerName = LayerNamePrefix + Adep + "-" + Ades;
-		removeRouteWayPointsLayer( globus , layerName )
+		removeLayer( globus , layerName )
 		
 	} catch (err) {
 		console.log(JSON.stringify(err));

@@ -6,6 +6,21 @@ document.addEventListener('DOMContentLoaded', () => {
 	init();
 });
 
+function removeLayer( globus , layerName ) {
+	
+	try {
+		let layer = globus.planet.getLayerByName( layerName );
+		if (layer) {
+			
+			let entities = layer.getEntities();
+			layer.removeEntities(entities);
+			layer.remove();
+		}
+	} catch (err) {
+		console.log("layer is probably not existing")
+	}
+}
+
 function stopBusyAnimation(){
 	console.log("stop busy anymation");
 	stopWorker();

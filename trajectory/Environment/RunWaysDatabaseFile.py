@@ -28,6 +28,8 @@ Created on 8 avr. 2015
 '''
 
 import os
+import logging
+
 from xlrd import open_workbook
 from trajectory.Environment.RunWayFile import RunWay
 
@@ -52,9 +54,9 @@ class RunWayDataBase(object):
         #self.FilesFolder = os.getcwd()
         self.FilesFolder = os.path.dirname(__file__)
 
-        print ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
+        logging.info ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
         self.FilePath = os.path.abspath(self.FilesFolder+ os.path.sep + self.FilePath)
-        print ( self.className + ': file path= {0}'.format(self.FilePath) )
+        logging.info ( self.className + ': file path= {0}'.format(self.FilePath) )
 
         #self.runWaysDb = {}
         
@@ -62,8 +64,8 @@ class RunWayDataBase(object):
         '''
         in one row there might be TWO run-ways
         '''
-        #print ( 'id content= {0}'.format( rowValues[self.ColumnNames['id']] ) )
-        #print ( type ( rowValues[self.ColumnNames['id']] ) )
+        #logging.info ( 'id content= {0}'.format( rowValues[self.ColumnNames['id']] ) )
+        #logging.info ( type ( rowValues[self.ColumnNames['id']] ) )
         id_content = str( int ( rowValues[self.ColumnNames['id']] ) )
         if len(id_content.strip())> 0:
                 
@@ -174,7 +176,7 @@ class RunWayDataBase(object):
         ''' assert there is only one sheet '''
         assert not(self.sheet is None)
         assert (isinstance(airportICAOcode, str)) and len(airportICAOcode)>0
-        #print self.className + ': find runways for airport= {0}'.format(airportICAOcode)
+        #logging.info self.className + ': find runways for airport= {0}'.format(airportICAOcode)
         runwaysDict = {}
         for row in range(self.sheet.nrows): 
             rowValues = self.sheet.row_values(row, start_colx=0, end_colx=self.sheet.ncols)
@@ -190,7 +192,7 @@ class RunWayDataBase(object):
         
     def read(self):
         ''' this method does not read the whole file - only the headers '''
-        print (self.FilePath)
+        logging.info (self.FilePath)
         assert len(self.FilePath)>0 and os.path.isfile(self.FilePath) 
         book = open_workbook(self.FilePath, formatting_info=True)
         ''' assert there is only one sheet '''
@@ -202,7 +204,7 @@ class RunWayDataBase(object):
                 index = 0
                 for column in rowValues:
                     if column not in fieldNames:
-                        print ( self.className + ': ERROR - expected runway column name= {0} not in field names'.format(column) )
+                        logging.info ( self.className + ': ERROR - expected runway column name= {0} not in field names'.format(column) )
                         return False
                     else:
                         self.ColumnNames[column] = index
@@ -213,14 +215,14 @@ class RunWayDataBase(object):
     
     
     def __str__(self):
-        print ( self.className + ':RunWay DataBase= {0}'.format(self.FilePath) )
+        logging.info ( self.className + ':RunWay DataBase= {0}'.format(self.FilePath) )
         
         
     def getFilteredRunWays(self, airportICAOcode, runwayName = ''):
         assert not(airportICAOcode is None) 
         assert isinstance(airportICAOcode, (str)) 
         assert (len(airportICAOcode)>0)
-        #print self.className + ': query for airport= {0} and runway= {1}'.format(airportICAOcode, runwayName)
+        #logging.info self.className + ': query for airport= {0} and runway= {1}'.format(airportICAOcode, runwayName)
         assert not(self.sheet is None)
         runwaysDict = {}
         for row in range(self.sheet.nrows): 

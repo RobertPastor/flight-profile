@@ -29,6 +29,7 @@ create a KML output file that is readable in Google Earth
 '''
 import os
 import xml.dom.minidom
+import logging
 
 
 class KmlOutput():
@@ -111,7 +112,7 @@ class KmlOutput():
         #self.filePath = os.path.join( self.FilesFolder , self.fileName )
         self.filePath = os.path.join( "/static/kml" , self.fileName)
         #self.filePath = "static/kml/" + self.fileName
-        print ( self.className + ': file path= {0}'.format(self.filePath) )
+        logging.info ( self.className + ': file path= {0}'.format(self.filePath) )
         
         kmlXmlDocument = self.kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8')
         return kmlXmlDocument

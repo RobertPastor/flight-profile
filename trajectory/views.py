@@ -88,7 +88,7 @@ def getPlaceMarks(XmlDocument):
                 "height": str(coordinates).split(",")[2]
             })
    
-    print ( "length place marks = {0}".format(len ( placeMarksList )) )
+    logging.info ( "length place marks = {0}".format(len ( placeMarksList )) )
     return placeMarksList
     
 
@@ -207,7 +207,7 @@ def computeFlightProfile(request):
                 flightPath = FlightPath(
                                 route = routeAsString, 
                                 aircraftICAOcode = aircraftICAOcode,
-                                RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet()/100., 
+                                RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
                                 cruiseMach = acPerformance.getMaxOpMachNumber(), 
                                 takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
 

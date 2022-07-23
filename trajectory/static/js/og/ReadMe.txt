@@ -39,3 +39,22 @@ copy from D:\Node.js\openglobus\dist\@openglobus
 2) og.umd.js.map
 
 to the project static js folder : /flight-profile/trajectory/static/js/og
+
+=================================
+to avoid compressing minifying 
+
+in file rollup.config.js suppress terser in the 1st plugins
+
+export default [
+    {
+        input: `src/og/index${LIB_SUFFIX}.js`,
+        output: [
+            {
+                file: `${OUTPUT_NAME}umd.js`,
+                format: "umd",
+                name: "og",
+                sourcemap: true
+            }
+        ],
+        plugins: [json()]
+

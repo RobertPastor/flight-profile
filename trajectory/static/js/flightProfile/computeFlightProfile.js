@@ -180,9 +180,12 @@ function showErrors ( jsonErrors ) {
 			.dialog('open'); 
 }
 
-function createKMLLayer(globus) {
+function createKMLLayer(globus , layerName ) {
 	
-	let layerKML = new og.layer.KML( "FlightProfile" , {
+	let finalLayerName = "FlightProfile-" + layerName 
+	removeLayer( globus , finalLayerName )
+	
+	let layerKML = new og.layer.KML( finalLayerName , {
 		billboard: { 
 			src: '/static/images/move_down_icon.png', 
 			color: '#6689db' ,
@@ -195,20 +198,22 @@ function createKMLLayer(globus) {
 	return layerKML;
 }
 
-function createRayLayer(globus) {
+function createRayLayer(globus , layerName ) {
 	
+	let finalLayerName = "Rays-" + layerName
+	removeLayer( globus , finalLayerName )
+
 	//polygonOffsetUnits is needed to hide rays behind globe
-	let rayLayer = new og.layer.Vector("rays", { polygonOffsetUnits: 0 });
+	let rayLayer = new og.layer.Vector( finalLayerName , { polygonOffsetUnits: 0 });
 	rayLayer.addTo(globus.planet);
 	return rayLayer;
 }
 
-	
 
 function displayD3LineChart( arrayAltitudeMSLtime ) {
 	
 	// set the dimensions and margins of the graph
-	var margin = {top: 10, right: 50, bottom: 10, left: 50}
+	var margin = {top: 10, right: 30, bottom: 10, left: 50}
     var width = 700 - margin.left - margin.right;
     var height = 700 - margin.top - margin.bottom;
 	
@@ -223,6 +228,7 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	height = height - topTable.clientHeight
 
 	// append the svg object to the body of the page
+	removeAllChilds (document.getElementById("d3vizId"))
 	var svg = d3.select("#d3vizId")
 		.data(data)
 		.append("svg")
@@ -235,71 +241,120 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 		
 	// Add X axis --> it is a integer format
 	var x = d3.scaleLinear()
-				.domain([1,maxX ])
-				.range([ 0, width ]);
+		.domain([1,maxX ])
+		.range([ 0, width ]);
 	
 	// .attr("transform", "translate(0," + height + ")")
+	// the axis will appear on the top
 	svg.append("g")
-			.call(d3.axisBottom(x));
+		.call(d3.axisBottom(x));
+		
+	// x Axis label
+	svg.append("text")
+		.attr("class", "x label")
+		.attr("text-anchor", "end")
+		.attr("x", width - 60)
+		.attr("y", 30)
+		.text("duration time (seconds)");
 			
 	let maxY = arrayAltitudeMSLtime["MaxAltitudeMSLmeters"]
 	
-	// Add Y axis
+	// create Y axis
 	var y = d3.scaleLinear()
 			.domain([0, maxY + 1000])
 			.range([ height, 0 ]);
-			
+	// add Y axis
 	svg.append("g")
 			.call(d3.axisLeft(y));
+			
+	// add Y axis label
+	svg.append("text")
+		.attr("class", "y label")
+		.attr("text-anchor", "end")
+		.attr("y", 6)
+		.attr("dy", ".75em")
+		.attr("transform", "rotate(-90)")
+		.text("Altitude Mean Sea Level (meters)");
 			
 	// This allows to find the closest X index of the mouse:
 	var bisect = d3.bisector(function(d) { return d.x; }).left;
 
 	// Create the circle that travels along the curve of chart
-	var focus = svg
-			.append('g')
+	var focus = svg.append('g')
 			.append('circle')
 			.style("fill", "yellow")
 			.attr("stroke", "black")
 			.attr('r', 8.5)
 			.style("opacity", 0)
+			
+	function getBB(selection) {
+		selection.each(function(d){
+			d.bbox = this.getBBox();
+		})
+	}
 
 	// Create the text that travels along the curve of chart
-	var focusText = svg
-			.append('g')
+	var focusText = svg.append('g')
 			.append('text')
-			.style("opacity", 0)
+			.style("opacity", 1)
 			.attr("text-anchor", "left")
 			.attr("alignment-baseline", "middle")
+			.call(getBB);   
+			
+	focusText.insert("rect","text")
+		.attr("width", function(d){return d.bbox.width})
+		.attr("height", function(d){return d.bbox.height})
+		.style("fill", "yellow");
 
 	// Add the line
-	 svg
-		.append("path")
+	svg.append("path")
+		.attr("class", "line")
+		.attr("stroke", "#32CD32")
+		.attr("stroke-width", 1.2)
+		.attr("fill", "#FFFFFF")
 		.attr("d", d3.line()
-		  .x(function(d) { 
+		  .x(function(d) {
+				// assumption that data has x element
 				return x(d.x) 
 			})
 		  .y(function(d) { 
 				return y(d.y) 
 			})
 		  )
+		  
+	var path = svg.selectAll("dot")
+		 .data(data)
+		 .enter().append("circle")
+		 .attr("r", 0.5)
+		 .attr("cx", function (d) {
+			   return x(d.x);
+		 })
+		 .attr("cy", function (d) {
+			  return y(d.y);
+		 })
+		 .attr("stroke", "#32CD32")
+		 .attr("stroke-width", 0.5)
+		 .attr("fill", "#FFFFFF");
 
 	// Create a rect on top of the svg area: this rectangle recovers mouse position
-	svg
-		.append('rect')
+	svg.append('rect')
 		.style("fill", "none")
 		.style("pointer-events", "all")
 		.attr('width', width)
 		.attr('height', height)
 		.on('mouseover', mouseover)
 		.on('mousemove', mousemove)
-		.on('mouseout', mouseout);
-
+		.on('mouseout', mouseout)
+		.on('dblclick',function(node) { 
+			//console.log("node was double clicked");
+			$("#d3vizId").hide();
+			//$("#globusDivId").show()
+	})
 
 	// What happens when the mouse move -> show the annotations at the right positions.
 	function mouseover() {
-				focus.style("opacity", 1)
-				focusText.style("opacity",1)
+		focus.style("opacity", 1)
+		focusText.style("opacity",1)
 	}
 
 	function mousemove(domElement) {
@@ -309,14 +364,14 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 		try {
 			selectedData = data[i]
 			focus
-					  .attr("cx", x(selectedData.x))
+				.attr("cx", x(selectedData.x))
 					  .attr("cy", y(selectedData.y))
 			focusText
-					  .html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
-					  .attr("x", x(selectedData.x)+15)
-					  .attr("y", y(selectedData.y))
+				.html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
+				.attr("x", x(selectedData.x) + 15)
+				.attr("y", y(selectedData.y))
 		} catch (err) {
-			
+			console.log(JSON.stringify(err))
 		}
 	}
 				
@@ -327,11 +382,10 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 
 	// show the svg
 	$("#d3vizId").show();
-	$("#globusDivId").hide()
+	//$("#globusDivId").hide()
 }
 
 function launchFlightProfile(globus) {
-	
 	
 	globus.planet.events.on("layeradd", function (e) {
 		
@@ -443,7 +497,7 @@ function launchFlightProfile(globus) {
 							
 						} else {
 							
-							let layerKML = createKMLLayer(globus);
+							let layerKML = createKMLLayer(globus , route);
 							
 							// convert JSON to XML
 							var x2js = new X2JS();
@@ -452,9 +506,9 @@ function launchFlightProfile(globus) {
 							let parser = new DOMParser();
 							let xmlDoc = parser.parseFromString(xml, "text/xml");
 							
-							layerKML.addKmlFromXml( kmlAsXml = xmlDoc );
+							layerKML.addKmlFromXml( kmlAsXml = xmlDoc , color = null , billboard = null );
 							
-							let rayLayer = createRayLayer(globus)
+							let rayLayer = createRayLayer(globus , route)
 							addRays( rayLayer , dataJson["placeMarks"] );
 							
 							let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"]

@@ -58,6 +58,7 @@ Sample entries
 '''
 import os
 import csv
+import logging
 
 from trajectory.Guidance.WayPointFile import Airport
 
@@ -83,9 +84,9 @@ class AirportsDatabase(object):
         
         self.airportsFilesFolder = os.path.dirname(__file__)
 
-        print ( self.className + ': file folder= {0}'.format(self.airportsFilesFolder) )
+        logging.info ( self.className + ': file folder= {0}'.format(self.airportsFilesFolder) )
         self.FilePath = (self.airportsFilesFolder + os.path.sep + self.FilePath)
-        print ( self.className + ': file path= {0}'.format(self.FilePath) )
+        logging.info ( self.className + ': file path= {0}'.format(self.FilePath) )
 
     def read(self):
         try:
@@ -101,7 +102,7 @@ class AirportsDatabase(object):
                 self.airportsDb[row["ICAO Code"]] = airport
             return True
         except Exception as e:
-            print ( e )
+            logging.info ( e )
             return False
             
     def getAirportsFromCountry(self, Country = ''):
@@ -133,7 +134,7 @@ class AirportsDatabase(object):
         if self.airportsDb is None: 
             return
         for row in self.airportsDb:
-            print ( self.className + ' - ' + row )
+            logging.info ( self.className + ' - ' + row )
     
     
     def getNumberOfAirports(self):
@@ -145,7 +146,7 @@ class AirportsDatabase(object):
         if self.airportsDb is None: return
         for key , airport in self.airportsDb.items():
             if str(key).startswith('LF') and airport['Country'] == Country :
-                print (  airport )
+                logging.info (  airport )
                
                 
     def getICAOCode(self, airportName = ''):

@@ -26,7 +26,7 @@ Created on 6 mars 2015
  """
 this class is responsible for managing the AeroDynamics data provided for each aircraft by BADA
 '''
-
+import logging 
 
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 
@@ -76,8 +76,8 @@ class AeroDynamics(object):
         self.DragCoeff = aircraftPerformance.getDragCoeff()
         self.LandingGearDragCoeff = aircraftPerformance.getLandingGearDragCoeff()
         
-        print ( self.className + ': Wing Area Surface= {0} Square-Meters'.format(self.WingAreaSurfaceSquareMeters) )
-        print ( self.className + ': stall speed= {0} knots'.format(self.VstallKcas) )
+        logging.info ( self.className + ': Wing Area Surface= {0} Square-Meters'.format(self.WingAreaSurfaceSquareMeters) )
+        logging.info ( self.className + ': stall speed= {0} knots'.format(self.VstallKcas) )
         
         
     def getVstallKcas(self, phase):
@@ -101,7 +101,7 @@ class AeroDynamics(object):
         return strMsg
         
     def dump(self):
-        print ( self.className + ': Wing Area Surface= {0} Square-Meters'.format(self.WingAreaSurfaceSquareMeters) )
-        print ( self.className + ': stall speed= {0} knots'.format(self.VstallKcas) )
+        logging.info ( self.className + ': Wing Area Surface= {0} Square-Meters'.format(self.WingAreaSurfaceSquareMeters) )
+        logging.info ( self.className + ': stall speed= {0} knots'.format(self.VstallKcas) )
         
 

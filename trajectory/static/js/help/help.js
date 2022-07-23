@@ -24,7 +24,15 @@ function Help () {
 		this.helpArray.push("The solution allows to manage an airline, its fleet, the airways , the routes, the wayPoints , etc...<br>");
 		
 		this.helpArray.push("<h3>Airline Fleet</h3>");
-		this.helpArray.push("The fleet is composed of types of aircrafts, number of available aircrafts, number of seats, etc...<br>");
+		this.helpArray.push("The fleet is composed of types of aircrafts, number of available aircrafts, number of seats, and operational costs.<br>");
+		this.helpArray.push("Using a flight leg duration, it allows to compute costs based upon flight duration Added to fuel costs.<br>");
+
+		this.helpArray.push("<h3>Flight Profile</h3>");
+		this.helpArray.push("A vertical profile is drawn on top of the horizontal route.<br>");
+		this.helpArray.push("If you move the cursor above the screen, you will follow the vertical profile.<br>");
+		this.helpArray.push("On its X axis, the vertical profile shows a time line expressed in seconds.<br>");
+		this.helpArray.push("On its Y axis, the vertical profile shows a flight level expressed as a Mean Sea Level in meters.<br>");
+		this.helpArray.push("To escape the vertical profile view, double click on the screen. <br>");
 
 	};
 }

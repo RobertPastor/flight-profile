@@ -4,6 +4,7 @@ Created on 1 sept. 2021
 @author: robert PASTOR
 '''
 import os
+import logging 
 
 from xlrd import open_workbook
 from airline.models import AirlineRoute
@@ -22,24 +23,24 @@ class AirlineRoutesDataBase(object):
         #self.FilesFolder = os.getcwd()
         self.FilesFolder = os.path.dirname(__file__)
 
-        print ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
+        logging.info ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
         self.FilePath = os.path.abspath(self.FilesFolder+ os.path.sep + self.FilePath)
-        print ( self.className + ': file path= {0}'.format(self.FilePath) )
+        logging.info ( self.className + ': file path= {0}'.format(self.FilePath) )
         
     def exists(self):
         return os.path.exists(self.FilePath) 
     
     def read(self):
         ''' this method reads the whole dataset file - not only the headers '''
-        print (self.FilePath)
+        logging.info (self.FilePath)
         assert len(self.FilePath)>0 and os.path.isfile(self.FilePath) 
         
         book = open_workbook(self.FilePath, formatting_info=True)
         ''' assert there is only one sheet '''
         self.sheet = book.sheet_by_index(0)
-        #print ( self.className + ' Sheet contains - number of rows = {0}'.format(self.sheet.nrows))
+        #logging.info ( self.className + ' Sheet contains - number of rows = {0}'.format(self.sheet.nrows))
         for row in range(self.sheet.nrows):
-            #print ( '--> row --> {0}'.format(row) )
+            #logging.info ( '--> row --> {0}'.format(row) )
             rowValues = self.sheet.row_values(row, start_colx=0, end_colx=self.sheet.ncols)
             if row == 0:
                 ''' header row '''
@@ -47,24 +48,24 @@ class AirlineRoutesDataBase(object):
                 index = 0
                 for column in rowValues:
                     if column not in HeaderNames:
-                        print ( self.className + ': ERROR - expected Routes Airports column name= {0} not in Header names'.format(column) )
+                        logging.info ( self.className + ': ERROR - expected Routes Airports column name= {0} not in Header names'.format(column) )
                         return False
                     else:
                         self.ColumnNames[column] = index
                     index += 1
 
             else:
-                #print ( str(row) )
+                #logging.info ( str(row) )
                 index = 0
                 route = {}
                 for cell in rowValues:
                     
                     if len(str(cell))>0:
-                        #print ( str(cell) )
+                        #logging.info ( str(cell) )
                         route[HeaderNames[index]] = str(cell)
                         
                     index = index + 1
-                print ( route )
+                logging.info ( route )
                 airlineRoute = AirlineRoute(
                     DepartureAirport = route[HeaderNames[0]],
                     DepartureAirportICAOCode = route[HeaderNames[1]],
@@ -79,7 +80,7 @@ class AirlineRoutesDataBase(object):
     
     def dump(self):
         for route in self.RoutesAirports:
-            print ( route )
+            logging.info ( route )
     
     #def getDepartureArrivalAirportICAOcode(self):
     #    for route in self.RoutesAirports:
@@ -89,7 +90,7 @@ class AirlineRoutesDataBase(object):
         for route in self.RoutesAirports:
             airlineRoute = AirlineRoute(route[HeaderNames[1]], route[HeaderNames[3]])
             airlineRoute.setRoute(route)
-            #print (route)
+            #logging.info (route)
             yield airlineRoute
     
     def getFlightLegList(self):
@@ -133,14 +134,14 @@ class AirlineRoutesDataBase(object):
         listOfAirportICAOcodes = set()
         for route in self.RoutesAirports:
             AdepICAOcode = route[HeaderNames[1]]
-            #print ( self.className + ' - Adep= {0} '.format(AdepICAOcode) )
+            #logging.info ( self.className + ' - Adep= {0} '.format(AdepICAOcode) )
 
             listOfAirportICAOcodes.add(AdepICAOcode)
             
             AdesICAOcode = route[HeaderNames[3]]
-            #print ( self.className + ' - Ades= {0} '.format(AdesICAOcode) )
+            #logging.info ( self.className + ' - Ades= {0} '.format(AdesICAOcode) )
 
             listOfAirportICAOcodes.add(AdesICAOcode)
             
-        #print ( listOfAirportICAOcodes )
+        #logging.info ( listOfAirportICAOcodes )
         return list(listOfAirportICAOcodes)

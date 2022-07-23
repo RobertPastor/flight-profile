@@ -24,12 +24,11 @@ Created on 26 mars 2015
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
 '''
-
+import logging
 
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.BadaAircraftPerformance.BadaAeroDynamicsFile import AeroDynamics
 from trajectory.BadaAircraftPerformance.BadaAircraftStateVectorFile import StateVector
-from trajectory.BadaAircraftPerformance.BadaAircraftDatabaseFile import BadaAircraftDatabase
 
 from trajectory.Environment.Atmosphere import Atmosphere
 
@@ -123,7 +122,7 @@ class FlightEnvelope(AeroDynamics):
         ''' compute Mean Sea Level altitude expressed in meters '''
         self.targetCruiseAltitudeMslMeters = ( RequestedFlightLevel * 100.0 * Feet2Meter ) + (1013.25 - QNHhectoPascals) * 8.5344
         self.targetCruiseAltitudeMslMeters = ( RequestedFlightLevel * 100.0 * Feet2Meter )
-        print ( self.className + ': set Cruise FL= {0} - QNH= {1:.2f} hecto Pascals - computed Altitude MSL=  {2:.2f} meters'.format(RequestedFlightLevel , QNHhectoPascals, self.targetCruiseAltitudeMslMeters) )
+        logging.info ( self.className + ': set Cruise FL= {0} - QNH= {1:.2f} hecto Pascals - computed Altitude MSL=  {2:.2f} meters'.format(RequestedFlightLevel , QNHhectoPascals, self.targetCruiseAltitudeMslMeters) )
 
 
     def getTargetCruiseFlightLevelMeters(self):
@@ -148,10 +147,10 @@ class FlightEnvelope(AeroDynamics):
             cruiseMachNumber = self.MaxOpMachNumber
 
         assert (cruiseMachNumber <= self.MaxOpMachNumber)
-        print ( self.className + ' ====================================================' )
-        print ( self.className + ': set target cruise Mach= {0}'.format(cruiseMachNumber) )
+        logging.info ( self.className + ' ====================================================' )
+        logging.info ( self.className + ': set target cruise Mach= {0}'.format(cruiseMachNumber) )
         self.targetCruiseMachNumber = cruiseMachNumber
-        print ( self.className + ' ====================================================' )
+        logging.info ( self.className + ' ====================================================' )
 
 
     def getTargetCruiseMach(self):
@@ -168,9 +167,9 @@ class FlightEnvelope(AeroDynamics):
         
 
     def dump(self):
-        print ( self.className + ': VMO CAS= ' + str(self.MaxOpSpeedCasKnots) + ' knots' )
-        print ( self.className + ': Max Operational Mach Number= ' + str(self.MaxOpMachNumber) )
-        print ( self.className + ': Max Operational Altitude= ' + str(self.MaxOpAltitudeFeet) + ' feet' )
+        logging.info ( self.className + ': VMO CAS= ' + str(self.MaxOpSpeedCasKnots) + ' knots' )
+        logging.info ( self.className + ': Max Operational Mach Number= ' + str(self.MaxOpMachNumber) )
+        logging.info ( self.className + ': Max Operational Altitude= ' + str(self.MaxOpAltitudeFeet) + ' feet' )
         
     def __str__(self):
         strMsg = self.className + ': VMO CAS= {0} knots'.format(self.MaxOpSpeedCasKnots)
@@ -243,19 +242,19 @@ class FlightEnvelope(AeroDynamics):
                                                   alt_units='m'
                                                   ) * MeterSecond2Knots
         if (calibratedAirSpeedKnots > self.MaxOpSpeedCasKnots):
-            print ( self.className + ': CAS= {0:.2f} knots >> higher than Max Op CAS= {1:.2f} knots'.format(calibratedAirSpeedKnots, self.MaxOpSpeedCasKnots) )
+            logging.info ( self.className + ': CAS= {0:.2f} knots >> higher than Max Op CAS= {1:.2f} knots'.format(calibratedAirSpeedKnots, self.MaxOpSpeedCasKnots) )
             endOfSimulation = True
             
         if (altitudeMeanSeaLevelMeters * Meter2Feet) > self.MaxOpAltitudeFeet:
-            print ( self.className + ': current altitude= {0:.2f} feet >> higher than Max Operational Altitude= {1:.2f} feet'.format((altitudeMeanSeaLevelMeters * Meter2Feet), self.MaxOpAltitudeFeet) )
+            logging.info ( self.className + ': current altitude= {0:.2f} feet >> higher than Max Operational Altitude= {1:.2f} feet'.format((altitudeMeanSeaLevelMeters * Meter2Feet), self.MaxOpAltitudeFeet) )
             endOfSimulation = True
             
         if altitudeMeanSeaLevelMeters < 0.0:
-            print ( self.className + ': altitude MSL= {0:.2f} meters is negative => end of simulation'.format(altitudeMeanSeaLevelMeters) )
+            logging.info ( self.className + ': altitude MSL= {0:.2f} meters is negative => end of simulation'.format(altitudeMeanSeaLevelMeters) )
             endOfSimulation = True
             
         if trueAirSpeedMetersPerSecond < 0.0:
-            print ( self.className + ': tas= {0:.2f} m/s is negative => end of simulation'.format(trueAirSpeedMetersPerSecond) )
+            logging.info ( self.className + ': tas= {0:.2f} m/s is negative => end of simulation'.format(trueAirSpeedMetersPerSecond) )
             endOfSimulation = True
 
         return endOfSimulation
