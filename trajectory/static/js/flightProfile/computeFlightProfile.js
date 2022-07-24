@@ -10,6 +10,35 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 }); 
 
+// What happens when the mouse move -> show the annotations at the right positions.
+function mouseover() {
+		focus.style("opacity", 1)
+		focusText.style("opacity",1)
+}
+
+function mousemove(domElement) {
+		// recover coordinate we need
+		var x0 = x.invert(d3.pointer(domElement)[0]);
+		var i = bisect(data, x0, 1);
+		try {
+			selectedData = data[i]
+			focus
+				.attr("cx", x(selectedData.x))
+					  .attr("cy", y(selectedData.y))
+			focusText
+				.html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
+				.attr("x", x(selectedData.x) + 15)
+				.attr("y", y(selectedData.y))
+		} catch (err) {
+			console.log(JSON.stringify(err))
+		}
+}
+				
+function mouseout() {
+		focus.style("opacity", 0)
+		focusText.style("opacity", 0)
+}
+
 function populateAircraftSelector( airlineAircraftsArray ) {
 	
 	// trComputeFlightProfileId
@@ -355,35 +384,6 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 			//$("#globusDivId").show()
 	})
 
-	// What happens when the mouse move -> show the annotations at the right positions.
-	function mouseover() {
-		focus.style("opacity", 1)
-		focusText.style("opacity",1)
-	}
-
-	function mousemove(domElement) {
-		// recover coordinate we need
-		var x0 = x.invert(d3.pointer(domElement)[0]);
-		var i = bisect(data, x0, 1);
-		try {
-			selectedData = data[i]
-			focus
-				.attr("cx", x(selectedData.x))
-					  .attr("cy", y(selectedData.y))
-			focusText
-				.html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
-				.attr("x", x(selectedData.x) + 15)
-				.attr("y", y(selectedData.y))
-		} catch (err) {
-			console.log(JSON.stringify(err))
-		}
-	}
-				
-	function mouseout() {
-		focus.style("opacity", 0)
-		focusText.style("opacity", 0)
-	}
-
 	// show the vertical profile
 	$("#dialogId")
 			.dialog({
@@ -516,8 +516,9 @@ function launchFlightProfile(globus) {
 							showErrors( dataJson["errors"] );
 							
 						} else {
-							
+							// create layers does also a delete layer if name found
 							let layerKML = createKMLLayer(globus , route);
+							let rayLayer = createRayLayer(globus , route)
 							
 							// convert JSON to XML
 							var x2js = new X2JS();
@@ -528,7 +529,7 @@ function launchFlightProfile(globus) {
 							
 							layerKML.addKmlFromXml( kmlAsXml = xmlDoc , color = null , billboard = null );
 							
-							let rayLayer = createRayLayer(globus , route)
+							// add rays to Rays layer
 							addRays( rayLayer , dataJson["placeMarks"] );
 							
 							let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"]

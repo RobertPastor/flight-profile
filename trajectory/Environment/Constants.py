@@ -27,4 +27,5 @@ MeterSecond2Knots = 1.9438444924406
 
 Kilogram2Pounds = 2.20462262
 
+# minimal radius of the final turn -> /flight-profile/trajectory/Guidance/TurnLegFile.py
 FinalArrivalTurnNauticalMiles = 5.0

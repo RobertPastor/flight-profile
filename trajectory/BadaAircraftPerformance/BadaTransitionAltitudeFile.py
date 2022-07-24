@@ -65,8 +65,8 @@ class TransitionAltitude(object):
         BetaTemperatureKelvinMeter = - 0.0065
         ''' thetaTrans is the temperature ratio at the transition altitude '''
         thetaTransition = math.pow(deltaTrans, - (BetaTemperatureKelvinMeter * 287.05287) / 9.809)
-        HpressureTransitionFeet = (1000.0/(0.3048 * 6.5))*(288.15)*(1 - thetaTransition)
-        ''' 27.000 feets for most jets '''
+        HpressureTransitionFeet = (1000.0 /(0.3048 * 6.5))*(288.15)*(1 - thetaTransition)
+        ''' 27.000 feets for most jets ''' 
         if not(self.engine.isJet()):
             ''' there is no transition altitude for turbo prop engines aircrafts '''
             raise ValueError (self.className + 'no transition altitude for turbo prop or piston engine aircraft')

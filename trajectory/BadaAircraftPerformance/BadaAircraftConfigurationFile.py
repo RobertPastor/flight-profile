@@ -29,6 +29,9 @@ Created on 22 february 2015
 
 import math
 import logging 
+import os
+
+from trajectory.Guidance.ConstraintsFile import feet2Meters
 logger = logging.getLogger(__name__)
 
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
@@ -221,7 +224,7 @@ class AircraftConfiguration(FlightEnvelope):
         return self.aircraftMass.referenceMassKilograms
 
 
-    def printConfigurationChange(self, newConfiguration, elapsedTimeSeconds):
+    def showConfigurationChange(self, newConfiguration, elapsedTimeSeconds):
         assert isinstance(newConfiguration, str)
         altitudeMeanSeaLevelMeters = self.getCurrentAltitudeSeaLevelMeters()
         currentDistanceFlownMeters = self.getCurrentDistanceFlownMeters()
@@ -234,19 +237,19 @@ class AircraftConfiguration(FlightEnvelope):
                                 altitude = altitudeMeanSeaLevelMeters,
                                 alt_units='m',
                                 speed_units='m/s',)
-        logger.info ( self.className + ' ====================================' )
-        logger.info ( self.className + ': entering {0} configuration - distance flown {1:.2f} meters - distance flown {2:.2f} nautics'.format(newConfiguration, currentDistanceFlownMeters, currentDistanceFlownMeters*Meter2NauticalMiles) )
-        logger.info ( self.className + ': alt= {0:.2f} meters alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, (altitudeMeanSeaLevelMeters*Meter2Feet)) ) 
-        logger.info ( self.className + ': tas= {0:.2f} m/s - tas= {1:.2f} knots - cas= {2:.2f} m/s - cas= {3:.2f} knots - mach= {4:.2f}'.format(tas, (tas*MeterSecond2Knots), cas, (cas*MeterSecond2Knots), mach) )
+        print ( self.className + ' ====================================' )
+        print ( self.className + ': entering {0} configuration - distance flown {1:.2f} meters - distance flown {2:.2f} nautics'.format(newConfiguration, currentDistanceFlownMeters, currentDistanceFlownMeters*Meter2NauticalMiles) )
+        print  ( self.className + ': alt= {0:.2f} meters alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, (altitudeMeanSeaLevelMeters*Meter2Feet)) ) 
+        print ( self.className + ': tas= {0:.2f} m/s - tas= {1:.2f} knots - cas= {2:.2f} m/s - cas= {3:.2f} knots - mach= {4:.2f}'.format(tas, (tas*MeterSecond2Knots), cas, (cas*MeterSecond2Knots), mach) )
         if elapsedTimeSeconds >= 60.0 and elapsedTimeSeconds < 3600.0:
             minutes, seconds = divmod(elapsedTimeSeconds, 60)
-            logger.info ( self.className + ': real time = {0:.2f} seconds - {1:.2f} minutes {2:.2f} seconds'.format(elapsedTimeSeconds, minutes, seconds) )
+            print  ( self.className + ': real time = {0:.2f} seconds - {1:.2f} minutes {2:.2f} seconds'.format(elapsedTimeSeconds, minutes, seconds) )
         else:
             minutes, seconds = divmod(elapsedTimeSeconds, 60)
             hours, minutes = divmod(minutes, 60)
-            logger.info ( self.className + ': real time = {0:.2f} seconds - {1:.2f} hours {2:.2f} minutes {3:.2f} seconds'.format(elapsedTimeSeconds, hours, minutes, seconds) )
+            print  ( self.className + ': real time = {0:.2f} seconds - {1:.2f} hours {2:.2f} minutes {3:.2f} seconds'.format(elapsedTimeSeconds, hours, minutes, seconds) )
 
-        logger.info ( self.className + ' ====================================' )
+        print ( self.className + ' ====================================' )
 
 
     def setTakeOffConfiguration(self, elapsedTimeSeconds):
@@ -254,7 +257,7 @@ class AircraftConfiguration(FlightEnvelope):
         ''' high lifting devices are used '''
         newConfiguration = 'take-off'
         if self.aircraftCurrentConfiguration != newConfiguration:
-            self.printConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
         
         
@@ -262,28 +265,28 @@ class AircraftConfiguration(FlightEnvelope):
         ''' high lifting devices are used '''
         newConfiguration = 'initial-climb'
         if self.aircraftCurrentConfiguration != newConfiguration:
-            self.printConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
 
 
     def setClimbConfiguration(self, elapsedTimeSeconds):
         newConfiguration = 'climb'
         if self.aircraftCurrentConfiguration != newConfiguration:
-            self.printConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
     
     
     def setCruiseConfiguration(self, elapsedTimeSeconds):
         newConfiguration = 'cruise'
         if self.aircraftCurrentConfiguration != newConfiguration:
-            self.printConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
  
  
     def setDescentConfiguration(self, elapsedTimeSeconds):
         newConfiguration = 'descent'
         if self.aircraftCurrentConfiguration != newConfiguration:
-            self.printConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
 
 
@@ -292,7 +295,7 @@ class AircraftConfiguration(FlightEnvelope):
         ''' aircraft speed is reduced using flaps until Approach stall speed => move to landing and extract landing-gear '''
         newConfiguration = 'approach'
         if self.aircraftCurrentConfiguration != newConfiguration:
-            self.printConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
     
     
@@ -301,14 +304,14 @@ class AircraftConfiguration(FlightEnvelope):
         and altitude above airport field > xxx feet '''
         newConfiguration = 'landing'
         if self.aircraftCurrentConfiguration != newConfiguration:
-            self.printConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
         
         
     def setArrivalGroundRunConfiguration(self, elapsedTimeSeconds):
         newConfiguration = 'arrival-ground-run'
         if self.aircraftCurrentConfiguration != newConfiguration:
-            self.printConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
             
             
@@ -423,31 +426,45 @@ class AircraftConfiguration(FlightEnvelope):
     
     
     def computeThrustNewtons(self, geopotentialPressureAltitudeFeet ):
+
         ''' sanity check '''
         assert isinstance(geopotentialPressureAltitudeFeet, float)
                 
         thrustNewtons = 0.0
         if self.engine.isJet():
-            if self.isDepartureGroundRun() or self.isTakeOff() or self.isInitialClimb() or self.isClimb():
+            if self.isDepartureGroundRun() or self.isTakeOff() or self.isInitialClimb() :
                 
                 ''' following computation is true only for a jet aircraft '''
                 thrustNewtons = (1 - (geopotentialPressureAltitudeFeet / self.engine.getMaxClimbThrustCoeff(1) ))
                 thrustNewtons += (self.engine.getMaxClimbThrustCoeff(2) * geopotentialPressureAltitudeFeet * geopotentialPressureAltitudeFeet)
                 thrustNewtons = self.engine.getMaxClimbThrustCoeff(0) * thrustNewtons
-                        
+                
             
-            elif self.isCruise():
+            elif self.isClimb() or self.isCruise():
+                ''' reduce thrust in proportion to altitude difference '''
+                pass
+            
                 '''
-                The normal cruise thrust is by definition set equal to drag (THR = D).
+                In cruise at cruise level - The normal cruise thrust is by definition set equal to drag (THR = D).
                 However, the maximum amount of thrust available in cruise situation is limited. 
                 The maximum cruise thrust is calculated as a ratio of the maximum climb thrust given by expression 3.7-4, 
                 that is: 
                 Thrust Cruise MAX  = Coeff Tcr * Max climb Thurst 
                 The coefficient CTcr is currently uniformly set for all aircraft (see Global Aircraft Parameters section 5.5).
                 '''
+            
+                ''' following computation is true only for a jet aircraft '''
                 thrustNewtons = (1 - (geopotentialPressureAltitudeFeet / self.engine.getMaxClimbThrustCoeff(1) ))
                 thrustNewtons += (self.engine.getMaxClimbThrustCoeff(2) * geopotentialPressureAltitudeFeet * geopotentialPressureAltitudeFeet)
                 thrustNewtons = self.engine.getMaxClimbThrustCoeff(0) * thrustNewtons
+                
+                ''' correction due to altitude difference '''
+                #altitudeDifferenceMeters = self.getTargetCruiseFlightLevelMeters() - ( geopotentialPressureAltitudeFeet * feet2Meters)
+                #percent = altitudeDifferenceMeters / self.getTargetCruiseFlightLevelMeters()
+                #reducedThrustNewtons = ( thrustNewtons / 100. ) * percent
+                #print ("initial thrust {0:0.1f} = reduced thrust = {1:1f}".format (thrustNewtons , reducedThrustNewtons))
+                #thrustNewtons = thrustNewtons - reducedThrustNewtons
+                
                 ''' apply cruise factor '''
                 if self.isCruiseSpeedReached():
                     thrustNewtons = 0.95 * thrustNewtons
@@ -867,6 +884,7 @@ class AircraftConfiguration(FlightEnvelope):
                 
             ''' distance flown '''
             deltaDistanceMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees))* deltaTimeSeconds
+            
  
         elif self.isInitialClimb():
             ''' climb at constant CAS '''
@@ -892,12 +910,15 @@ class AircraftConfiguration(FlightEnvelope):
                                                   temp='std',
                                                   speed_units = 'm/s',
                                                   alt_units = 'm') * MeterSecond2Knots 
-            if ((casKnots >= 250.0) or ((altitudeMeanSeaLevelMeters * Meter2Feet) >= 10000.0)):
-                self.setClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
+                                                  
+            ''' move from initial climb to climb as soon as speed over 250 knots and altitude above 10.000 feet '''
+            # 24th July 2022 - condition upon casKnots never reached or depending upon aircraft performaces
+            #if ((casKnots >= 250.0) or ((altitudeMeanSeaLevelMeters * Meter2Feet) >= 10000.0)):
+            #    self.setClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
            
-            ''' check if target cruise altitude is reached '''
-            if ( ( altitudeMeanSeaLevelMeters * Meter2Feet ) >= (self.transitionAltitudeFeet - 100.0)):
-                logger.info ( self.className + ': transition altitude= {0:.2f} feet reached - elapsed Time= {1:.2f} seconds'.format(altitudeMeanSeaLevelMeters * Meter2Feet, elapsedTimeSeconds) )
+            ''' check if target cruise altitude is reached -> 10.000 feet '''
+            if ( ( altitudeMeanSeaLevelMeters * Meter2Feet ) >= 10000.0 ):
+                #logger.info ( self.className + ': transition altitude= {0:.2f} feet reached - elapsed Time= {1:.2f} seconds'.format(altitudeMeanSeaLevelMeters * Meter2Feet, elapsedTimeSeconds) )
                 ''' target cruise altitude reached '''
                 self.setClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
 
