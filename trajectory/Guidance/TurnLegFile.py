@@ -50,7 +50,9 @@ from trajectory.aerocalc.airspeed import cas2tas
 
 from trajectory.Guidance.GraphFile import Graph
 
-from trajectory.Environment.Constants import MeterPerSecond2Knots, Knot2MetersPerSecond, Meter2NauticalMiles
+from trajectory.Environment.Constants import MeterPerSecond2Knots, Knot2MetersPerSecond, Meter2NauticalMiles,\
+    NauticalMiles2Meter, FinalArrivalTurnNauticalMiles
+    
 from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 
 from trajectory.Guidance.TurnLegBaseFile import BaseTurnLeg
@@ -227,8 +229,8 @@ class TurnLeg(Graph):
             radiusOfTurnMeters = finalRadiusOfTurnMeters
             logging.info ("{0} - final radius of turn = {1:.2f} in meters".format(self.className, radiusOfTurnMeters))
 
-        
         logging.info ( self.className + ': tas= {0:.2f} knots - radius of turn= {1:.2f} meters - radius of turn= {2:.2f} nautics'.format(tasKnots, radiusOfTurnMeters, radiusOfTurnMeters*Meter2NauticalMiles) )           
+
         ''' index used to initialise the loop '''        
         index = 0
             
@@ -309,7 +311,7 @@ class TurnLeg(Graph):
                         continueTurning = (currentHeadingDegrees >= self.finalHeadingDegrees)
                 
             ''' define the name of the new way-point '''
-            name = 'turn-{0}-{1:.1f}-degrees'.format(index, currentHeadingDegrees)
+            name = 'turn-{0:.1f}-degrees'.format( currentHeadingDegrees)
             ''' patch do not define a name as it slows opening the KML file in Google Earth '''
             name = ''
             #logging.info self.className + ' next way-point= ' + name
@@ -480,6 +482,9 @@ class TurnLeg(Graph):
         ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
         radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / (9.81 * math.tan(math.radians(bankAngleDegrees)))
         logging.info ( '{0} - tas= {1:.2f} knots - radius of turn= {2:.2f} meters - radius of turn= {3:.2f} nautics'.format(self.className, tasKnots, radiusOfTurnMeters, radiusOfTurnMeters*Meter2NauticalMiles) )        
+ 
+        if ( radiusOfTurnMeters * Meter2NauticalMiles < FinalArrivalTurnNauticalMiles):
+            radiusOfTurnMeters = FinalArrivalTurnNauticalMiles * NauticalMiles2Meter
  
         #stop()
         ''' index used to initialise the loop '''        

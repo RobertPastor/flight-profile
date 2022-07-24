@@ -26,3 +26,5 @@ MeterPerSecond2Knots = 1.9438444924406
 MeterSecond2Knots = 1.9438444924406
 
 Kilogram2Pounds = 2.20462262
+
+FinalArrivalTurnNauticalMiles = 5.0

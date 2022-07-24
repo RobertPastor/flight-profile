@@ -228,7 +228,11 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	height = height - topTable.clientHeight
 
 	// append the svg object to the body of the page
-	removeAllChilds (document.getElementById("d3vizId"))
+	removeAllChilds (document.getElementById("dialogId"))
+	
+	// Creating a div element at the end
+    $("#dialogId").append('<div id="d3vizId" style="width: 100%; height: 100%;"></div>');   
+	
 	var svg = d3.select("#d3vizId")
 		.data(data)
 		.append("svg")
@@ -380,8 +384,24 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 		focusText.style("opacity", 0)
 	}
 
+	// show the vertical profile
+	$("#dialogId")
+			.dialog({
+               autoOpen: false,
+			   title: "Compute Flight Profile",
+			   modal: true,
+               hide: "puff",
+               show : "slide",
+               height: "auto",
+			   width: "auto",
+			   maxHeight: true,
+			   maxWidth: true
+            })
+			.html(document.getElementById('d3vizId').innerHTML)
+			.dialog('open'); 
+
 	// show the svg
-	$("#d3vizId").show();
+	//$("#d3vizId").show();
 	//$("#globusDivId").hide()
 }
 
@@ -419,7 +439,8 @@ function launchFlightProfile(globus) {
 	let show = true;
 	
 	/**
-	* monitor the button used to sjow the table with the inputs
+	* monitor the button used to show the table with the inputs
+	* it allows only to choose the aircraft, the route before clicking to launch the profile computation
 	**/
 	document.getElementById("btnLaunchFlightProfile").onclick = function () {
 
@@ -464,7 +485,6 @@ function launchFlightProfile(globus) {
 		}
 	} 
 	 
-	
 	/**
 	* monitor the button used to launch the profile computation
 	**/
