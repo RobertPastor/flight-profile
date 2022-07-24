@@ -10,8 +10,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 }); 
 
-
-
 function populateAircraftSelector( airlineAircraftsArray ) {
 	
 	// trComputeFlightProfileId
@@ -266,12 +264,12 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	let maxY = arrayAltitudeMSLtime["MaxAltitudeMSLmeters"]
 	
 	// create Y axis
-	var y = d3.scaleLinear()
+	let y = d3.scaleLinear()
 			.domain([0, maxY + 1000])
 			.range([ height, 0 ]);
+			
 	// add Y axis
-	svg.append("g")
-			.call(d3.axisLeft(y));
+	svg.append("g").call(d3.axisLeft(y));
 			
 	// add Y axis label
 	svg.append("text")
@@ -283,10 +281,10 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 		.text("Altitude Mean Sea Level (meters)");
 			
 	// This allows to find the closest X index of the mouse:
-	var bisect = d3.bisector(function(d) { return d.x; }).left;
+	let bisect = d3.bisector(function(d) { return d.x; }).left;
 
 	// Create the circle that travels along the curve of chart
-	var focus = svg.append('g')
+	let focus = svg.append('g')
 			.append('circle')
 			.style("fill", "yellow")
 			.attr("stroke", "black")
@@ -300,17 +298,23 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	}
 
 	// Create the text that travels along the curve of chart
-	var focusText = svg.append('g')
+	let focusText = svg.append('g')
 			.append('text')
 			.style("opacity", 1)
 			.attr("text-anchor", "left")
 			.attr("alignment-baseline", "middle")
 			.call(getBB);   
-			
+	
+	/*	
 	focusText.insert("rect","text")
-		.attr("width", function(d){return d.bbox.width})
-		.attr("height", function(d){return d.bbox.height})
+		.attr("width", function(d){
+			return d.bbox.width
+			})
+		.attr("height", function(d){
+			return d.bbox.height
+			})
 		.style("fill", "yellow");
+	*/
 
 	// Add the line
 	svg.append("path")
@@ -344,31 +348,31 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 		 
 	// What happens when the mouse move -> show the annotations at the right positions.
 	function mouseover() {
-			focus.style("opacity", 1)
-			focusText.style("opacity",1)
+		focus.style("opacity", 1)
+		focusText.style("opacity",1)
 	}
 
 	function mousemove(domElement) {
-			// recover coordinate we need
-			var x0 = x.invert(d3.pointer(domElement)[0]);
-			var i = bisect(data, x0, 1);
-			try {
-				selectedData = data[i]
-				focus
-					.attr("cx", x(selectedData.x))
-						  .attr("cy", y(selectedData.y))
-				focusText
-					.html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
-					.attr("x", x(selectedData.x) + 15)
-					.attr("y", y(selectedData.y))
-			} catch (err) {
+		// recover coordinate we need
+		let x0 = x.invert(d3.pointer(domElement)[0]);
+		let i = bisect(data, x0, 1);
+		try {
+			selectedData = data[i]
+			focus
+				.attr("cx", x(selectedData.x))
+				.attr("cy", y(selectedData.y))
+			focusText
+				.html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
+				.attr("x", x(selectedData.x) + 15)
+				.attr("y", y(selectedData.y))
+		} catch (err) {
 				console.log(JSON.stringify(err))
-			}
+		}
 	}
 					
 	function mouseout() {
-			focus.style("opacity", 0)
-			focusText.style("opacity", 0)
+		focus.style("opacity", 0)
+		focusText.style("opacity", 0)
 	}
 
 	// Create a rect on top of the svg area: this rectangle recovers mouse position
@@ -455,6 +459,7 @@ function launchFlightProfile(globus) {
 			
 			// change name on the button
 			document.getElementById("btnLaunchFlightProfile").innerText = "Hide Flight Profile";
+			document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "green";
 
 			// use ajax to get the data 
 			$.ajax( {
@@ -484,6 +489,8 @@ function launchFlightProfile(globus) {
 			show = true;
 			//document.getElementById("btnLaunchFlightProfile").disabled = true
 			document.getElementById("btnLaunchFlightProfile").innerText = "Show Flight Profile";
+			document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
+
 			$('#tableFlightProfileId').hide();
 		}
 	} 

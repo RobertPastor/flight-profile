@@ -545,6 +545,10 @@ class FlightPath(FlightPlan):
             self.abortedFlight = True
             
             
+    def createXlsOutputFile(self):
+        self.finalRoute.createXlsxOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
+
+            
     def createFlightOutputFiles(self):
         ''' build outputs '''
         #self.finalRoute.createXlsxOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
@@ -555,6 +559,9 @@ class FlightPath(FlightPlan):
         logging.info (  '{0} - final route length= {1:.2f} nautics'.format(self.className, self.finalRoute.getLengthMeters()*Meter2NauticalMiles) )
         return kmlXmlDocument
     
+    def createStateVectorOutputFile(self):
+        self.aircraft.createStateVectorOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
+
     
     def createCsvAltitudeTimeProfile(self):
         csvAltitudeTimeProfile = self.finalRoute.createCsvAltitudeTimeProfile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())

@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
-        aircraftICAOcode = 'A320'
+        aircraftICAOcode = 'A319'
         route = 'KATL-KLAX'
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 flightPath = FlightPath(
                                 route = routeAsString, 
                                 aircraftICAOcode = aircraftICAOcode,
-                                RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet()/100., 
+                                RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
                                 cruiseMach = acPerformance.getMaxOpMachNumber(), 
                                 takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
 
@@ -40,6 +40,8 @@ class Command(BaseCommand):
                 print ( "=========== Flight Plan create output files  =========== " )
     
                 flightPath.createFlightOutputFiles()
+                flightPath.createXlsOutputFile()
+                flightPath.createStateVectorOutputFile()
                 print ( "=========== Flight Plan end  =========== "  )
                 
             else:

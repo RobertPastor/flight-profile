@@ -29,3 +29,7 @@ Kilogram2Pounds = 2.20462262
 
 # minimal radius of the final turn -> /flight-profile/trajectory/Guidance/TurnLegFile.py
 FinalArrivalTurnNauticalMiles = 5.0
+
+
+MaxRateOfClimbFeetPerMinutes = 2000.0
+MaxRateOfDescentFeetPerMinutes = -2200.0

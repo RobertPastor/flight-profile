@@ -20,6 +20,7 @@
  	<script type="text/javascript" src="/static/js/jquery/jquery-ui.js"></script>
  	
  	<script type="text/javascript" src="/static/js/d3/d3.min.js"></script>
+ 	<!--  convert JSON to XML and XML to JSON -->
  	<script type="text/javascript" src="/static/js/x2js/x2js.js"></script>
  	
  	<script charset="utf-8" type="text/javascript" src="/static/js/main.js"></script>
@@ -138,7 +139,7 @@
 				<table id="tableFlightProfileId">
 			
 					 <tr id="trComputeFlightProfileId">
-					 	<td colspan='6'>
+					 	<td colspan='8'>
 					 		<div id="aircraftSelectionId" class="aircraftSelectionClass">
 					 			<label>Select an aircraft -> </label>
 					 			<select name="airlineAircraftName" id="airlineAircraftId">
@@ -156,6 +157,21 @@
 					 	</td>
 					 </tr>
 				 
+				</table>
+				
+				<table id="tableCostsId">
+				
+					<tr>
+						<td>
+							<div id="aircraftSelectionCostsId" class="aircraftSelectionCostsClass">
+					 			<label>Select an aircraft -> </label>
+					 			<select name="airlineAircraftNameCosts" id="airlineAircraftCostsId">
+					 			</select>
+					 		</div>
+						</td>
+					
+					</tr>
+				
 				</table>
 		
 			<div id="helpDiv" style="display: none;"></div>

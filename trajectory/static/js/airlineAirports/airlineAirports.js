@@ -23,7 +23,7 @@ function loadOneAirport( layerAirports, airport ) {
 					src: "/static/images/plane.png",
 					width: 16,
 					height: 16,
-					offset: [0, 16]
+					offset: [0, -2]
 				    }
 	}));
 				
@@ -39,7 +39,6 @@ function loadAirports(layerAirports, dataJson) {
 		// insert one reservation
 		loadOneAirport( layerAirports, airports[airportId] );
 	}
-	
 }
 
 function airports(globus) {
@@ -60,7 +59,6 @@ function airports(globus) {
 			document.getElementById("btnAirports").innerText = "Hide Airline Airports";
 			document.getElementById("btnAirports").style.backgroundColor = "green";
 
-			
 			if (first) {
 				document.getElementById("btnAirports").disabled = true;
 				
