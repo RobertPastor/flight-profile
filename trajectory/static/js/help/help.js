@@ -24,8 +24,18 @@ function Help () {
 		this.helpArray.push("The solution allows to manage an airline, its fleet, the airways , the routes, the wayPoints , etc...<br>");
 		
 		this.helpArray.push("<h3>Airline Fleet</h3>");
-		this.helpArray.push("The fleet is composed of types of aircrafts, number of available aircrafts, number of seats, and operational costs.<br>");
+		this.helpArray.push("The fleet is composed of types of aircrafts, number of available aircrafts, number of seats, and operational costs per flight hour.<br>");
 		this.helpArray.push("Using a flight leg duration, it allows to compute costs based upon flight duration Added to fuel costs.<br>");
+
+
+		this.helpArray.push("<h3>Airline Airports</h3>");
+		this.helpArray.push("The airline has a set of departure and arrival airports.<br>");
+		this.helpArray.push("These airports are the starting or ending points of the flight legs.<br>");
+
+		this.helpArray.push("<h3>Airline Routes</h3>");
+		this.helpArray.push("The airline routes are defined by a set of WayPoints to link a departure to an arrival airport.<br>");
+		this.helpArray.push("Warning : for the time being, these routes are not dependent upon the departure and arrival runways.<br>");
+
 
 		this.helpArray.push("<h3>Flight Profile</h3>");
 		this.helpArray.push("A vertical profile is drawn on top of the horizontal route.<br>");
@@ -33,6 +43,11 @@ function Help () {
 		this.helpArray.push("On its X axis, the vertical profile shows a time line expressed in seconds.<br>");
 		this.helpArray.push("On its Y axis, the vertical profile shows a flight level expressed as a Mean Sea Level in meters.<br>");
 		this.helpArray.push("To escape the vertical profile view, double click on the screen. <br>");
+
+		this.helpArray.push("<h3>Airline Costs</h3>");
+		this.helpArray.push("Costs are based upon :<br>");
+		this.helpArray.push("   1) flight duration TIMES operational costs per flight hours.<br>");
+		this.helpArray.push("   2) fuel costs based upon aircraft mass loss - translated into liters of fuel TIMES cost of one liter of fuel.<br>");
 
 	};
 }

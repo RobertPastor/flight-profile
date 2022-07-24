@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	  console.log("airports js is loaded");
+	  console.log("airline airports js is loaded");
 }); 
 
 function loadOneAirport( layerAirports, airport ) {
@@ -23,7 +23,7 @@ function loadOneAirport( layerAirports, airport ) {
 					src: "/static/images/plane.png",
 					width: 16,
 					height: 16,
-					offset: [0, 32]
+					offset: [0, 16]
 				    }
 	}));
 				
@@ -45,7 +45,7 @@ function loadAirports(layerAirports, dataJson) {
 function airports(globus) {
 	
 	console.log("start airports");
-	let layerAirports = new og.layer.Vector("Airports", {
+	let layerAirports = new og.layer.Vector("AirlineAirports", {
             clampToGround: true,
     });
 	layerAirports.addTo(globus.planet);
@@ -58,6 +58,8 @@ function airports(globus) {
         if (show) {
 			show = false;
 			document.getElementById("btnAirports").innerText = "Hide Airline Airports";
+			document.getElementById("btnAirports").style.backgroundColor = "green";
+
 			
 			if (first) {
 				document.getElementById("btnAirports").disabled = true;
@@ -93,6 +95,9 @@ function airports(globus) {
 		} else {
 			show = true;
 			document.getElementById("btnAirports").innerText = "Show Airline Airports";
+			document.getElementById("btnAirports").style.backgroundColor = "yellow";
+
+			// hide the airports
 			layerAirports.setVisibility(false);
 		}
     };

@@ -51,7 +51,8 @@ function loadAirlineFleet() {
 			show = false;
 			// change name on the button
 			document.getElementById("btnAirlineFleet").innerText = "Hide Airline Fleet";
-						
+			document.getElementById("btnAirlineFleet").style.backgroundColor = "green";
+
 			// disable the button 
 			document.getElementById("btnAirlineFleet").disabled = true
 
@@ -80,7 +81,8 @@ function loadAirlineFleet() {
 		} else {
 			show = true;
 			document.getElementById("btnAirlineFleet").innerText = "Show Airline Fleet";
-			
+			document.getElementById("btnAirlineFleet").style.backgroundColor = "yellow";
+
 			$('#tableAirlineFleetId').hide();
 		}
 	}

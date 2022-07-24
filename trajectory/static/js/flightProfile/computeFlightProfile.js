@@ -10,34 +10,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 }); 
 
-// What happens when the mouse move -> show the annotations at the right positions.
-function mouseover() {
-		focus.style("opacity", 1)
-		focusText.style("opacity",1)
-}
 
-function mousemove(domElement) {
-		// recover coordinate we need
-		var x0 = x.invert(d3.pointer(domElement)[0]);
-		var i = bisect(data, x0, 1);
-		try {
-			selectedData = data[i]
-			focus
-				.attr("cx", x(selectedData.x))
-					  .attr("cy", y(selectedData.y))
-			focusText
-				.html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
-				.attr("x", x(selectedData.x) + 15)
-				.attr("y", y(selectedData.y))
-		} catch (err) {
-			console.log(JSON.stringify(err))
-		}
-}
-				
-function mouseout() {
-		focus.style("opacity", 0)
-		focusText.style("opacity", 0)
-}
 
 function populateAircraftSelector( airlineAircraftsArray ) {
 	
@@ -209,7 +182,7 @@ function showErrors ( jsonErrors ) {
 			.dialog('open'); 
 }
 
-function createKMLLayer(globus , layerName ) {
+function deleteCreateKMLLayer(globus , layerName ) {
 	
 	let finalLayerName = "FlightProfile-" + layerName 
 	removeLayer( globus , finalLayerName )
@@ -227,7 +200,7 @@ function createKMLLayer(globus , layerName ) {
 	return layerKML;
 }
 
-function createRayLayer(globus , layerName ) {
+function deleteCreateRayLayer(globus , layerName ) {
 	
 	let finalLayerName = "Rays-" + layerName
 	removeLayer( globus , finalLayerName )
@@ -257,10 +230,10 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	height = height - topTable.clientHeight
 
 	// append the svg object to the body of the page
-	removeAllChilds (document.getElementById("dialogId"))
+	//removeAllChilds (document.getElementById("dialogId"))
 	
 	// Creating a div element at the end
-    $("#dialogId").append('<div id="d3vizId" style="width: 100%; height: 100%;"></div>');   
+    //$("#dialogId").append('<div id="d3vizId" style="width: 100%; height: 100%;"></div>');   
 	
 	var svg = d3.select("#d3vizId")
 		.data(data)
@@ -368,6 +341,35 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 		 .attr("stroke", "#32CD32")
 		 .attr("stroke-width", 0.5)
 		 .attr("fill", "#FFFFFF");
+		 
+	// What happens when the mouse move -> show the annotations at the right positions.
+	function mouseover() {
+			focus.style("opacity", 1)
+			focusText.style("opacity",1)
+	}
+
+	function mousemove(domElement) {
+			// recover coordinate we need
+			var x0 = x.invert(d3.pointer(domElement)[0]);
+			var i = bisect(data, x0, 1);
+			try {
+				selectedData = data[i]
+				focus
+					.attr("cx", x(selectedData.x))
+						  .attr("cy", y(selectedData.y))
+				focusText
+					.html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
+					.attr("x", x(selectedData.x) + 15)
+					.attr("y", y(selectedData.y))
+			} catch (err) {
+				console.log(JSON.stringify(err))
+			}
+	}
+					
+	function mouseout() {
+			focus.style("opacity", 0)
+			focusText.style("opacity", 0)
+	}
 
 	// Create a rect on top of the svg area: this rectangle recovers mouse position
 	svg.append('rect')
@@ -385,6 +387,7 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	})
 
 	// show the vertical profile
+	/*
 	$("#dialogId")
 			.dialog({
                autoOpen: false,
@@ -399,9 +402,9 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
             })
 			.html(document.getElementById('d3vizId').innerHTML)
 			.dialog('open'); 
-
+	*/
 	// show the svg
-	//$("#d3vizId").show();
+	$("#d3vizId").show();
 	//$("#globusDivId").hide()
 }
 
@@ -517,8 +520,8 @@ function launchFlightProfile(globus) {
 							
 						} else {
 							// create layers does also a delete layer if name found
-							let layerKML = createKMLLayer(globus , route);
-							let rayLayer = createRayLayer(globus , route)
+							let layerKML = deleteCreateKMLLayer(globus , route);
+							let rayLayer = deleteCreateRayLayer(globus , route)
 							
 							// convert JSON to XML
 							var x2js = new X2JS();

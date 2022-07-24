@@ -7,5 +7,4 @@ urlpatterns = [
     re_path(r'^airlineFleet$' , views.getAirlineFleet , name='getAirlineFleet'),
     
     path('wayPointsRoute/<slug:Adep>/<slug:Ades>' , views.getRouteWayPoints , name='getRouteWayPoints'),
-
 ]

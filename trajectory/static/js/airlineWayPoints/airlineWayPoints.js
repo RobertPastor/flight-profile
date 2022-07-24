@@ -78,7 +78,8 @@ function wayPoints(globus, viewExtent) {
 			
 			show = false;
 			document.getElementById("btnWayPoints").innerText = "Hide Airline WayPoints";
-			
+			document.getElementById("btnWayPoints").style.backgroundColor = "green";
+
 			// use ajax to get the data 
 			data = 'minlatitude=' + parseInt(southWest["lat"]).toString() + "&"
 			data += 'maxlatitude=' + parseInt(northEast["lat"]).toString() + "&"
@@ -107,6 +108,8 @@ function wayPoints(globus, viewExtent) {
 		} else {
 			show = true;
 			document.getElementById("btnWayPoints").innerText = "Show Airline WayPoints";
+			document.getElementById("btnWayPoints").style.backgroundColor = "yellow";
+
 			let entities = layerWayPoints.getEntities();
 			layerWayPoints.removeEntities(entities);
 		}

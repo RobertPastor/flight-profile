@@ -27,8 +27,8 @@
     <script charset="utf-8" type="text/javascript" src="/static/js/og/og.umd.js"></script>
     <script charset="utf-8" type="text/javascript" src="/static/js/help/help.js"></script>
     
-    <script charset="utf-8" type="text/javascript" src="/static/js/airports/airports.js"></script>
-    <script charset="utf-8" type="text/javascript" src="/static/js/waypoints/waypoints.js"></script>
+    <script charset="utf-8" type="text/javascript" src="/static/js/airlineAirports/airlineAirports.js"></script>
+    <script charset="utf-8" type="text/javascript" src="/static/js/airlineWayPoints/airlineWayPoints.js"></script>
     
     <script charset="utf-8" type="text/javascript" src="/static/js/flightProfile/showFlightProfile.js"></script>
     <script charset="utf-8" type="text/javascript" src="/static/js/flightProfile/computeFlightProfile.js"></script>
@@ -49,7 +49,7 @@
 		
 			<table id="mainTableId">
 				<tr>
-					<td colspan='7' >
+					<td colspan='8' >
 	    				<div id="workerId" class="w3-container w3-green" style="width:100%"></div>
 		    		</td>
 		    		
@@ -60,21 +60,25 @@
 							<span>Welcome to the Airline Fleet Management tool.</span>
 						</div>
 					</td>
+					
 					<td>
 						<div>
 		    				<button id="btnAirlineFleet" >Show Airline Fleet</button>
 						</div>
 					</td>
-					<td>
-						<div>
-		    				<button id="btnAirlineRoutes" >Show Airline Routes</button>
-						</div>
-					</td>
+					
 					<td>
 						<div>
 		    				<button id="btnAirports" >Show Airline Airports</button>
 						</div>
 					</td>
+					
+					<td>
+						<div>
+		    				<button id="btnAirlineRoutes" >Show Airline Routes</button>
+						</div>
+					</td>
+					
 					<td>
 						<div>
 		    				<button id="btnWayPoints" >Show Airline WayPoints</button>
@@ -83,7 +87,13 @@
 					
 					<td>
 						<div>
-		    				<button id="btnLaunchFlightProfile" >Show Flight Profile</button>
+		    				<button id="btnLaunchFlightProfile" >Compute Flight Profile</button>
+						</div>
+					</td>
+					
+					<td>
+						<div>
+		    				<button id="btnLaunchCosts" >Compute Costs</button>
 						</div>
 					</td>
 					
@@ -151,7 +161,7 @@
 			<div id="helpDiv" style="display: none;"></div>
 			<div id="dialogId" style="display: none;"></div>
 			<!--  display a D3 graph -->
-			<!-- <div id="d3vizId" style="display: none;"></div> -->
+			<div id="d3vizId" style="display: none;"></div>
 		</div>
 	</div>
 </body>

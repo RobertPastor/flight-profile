@@ -30,37 +30,6 @@ def indexTrajectory(request):
     context = {'siteMessages' : siteMessages}
     return HttpResponse(template.render(context, request))
 
-def index(request):
-    # create a function
-    # create a dictionary to pass
-    # data to the template
-    context ={}
-    # return response with template and context
-    #return render(request, "index.html", context)
-
-def getAirportsFromDB():
-    airportsList = []
-    for airport in AirlineAirport.objects.all():
-        logger.debug (airport.AirportICAOcode)
-        for airlineRoute in AirlineRoute.objects.all():
-            
-            if (airport.AirportICAOcode == airlineRoute.getDepartureAirportICAOcode()) or (airport.AirportICAOcode == airlineRoute.getArrivalAirportICAOcode() ):
-                airportsList.append({
-                    "AirportICAOcode" : airport.AirportICAOcode ,
-                    "AirportName": airport.AirportName,
-                    "Longitude": airport.Longitude,
-                    "Latitude": airport.Latitude
-                    } )
-    return airportsList
-
-
-def getAirports(request):
-    logger.debug ("get Airports")
-    if (request.method == 'GET'):
-        logger.debug("get request received - airports")
-        airports = getAirportsFromDB()
-        response_data = {'airports': airports}
-        return JsonResponse(response_data)
     
     
 def getPlaceMarks(XmlDocument):
@@ -91,15 +60,6 @@ def getPlaceMarks(XmlDocument):
     logging.info ( "length place marks = {0}".format(len ( placeMarksList )) )
     return placeMarksList
     
-
-def showFlightProfile(request):
-    print ("show Flight Profile")
-    if (request.method == 'GET'):
-        fileName = "A319-KATL-PANC-Atlanta-Hartsfield-Jackson-Atlanta-Intl-Rwy-08L-Anchorage-Ted-Stevens-Anchorage-Intl-rwy-07L-16-Jan-2022-11h28m27.kml"
-        response_data = {
-            'kmlURL': "/static/kml/" + fileName,
-            'placeMarks' : getPlaceMarks(fileName)}
-        return JsonResponse(response_data)
 
     
 def getWayPointsFromDB(viewExtent):
