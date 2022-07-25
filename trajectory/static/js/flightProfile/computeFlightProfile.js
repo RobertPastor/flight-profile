@@ -453,7 +453,6 @@ function launchFlightProfile(globus) {
 
 		if (show) {
 			show = false;
-			//document.getElementById("btnLaunchFlightProfile").disabled = true
 			
 			$('#tableFlightProfileId').show();
 			

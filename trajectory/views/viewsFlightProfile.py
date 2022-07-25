@@ -10,7 +10,8 @@ from django.http import HttpResponse , JsonResponse
 
 from airline.models import AirlineRoute, AirlineAircraft
 from airline.views import getAirlineRoutesFromDB
-from trajectory.models import AirlineWayPoint, AirlineAirport
+from trajectory.models import AirlineWayPoint, AirlineAirport, AirlineRunWay
+
 from trajectory.models import BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
@@ -30,10 +31,6 @@ def indexTrajectory(request):
     context = {'siteMessages' : siteMessages}
     return HttpResponse(template.render(context, request))
 
-
-
-
-    
     
 def getPlaceMarks(XmlDocument):
     placeMarksList = []
@@ -86,14 +83,27 @@ def getAirlineAircraftsFromDB():
     return airlineAircraftsList
 
 
+def getAirlineRunWaysFromDB():
+    airlineRunWaysList = []
+    for airlineRunWay in AirlineRunWay.objects.all():
+        airlineRunWaysList.append( {
+            'airlineAirport': airlineRunWay.Airport.AirportICAOcode,
+            'airlineRunWayName' : airlineRunWay.Name,
+            'airlineRunWayTrueHeadindDegrees': airlineRunWay.TrueHeadingDegrees})
+    return airlineRunWaysList
+
+
 def launchFlightProfile(request):
     logger.debug ("launch Flight Profile")
     if (request.method == 'GET'):
         airlineAircraftsList = getAirlineAircraftsFromDB()
         airlineRoutesList = getAirlineRoutesFromDB()
+        airlineRunWaysList = getAirlineRunWaysFromDB()
         response_data = {
             'airlineAircrafts': airlineAircraftsList,
-            'airlineRoutes': airlineRoutesList}
+            'airlineRoutes': airlineRoutesList,
+            'airlineRunWays': airlineRunWaysList
+            }
         return JsonResponse(response_data)
     
     

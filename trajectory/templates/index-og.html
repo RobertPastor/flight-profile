@@ -36,6 +36,7 @@
     
     <script charset="utf-8" type="text/javascript" src="/static/js/airlineRoutes/airlineRoutes.js"></script>
     <script charset="utf-8" type="text/javascript" src="/static/js/airlineFleet/airlineFleet.js"></script>
+    <script charset="utf-8" type="text/javascript" src="/static/js/airlineCosts/airlineCosts.js"></script>
     
     
     <title>Flight Profile</title>
@@ -53,7 +54,6 @@
 					<td colspan='8' >
 	    				<div id="workerId" class="w3-container w3-green" style="width:100%"></div>
 		    		</td>
-		    		
 				</tr>
 				<tr>
 					<td>
@@ -94,7 +94,7 @@
 					
 					<td>
 						<div>
-		    				<button id="btnLaunchCosts" >Compute Costs</button>
+		    				<button id="btnLaunchCosts" >Show Compute Costs</button>
 						</div>
 					</td>
 					
@@ -160,18 +160,36 @@
 				</table>
 				
 				<table id="tableCostsId">
-				
-					<tr>
+					<tr id="trComputeCostsId">
 						<td>
 							<div id="aircraftSelectionCostsId" class="aircraftSelectionCostsClass">
 					 			<label>Select an aircraft -> </label>
-					 			<select name="airlineAircraftNameCosts" id="airlineAircraftCostsId">
+					 			<select name="airlineAircraftCostsName" id="airlineAircraftCostsId">
+					 			</select>
+					 		</div>
+					 	</td>
+					 	<td>
+					 		<div id="routesSelectionCostsId" class="routesSelectionCostsClass">
+					 			<label>Select a Route -> </label>
+					 			<select name="airlineRouteCostsName" id="airlineRouteCostsId">
 					 			</select>
 					 		</div>
 						</td>
-					
+						<td>
+					 		<div id="runWaysSelectionCostsId" class="runWaysSelectionCostsClass">
+					 			<label>Select a Departure RunWay -> </label>
+					 			<select name="airlineDepartureRunWayCostsName" id="airlineDepartureRunWayCostsId">
+					 			</select>
+					 		</div>
+						</td>
+						<td>
+					 		<div id="runWaysSelectionCostsId" class="runWaysSelectionCostsClass">
+					 			<label>Select an Arrival RunWay -> </label>
+					 			<select name="airlineArrivalRunWayCostsName" id="airlineArrivalRunWayCostsId">
+					 			</select>
+					 		</div>
+						</td>
 					</tr>
-				
 				</table>
 		
 			<div id="helpDiv" style="display: none;"></div>
