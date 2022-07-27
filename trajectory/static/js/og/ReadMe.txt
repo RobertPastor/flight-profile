@@ -3,6 +3,42 @@ How to rebuild the final og after applying modifications
 
 go to the repo and launch PowerShell
 
+PS D:\Node.js\openglobus.0.13.7> npm install
+
+=================================================
+
+PS D:\Node.js\openglobus.0.13.7> npm run build
+
+> @openglobus/og@0.13.7 build D:\Node.js\openglobus.0.13.7
+> rollup -c
+
+
+src/og/index.js → dist/@openglobus/og.umd.js...
+(!) Circular dependencies
+src\og\Extent.js -> src\og\mercator.js -> src\og\Extent.js
+src\og\mercator.js -> src\og\LonLat.js -> src\og\mercator.js
+src\og\math\Vec3.js -> src\og\math\Vec4.js -> src\og\math\Vec3.js
+...and 8 more
+created dist/@openglobus/og.umd.js in 6.5s
+
+src/og/index.js → dist/@openglobus/og.esm.js...
+(!) Circular dependencies
+src\og\Extent.js -> src\og\mercator.js -> src\og\Extent.js
+src\og\mercator.js -> src\og\LonLat.js -> src\og\mercator.js
+src\og\math\Vec3.js -> src\og\math\Vec4.js -> src\og\math\Vec3.js
+...and 8 more
+created dist/@openglobus/og.esm.js in 5.6s
+
+css/og.css → dist/@openglobus/og.css...
+Browserslist: caniuse-lite is outdated. Please run:
+  npx browserslist@latest --update-db
+  Why you should do it regularly: https://github.com/browserslist/browserslist#browsers-data-updating
+(!) The emitted file "og.css" overwrites a previously emitted file of the same name.
+created dist/@openglobus/og.css in 686ms
+PS D:\Node.js\openglobus.0.13.7>
+
+=================================================
+
 PS D:\Node.js\openglobus> npm run build
 
 > @openglobus/og@0.12.4 build D:\Node.js\openglobus
@@ -43,7 +79,7 @@ to the project static js folder : /flight-profile/trajectory/static/js/og
 =================================
 to avoid compressing minifying 
 
-in file rollup.config.js suppress terser in the 1st plugins
+in file rollup.config.js suppress terser in the 1st plugin befiore the json() plugin
 
 export default [
     {

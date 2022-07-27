@@ -163,7 +163,7 @@ function removeAllChilds (parent) {
     }
 };
 
-function showErrors ( jsonErrors ) {
+function showMessage ( message ) {
 	
 	const dialog = document.getElementById("dialogId");
 	removeAllChilds(dialog)
@@ -424,7 +424,7 @@ function launchFlightProfile(globus) {
 		stopBusyAnimation();
     });
 	
-	console.log( "compute flight profile ");
+	//console.log( "compute flight profile ");
 	
 	/**
 	let layerFlightProfileWayPoints = new og.layer.Vector("FlightProfileWayPoints", {
@@ -522,7 +522,7 @@ function launchFlightProfile(globus) {
 						var dataJson = eval(data);
 						if ( dataJson.hasOwnProperty("errors") ) {
 							stopBusyAnimation();
-							showErrors( dataJson["errors"] );
+							showMessage( dataJson["errors"] );
 							
 						} else {
 							// create layers does also a delete layer if name found
@@ -544,11 +544,13 @@ function launchFlightProfile(globus) {
 							let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"]
 							displayD3LineChart(arrayAltitudeMSLtime);
 							
+							showMessage("Double Click in the vertical profile to return to the map") 
+							
 						}
 					},
 					error: function(data, status) {
 						alert("Error - compute Flight Profile: " + status + " Please contact your admin");
-						showErrors( eval(data) );
+						showMessage( eval(data) );
 					},
 					complete : function() {
 						//stopBusyAnimation();

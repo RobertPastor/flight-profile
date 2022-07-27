@@ -2,7 +2,7 @@
 var worker = undefined;
 
 document.addEventListener('DOMContentLoaded', () => {
-	console.log("DOM content loaded");
+	//console.log("DOM content loaded");
 	init();
 });
 

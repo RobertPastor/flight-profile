@@ -41,11 +41,14 @@ function populateAirlineRunWaysCostsSelector( airlineRunWaysArray ) {
 	
 	for ( var index = 0 ; index < airlineRunWaysArray.length ; index++) {
 		
-		let route = $("#airlineRouteCostsId option:selected").val()
-		console.log(route)
+		let route = $("#airlineRouteCostsId option:selected").val();
 		
-		console.log( airlineRunWaysArray[index]["airlineAirport"] )
+		//console.log(route)
+		//console.log( airlineRunWaysArray[index]["airlineAirport"] )
+		
 		if ( route.split("-")[0] == airlineRunWaysArray[index]["airlineAirport"]) {
+			
+			console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
 		
 			var airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
 			var airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
@@ -55,18 +58,25 @@ function populateAirlineRunWaysCostsSelector( airlineRunWaysArray ) {
 	
 	for ( var index = 0 ; index < airlineRunWaysArray.length ; index++) {
 		
-		let route = $("#airlineRouteCostsId option:selected").val()
-		console.log(route)
+		let route = $("#airlineRouteCostsId option:selected").val();
 		
-		console.log( airlineRunWaysArray[index]["airlineAirport"] )
+		//console.log(route)
+		//console.log( airlineRunWaysArray[index]["airlineAirport"] )
+		
 		if ( route.split("-")[1] == airlineRunWaysArray[index]["airlineAirport"]) {
+			
+			console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
 
 			var airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
 			var airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
 			$('#airlineArrivalRunWayCostsId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
 		}
-
 	}
+	
+	// listen to select change
+	$( "#airlineRouteCostsId" ).change(function() {
+		alert( "Handler for airlineRouteCostsId selection change called." );
+	});
 }
 
 
