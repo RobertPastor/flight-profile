@@ -39,6 +39,9 @@ function populateAirlineRunWaysCostsSelector( airlineRunWaysArray ) {
 	$("#tableCostsId").show();
 	$("#trComputeCostsId").show();
 	
+	// empty the selector
+	$('#airlineDepartureRunWayCostsId').empty()
+	
 	for ( var index = 0 ; index < airlineRunWaysArray.length ; index++) {
 		
 		let route = $("#airlineRouteCostsId option:selected").val();
@@ -55,6 +58,9 @@ function populateAirlineRunWaysCostsSelector( airlineRunWaysArray ) {
 			$('#airlineDepartureRunWayCostsId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
 		}
 	}
+	
+	// empty the selector
+	$('#airlineArrivalRunWayCostsId').empty()
 	
 	for ( var index = 0 ; index < airlineRunWaysArray.length ; index++) {
 		
@@ -73,10 +79,6 @@ function populateAirlineRunWaysCostsSelector( airlineRunWaysArray ) {
 		}
 	}
 	
-	// listen to select change
-	$( "#airlineRouteCostsId" ).change(function() {
-		alert( "Handler for airlineRouteCostsId selection change called." );
-	});
 }
 
 
@@ -87,6 +89,34 @@ function launchCostsComputation() {
 	$("#trComputeCostsId").hide();
 	$("#aircraftSelectionCostsId").hide();
 	$("#routesSelectionCostsId").hide();
+	
+	// listen to select change
+	$( "#airlineRouteCostsId" ).change(function() {
+		console.log( "Handler for airlineRouteCostsId selection change called." );
+		$.ajax( {
+					method: 'get',
+					url :  "trajectory/launchFlightProfile",
+					async : true,
+					success: function(data, status) {
+									
+						//alert("Data: " + data + "\nStatus: " + status);
+						var dataJson = eval(data);
+						// airlineAircrafts
+						populateAirlineRunWaysCostsSelector( dataJson["airlineRunWays"] );
+						
+						$("#btnLaunchCosts").show();
+						
+					},
+					error: function(data, status) {
+						console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
+					},
+					complete : function() {
+						stopBusyAnimation();
+						document.getElementById("btnLaunchFlightProfile").disabled = false
+					},
+			});
+			
+	});
 	
 	let show = true;
 	
@@ -121,7 +151,7 @@ function launchCostsComputation() {
 						populateAirlineRoutesCostsSelector( dataJson["airlineRoutes"] );
 						populateAirlineRunWaysCostsSelector( dataJson["airlineRunWays"] );
 						
-						$("#launchComputeId").show();
+						$("#btnLaunchCosts").show();
 						
 					},
 					error: function(data, status) {
@@ -133,9 +163,6 @@ function launchCostsComputation() {
 					},
 			});
 
-
-			
-			
 		} else {
 			show = true;
 			$('#tableCostsId').hide();

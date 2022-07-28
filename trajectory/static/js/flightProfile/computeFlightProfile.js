@@ -163,20 +163,25 @@ function removeAllChilds (parent) {
     }
 };
 
-function showMessage ( message ) {
+function showMessage ( title, message ) {
 	
 	const dialog = document.getElementById("dialogId");
 	removeAllChilds(dialog)
 	$("#dialogId")
 			.dialog({
-               autoOpen: false,
-			   title: "Compute Flight Profile Error",
-			   modal: true,
-               hide: "puff",
-               show : "slide",
-               height: 200      
+				autoOpen: false,
+				title: title,
+				modal: true,
+				hide: "puff",
+				show : "slide",
+				height: 200 ,
+				buttons: {
+					OK: function() {
+					  $( this ).dialog( "close" );
+					}
+				  }			   
             })
-			.html(JSON.stringify(jsonErrors))
+			.html(typeof message === 'string' ? message : JSON.stringify(message))
 			.dialog('open'); 
 }
 
@@ -213,7 +218,7 @@ function deleteCreateRayLayer(globus , layerName ) {
 function displayD3LineChart( arrayAltitudeMSLtime ) {
 	
 	// set the dimensions and margins of the graph
-	var margin = {top: 10, right: 30, bottom: 10, left: 50}
+	var margin = {top: 10, right: 50, bottom: 10, left: 50}
     var width = 700 - margin.left - margin.right;
     var height = 700 - margin.top - margin.bottom;
 	
@@ -223,6 +228,9 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	
 	width = parentDiv.clientWidth - margin.left - margin.right; 
 	height = parentDiv.clientHeight - margin.top - margin.bottom;
+	
+	width = parentDiv.getBoundingClientRect().width;
+	height = width/2;
 	
 	var topTable = document.getElementById("mainTableId")
 	height = height - topTable.clientHeight
@@ -261,6 +269,7 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 		.attr("y", 30)
 		.text("duration time (seconds)");
 			
+	// max on the Y axis
 	let maxY = arrayAltitudeMSLtime["MaxAltitudeMSLmeters"]
 	
 	// create Y axis
@@ -268,7 +277,7 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 			.domain([0, maxY + 1000])
 			.range([ height, 0 ]);
 			
-	// add Y axis
+	// add Y axis to the svg
 	svg.append("g").call(d3.axisLeft(y));
 			
 	// add Y axis label
@@ -288,7 +297,7 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 			.append('circle')
 			.style("fill", "yellow")
 			.attr("stroke", "black")
-			.attr('r', 8.5)
+			.attr('r', 12.5)
 			.style("opacity", 0)
 			
 	function getBB(selection) {
@@ -319,15 +328,16 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	// Add the line
 	svg.append("path")
 		.attr("class", "line")
-		.attr("stroke", "#32CD32")
-		.attr("stroke-width", 1.2)
+		.attr("stroke", "#000000")
+		.attr("stroke-width", 3.5)
 		.attr("fill", "#FFFFFF")
 		.attr("d", d3.line()
 		  .x(function(d) {
-				// assumption that data has x element
+				// assumption that data has x key element
 				return x(d.x) 
 			})
 		  .y(function(d) { 
+				// assumption that the data has a y key element
 				return y(d.y) 
 			})
 		  )
@@ -335,7 +345,7 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	var path = svg.selectAll("dot")
 		 .data(data)
 		 .enter().append("circle")
-		 .attr("r", 0.5)
+		 .attr("r", 1.5)
 		 .attr("cx", function (d) {
 			   return x(d.x);
 		 })
@@ -362,9 +372,9 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 				.attr("cx", x(selectedData.x))
 				.attr("cy", y(selectedData.y))
 			focusText
-				.html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
+				.html("x:" + selectedData.x + " seconds " + "y:" + selectedData.y + " meters")
 				.attr("x", x(selectedData.x) + 15)
-				.attr("y", y(selectedData.y))
+				.attr("y", y(selectedData.y) + 15)
 		} catch (err) {
 				console.log(JSON.stringify(err))
 		}
@@ -522,7 +532,7 @@ function launchFlightProfile(globus) {
 						var dataJson = eval(data);
 						if ( dataJson.hasOwnProperty("errors") ) {
 							stopBusyAnimation();
-							showMessage( dataJson["errors"] );
+							showMessage( "Error" , dataJson["errors"] );
 							
 						} else {
 							// create layers does also a delete layer if name found
@@ -544,13 +554,13 @@ function launchFlightProfile(globus) {
 							let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"]
 							displayD3LineChart(arrayAltitudeMSLtime);
 							
-							showMessage("Double Click in the vertical profile to return to the map") 
+							showMessage("Information" , "Double Click in the vertical profile to return to the map") 
 							
 						}
 					},
 					error: function(data, status) {
 						alert("Error - compute Flight Profile: " + status + " Please contact your admin");
-						showMessage( eval(data) );
+						showMessage( "Error" , eval(data) );
 					},
 					complete : function() {
 						//stopBusyAnimation();
