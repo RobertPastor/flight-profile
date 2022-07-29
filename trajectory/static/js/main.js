@@ -118,7 +118,7 @@ function initMain(viewExtent) {
 
 
 function init() {
-	console.log("init");
+	//console.log("init");
 
 	//$( window ).on( "load", function () {
 	//the event occurred

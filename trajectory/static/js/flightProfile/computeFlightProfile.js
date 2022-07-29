@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 }); 
 
-function populateAircraftSelector( airlineAircraftsArray ) {
+function populateAircraftFlightProfileSelector( airlineAircraftsArray ) {
 	
 	// trComputeFlightProfileId
 	$("#trComputeFlightProfileId").show();
@@ -22,7 +22,7 @@ function populateAircraftSelector( airlineAircraftsArray ) {
 	}
 }
 
-function populateAirlineRoutesSelector( airlineRoutesArray ) {
+function populateAirlineRoutesFlightProfileSelector( airlineRoutesArray ) {
 	
 	// trComputeFlightProfileId
 	$("#trComputeFlightProfileId").show();
@@ -422,6 +422,53 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	//$("#globusDivId").hide()
 }
 
+function populateAirlineRunWaysFlightProfileSelector( airlineRunWaysArray ) {
+	
+	$("#tableFlightProfileId").show();
+	$("#trComputeFlightProfileId").show();
+	
+	// empty the selector
+	$('#airlineDepartureRunWayFlightProfileId').empty()
+	
+	for ( var index = 0 ; index < airlineRunWaysArray.length ; index++) {
+		
+		let route = $("#airlineRouteId option:selected").val();
+		
+		//console.log(route)
+		//console.log( airlineRunWaysArray[index]["airlineAirport"] )
+		
+		if ( route.split("-")[0] == airlineRunWaysArray[index]["airlineAirport"]) {
+			
+			console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
+		
+			var airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
+			var airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
+			$('#airlineDepartureRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
+		}
+	}
+	
+	// empty the selector
+	$('#airlineArrivalRunWayFlightProfileId').empty()
+	
+	for ( var index = 0 ; index < airlineRunWaysArray.length ; index++) {
+		
+		let route = $("#airlineRouteId option:selected").val();
+		
+		//console.log(route)
+		//console.log( airlineRunWaysArray[index]["airlineAirport"] )
+		
+		if ( route.split("-")[1] == airlineRunWaysArray[index]["airlineAirport"]) {
+			
+			console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
+
+			var airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
+			var airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
+			$('#airlineArrivalRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
+		}
+	}
+	
+}
+
 function launchFlightProfile(globus) {
 	
 	globus.planet.events.on("layeradd", function (e) {
@@ -453,6 +500,34 @@ function launchFlightProfile(globus) {
 	$("#aircraftSelectionId").hide();
 	$("#routesSelectionId").hide();
 	
+	// listen to select route change
+	$( "#airlineRouteId" ).change(function() {
+		console.log( "Handler for airlineRouteId selection change called." );
+		$.ajax( {
+					method: 'get',
+					url :  "trajectory/launchFlightProfile",
+					async : true,
+					success: function(data, status) {
+									
+						//alert("Data: " + data + "\nStatus: " + status);
+						var dataJson = eval(data);
+						// airlineAircrafts
+						populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
+						
+						$("#btnLaunchCosts").show();
+						
+					},
+					error: function(data, status) {
+						console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
+					},
+					complete : function() {
+						stopBusyAnimation();
+						document.getElementById("btnLaunchFlightProfile").disabled = false
+					},
+			});
+			
+	});
+	
 	let show = true;
 	
 	/**
@@ -480,9 +555,10 @@ function launchFlightProfile(globus) {
 						//alert("Data: " + data + "\nStatus: " + status);
 						var dataJson = eval(data);
 						// airlineAircrafts
-						populateAircraftSelector( dataJson["airlineAircrafts"] );
-						populateAirlineRoutesSelector( dataJson["airlineRoutes"] );
-						
+						populateAircraftFlightProfileSelector( dataJson["airlineAircrafts"] );
+						populateAirlineRoutesFlightProfileSelector( dataJson["airlineRoutes"] );
+						populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
+
 						$("#launchComputeId").show();
 						
 					},
@@ -517,6 +593,8 @@ function launchFlightProfile(globus) {
 		
 		let aircraft = $("#airlineAircraftId option:selected").val()
 		let route =  $("#airlineRouteId option:selected").val()
+		let departureRunWay = $("#airlineDepartureRunWayFlightProfileId option:selected").val()
+		let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val()
 		
 		// init progress bar.
 		initProgressBar();
@@ -526,7 +604,7 @@ function launchFlightProfile(globus) {
 					method: 'get',
 					url :  "trajectory/computeFlightProfile",
 					async : true,
-					data: 'aircraft=' + aircraft + '&route=' + route ,
+					data: 'aircraft=' + aircraft + '&route=' + route + '&AdepRwy=' + departureRunWay + '&AdesRwy=' + arrivalRunWay,
 					success: function(data, status) {
 						
 						var dataJson = eval(data);

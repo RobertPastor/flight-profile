@@ -40,13 +40,16 @@ class AirlineRoute(models.Model):
         return airportsICAOcodeList
     
     
-    def getRouteAsString(self):
+    def getRouteAsString(self, AdepRunWayName = None, AdesRunWayName = None):
         strRoute = "ADEP/" + self.DepartureAirportICAOCode 
         Adep = AirlineAirport.objects.all().filter(AirportICAOcode=self.DepartureAirportICAOCode).first()
         if ( Adep ):
-            AdepRunway = AirlineRunWay.objects.all().filter(Airport=Adep).first()
-            if AdepRunway  and ( len ( AdepRunway.Name ) > 0):
-                strRoute += "/" + AdepRunway.Name
+            if (AdepRunWayName):
+                strRoute += "/" + AdepRunWayName
+            else:
+                AdepRunway = AirlineRunWay.objects.all().filter(Airport=Adep).first()
+                if AdepRunway  and ( len ( AdepRunway.Name ) > 0):
+                    strRoute += "/" + AdepRunway.Name
             
         strRoute += "-"
         for airlineRouteWayPoint in AirlineRouteWayPoints.objects.all().filter(Route=self).order_by("Order"):
@@ -56,11 +59,14 @@ class AirlineRoute(models.Model):
         strRoute += "ADES/" + self.ArrivalAirportICAOCode
         Ades = AirlineAirport.objects.all().filter(AirportICAOcode=self.ArrivalAirportICAOCode).first()
         if ( Ades ):
-            AdesRunWay = AirlineRunWay.objects.all().filter(Airport=Ades).first()
-            if AdesRunWay and ( len (AdesRunWay.Name ) > 0):
-                strRoute += "/" + AdesRunWay.Name 
+            if (AdesRunWayName):
+                strRoute += "/" + AdesRunWayName
+            else:
+                AdesRunWay = AirlineRunWay.objects.all().filter(Airport=Ades).first()
+                if AdesRunWay and ( len (AdesRunWay.Name ) > 0):
+                    strRoute += "/" + AdesRunWay.Name 
             
-        #print ( strRoute )
+        print ( strRoute )
         return strRoute
   
 

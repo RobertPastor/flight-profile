@@ -138,12 +138,16 @@ def computeFlightProfile(request):
             logger.info ( str(airlineRoute).split("-")[1] )
             
             departureAirportICAOcode = str(airlineRoute).split("-")[0]
+            departureAirportRunWayName = request.GET['AdepRwy']
+            
             arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
+            arrivalAirportRunWayName = request.GET['AdesRwy']
+
             airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
             
             if (airlineRoute):
                 #print ( airlineRoute )
-                routeAsString = airlineRoute.getRouteAsString()
+                routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                 logger.info ( routeAsString )
                 acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
                 logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
