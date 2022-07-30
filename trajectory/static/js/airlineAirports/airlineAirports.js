@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	  console.log("airline airports js is loaded");
+	 // console.log("airline airports js is loaded");
 }); 
 
 function loadOneAirport( layerAirports, airport ) {

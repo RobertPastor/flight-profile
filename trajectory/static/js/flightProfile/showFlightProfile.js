@@ -93,14 +93,14 @@ function showFlightProfile(globus) {
 	
 	let first = true;
 	let show = true;
-	document.getElementById("btnComputeFlightProfile").onclick = function () {
+	document.getElementById("btnComputeFlightProfileId").onclick = function () {
 		
 		if (show) {
 			show = false;
-			document.getElementById("btnComputeFlightProfile").innerText = "Hide Flight Profile";
+			document.getElementById("btnComputeFlightProfileId").innerText = "Hide Flight Profile";
 			if (first) {
 				first = false
-				document.getElementById("btnComputeFlightProfile").disabled = true
+				document.getElementById("btnComputeFlightProfileId").disabled = true
 
 				// init progress bar.
 				initProgressBar();
@@ -130,7 +130,7 @@ function showFlightProfile(globus) {
 					},
 					complete : function() {
 						stopBusyAnimation();
-						document.getElementById("btnComputeFlightProfile").disabled = false
+						document.getElementById("btnComputeFlightProfileId").disabled = false
 					},
 				} );
 				
@@ -140,7 +140,7 @@ function showFlightProfile(globus) {
 			}
 		} else {
 			show = true;
-			document.getElementById("btnComputeFlightProfile").innerText = "Show Flight Profile";
+			document.getElementById("btnComputeFlightProfileId").innerText = "Show Flight Profile";
 			layerKML.setVisibility(false);
 			rayLayer.setVisibility(false);
 		}

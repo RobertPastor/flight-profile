@@ -10,7 +10,7 @@ from django.http import HttpResponse , JsonResponse
 
 from airline.models import AirlineRoute, AirlineAircraft
 from airline.views import getAirlineRoutesFromDB
-from trajectory.models import AirlineWayPoint, AirlineAirport, AirlineRunWay
+from trajectory.models import  AirlineAirport, AirlineRunWay
 
 from trajectory.models import BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
@@ -147,6 +147,7 @@ def computeFlightProfile(request):
             
             if (airlineRoute):
                 #print ( airlineRoute )
+                '''  use runways defined in the web page '''
                 routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                 logger.info ( routeAsString )
                 acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())

@@ -584,12 +584,12 @@ function launchFlightProfile(globus) {
 	* monitor the button used to launch the profile computation
 	**/
 	let once = false;
-	//document.getElementById("btnComputeFlightProfile").disabled = true
-	document.getElementById("btnComputeFlightProfile").onclick = function () {
+	//document.getElementById("btnComputeFlightProfileId").disabled = true
+	document.getElementById("btnComputeFlightProfileId").onclick = function () {
 	
 		console.log ("button compte flight profile pressed");
 	
-		document.getElementById("btnComputeFlightProfile").disabled = true
+		document.getElementById("btnComputeFlightProfileId").disabled = true
 		
 		let aircraft = $("#airlineAircraftId option:selected").val()
 		let route =  $("#airlineRouteId option:selected").val()
@@ -642,7 +642,7 @@ function launchFlightProfile(globus) {
 					},
 					complete : function() {
 						//stopBusyAnimation();
-						document.getElementById("btnComputeFlightProfile").disabled = false
+						document.getElementById("btnComputeFlightProfileId").disabled = false
 					},
 			});
 	}

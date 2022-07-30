@@ -2,9 +2,8 @@
 document.addEventListener('DOMContentLoaded', (event) => { 
        
 	console.log("Airline Costs is loaded");
-	setTimeout( function () {
-		launchCostsComputation();
-	} , 500 )
+	launchCostsComputation();
+	
 }); 
 
 
@@ -78,21 +77,52 @@ function populateAirlineRunWaysCostsSelector( airlineRunWaysArray ) {
 			$('#airlineArrivalRunWayCostsId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
 		}
 	}
+}
+
+function showCostsResults( dataJson ) {
+
+	let aircraftICAOcode = $("#airlineAircraftCostsId option:selected").val()
+	let route =  $("#airlineRouteCostsId option:selected").val()
+	let departureRunWay = $("#airlineDepartureRunWayCostsId option:selected").val()
+	let arrivalRunWay = $("#airlineArrivalRunWayCostsId option:selected").val()
 	
+	
+	$("#tableCostsResultsId")
+	.find('tbody')
+    .append($('<tr>')
+
+		.append('<td>'+ aircraftICAOcode +'</td>')
+		.append('<td>'+ route.split("-")[0] +'</td>')
+		.append('<td>'+ departureRunWay +'</td>')
+		.append('<td>'+ route.split("-")[1] +'</td>')
+		.append('<td>'+ arrivalRunWay +'</td>')
+
+		.append('<td>'+ dataJson["isAborted"] +'</td>')
+		.append('<td>'+ dataJson["initialMassKilograms"] +'</td>')
+		.append('<td>'+ dataJson["finalMassKilograms"] +'</td>')
+		.append('<td>'+ dataJson["massLossFilograms"] +'</td>')
+		
+		.append('<td>'+ dataJson["fuelCostsDollars"] +'</td>')
+		.append('<td>'+ dataJson["flightDurationHours"] +'</td>')
+		.append('<td>'+ dataJson["operationalflightCostsDollars"] +'</td>')
+	);
+
 }
 
 
 function launchCostsComputation() {
 	
 	$('#tableCostsId').hide();
+	$("#trComputeCostsResultsHeaderId").hide()
 
 	$("#trComputeCostsId").hide();
 	$("#aircraftSelectionCostsId").hide();
 	$("#routesSelectionCostsId").hide();
 	
-	// listen to select change
+	// listen to the route selector changes
 	$( "#airlineRouteCostsId" ).change(function() {
 		console.log( "Handler for airlineRouteCostsId selection change called." );
+		// for the begin of the computation we use the same URL route as the Flight Profile computation
 		$.ajax( {
 					method: 'get',
 					url :  "trajectory/launchFlightProfile",
@@ -115,14 +145,14 @@ function launchCostsComputation() {
 						document.getElementById("btnLaunchFlightProfile").disabled = false
 					},
 			});
-			
 	});
 	
 	let show = true;
 	
-		/**
+	/**
 	* monitor the button used to show the table with the inputs
 	* it allows only to choose the aircraft, the route before clicking to launch the profile computation
+	* the button is defined in /flight-profile/trajectory/templates/index-og.html
 	**/
 	document.getElementById("btnLaunchCosts").onclick = function () {
 		
@@ -156,6 +186,7 @@ function launchCostsComputation() {
 					},
 					error: function(data, status) {
 						console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
+						showMessage("Error" , eval(data) ) 
 					},
 					complete : function() {
 						stopBusyAnimation();
@@ -170,9 +201,67 @@ function launchCostsComputation() {
 			// change name on the button
 			document.getElementById("btnLaunchCosts").innerText = "Show Compute Costs";
 			document.getElementById("btnLaunchCosts").style.backgroundColor = "yellow";
-
-
 		}
 	}
+	
+	// btnComputeCostsId
+	document.getElementById("btnComputeCostsId").onclick = function () {
+		
+		document.getElementById("btnComputeCostsId").disabled = true
+		
+		let aircraftICAOcode = $("#airlineAircraftCostsId option:selected").val()
+		let route =  $("#airlineRouteCostsId option:selected").val()
+		let departureRunWay = $("#airlineDepartureRunWayCostsId option:selected").val()
+		let arrivalRunWay = $("#airlineArrivalRunWayCostsId option:selected").val()
+
+		// init progress bar.
+		initProgressBar();
+		initWorker();
+		
+		
+		data = {
+			aircraft : aircraftICAOcode,
+			route    : route,
+			AdepRwy  : departureRunWay,
+			AdesRwy  : arrivalRunWay
+		}
+		
+		$.ajax( {
+					method: 'get',
+					url :  "trajectory/computeCosts",
+					async : true,
+					data :  data,
+					success: function(data, status) {
+						
+						let dataJson = eval(data);
+						if ( dataJson.hasOwnProperty("errors") ) {
+							stopBusyAnimation();
+							showMessage( "Error" , dataJson["errors"] );
+							
+						} else {
+							
+							$("#trComputeCostsResultsHeaderId").show()
+									
+							//alert("Data: " + data + "\nStatus: " + status);
+							//showMessage( "End of Costs computations" , dataJson )
+							showCostsResults( dataJson )
+						}
+						
+						document.getElementById("btnComputeCostsId").disabled = false
+												
+					},
+					error: function(data, status) {
+						stopBusyAnimation();
+						console.log("Error - compute Costs : " + status + " Please contact your admin");
+						showMessage( "Error" , data );
+					},
+					complete : function() {
+						stopBusyAnimation();
+						document.getElementById("btnLaunchFlightProfile").disabled = false
+					},
+			});
+		
+	}
+
 	
 }

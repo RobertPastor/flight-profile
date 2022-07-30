@@ -100,7 +100,6 @@ class AirlineAircraft(models.Model):
     
     landingLengthMeters = models.FloatField(default = 0)
     takeOffMTOWLengthMeters = models.FloatField(default = 0)
-    
         
     def __str__(self):
         return "{0}-{1}".format(self.aircraftFullName, self.aircraftICAOcode)

@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	  console.log("waypoints.js is loaded");
+	// console.log("waypoints.js is loaded");
 }); 
 
 
