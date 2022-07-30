@@ -82,6 +82,8 @@ def computeCosts(request):
 
                 airlineAircraft = AirlineAircraft.objects.filter(aircraftICAOcode=aircraftICAOcode).first()
                 operationalFlyingCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
+                #print ( airlineAircraft.getCostsFlyingPerHoursDollars() )
+                #print ( flightPath.getFlightDurationSeconds() / 3600.0  )
                    
                 response_data = {
                                 'seats' : airlineAircraft.getMaximumNumberOfPassengers(),
@@ -89,10 +91,10 @@ def computeCosts(request):
                                 'initialMassKilograms' : flightPath.aircraft.getAircraftInitialMassKilograms(),
                                 'finalMassKilograms' : round ( flightPath.aircraft.getAircraftCurrentMassKilograms() , 1),
                                 'massLossFilograms' : round ( flightPath.aircraft.getAircraftInitialMassKilograms()-flightPath.aircraft.getAircraftCurrentMassKilograms() , 1 ),
-                                'fuelCostsDollars' : round( fuelCostsUSdollars , 1),
-                                'flightDurationHours' : round ( computeDurationHours ( flightPath.getFlightDurationSeconds() ) , 1 ),
-                                'operationalFlyingCostsDollars' : round ( operationalFlyingCostsUSdollars , 1),
-                                'totalCostsDollars' : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars , 1)
+                                'fuelCostsDollars' : round( fuelCostsUSdollars , 0),
+                                'flightDurationHours' : round ( ( float(flightPath.getFlightDurationSeconds() ) / 3600.0 ), 4 ),
+                                'operationalFlyingCostsDollars' : round ( operationalFlyingCostsUSdollars , 0),
+                                'totalCostsDollars' : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars , 0)
                                 }
                 return JsonResponse(response_data)
                 
