@@ -2,8 +2,8 @@ let LayerNamePrefix = "Route-WayPoints-"
 
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	  console.log("Airline Routes.js is loaded");
-	  $('#tableAirlineRoutesId').hide();
+	//console.log("Airline Routes.js is loaded");
+	$('#tableAirlineRoutesId').hide();
 
 }); 
 
@@ -35,7 +35,7 @@ function loadOneRouteWayPoint( layerRouteWayPoints, waypoint ) {
 
 function loadRouteWayPoints( globus, airlineRoutesWaypointsArray , layerName) {
 	
-	console.log("start loading route WayPoints");
+	//console.log("start loading route WayPoints");
 	let layerRouteWayPoints = new og.layer.Vector( layerName , {
 			billboard: { 
 				src: '/static/trajectory/images/marker.png', 
@@ -48,7 +48,7 @@ function loadRouteWayPoints( globus, airlineRoutesWaypointsArray , layerName) {
 	layerRouteWayPoints.addTo(globus.planet);
 	
 	layerRouteWayPoints.events.on("add", function (e) {
-		console.log("event is add")
+		//console.log("event is add")
 		if (e.pickingObject instanceof og.Layer) {
 			console.log("picking object is instance of layer")
 		}
@@ -65,9 +65,9 @@ function loadOneAirlineRoute(globus, id) {
 	
 	let arr = id.split("-")
 	let Adep = arr[1]
-	console.log(Adep)
+	//console.log(Adep)
 	let Ades = arr[2]
-	console.log(Ades)
+	//console.log(Ades)
 	// use ajax to get the data 
 	$.ajax( {
 			method: 'get',
@@ -83,11 +83,12 @@ function loadOneAirlineRoute(globus, id) {
 							
 			},
 			error: function(data, status) {
-							console.log("Error - show Airline Routes : " + status + " Please contact your admin");
+				console.log("Error - show Airline Routes : " + status + " Please contact your admin");
+				showMessage("Error - Airline Routes", data)
 			},
 			complete : function() {
-							stopBusyAnimation();
-							document.getElementById("btnAirlineRoutes").disabled = false
+				stopBusyAnimation();
+				document.getElementById("btnAirlineRoutes").disabled = false
 			},
 	});
 	
@@ -101,7 +102,7 @@ function showHideWayPoints(globus, domElement) {
 	if (value == "Show") {
 		
 		document.getElementById(id).value = "Hide"
-		console.log(id)
+		//console.log(id)
 		loadOneAirlineRoute(globus, id);
 		domElement.style.backgroundColor = "green";
 		
@@ -110,9 +111,9 @@ function showHideWayPoints(globus, domElement) {
 		document.getElementById(id).value = "Show"
 		let arr = id.split("-")
 		let Adep = arr[1]
-		console.log(Adep)
+		//console.log(Adep)
 		let Ades = arr[2]
-		console.log(Ades)
+		//console.log(Ades)
 		
 		let layerName =  LayerNamePrefix + Adep + "-" + Ades;
 		// function defined in main.js
@@ -164,7 +165,7 @@ function addOneAirlineRoute( globus, oneAirlineRoute ) {
 	* on click function forwarding the globus argument
 	*/
 	$('#'+elemButton.id).click(function () {
-		console.log("button clicked") 
+		//console.log("button clicked") 
 		showHideWayPoints(globus, this);
 	});
 
@@ -240,6 +241,7 @@ function loadAirlineRoutes(globus) {
 						},
 						error: function(data, status) {
 							console.log("Error - show Airline Routes : " + status + " Please contact your admin");
+							showMessage("Error - Airline Routes" , data)
 						},
 						complete : function() {
 							stopBusyAnimation();
@@ -270,6 +272,7 @@ function loadAirlineRoutes(globus) {
 						},
 						error: function(data, status) {
 							console.log("Error - show Airline Routes : " + status + " Please contact your admin");
+							showMessage("Error - Airline Routes" , data)
 						},
 						complete : function() {
 							stopBusyAnimation();

@@ -6,6 +6,28 @@ document.addEventListener('DOMContentLoaded', () => {
 	init();
 });
 
+function showMessage ( title, message ) {
+	
+	const dialog = document.getElementById("dialogId");
+	removeAllChilds(dialog)
+	$("#dialogId")
+			.dialog({
+				autoOpen: false,
+				title: ( typeof title === 'string' ? title : JSON.stringify(title)),
+				modal: true,
+				hide: "puff",
+				show : "slide",
+				height: 200 ,
+				buttons: {
+					OK: function() {
+					  $( this ).dialog( "close" );
+					}
+				  }			   
+            })
+			.html(typeof message === 'string' ? message : JSON.stringify(message))
+			.dialog('open'); 
+}
+
 function removeLayer( globus , layerName ) {
 	
 	try {
@@ -22,7 +44,7 @@ function removeLayer( globus , layerName ) {
 }
 
 function stopBusyAnimation(){
-	console.log("stop busy anymation");
+	//console.log("stop busy anymation");
 	stopWorker();
 	initProgressBar();
 }
@@ -41,14 +63,14 @@ function stopWorker() {
 		worker.terminate();
 	}
     worker = undefined;
-    console.log("worker is stopped !!!");
+    //console.log("worker is stopped !!!");
     // hide the progress bars
 }
 
 function initWorker() {
 	
 	if (typeof (Worker) !== "undefined") {
-        console.log("Yes! Web worker is supported !");
+        //console.log("Yes! Web worker is supported !");
         // Some code.....
         if (typeof (worker) == "undefined") {
             worker = new Worker("/static/js/worker/worker.js");
@@ -71,7 +93,7 @@ function initWorker() {
 
 function initTools(globus, viewExtent) {
 			
-	console.log("init other tools");
+	//console.log("init other tools");
 	// load the airline airports
 	airports(globus);
 			
@@ -91,7 +113,7 @@ function initTools(globus, viewExtent) {
 }
 
 function initMain(viewExtent) {
-	console.log("init Main ");
+	//console.log("init Main ");
 	
 	var osm = new og.layer.XYZ("OpenStreetMap", {
             isBaseLayer: true,

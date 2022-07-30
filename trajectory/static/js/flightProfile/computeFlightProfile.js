@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	console.log("compute flight profile js is loaded");
+	//console.log("compute flight profile js is loaded");
 	 
 	$("#trComputeFlightProfileId").hide();
 	$("#aircraftSelectionId").hide();
@@ -163,27 +163,7 @@ function removeAllChilds (parent) {
     }
 };
 
-function showMessage ( title, message ) {
-	
-	const dialog = document.getElementById("dialogId");
-	removeAllChilds(dialog)
-	$("#dialogId")
-			.dialog({
-				autoOpen: false,
-				title: title,
-				modal: true,
-				hide: "puff",
-				show : "slide",
-				height: 200 ,
-				buttons: {
-					OK: function() {
-					  $( this ).dialog( "close" );
-					}
-				  }			   
-            })
-			.html(typeof message === 'string' ? message : JSON.stringify(message))
-			.dialog('open'); 
-}
+
 
 function deleteCreateKMLLayer(globus , layerName ) {
 	
@@ -439,7 +419,7 @@ function populateAirlineRunWaysFlightProfileSelector( airlineRunWaysArray ) {
 		
 		if ( route.split("-")[0] == airlineRunWaysArray[index]["airlineAirport"]) {
 			
-			console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
+			//console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
 		
 			var airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
 			var airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
@@ -459,7 +439,7 @@ function populateAirlineRunWaysFlightProfileSelector( airlineRunWaysArray ) {
 		
 		if ( route.split("-")[1] == airlineRunWaysArray[index]["airlineAirport"]) {
 			
-			console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
+			//console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
 
 			var airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
 			var airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
@@ -473,10 +453,9 @@ function launchFlightProfile(globus) {
 	
 	globus.planet.events.on("layeradd", function (e) {
 		
-		console.log("layeradd event");
+		//console.log("layeradd event");
 		if (e.pickingObject instanceof og.Layer) {
             console.log(e.pickingObject.name);
-			
         }
 		stopBusyAnimation();
     });
@@ -502,7 +481,7 @@ function launchFlightProfile(globus) {
 	
 	// listen to select route change
 	$( "#airlineRouteId" ).change(function() {
-		console.log( "Handler for airlineRouteId selection change called." );
+		//console.log( "Handler for airlineRouteId selection change called." );
 		$.ajax( {
 					method: 'get',
 					url :  "trajectory/launchFlightProfile",
@@ -519,6 +498,7 @@ function launchFlightProfile(globus) {
 					},
 					error: function(data, status) {
 						console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
+						showMessage( "Error - Launch Flight Profile" , data);
 					},
 					complete : function() {
 						stopBusyAnimation();
@@ -564,6 +544,7 @@ function launchFlightProfile(globus) {
 					},
 					error: function(data, status) {
 						console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
+						showMessage("Error - launch Flight Profile", data);
 					},
 					complete : function() {
 						stopBusyAnimation();
@@ -587,7 +568,7 @@ function launchFlightProfile(globus) {
 	//document.getElementById("btnComputeFlightProfileId").disabled = true
 	document.getElementById("btnComputeFlightProfileId").onclick = function () {
 	
-		console.log ("button compte flight profile pressed");
+		//console.log ("button compte flight profile pressed");
 	
 		document.getElementById("btnComputeFlightProfileId").disabled = true
 		

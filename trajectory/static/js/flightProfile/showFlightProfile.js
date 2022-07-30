@@ -3,7 +3,7 @@
 
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	  console.log("show KML flight profile js is loaded");
+	//console.log("show KML flight profile js is loaded");
 }); 
 
 
@@ -67,7 +67,7 @@ function addRays ( rayLayer , placeMarks ) {
 
 function showFlightProfile(globus) {
 	
-	console.log("start show flight profile");
+	//console.log("start show flight profile");
 	
 	let layerKML = new og.layer.KML( "FlightProfile" , {
 		billboard: { 

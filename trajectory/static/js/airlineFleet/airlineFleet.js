@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	  console.log("Airline Fleet.js is loaded");
-	  loadAirlineFleet();
+	// console.log("Airline Fleet.js is loaded");
+	loadAirlineFleet();
 }); 
 
 function addOneAirlineAircraft( oneAirlineAircraft ) {
@@ -71,6 +71,7 @@ function loadAirlineFleet() {
 						},
 						error: function(data, status) {
 							console.log("Error - show Airline Fleet - status: " + status + " Please contact your admin");
+							showMessage ( "Error - Airline Fleet" , data )
 						},
 						complete : function() {
 							stopBusyAnimation();

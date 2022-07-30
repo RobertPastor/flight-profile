@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	console.log("Airline Costs is loaded");
+	//console.log("Airline Costs is loaded");
 	launchCostsComputation();
 	
 }); 
@@ -11,8 +11,11 @@ function populateAircraftCostsSelector( airlineAircraftsArray ) {
 	
 	// trComputeFlightProfileId
 	$("#trComputeCostsId").show();
+	
 	// aircraftSelectionId
 	$("#aircraftSelectionCostsId").show();
+	
+	$('#airlineAircraftCostsId').empty()
 
 	for (var index = 0; index < airlineAircraftsArray.length; index++) {
       $('#airlineAircraftCostsId').append('<option value="' + airlineAircraftsArray[index]["airlineAircraftICAOcode"] + '">' + airlineAircraftsArray[index]["airlineAircraftFullName"] + '</option>');
@@ -25,6 +28,9 @@ function populateAirlineRoutesCostsSelector( airlineRoutesArray ) {
 	$("#trComputeCostsId").show();
 	// routesSelectionId
 	$("#routesSelectionCostsId").show();
+	
+	// empty the selector before filling it again
+	$('#airlineRouteCostsId').empty()
 
 	for (var index = 0; index < airlineRoutesArray.length; index++) {
 		var airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
@@ -50,7 +56,7 @@ function populateAirlineRunWaysCostsSelector( airlineRunWaysArray ) {
 		
 		if ( route.split("-")[0] == airlineRunWaysArray[index]["airlineAirport"]) {
 			
-			console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
+			//console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
 		
 			var airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
 			var airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
@@ -70,7 +76,7 @@ function populateAirlineRunWaysCostsSelector( airlineRunWaysArray ) {
 		
 		if ( route.split("-")[1] == airlineRunWaysArray[index]["airlineAirport"]) {
 			
-			console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
+			//console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
 
 			var airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
 			var airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
@@ -81,17 +87,18 @@ function populateAirlineRunWaysCostsSelector( airlineRunWaysArray ) {
 
 function showCostsResults( dataJson ) {
 
-	let aircraftICAOcode = $("#airlineAircraftCostsId option:selected").val()
+	let aircraftName = $("#airlineAircraftCostsId option:selected").html()
 	let route =  $("#airlineRouteCostsId option:selected").val()
 	let departureRunWay = $("#airlineDepartureRunWayCostsId option:selected").val()
 	let arrivalRunWay = $("#airlineArrivalRunWayCostsId option:selected").val()
 	
-	
+	//console.log("before tableCostsResultsId tbody tr append")
 	$("#tableCostsResultsId")
 	.find('tbody')
     .append($('<tr>')
 
-		.append('<td>'+ aircraftICAOcode +'</td>')
+		.append('<td>'+ aircraftName +'</td>')
+		.append('<td>'+ dataJson["seats"] +'</td>')
 		.append('<td>'+ route.split("-")[0] +'</td>')
 		.append('<td>'+ departureRunWay +'</td>')
 		.append('<td>'+ route.split("-")[1] +'</td>')
@@ -104,8 +111,10 @@ function showCostsResults( dataJson ) {
 		
 		.append('<td>'+ dataJson["fuelCostsDollars"] +'</td>')
 		.append('<td>'+ dataJson["flightDurationHours"] +'</td>')
-		.append('<td>'+ dataJson["operationalflightCostsDollars"] +'</td>')
+		.append('<td>'+ dataJson["operationalFlyingCostsDollars"] +'</td>')
+		.append('<td>'+ dataJson["totalCostsDollars"] +'</td>')
 	);
+	//console.log("after tableCostsResultsId tbody tr append")
 
 }
 
@@ -121,7 +130,7 @@ function launchCostsComputation() {
 	
 	// listen to the route selector changes
 	$( "#airlineRouteCostsId" ).change(function() {
-		console.log( "Handler for airlineRouteCostsId selection change called." );
+		//console.log( "Handler for airlineRouteCostsId selection change called." );
 		// for the begin of the computation we use the same URL route as the Flight Profile computation
 		$.ajax( {
 					method: 'get',
@@ -159,6 +168,8 @@ function launchCostsComputation() {
 		if (show) {
 			show = false;
 			$('#tableCostsId').show();
+			$('#tableCostsResultsId').show();
+			
 			$("#trComputeCostsId").show();
 			$("#aircraftSelectionCostsId").show();
 			$("#routesSelectionCostsId").show();
@@ -197,7 +208,8 @@ function launchCostsComputation() {
 		} else {
 			show = true;
 			$('#tableCostsId').hide();
-			
+			$('#tableCostsResultsId').hide();
+
 			// change name on the button
 			document.getElementById("btnLaunchCosts").innerText = "Show Compute Costs";
 			document.getElementById("btnLaunchCosts").style.backgroundColor = "yellow";

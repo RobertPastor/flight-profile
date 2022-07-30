@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => { 
        
-	 // console.log("airline airports js is loaded");
+	// console.log("airline airports js is loaded");
 }); 
 
 function loadOneAirport( layerAirports, airport ) {
@@ -43,7 +43,7 @@ function loadAirports(layerAirports, dataJson) {
 
 function airports(globus) {
 	
-	console.log("start airports");
+	//console.log("start airports");
 	let layerAirports = new og.layer.Vector("AirlineAirports", {
             clampToGround: true,
     });
@@ -80,6 +80,7 @@ function airports(globus) {
 					},
 					error: function(data, status) {
 						console.log("Error - show Airports : " + status + " Please contact your admin");
+						showMessage ( "Error - show Airports" , data );
 					},
 					complete : function() {
 						stopBusyAnimation();

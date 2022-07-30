@@ -48,6 +48,12 @@ function Help () {
 		this.helpArray.push("Costs are based upon :<br>");
 		this.helpArray.push("   1) flight duration TIMES operational costs per flight hours.<br>");
 		this.helpArray.push("   2) fuel costs based upon aircraft mass loss - translated into liters of fuel TIMES cost of one liter of fuel.<br>");
+		
+		this.helpArray.push("<h4>Fuel Costs</h4>");
+		this.helpArray.push("Fuel costs are based upon aircraft mass difference between initial mass and final mass.<br>");
+		this.helpArray.push("This Mass difference expressed in Kilograms is converted into US gallons -> Mass Kg * 0.33 <br>");
+		this.helpArray.push("Finally the value in US gallons is timed by a US Gallon to US Dollar constant -> US gallons *  3.25.<br>");
+
 
 	};
 }

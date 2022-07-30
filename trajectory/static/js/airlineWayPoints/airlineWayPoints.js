@@ -45,7 +45,7 @@ function loadWayPoints(layerWayPoints, dataJson) {
 
 function wayPoints(globus, viewExtent) {
 	
-	console.log("start WayPoints");
+	//console.log("start WayPoints");
 	let layerWayPoints = new og.layer.Vector("WayPoints", {
 			billboard: { 
 				src: '/static/trajectory/images/marker.png', 
@@ -98,6 +98,7 @@ function wayPoints(globus, viewExtent) {
 				},
 				error: function(data, status) {
 					console.log("Error - Show Airline WayPoints : " + status + " Please contact your admin");
+					showMessage( "Error - Show Airline WayPoints" , data )
 				},
 				complete : function() {
 					stopBusyAnimation();

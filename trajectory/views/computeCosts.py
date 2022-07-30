@@ -62,6 +62,7 @@ def computeCosts(request):
                 '''  use runways defined in the web page '''
                 routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                 logger.info ( routeAsString )
+                
                 acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
                 logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
                 logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
@@ -80,16 +81,18 @@ def computeCosts(request):
                 fuelCostsUSdollars =  ( flightPath.aircraft.getAircraftInitialMassKilograms() - flightPath.aircraft.getAircraftCurrentMassKilograms() )  * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
 
                 airlineAircraft = AirlineAircraft.objects.filter(aircraftICAOcode=aircraftICAOcode).first()
-                operationalCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
+                operationalFlyingCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
                    
                 response_data = {
+                                'seats' : airlineAircraft.getMaximumNumberOfPassengers(),
                                 'isAborted': flightPath.abortedFlight ,
                                 'initialMassKilograms' : flightPath.aircraft.getAircraftInitialMassKilograms(),
                                 'finalMassKilograms' : round ( flightPath.aircraft.getAircraftCurrentMassKilograms() , 1),
                                 'massLossFilograms' : round ( flightPath.aircraft.getAircraftInitialMassKilograms()-flightPath.aircraft.getAircraftCurrentMassKilograms() , 1 ),
-                                'fuelCostsDollars' : round( fuelCostsUSdollars , 2),
-                                'flightDurationHours' : round ( computeDurationHours ( flightPath.getFlightDurationSeconds() ) , 2 ),
-                                'operationalflightCostsDollars' : round ( operationalCostsUSdollars , 2)
+                                'fuelCostsDollars' : round( fuelCostsUSdollars , 1),
+                                'flightDurationHours' : round ( computeDurationHours ( flightPath.getFlightDurationSeconds() ) , 1 ),
+                                'operationalFlyingCostsDollars' : round ( operationalFlyingCostsUSdollars , 1),
+                                'totalCostsDollars' : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars , 1)
                                 }
                 return JsonResponse(response_data)
                 
