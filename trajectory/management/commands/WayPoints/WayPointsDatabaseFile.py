@@ -172,6 +172,7 @@ class WayPointsDatabase(object):
                                         Continent = Continent,
                                         Latitude = wayPointDict['Latitude'],
                                         Longitude = wayPointDict['Longitude'])
+                    print ( str ( wayPoint ))
                     wayPoint.save()
                 else:
                     print ("duplicates found in Way Points database - way Point= {0}".format(WayPointName))

@@ -1,6 +1,5 @@
 
 
-
 document.addEventListener('DOMContentLoaded', (event) => { 
        
 	//console.log("show KML flight profile js is loaded");

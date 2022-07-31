@@ -8,6 +8,7 @@ class Command(BaseCommand):
     help = 'Reads the Synonym file and load the Aircrafts table'
 
     def handle(self, *args, **options):
+        
         AirlineRunWay.objects.all().delete()
         
         ''' load only runways for airports defined in the airline routes '''

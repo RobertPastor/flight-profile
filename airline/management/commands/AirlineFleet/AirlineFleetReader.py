@@ -97,6 +97,7 @@ class AirlineFleetDataBase(object):
                 ''' one ac per row '''
                 aircraftICAOcode = badaAircraftDatabase.getAircraftICAOcode(aircraftFullName)
                 logging.info ( aircraftFullName )
+                print ( aircraftFullName )
                 if (aircraftICAOcode):
                     logging.info ("aircraft ICAO code found = {0} for aircraft full name = {1}".format(aircraftICAOcode, aircraftFullName))
                     airlineAircraft = AirlineAircraft( 

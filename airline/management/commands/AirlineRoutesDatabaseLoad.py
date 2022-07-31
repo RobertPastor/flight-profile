@@ -7,7 +7,9 @@ class Command(BaseCommand):
     help = 'Reads the Synonym file and load the Aircrafts table'
 
     def handle(self, *args, **options):
+        
         AirlineRoute.objects.all().delete()
+        
         airlineRoutes = AirlineRoutesDataBase()
         if (airlineRoutes.exists()):
             print("airline routes database exists")

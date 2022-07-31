@@ -53,6 +53,9 @@ class AirlineWayPoint(models.Model):
                                          [nextWayPoint.LatitudeDegrees, nextWayPoint.LongitudeDegrees])
         return 0.0
     '''
+    
+    def __str(self):
+        print ( self.WayPointName , str(self.Latitude) , str(self.Longitude) )
 
 
 class AirlineAirport(models.Model):

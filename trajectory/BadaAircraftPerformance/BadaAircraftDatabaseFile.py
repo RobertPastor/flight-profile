@@ -148,7 +148,6 @@ class BadaAircraftDatabase(object):
         return False    
 
 
-
     def aircraftExists(self, aircraftICAOcode):
         aircraftICAOcode = str(aircraftICAOcode).upper()
         logging.info ( self.className + ': aircraft= {0} exists= {1}'.format(aircraftICAOcode, aircraftICAOcode in self.aircraftDict ) )

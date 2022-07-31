@@ -72,6 +72,7 @@ class AirlineRoutesDataBase(object):
                     ArrivalAirport = route[HeaderNames[2]],
                     ArrivalAirportICAOCode = route[HeaderNames[3]]
                     )
+                print ( str(airlineRoute))
                 airlineRoute.save()
                 self.RoutesAirports.append(route)
         

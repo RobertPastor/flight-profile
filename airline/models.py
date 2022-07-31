@@ -23,7 +23,6 @@ class AirlineRoute(models.Model):
     def __str__(self):
         return "departure airport= {0} - arrival airport= {1}".format(self.DepartureAirportICAOCode, self.ArrivalAirportICAOCode)
 
-
     def getAirportsList(self):
         airlineRoutes = AirlineRoute.objects.all()
         airportsICAOcodeList = []

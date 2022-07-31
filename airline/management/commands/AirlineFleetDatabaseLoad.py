@@ -1,12 +1,16 @@
 from django.core.management.base import BaseCommand
 
 from airline.management.commands.AirlineFleet.AirlineFleetReader import AirlineFleetDataBase
+from airline.models import AirlineAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftDatabaseFile import BadaAircraftDatabase
 
 class Command(BaseCommand):
     help = 'Reads the Synonym file and load the Aircrafts table'
 
     def handle(self, *args, **options):
+        
+        AirlineAircraft.objects.all().delete()
+        
         airlineFleetDatabase = AirlineFleetDataBase()
         badaAircraftDatabase = BadaAircraftDatabase()
         if (airlineFleetDatabase.exists() and badaAircraftDatabase.exists()):

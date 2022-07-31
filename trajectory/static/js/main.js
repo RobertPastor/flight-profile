@@ -6,6 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	init();
 });
 
+function removeAllChilds (parent) {
+    while (parent.lastChild) {
+        parent.removeChild(parent.lastChild);
+    }
+}
+
 function showMessage ( title, message ) {
 	
 	const dialog = document.getElementById("dialogId");
@@ -135,7 +141,6 @@ function initMain(viewExtent) {
 	setTimeout( function() {
 		initTools (globus, viewExtent);
 	} , 1500 );
-	
 }
 
 

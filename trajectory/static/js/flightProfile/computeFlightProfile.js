@@ -16,6 +16,9 @@ function populateAircraftFlightProfileSelector( airlineAircraftsArray ) {
 	$("#trComputeFlightProfileId").show();
 	// aircraftSelectionId
 	$("#aircraftSelectionId").show();
+	
+	// empty the selector
+	$('#airlineAircraftId').empty()
 
 	for (var index = 0; index < airlineAircraftsArray.length; index++) {
       $('#airlineAircraftId').append('<option value="' + airlineAircraftsArray[index]["airlineAircraftICAOcode"] + '">' + airlineAircraftsArray[index]["airlineAircraftFullName"] + '</option>');
@@ -28,6 +31,9 @@ function populateAirlineRoutesFlightProfileSelector( airlineRoutesArray ) {
 	$("#trComputeFlightProfileId").show();
 	// routesSelectionId
 	$("#routesSelectionId").show();
+	
+	// empty the selector
+	$('#airlineRouteId').empty()
 
 	for (var index = 0; index < airlineRoutesArray.length; index++) {
 		var airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
@@ -156,13 +162,6 @@ function addRays ( rayLayer , placeMarks ) {
 		loadOneRay( rayLayer, placeMarks[placeMarkId] );
 	}
 }
-
-function removeAllChilds (parent) {
-    while (parent.lastChild) {
-        parent.removeChild(parent.lastChild);
-    }
-};
-
 
 
 function deleteCreateKMLLayer(globus , layerName ) {
@@ -498,7 +497,7 @@ function launchFlightProfile(globus) {
 					},
 					error: function(data, status) {
 						console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
-						showMessage( "Error - Launch Flight Profile" , data);
+						showMessage( "Error - Launch Flight Profile" , eval(data) );
 					},
 					complete : function() {
 						stopBusyAnimation();
@@ -544,11 +543,11 @@ function launchFlightProfile(globus) {
 					},
 					error: function(data, status) {
 						console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
-						showMessage("Error - launch Flight Profile", data);
+						showMessage("Error - launch Flight Profile", eval(data) );
 					},
 					complete : function() {
 						stopBusyAnimation();
-						document.getElementById("btnLaunchFlightProfile").disabled = false
+						document.getElementById("btnLaunchFlightProfile").disabled = false;
 					},
 			});
 		} else {
@@ -581,7 +580,7 @@ function launchFlightProfile(globus) {
 		initProgressBar();
 		initWorker();
 		
-		$.ajax( {
+		$.ajax({
 					method: 'get',
 					url :  "trajectory/computeFlightProfile",
 					async : true,
@@ -623,8 +622,8 @@ function launchFlightProfile(globus) {
 					},
 					complete : function() {
 						//stopBusyAnimation();
-						document.getElementById("btnComputeFlightProfileId").disabled = false
-					},
+						document.getElementById("btnComputeFlightProfileId").disabled = false;
+					}
 			});
 	}
 }
