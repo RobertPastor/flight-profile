@@ -68,7 +68,7 @@ function wayPoints(globus, viewExtent) {
     	
 	document.getElementById("btnWayPoints").onclick = function () {
 		
-		console.log( globus.planet.getViewExtent() )
+		//console.log( globus.planet.getViewExtent() )
 		let viewExtent = globus.planet.getViewExtent() 
 		let northEast = viewExtent["northEast"]
 		let southWest = viewExtent["southWest"]

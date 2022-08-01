@@ -2,11 +2,12 @@ var worker = undefined;
 
 document.addEventListener('DOMContentLoaded', (event) => {
 	
+	// key has been suppressed 
 	console.log("document is loaded");
 	var mapLibre = new maplibregl.Map({
 			container: 'map', // container id
 			//style: 'https://demotiles.maplibre.org/style.json', // style URL
-			style: 'https://api.maptiler.com/maps/basic/style.json?key=clQgrZvyCGsbZgyRzmPo',
+			style: 'https://api.maptiler.com/maps/basic/style.json?key=---your key here----',
 			center: [-96.0, 38.0], // starting position [lng, lat]
 			zoom: 4 // starting zoom
 	});

@@ -40,6 +40,8 @@ function removeLayer( globus , layerName ) {
 		let layer = globus.planet.getLayerByName( layerName );
 		if (layer) {
 			
+			layer._entityCollectionsTree.entityCollection.clear();
+			
 			let entities = layer.getEntities();
 			layer.removeEntities(entities);
 			layer.remove();

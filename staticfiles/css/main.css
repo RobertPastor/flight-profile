@@ -1,19 +1,19 @@
 body {
 	height: 100%;
 	font-family: arial, serif;
-	font-size: 12px;
+	font-size: 11px;
 }
 
 .bodyDivOverlay {
 	position: fixed; /* Sit on top of the page content */
 	display: none; /* displayed by default */
-	z-index: 10; /* Specify a stack order in case you're using a different order for other elements */
+	z-index: 100; /* Specify a stack order in case you're using a different order for other elements */
 	cursor: pointer; /* Add a pointer on hover */
 }
 
 button {
 	font-family: arial, serif;
-	font-size: 12px;
+	font-size: 11px;
 }
 
 progress {
