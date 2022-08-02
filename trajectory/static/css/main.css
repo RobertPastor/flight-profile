@@ -4,12 +4,6 @@ body {
 	font-size: 11px;
 }
 
-.bodyDivOverlay {
-	position: fixed; /* Sit on top of the page content */
-	display: none; /* displayed by default */
-	z-index: 100; /* Specify a stack order in case you're using a different order for other elements */
-	cursor: pointer; /* Add a pointer on hover */
-}
 
 button {
 	font-family: arial, serif;
@@ -65,4 +59,11 @@ th {
     width:              24px;
     margin:             0 auto 0 auto;
     display:			block;
+}
+
+.divOverlayClass {
+	position: fixed; /* Sit on top of the page content */
+	display: none; /* displayed by default */
+	z-index: 100; /* Specify a stack order in case you're using a different order for other elements */
+	cursor: pointer; /* Add a pointer on hover */
 }

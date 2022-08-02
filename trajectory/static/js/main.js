@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	init();
 });
 
+
 function removeAllChilds (parent) {
     while (parent.lastChild) {
         parent.removeChild(parent.lastChild);
@@ -47,7 +48,7 @@ function removeLayer( globus , layerName ) {
 			layer.remove();
 		}
 	} catch (err) {
-		console.log("layer is probably not existing")
+		console.log("layer is probably not existing anymore...")
 	}
 }
 
@@ -117,7 +118,7 @@ function initTools(globus, viewExtent) {
 	// load routes
 	loadAirlineRoutes(globus);
 	
-	$('#bodyDivOverlayId').show();
+	$('#divOverlayId').show();
 }
 
 function initMain(viewExtent) {
@@ -134,7 +135,7 @@ function initMain(viewExtent) {
     var globus = new og.Globe({
             "target": "globusDivId", 
             "name": "Earth",
-            "terrain": new og.terrain.GlobusTerrain(),
+            "terrain": new og.terrain.EmptyTerrain(),
             "layers": [osm],
             "autoActivated": true,
 			"viewExtent" : viewExtent
@@ -153,7 +154,7 @@ function init() {
 	//the event occurred
 		  
 	// hide the overlay
-	$('#bodyDivOverlayId').hide();
+	$('#divOverlayId').hide();
 		  
 	let MinLongitude = "-130.0";
 	let MinLatitude = "25.0";

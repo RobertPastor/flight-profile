@@ -163,7 +163,6 @@ function addRays ( rayLayer , placeMarks ) {
 	}
 }
 
-
 function deleteCreateKMLLayer(globus , layerName ) {
 	
 	let finalLayerName = "FlightProfile-" + layerName 
