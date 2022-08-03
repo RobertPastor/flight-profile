@@ -266,7 +266,7 @@ class GroundRunLeg(Graph):
             index += 1
             
         ''' rename last point as take-off '''
-        intermediateWayPoint.setName(Name = 'TakeOff-{0:.1f}-meters'.format(totalLegDistanceMeters))
+        intermediateWayPoint.setName(Name = 'takeOff-{0:.1f}-meters'.format(totalLegDistanceMeters))
    
    
     def getElapsedTimeSeconds(self):

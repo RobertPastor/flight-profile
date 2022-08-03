@@ -123,10 +123,13 @@ function loadOneRay( rayLayer, placeMark ) {
 	
 	if ( placeMark["name"].length > 0 ) {
 		let offset = [10, 10]
-		if ( placeMark["name"].includes("turn") || placeMark["name"].includes("ground") 
-			|| placeMark["name"].includes("climb") || placeMark["name"].includes("touch") ) {
+		if ( placeMark["name"].includes("turn") || placeMark["name"].includes("climb") || placeMark["name"].includes("touch") ) {
 			offset = [10, -20]
 		} 
+		// alternate place
+		if ( placeMark["name"].includes("ground") || placeMark["name"].includes("slope") || placeMark["name"].includes("takeOff") ) {
+			offset = [10, +20]
+		}
 		
 		rayLayer.add(new og.Entity({
 			cartesian : cartAir,

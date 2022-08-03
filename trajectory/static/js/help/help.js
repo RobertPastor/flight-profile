@@ -31,10 +31,12 @@ function Help () {
 		this.helpArray.push("<h3>Airline Airports</h3>");
 		this.helpArray.push("The airline has a set of departure and arrival airports.<br>");
 		this.helpArray.push("These airports are the starting or ending points of the flight legs.<br>");
+		this.helpArray.push("Warning : you will have to dezoom in order to see an airport in Alaska or in France.<br>");
 
 		this.helpArray.push("<h3>Airline Routes</h3>");
 		this.helpArray.push("The airline routes are defined by a set of WayPoints to link a departure to an arrival airport.<br>");
 		this.helpArray.push("Warning : for the time being, these routes are not dependent upon the departure and arrival runways.<br>");
+		this.helpArray.push("Future improvements : SID and STAR have to be implemented.<br>");
 
 
 		this.helpArray.push("<h3>Flight Profile</h3>");
@@ -54,6 +56,8 @@ function Help () {
 		this.helpArray.push("This Mass difference expressed in Kilograms is converted into US gallons -> Mass Kg * 0.33 <br>");
 		this.helpArray.push("Finally the value in US gallons is timed by a US Gallon to US Dollar constant -> US gallons *  3.25.<br>");
 
+		this.helpArray.push("<h3>Future Improvements</h3>");
+		this.helpArray.push("For each route, define a seat demand hypothesis per Hour from 7AM to 10PM.<br>");
 
 	};
 }
