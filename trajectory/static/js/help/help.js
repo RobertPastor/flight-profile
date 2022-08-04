@@ -34,7 +34,7 @@ function Help () {
 		this.helpArray.push("Warning : you will have to dezoom in order to see an airport in Alaska or in France.<br>");
 
 		this.helpArray.push("<h3>Airline Routes</h3>");
-		this.helpArray.push("The airline routes are defined by a set of WayPoints to link a departure to an arrival airport.<br>");
+		this.helpArray.push("The airline routes are defined by a set of WayPoints that are linking a departure to an arrival airport.<br>");
 		this.helpArray.push("Warning : for the time being, these routes are not dependent upon the departure and arrival runways.<br>");
 		this.helpArray.push("Future improvements : SID and STAR have to be implemented.<br>");
 
@@ -61,8 +61,9 @@ function Help () {
 		
 		this.helpArray.push("<h4>About Trajectory Prediction</h4>");
 		this.helpArray.push('<a href="https://trajectoire-predict.monsite-orange.fr/page-557223c123784.html" target="_blank">Aircraft Trajectory Prediction</a>');
+		this.helpArray.push("<br>");
+		this.helpArray.push('<a href="https://trajectoire-predict.monsite-orange.fr/index.html" target="_blank">Prédiction de Trajectoire des Avions de Ligne</a>');
 
-		
 
 	};
 }

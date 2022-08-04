@@ -38,17 +38,25 @@ function showMessage ( title, message ) {
 function removeLayer( globus , layerName ) {
 	
 	try {
-		let layer = globus.planet.getLayerByName( layerName );
-		if (layer) {
+		let layerOne = globus.planet.getLayerByName( layerName );
+		if (layerOne) {
 			
-			layer._entityCollectionsTree.entityCollection.clear();
-			
-			let entities = layer.getEntities();
-			layer.removeEntities(entities);
-			layer.remove();
+			let entities = layerOne.getEntities();
+			layerOne.removeEntities(entities);
+			layerOne.remove();
 		}
 	} catch (err) {
-		console.log("layer is probably not existing anymore...")
+		console.log("layerOne is probably not existing anymore...")
+	}
+	try {
+		let layerTwo = globus.planet.getLayerByName( layerName );
+		if (layerTwo) {
+			
+			layerTwo._entityCollectionsTree.entityCollection.clear();
+			
+		}
+	} catch (err) {
+		console.log("layerTwo is probably not existing anymore...")
 	}
 }
 
