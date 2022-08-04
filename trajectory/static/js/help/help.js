@@ -45,6 +45,7 @@ function Help () {
 		this.helpArray.push("On its X axis, the vertical profile shows a time line expressed in seconds.<br>");
 		this.helpArray.push("On its Y axis, the vertical profile shows a flight level expressed as a Mean Sea Level in meters.<br>");
 		this.helpArray.push("To escape the vertical profile view, double click on the screen. <br>");
+		this.helpArray.push("Warning: case where a A330 takes off from Atlanta 08L after 2915 meters of ground run (more than the length of the runway). <br>");
 
 		this.helpArray.push("<h3>Airline Costs</h3>");
 		this.helpArray.push("Costs are based upon :<br>");
