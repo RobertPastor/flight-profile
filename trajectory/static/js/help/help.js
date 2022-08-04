@@ -58,6 +58,11 @@ function Help () {
 
 		this.helpArray.push("<h3>Future Improvements</h3>");
 		this.helpArray.push("For each route, define a seat demand hypothesis per Hour from 7AM to 10PM.<br>");
+		
+		this.helpArray.push("<h4>About Trajectory Prediction</h4>");
+		this.helpArray.push('<a href="https://trajectoire-predict.monsite-orange.fr/page-557223c123784.html" target="_blank">Aircraft Trajectory Prediction</a>');
+
+		
 
 	};
 }

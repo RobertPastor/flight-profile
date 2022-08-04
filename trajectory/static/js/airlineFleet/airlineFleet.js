@@ -23,6 +23,9 @@ function addOneAirlineAircraft( oneAirlineAircraft ) {
 		.append($('<td>')
             .append( oneAirlineAircraft["CostsFlyingHoursDollars"] )
         )
+		.append($('<td>')
+            .append( "Crew costs not yet implemented" )
+        )
     );
 }
 
