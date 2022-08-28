@@ -3,7 +3,6 @@ let LayerNamePrefix = "Route-WayPoints-"
 document.addEventListener('DOMContentLoaded', (event) => { 
        
 	//console.log("Airline Routes.js is loaded");
-	$('#tableAirlineRoutesId').hide();
 
 }); 
 
@@ -125,7 +124,7 @@ function showHideWayPoints(globus, domElement) {
 
 function addOneAirlineRoute( globus, oneAirlineRoute ) {
 	
-	$("#tableAirlineRoutesId").find('tbody')
+	$("#airlineRoutesTableId").find('tbody')
     .append($('<tr>')
         .append($('<td>')
             .append( oneAirlineRoute["DepartureAirport"] )
@@ -176,7 +175,7 @@ function addOneAirlineRoute( globus, oneAirlineRoute ) {
 */
 function addAirlineRoutes(globus, airlineRoutesArray) {
 	
-	$('#tableAirlineRoutesId tbody').empty();
+	$('#airlineRoutesTableId tbody').empty();
 	for (var airlineRouteId = 0; airlineRouteId < airlineRoutesArray.length; airlineRouteId++ ) {
 		// insert one waypoint
 		addOneAirlineRoute( globus, airlineRoutesArray[airlineRouteId] );
@@ -204,18 +203,22 @@ function removeGlobusRoutesWayPointsLayers( globus , airlineRoutesArray) {
 		// insert one waypoint
 		removeOneAirlineRoute( globus, airlineRoutesArray[airlineRouteId] );
 	}
-	
 }
 
-function loadAirlineRoutes(globus) {
+function initAirlineRoutes(globus) {
 	
 	let show = true;
-	$("#trAirlineRoutesId").hide();
+	$("#airlineRoutesDivId").hide();
+	$("#airlineRoutesTableId").hide();
 
+	if ( ! document.getElementById("btnAirlineRoutes") ) {
+		return;
+	}
 	document.getElementById("btnAirlineRoutes").onclick = function () {
 		
 		if (show) {
-			$("#trAirlineRoutesId").show();
+			$("#airlineRoutesDivId").show();
+			$("#airlineRoutesTableId").show();
 
 			show = false;
 			// change name on the button
@@ -280,8 +283,8 @@ function loadAirlineRoutes(globus) {
 						},
 			});
 			
-			$("#trAirlineRoutesId").hide();
-			$('#tableAirlineRoutesId').hide();
+			$("#airlineRoutesDivId").hide();
+			$("#airlineRoutesTableId").hide();
 		}
 	}
 }

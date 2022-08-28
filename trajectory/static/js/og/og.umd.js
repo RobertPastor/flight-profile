@@ -548,15 +548,15 @@
      * @returns {number} -
      */
     function zeroTwoPI(a) {
-        var mod = mod(a, TWO_PI);
-        if (Math.abs(mod) < EPSILON14 && Math.abs(a) > EPSILON14) {
+        const res = mod(a, TWO_PI);
+        if (Math.abs(res) < EPSILON14 && Math.abs(a) > EPSILON14) {
             return TWO_PI;
         }
-        return mod;
+        return res;
     }
 
     /**
-     * Returns 0.0 if x is smaller then edge and otherwise 1.0.
+     * Returns 0.0 if x is smaller than edge and otherwise 1.0.
      * @function
      * @param {number} edge -
      * @param {number} x - Value to edge.
@@ -1520,15 +1520,7 @@
 
         toString() {
             return (
-                "[" +
-                this.southWest.lon +
-                ", " +
-                this.southWest.lat +
-                ", " +
-                this.northEast.lon +
-                ", " +
-                this.northEast.lat +
-                "]"
+                `[${this.southWest.lon.toFixed(5)}, ${this.southWest.lat.toFixed(5)}, ${this.northEast.lon.toFixed(5)}, ${this.northEast.lat.toFixed(5)}]`
             );
         }
     }
@@ -3660,7 +3652,7 @@
          * @returns {Vec3} -
          */
         static lerp(v1, v2, l) {
-            return Vec3(v1.x + (v2.x - v1.x) * l, v1.y + (v2.y - v1.y) * l, v1.z + (v2.z - v1.z) * l);
+            return new Vec3(v1.x + (v2.x - v1.x) * l, v1.y + (v2.y - v1.y) * l, v1.z + (v2.z - v1.z) * l);
         }
 
         /**
@@ -5006,6 +4998,7 @@
      *       "y": 15,
      *       "z": 8
      * }
+     * 26th July 2022 - Robert PASTOR
      * og.utils.stringTemplate("http://earth3.openglobus.org/{z}/{y}/{x}.ddm", substrins);
      * //returns http://earth3.openglobus.org/8/15/12.ddm
      */
@@ -6826,12 +6819,15 @@
                         frame: () => p.maxCurrZoom + " / " + p.minCurrZoom
                     },
                     {
+                        label: "viewExtent",
+                        frame: () => p.getViewExtent().toString()
+                    },
+                    {
                         label: "height/alt (km)",
                         frame: () =>
-                            `<div style="width:190px">${
-                            (p.camera._lonLat.height / 1000.0).toFixed(2) +
-                            " / " +
-                            (p.camera.getAltitude() / 1000.0).toFixed(2)
+                            `<div style="width:190px">${(p.camera._lonLat.height / 1000.0).toFixed(2) +
+                        " / " +
+                        (p.camera.getAltitude() / 1000.0).toFixed(2)
                         }</div>`
                     },
                     {
@@ -6853,6 +6849,14 @@
                     },
                     {
                         label: "-------------------------"
+                    },
+                    {
+                        label: "_renderCompleted / renderCompletedActivated",
+                        frame: () => `${p._renderCompleted} / ${p._renderCompletedActivated}`
+                    },
+                    {
+                        label: "_terrainCompleted / terrainCompletedActivated",
+                        frame: () => `${p._terrainCompleted} / ${p._terrainCompletedActivated}`
                     },
                     {
                         label: "PlainWorker",
@@ -7428,63 +7432,128 @@
         }
     }
 
-    /**
-     * @module og/control/EarthCoordinates
-     */
+    const ELL = 0;
+    const MSL = 1;
+    const GND = 2;
 
-    function dec2deg(base) {
-        var t;
-        var degrees = base < 0 ? Math.ceil(base) : Math.floor(base);
-        var minutes = Math.floor((t = Math.abs(base - degrees) * 60));
-        var seconds = Math.floor((t - minutes) * 6000);
-        seconds = seconds / 100.0;
-        return (
-            numToFixedString(degrees, 3) +
-            "\u00B0" +
-            numToFixedString(minutes, 2) +
-            "\u0027" +
-            numToFixedString(seconds.toFixed(2), 2) +
-            "\u0022"
-        );
+    const heightMode = {
+        "ell": ELL,
+        "msl": MSL,
+        "gnd": GND
+    };
+
+    const KM_to_M = 1000.0;
+    const M_to_KM = 1.0 / KM_to_M;
+    const FT_to_M = 0.3048;
+    const M_to_FT = 1.0 / FT_to_M;
+    const MS_to_KMH = 3.6;
+    const KMH_to_MS = 1.0 / MS_to_KMH;
+    const MS_to_FTS = 3.28084;
+    const FT_to_KM = FT_to_M * M_to_KM;
+    const KM_to_FT = 1.0 / FT_to_KM;
+
+    const m = 0;
+    const km = 1;
+    const ft = 2;
+    const s = 3;
+    const h = 4;
+    const ms = 5;
+    const kmh = 6;
+    const fts = 7;
+
+    const DEFAULT_NAN = "--";
+
+    const _abbr = ["m", "km", "ft", "s", "h", "m/s", "km/h", "ft/s"];
+
+    const _tenth = [0, 2, 0, 0, 0, 0, 0, 0];
+
+    let _convFn = [];
+
+    _convFn[m] = [];
+    _convFn[m][m] = (v) => v;
+    _convFn[m][km] = (v) => v * M_to_KM;
+    _convFn[m][ft] = (v) => v * M_to_FT;
+
+    _convFn[ft] = [];
+    _convFn[ft][m] = (v) => v * FT_to_M;
+    _convFn[ft][km] = (v) => v * FT_to_KM;
+    _convFn[ft][ft] = (v) => v;
+
+    _convFn[km] = [];
+    _convFn[km][m] = (v) => v * KM_to_M;
+    _convFn[km][km] = (v) => v;
+    _convFn[km][ft] = (v) => v * KM_to_FT;
+
+    _convFn[ms] = [];
+    _convFn[ms][ms] = (v) => v;
+    _convFn[ms][kmh] = (v) => v * MS_to_KMH;
+    _convFn[ms][fts] = (v) => v * MS_to_FTS;
+
+    _convFn[kmh] = [];
+    _convFn[kmh][ms] = (v) => v * KMH_to_MS;
+    _convFn[kmh][kmh] = (v) => v;
+    //_convFn[kmh][fts] = (v) => v * KMH_to_FTS;
+
+    function convert(from, to, val) {
+        return _convFn[from][to](val);
     }
 
-    function numToFixedString(num, fixed) {
-        var dl = num.toString().split(".")[0].length;
-        var white = "&nbsp;";
-        for (var i = dl; i < fixed; i++) {
-            white += "&nbsp;&nbsp;";
+    function convertExt(isNotNaN, unitFrom, unitTo, val, fixed) {
+        if (isNotNaN) {
+            return convert(unitFrom, unitTo, val).toFixed(fixed || _tenth[unitTo]);
         }
-        return white + num.toString();
+        return DEFAULT_NAN;
     }
 
-    function toDecimal(ll) {
-        return ll.lat.toFixed(5) + ", " + ll.lon.toFixed(5);
+    function toString(u) {
+        return _abbr[u];
     }
 
-    function toDegrees(ll) {
-        return dec2deg(ll.lat) + ", " + dec2deg(ll.lon);
-    }
+    var units = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        ELL: ELL,
+        MSL: MSL,
+        GND: GND,
+        heightMode: heightMode,
+        m: m,
+        km: km,
+        ft: ft,
+        s: s,
+        h: h,
+        ms: ms,
+        kmh: kmh,
+        fts: fts,
+        _tenth: _tenth,
+        convert: convert,
+        convertExt: convertExt,
+        toString: toString
+    });
 
-    function toMercator(ll) {
-        var m = ll.forwardMercator();
-        return m.lat.toFixed(5) + ", " + m.lon.toFixed(5);
-    }
+    const DECIMAL_TEMPLATE =
+        `<div class="og-lat-side"></div><div class="og-lat-val"></div>
+    <div class="og-lon-side"></div><div class="og-lon-val"></div>
+    <div class="og-height"></div>
+    <div class="og-units-height"></div>`;
 
-    const DisplayTypesConverters = [toDecimal, toDegrees, toMercator];
+    const DEGREE_TEMPLATE =
+        `<div class="og-lat-side"></div><div class="og-lat-val"></div>
+    <div class="og-lon-side"></div><div class="og-lon-val"></div>
+    <div class="og-height"></div>
+    <div class="og-units-height"></div>`;
+
+    const CENTER_SVG = '<svg width="12" height="12"><g><path stroke-width="1" stroke-opacity="1" d="M6 0L6 12M0 6L12 6" stroke="#337ab7"></path></g></svg>';
+
+    const TYPE_HTML = [DECIMAL_TEMPLATE, DEGREE_TEMPLATE];
 
     /**
      * Control displays mouse or screen center Earth coordinates.
      * @class
-     * @extends {Control}
+     * @extends {og.control.Control}
      * @param {Object} [options] - Options:
      * @param {Boolean} [options.center] - Earth coordiantes by screen center otherwise mouse pointer. False is default.
      * @param {Boolean} [options.type] - Coordinates shown: 0 - is decimal degrees, 1 - degrees, 2 - mercator geodetic coordinates.
      */
     class EarthCoordinates extends Control$1 {
-        /**
-         *
-         * @param {Object} [options] - Options:
-         */
         constructor(options) {
             super(options);
 
@@ -7495,148 +7564,171 @@
              * @private
              * @type {Boolean}
              */
-            this._displayType = options.type || 0;
+            this._type = options.type || 0;
 
-            /**
-             * Current coordinates type converter.
-             * @private
-             * @function
-             */
-            this._converter = DisplayTypesConverters[0];
+            this._TYPE_FUNC = [this._SHOW_DECIMAL, this._SHOW_DEGREE];
 
-            /**
-             * Display dom element.
-             * @private
-             * @type {Object}
-             */
-            this._display = null;
-
-            /**
-             * Screen center or mouse pointer coordinates show flag.
-             * @private
-             * @type {Boolean}
-             */
-
-            var pad = false;
-            if (
-                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-                    navigator.userAgent
-                )
-            ) {
-                pad = true;
-            }
-
-            this._center = options.center || pad;
-
-            this._centerDiv = null;
+            this._showFn = null;
 
             /**
              * Current position.
              * @public
-             * @type {Vec3}
+             * @type {og.Vec3}
              */
-            this.position = null;
+            this._lonLat = new LonLat();
+
+            this._latSideEl = null;
+            this._lonSideEl = null;
+            this._latValEl = null;
+            this._lonValEl = null;
+            this._heightEl = null;
+
+            this._altUnitVal = options.altitudeUnit || "m";
+            this._heightModeVal = options.heightMode || "ell";
+
+            this._altUnit = units[this._altUnitVal];
+            this._heightMode = heightMode[this._heightModeVal];
+
+            this._centerMode = options.centerMode || false;
+        }
+
+        _SHOW_DECIMAL(ll) {
+            if (ll) {
+                let lat = ll.lat,
+                    lon = ll.lon;
+
+                if (lat >= 0) {
+                    this._latSideEl.innerHTML = 'N';
+                } else {
+                    this._latSideEl.innerHTML = 'S';
+                }
+
+                if (lon >= 0) {
+                    this._lonSideEl.innerHTML = 'E';
+                } else {
+                    this._lonSideEl.innerHTML = 'W';
+                }
+
+                this._latValEl.innerHTML = Math.abs(lat).toFixed(5) + '°';
+                this._lonValEl.innerHTML = Math.abs(lon).toFixed(5) + '°';
+            }
+        }
+
+        _SHOW_DEGREE(ll) {
+            if (ll) {
+                let lat = ll.lat,
+                    lon = ll.lon;
+
+                if (lat >= 0) {
+                    this._latSideEl.innerHTML = 'N';
+                } else {
+                    this._latSideEl.innerHTML = 'S';
+                }
+
+                if (lon >= 0) {
+                    this._lonSideEl.innerHTML = 'E';
+                } else {
+                    this._lonSideEl.innerHTML = 'W';
+                }
+
+                let t = 0;
+
+                let deg = lat < 0 ? Math.ceil(lat) : Math.floor(lat);
+                let min = Math.floor(t = Math.abs((lat - deg)) * 60);
+                let sec = Math.floor((t - min) * 6000) / 100.0;
+                this._latValEl.innerHTML = Math.abs(deg) + '°' + min + "'" + sec.toFixed(0) + '"';
+
+                deg = lon < 0 ? Math.ceil(lon) : Math.floor(lon);
+                min = Math.floor(t = Math.abs((lon - deg)) * 60);
+                sec = Math.floor((t - min) * 6000) / 100.0;
+                this._lonValEl.innerHTML = Math.abs(deg) + '°' + min + "'" + sec.toFixed(0) + '"';
+            }
+        }
+
+        _createCenterEl() {
+            let el = document.createElement('div');
+            el.className = 'og-center-icon';
+            el.innerHTML = CENTER_SVG;
+            return el;
+        }
+
+        _updateUnits() {
+            this._heightMode = heightMode[this._heightModeVal];
+            this._altUnit = units[this._altUnitVal];
+            this._el.querySelector(".og-units-height").innerHTML = toString(this._altUnit);
+            this._showHeight();
+        }
+
+        _refreshCoordinates() {
+
+            if (this._type >= this._TYPE_FUNC.length) {
+                this._type = 0;
+            }
+
+            this._el.innerHTML = TYPE_HTML[this._type];
+
+            this._latSideEl = this._el.querySelector(".og-lat-side");
+            this._lonSideEl = this._el.querySelector(".og-lon-side");
+            this._latValEl = this._el.querySelector(".og-lat-val");
+            this._lonValEl = this._el.querySelector(".og-lon-val");
+            this._heightEl = this._el.querySelector(".og-height");
+
+            this._showFn = this._TYPE_FUNC[this._type];
+            this._showFn(this._lonLat);
         }
 
         oninit() {
-            this._display = document.createElement("div");
-            this._display.className = "ogEarthCoordinatesControl";
-            var that = this;
+            this._el = document.createElement('div');
+            this._el.classList.add("og-coordinates");
 
-            function _refresh(el) {
-                if (that._displayType >= DisplayTypesConverters.length) {
-                    that._displayType = 0;
-                }
+            this.renderer.div.appendChild(this._el);
 
-                if (that._displayType == 0) {
-                    el.style.width = "275px";
-                } else if (that._displayType == 1) {
-                    el.style.width = "355px";
-                } else if (that._displayType == 2) {
-                    el.style.width = "350px";
-                }
-                that._converter = DisplayTypesConverters[that._displayType];
-                that._showPosition();
-            }
+            this._el.addEventListener("click", () => {
+                this._type++;
+                this._refreshCoordinates();
+                this._updateUnits();
+                this._showHeight();
+            });
 
-            this._display.onclick = function (e) {
-                that._displayType += 1;
-                _refresh(this);
-            };
-
-            this.renderer.div.appendChild(this._display);
-
-            _refresh(this._display);
-
-            this._centerDiv = document.createElement("div");
-            this._centerDiv.className = "ogCenterIcon";
-            this._centerDiv.innerHTML =
-                '<svg width="12" height="12"><g><path stroke-width="1" stroke-opacity="1" d="M6 0L6 12M0 6L12 6" stroke="#009DFF"></path></g></svg>';
-            this.renderer.div.appendChild(this._centerDiv);
-
-            if (this._center) {
+            if (this._centerMode) {
+                this.renderer.div.appendChild(this._createCenterEl());
                 this.renderer.activeCamera.events.on("moveend", this._grabCoordinates, this);
-                this._centerDiv.style.display = "block";
+                this.renderer.activeCamera.events.on("moveend", throttle((e) => this._showHeight(), 400, true), this);
             } else {
-                this.renderer.events.on("mousemove", this._onMouseMove, this);
-                this._centerDiv.style.display = "none";
+                this.renderer.events.on("mousemove", this._grabCoordinates, this);
+                this.renderer.events.on("mousestop", throttle((e) => this._showHeight(), 400, true), this);
             }
+
+            this._refreshCoordinates();
+
+            this._updateUnits();
         }
 
-        /**
-         * Sets coordinates capturing type.
-         * @public
-         * @param {Boolean} center - True - capture screen center, false - mouse pointer.
-         */
-        setCenter(center) {
-            if (center != this._center) {
-                this._center = center;
-                if (center) {
-                    this.renderer.events.off("mousemove", this._onMouseMove);
-                    this.renderer.activeCamera.events.on("moveend", this._grabCoordinates, this);
-                    this._centerDiv.style.display = "block";
-                } else {
-                    this.renderer.events.off("draw", this._draw);
-                    this.renderer.events.on("mousemove", this._onMouseMove, this);
-                    this._centerDiv.style.display = "none";
+        _grabCoordinates(px) {
+            let scrPx;
+            let r = this.renderer;
+            if (this._centerMode) {
+                scrPx = r.handler.getCenter();
+            } else {
+                scrPx = px;
+            }
+            this._lonLat = this.planet.getLonLatFromPixelTerrain(scrPx);
+            this._showFn(this._lonLat);
+        }
+
+        async _showHeight() {
+            if (this._lonLat) {
+                let alt = 0;
+                this._heightEl.style.opacity = 0.7;
+                if (this._heightMode === heightMode.ell) {
+                    alt = await this.planet.getHeightAboveELL(this._lonLat);
+                    alt = convertExt(true, m, this._altUnit, alt);
+                } else if (this._heightMode === heightMode.msl) {
+                    alt = await this.planet.getHeightDefault(this._lonLat);
+                    alt = convertExt(true, m, this._altUnit, alt);
                 }
-            }
-        }
-
-        _showPosition() {
-            if (this.position) {
-                this.position.height =
-                    this.position.height > 10000 || this.position.height < -10000
-                        ? 0
-                        : this.position.height;
-                this._display.innerHTML =
-                    "Lat/Lon: " +
-                    this._converter(this.position) +
-                    " h(m): " +
-                    (this.position.height > 0
-                        ? "~" + (Math.round(this.position.height) / 1000).toFixed(3) * 1000
-                        : "-");
-            } else {
-                this._display.innerHTML = "Lat/Lon: " + "_____________________";
-            }
-        }
-
-        _grabCoordinates() {
-            var r = this.renderer;
-            this.position = this.planet.getLonLatFromPixelTerrain(r.handler.getCenter());
-            this._showPosition();
-        }
-
-        _onMouseMove() {
-            var r = this.renderer;
-            var ms = r.events.mouseState;
-            if (
-                !(ms.leftButtonDown || ms.rightButtonDown) &&
-                r.controlsBag.scaleRot <= 0 &&
-                !r.activeCamera._flying
-            ) {
-                this.position = this.planet.getLonLatFromPixelTerrain(ms, true);
-                this._showPosition();
+                this._heightEl.style.opacity = 1.0;
+                this._heightEl.innerHTML = alt.toString();
             }
         }
     }
@@ -7789,7 +7881,7 @@
         dispatch(event, ...args) {
             let result = true;
             if (event && event.active && !this._stopPropagation) {
-                let h = event.handlers,
+                let h = event.handlers.slice(0),
                     i = h.length;
                 while (i--) {
                     if (h[i](...args) === false) {
@@ -7956,29 +8048,29 @@
      * @fires og.Layer#visibilitychange
      * @fires og.Layer#add
      * @fires og.Layer#remove
-     * @fires og.layer.Vector#mousemove
-     * @fires og.layer.Vector#mouseenter
-     * @fires og.layer.Vector#mouseleave
-     * @fires og.layer.Vector#lclick
-     * @fires og.layer.Vector#rclick
-     * @fires og.layer.Vector#mclick
-     * @fires og.layer.Vector#ldblclick
-     * @fires og.layer.Vector#rdblclick
-     * @fires og.layer.Vector#mdblclick
-     * @fires og.layer.Vector#lup
-     * @fires og.layer.Vector#rup
-     * @fires og.layer.Vector#mup
-     * @fires og.layer.Vector#ldown
-     * @fires og.layer.Vector#rdown
-     * @fires og.layer.Vector#mdown
-     * @fires og.layer.Vector#lhold
-     * @fires og.layer.Vector#rhold
-     * @fires og.layer.Vector#mhold
-     * @fires og.layer.Vector#mousewheel
-     * @fires og.layer.Vector#touchmove
-     * @fires og.layer.Vector#touchstart
-     * @fires og.layer.Vector#touchend
-     * @fires og.layer.Vector#doubletouch
+     * @fires og.layer.Layer#mousemove
+     * @fires og.layer.Layer#mouseenter
+     * @fires og.layer.Layer#mouseleave
+     * @fires og.layer.Layer#lclick
+     * @fires og.layer.Layer#rclick
+     * @fires og.layer.Layer#mclick
+     * @fires og.layer.Layer#ldblclick
+     * @fires og.layer.Layer#rdblclick
+     * @fires og.layer.Layer#mdblclick
+     * @fires og.layer.Layer#lup
+     * @fires og.layer.Layer#rup
+     * @fires og.layer.Layer#mup
+     * @fires og.layer.Layer#ldown
+     * @fires og.layer.Layer#rdown
+     * @fires og.layer.Layer#mdown
+     * @fires og.layer.Layer#lhold
+     * @fires og.layer.Layer#rhold
+     * @fires og.layer.Layer#mhold
+     * @fires og.layer.Layer#mousewheel
+     * @fires og.layer.Layer#touchmove
+     * @fires og.layer.Layer#touchstart
+     * @fires og.layer.Layer#touchend
+     * @fires og.layer.Layer#doubletouch
      */
     class Layer$1 {
         constructor(name, options = {}) {
@@ -8152,23 +8244,6 @@
             this.__lcounter = n;
         }
 
-        static get __requestsCounter() {
-            return this.__reqcounter;
-        }
-
-        static set __requestsCounter(v) {
-            this.__reqcounter = v;
-        }
-
-        /**
-         * Maximum loading queries at one time.
-         * @const
-         * @type {number}
-         */
-        static get MAX_REQUESTS() {
-            return 7;
-        }
-
         get instanceName() {
             return "Layer";
         }
@@ -8254,7 +8329,7 @@
                 planet.setBaseLayer(this);
             }
 
-            if (this._visibility) {
+            if (this._visibility && this.hasImageryTiles()) {
                 this._preLoad();
             }
 
@@ -8335,8 +8410,10 @@
          * @param {string} html - HTML code that represents layer attribution, it could be just a text.
          */
         setAttribution(html) {
-            this._attribution = html;
-            this._planet && this._planet.updateAttributionsList();
+            if (this._attribution !== html) {
+                this._attribution = html;
+                this._planet && this._planet.updateAttributionsList();
+            }
         }
 
         /**
@@ -9126,11 +9203,14 @@
         KEY_ALT: 18,
         KEY_SHIFT: 16,
         KEY_SPACE: 32,
+        KEY_PGUP: 33,
+        KEY_PGDN: 34,
         KEY_LEFT: 37,
         KEY_UP: 38,
         KEY_RIGHT: 39,
         KEY_DOWN: 40,
         KEY_PRINTSCREEN: 44,
+        KEY_EQUALS: 61,
         KEY_A: 65,
         KEY_C: 67,
         KEY_D: 68,
@@ -9140,6 +9220,7 @@
         KEY_I: 73,
         KEY_K: 75,
         KEY_L: 76,
+        KEY_N: 78,
         KEY_O: 79,
         KEY_P: 80,
         KEY_Q: 81,
@@ -9149,7 +9230,9 @@
         KEY_W: 87,
         KEY_X: 88,
         KEY_Z: 90,
+        KEY_PLUS: 107,
         KEY_F1: 112,
+        KEY_MINUS: 173,
         KEY_APOSTROPHE: 192,
         MB_LEFT: 0,
         MB_RIGHT: 2,
@@ -9175,16 +9258,22 @@
         }
 
         oninit() {
+            this.renderer.events.on("keypress", input.KEY_PGUP, this.onCameraMoveForward, this);
+            this.renderer.events.on("keypress", input.KEY_PGDN, this.onCameraMoveBackward, this);
+            this.renderer.events.on("keypress", input.KEY_PLUS, this.onCameraMoveForward, this);
+            this.renderer.events.on("keypress", input.KEY_EQUALS, this.onCameraMoveForward, this);
+            this.renderer.events.on("keypress", input.KEY_MINUS, this.onCameraMoveBackward, this);
             this.renderer.events.on("keypress", input.KEY_W, this.onCameraMoveForward, this);
             this.renderer.events.on("keypress", input.KEY_S, this.onCameraMoveBackward, this);
             this.renderer.events.on("keypress", input.KEY_A, this.onCameraStrifeLeft, this);
             this.renderer.events.on("keypress", input.KEY_D, this.onCameraStrifeRight, this);
             this.renderer.events.on("keypress", input.KEY_UP, this.onCameraLookUp, this);
             this.renderer.events.on("keypress", input.KEY_DOWN, this.onCameraLookDown, this);
-            this.renderer.events.on("keypress", input.KEY_LEFT, this.onCameraTurnLeft, this);
-            this.renderer.events.on("keypress", input.KEY_RIGHT, this.onCameraTurnRight, this);
+            this.renderer.events.on("keypress", input.KEY_LEFT, this.onCameraLookLeft, this);
+            this.renderer.events.on("keypress", input.KEY_RIGHT, this.onCameraLookRight, this);
             this.renderer.events.on("keypress", input.KEY_Q, this.onCameraRollLeft, this);
             this.renderer.events.on("keypress", input.KEY_E, this.onCameraRollRight, this);
+            this.renderer.events.on("keypress", input.KEY_N, this.onCameraRollNorth, this);
         }
 
         onCameraMoveForward(event) {
@@ -9235,6 +9324,26 @@
             cam.update();
         }
 
+        onCameraLookLeft(event) {
+            var cam = this.renderer.activeCamera;
+            if (this.renderer.events.isKeyPressed(input.KEY_SHIFT)) {
+                cam.roll(15 / this.renderer.handler.deltaTime);
+            } else {
+                cam.rotateHorizontal((cam._lonLat.height / 3000000) * RADIANS, Vec3.ZERO);
+            }
+            cam.update();
+        }
+
+        onCameraLookRight(event) {
+            var cam = this.renderer.activeCamera;
+            if (this.renderer.events.isKeyPressed(input.KEY_SHIFT)) {
+                cam.roll(-15 / this.renderer.handler.deltaTime);
+            } else {
+                cam.rotateHorizontal((-cam._lonLat.height / 3000000) * RADIANS, Vec3.ZERO);
+            }
+            cam.update();
+        }
+
         onCameraTurnLeft(event) {
             var cam = this.renderer.activeCamera;
             if (this.renderer.events.isKeyPressed(input.KEY_SHIFT)) {
@@ -9253,6 +9362,26 @@
                 cam.rotateHorizontal((-cam._lonLat.height / 3000000) * RADIANS, false, Vec3.ZERO);
             }
             cam.update();
+        }
+
+        // from CompassButton._onClick()
+        onCameraRollNorth(event) {
+          let c = this.planet.getCartesianFromPixelTerrain(this.renderer.handler.getCenter());
+          if (c) {
+            this.planet.flyCartesian(
+              c.normal().scaleTo(c.length() + c.distance(this.planet.camera.eye)),
+              null,
+              null,
+              0,
+              null,
+              null,
+              () => {
+                this.planet.camera.look(c);
+              }
+              );
+          } else {
+            this.planet.flyCartesian(this.planet.camera.eye);
+          }
         }
 
         onCameraRollLeft(event) {
@@ -9526,10 +9655,10 @@
                     dir = Vec3.sub(a, cam.eye).normalize();
                 }
 
-                var d = a ? (delta * cam.eye.distance(a)) / stepsCount : 1000;
+                var d = (delta * cam.eye.distance(a)) / stepsCount;
 
                 if (forward) {
-                    d = -1.25*d;
+                    d = -1.25 * d;
                 } else {
                     d *= 2;
                 }
@@ -9538,7 +9667,7 @@
 
                 let slope = dir.dot(cam.eye.normal().negate());
 
-                if (a && slope >= 0.1) {
+                if (slope >= 0.1) {
                     var grabbedSpheroid = new Sphere$1();
                     grabbedSpheroid.radius = a.length();
 
@@ -9668,7 +9797,7 @@
             this._deactivate = true;
 
             this.planet.layerLock.lock(this._keyLock);
-            this.planet.terrainLock.lock(this._keyLock);
+            //this.planet.terrainLock.lock(this._keyLock);
             this.planet._normalMapCreator.lock(this._keyLock);
 
             var ms = this.renderer.events.mouseState;
@@ -9703,13 +9832,13 @@
             if (p) {
                 var cam = this.renderer.activeCamera;
                 let maxAlt = cam.maxAltitude + this.planet.ellipsoid._b;
-                    let minAlt = cam.minAltitude + this.planet.ellipsoid._b;
-                    const camAlt = cam.eye.length();
-                    var g = this.planet.ellipsoid.cartesianToLonLat(p);
-                    if (camAlt > maxAlt || camAlt < minAlt) {
-                        this.planet.flyLonLat(new LonLat(g.lon, g.lat));
-                        return;
-                    }
+                let minAlt = cam.minAltitude + this.planet.ellipsoid._b;
+                const camAlt = cam.eye.length();
+                var g = this.planet.ellipsoid.cartesianToLonLat(p);
+                if (camAlt > maxAlt || camAlt < minAlt) {
+                    this.planet.flyLonLat(new LonLat(g.lon, g.lat));
+                    return;
+                }
 
                 if (this.renderer.events.isKeyPressed(input.KEY_ALT)) {
                     this.planet.flyLonLat(
@@ -10017,13 +10146,13 @@
                 t0.y = e.sys.touches.item(0).clientY - e.sys.offsetTop;
                 t0.prev_x = e.sys.touches.item(0).clientX - e.sys.offsetLeft;
                 t0.prev_y = e.sys.touches.item(0).clientY - e.sys.offsetTop;
-                t0.grabbedPoint = this.planet.getCartesianFromPixelTerrain(t0, true);
+                t0.grabbedPoint = this.planet.getCartesianFromPixelTerrain(e, true);
 
                 t1.x = e.sys.touches.item(1).clientX - e.sys.offsetLeft;
                 t1.y = e.sys.touches.item(1).clientY - e.sys.offsetTop;
                 t1.prev_x = e.sys.touches.item(1).clientX - e.sys.offsetLeft;
                 t1.prev_y = e.sys.touches.item(1).clientY - e.sys.offsetTop;
-                t1.grabbedPoint = this.planet.getCartesianFromPixelTerrain(t1, true);
+                t1.grabbedPoint = this.planet.getCartesianFromPixelTerrain(e, true);
 
                 // this.planet._viewChanged = true;
                 this.pointOnEarth = this.planet.getCartesianFromPixelTerrain(
@@ -10053,7 +10182,7 @@
             t.prev_x = e.sys.touches.item(0).clientX - e.sys.offsetLeft;
             t.prev_y = e.sys.touches.item(0).clientY - e.sys.offsetTop;
 
-            t.grabbedPoint = this.planet.getCartesianFromPixelTerrain(t, true);
+            t.grabbedPoint = this.planet.getCartesianFromPixelTerrain(e, true);
             this._eye0.copy(this.renderer.activeCamera.eye);
 
             if (t.grabbedPoint) {
@@ -10076,7 +10205,8 @@
 
             this.planet.stopFlying();
             this.stopRotation();
-            var p = this.planet.getCartesianFromPixelTerrain(this.touches[0], true);
+
+            var p = this.planet.getCartesianFromPixelTerrain(e);
             if (p) {
                 var g = this.planet.ellipsoid.cartesianToLonLat(p);
                 this.planet.flyLonLat(
@@ -10129,6 +10259,26 @@
                 t1.x = e.sys.touches.item(1).clientX - e.sys.offsetLeft;
                 t1.y = e.sys.touches.item(1).clientY - e.sys.offsetTop;
 
+                // distance = Math.sqrt((t0.prev_x-t1.prev_x)**2+(t0.prev_y-t1.prev_y)**2) - Math.sqrt((t0.x-t1.x)**2 + (t0.y-t1.y)**2))
+                // distance < 0 --> zoomIn; distance > 0 --> zoomOut
+                var t0t1Distance = Math.abs(t0.prev_x - t1.prev_x) + Math.abs(t0.prev_y - t1.prev_y)  - (Math.abs(t0.x - t1.x)  + Math.abs(t0.y - t1.y));
+                var _move = 0;
+                if (t0t1Distance < 0) {
+                    _move = 1;
+                }
+                if (t0t1Distance > 0) {
+                    _move = -1;
+                }
+                if (_move !== 0) {
+                    let pos = this.planet.getCartesianFromPixelTerrain(e);
+                    if (pos) {
+                        let d = cam.eye.distance(pos) * 0.075;
+                        cam.eye.addA(cam.getForward().scale(_move * d));
+                        cam.checkTerrainCollision();
+                        cam.update();
+                    }
+                }
+
                 if (
                     (t0.dY() > 0 && t1.dY() > 0) ||
                     (t0.dY() < 0 && t1.dY() < 0) ||
@@ -10159,7 +10309,7 @@
 
                 this.planet.stopFlying();
 
-                var direction = cam.unproject(t.x, t.y);
+                var direction = e.direction;
                 var targetPoint = new Ray$1(cam.eye, direction).hitSphere(t.grabbedSpheroid);
 
                 if (targetPoint) {
@@ -10170,9 +10320,9 @@
                         );
                         var rot = this.qRot;
                         cam.eye = rot.mulVec3(cam.eye);
-                        cam._v = rot.mulVec3(cam._v);
+                        cam._r = rot.mulVec3(cam._r);
                         cam._u = rot.mulVec3(cam._u);
-                        cam._n = rot.mulVec3(cam._n);
+                        cam._b = rot.mulVec3(cam._b);
                         cam.checkTerrainCollision();
                         cam.update();
                         this.scaleRot = 1;
@@ -10208,9 +10358,9 @@
                 r.controlsBag.scaleRot = 1;
                 var sf = this.stepsForward[this.stepsCount - this.stepIndex--];
                 cam.eye = sf.eye;
-                cam._v = sf.v;
+                cam._r = sf.v;
                 cam._u = sf.u;
-                cam._n = sf.n;
+                cam._b = sf.n;
                 cam.checkTerrainCollision();
                 cam.update();
             }
@@ -10231,9 +10381,9 @@
                     this.scaleRot = 0;
                 }
                 cam.eye = rot.mulVec3(cam.eye);
-                cam._v = rot.mulVec3(cam._v);
+                cam._r = rot.mulVec3(cam._r);
                 cam._u = rot.mulVec3(cam._u);
-                cam._n = rot.mulVec3(cam._n);
+                cam._b = rot.mulVec3(cam._b);
                 cam.checkTerrainCollision();
                 cam.update();
             }
@@ -11051,8 +11201,6 @@
         constructor(options) {
             super(options);
 
-            options = options || {};
-
             this._keyLock = new Key();
 
             this.planet = null;
@@ -11148,13 +11296,13 @@
             var cam = this.renderer.activeCamera;
 
             if (this._move !== 0) {
-                var d =
-                    cam.eye.distance(
-                        this.planet.getCartesianFromPixelTerrain(this._targetPoint, true)
-                    ) * 0.075;
-                cam.eye.addA(cam.getForward().scale(this._move * d));
-                cam.checkTerrainCollision();
-                cam.update();
+                let pos = this.planet.getCartesianFromPixelTerrain(e);
+                if (pos) {
+                    let d = cam.eye.distance(pos) * 0.035;
+                    cam.eye.addA(cam.getForward().scale(this._move * d));
+                    cam.checkTerrainCollision();
+                    cam.update();
+                }
             }
         }
     }
@@ -11970,7 +12118,7 @@
                         this._exec(pmat);
                     }
                 }
-            } else if (this._counter === 0) {
+            } else if (this._counter === 0 && this._planet._terrainCompletedActivated) {
                 this.events.dispatch(this.events.loadend);
             }
         }
@@ -13340,11 +13488,11 @@
                     var ta = rn.renderer.billboardsTextureAtlas;
                     var that = this;
                     ta.loadImage(src, function (img) {
-                        if (ta.nodes[img.__nodeIndex]) {
+                        if (ta.get(img.__nodeIndex)) {
                             that._image = img;
                             bh.setTexCoordArr(
                                 that._handlerIndex,
-                                ta.nodes[that._image.__nodeIndex].texCoords
+                                ta.get(that._image.__nodeIndex).texCoords
                             );
                         } else {
                             ta.addImage(img);
@@ -14409,7 +14557,7 @@
             c.y = g;
             c.z = b;
             c.w = a;
-            this._handler && this._handler.setStrokeColorArr(this, c);
+            this._handler && this._handler.setLineStrokeColorArr(this, c);
             return this;
         }
 
@@ -14605,6 +14753,8 @@
              * @type {utils.FontAtlas}
              */
             this._fontAtlas = null;
+
+            this._isRTL = options.isRTL || false;
         }
 
         /**
@@ -14616,7 +14766,7 @@
         setText(text) {
             this._text = text.toString();
             if (this._isReady && this._handler) {
-                this._handler.setText(this._handlerIndex, text, this._fontIndex, this._align);
+                this._handler.setText(this._handlerIndex, text, this._fontIndex, this._align, this._isRTL);
             }
         }
 
@@ -14637,7 +14787,7 @@
         setAlign(align) {
             this._align = STR2ALIGN[align.trim().toLowerCase()];
             if (this._isReady && this._handler) {
-                this._handler.setText(this._handlerIndex, this._text, this._fontIndex, this._align);
+                this._handler.setText(this._handlerIndex, this._text, this._fontIndex, this._align, this._isRTL);
             } else if (this._lockId !== LOCK_FREE) {
                 this._lockId = LOCK_UPDATE;
             }
@@ -14818,7 +14968,7 @@
             this._fontIndex = fontIndex;
             if (this._isReady && this._handler) {
                 this._handler.setFontIndexArr(this._handlerIndex, this._fontIndex);
-                this._handler.setText(this._handlerIndex, this._text, this._fontIndex, this._align);
+                this._handler.setText(this._handlerIndex, this._text, this._fontIndex, this._align, this._isRTL);
             } else if (this._lockId !== LOCK_FREE) {
                 this._lockId = LOCK_UPDATE;
             }
@@ -14840,6 +14990,8 @@
     /**
      * @module og/entity/Polyline
      */
+
+    window.POLYLINE_DEPTH_OFFSET = 0.0;
 
     const VERTICES_BUFFER = 0;
     const INDEX_BUFFER = 1;
@@ -16812,14 +16964,10 @@
                 var p = sh._program;
                 var gl = r.handler.gl,
                     sha = p.attributes,
-                    shu = p.uniforms;
+                    shu = p.uniforms,
+                    ec = this._handler._entityCollection;
 
                 sh.activate();
-
-                gl.polygonOffset(
-                    this._handler._entityCollection.polygonOffsetFactor,
-                    this._handler._entityCollection.polygonOffsetUnits
-                );
 
                 gl.enable(gl.BLEND);
                 gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
@@ -16830,6 +16978,8 @@
                     gl.ONE_MINUS_SRC_ALPHA
                 );
                 gl.disable(gl.CULL_FACE);
+
+                gl.uniform1f(shu.depthOffset, ec.polygonOffsetUnits + window.POLYLINE_DEPTH_OFFSET);
 
                 gl.uniformMatrix4fv(shu.proj, false, r.activeCamera.getProjectionMatrix());
                 gl.uniformMatrix4fv(shu.view, false, r.activeCamera.getViewMatrix());
@@ -16845,7 +16995,7 @@
                 ]);
                 gl.uniform2fv(shu.viewport, [r.handler.canvas.width, r.handler.canvas.height]);
                 gl.uniform1f(shu.thickness, this.thickness * 0.5);
-                gl.uniform1f(shu.opacity, this._handler._entityCollection._fadingOpacity);
+                gl.uniform1f(shu.opacity, ec._fadingOpacity);
 
                 gl.bindBuffer(gl.ARRAY_BUFFER, this._colorsBuffer);
                 gl.vertexAttribPointer(sha.color, this._colorsBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -16882,11 +17032,6 @@
 
                 sh.activate();
 
-                gl.polygonOffset(
-                    this._handler._entityCollection.polygonOffsetFactor,
-                    this._handler._entityCollection.polygonOffsetUnits
-                );
-
                 gl.enable(gl.BLEND);
                 gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
                 gl.blendFuncSeparate(
@@ -16896,6 +17041,8 @@
                     gl.ONE_MINUS_SRC_ALPHA
                 );
                 gl.disable(gl.CULL_FACE);
+
+                gl.uniform1f(shu.depthOffset, this._handler._entityCollection.polygonOffsetUnits + window.POLYLINE_DEPTH_OFFSET);
 
                 gl.uniformMatrix4fv(shu.proj, false, r.activeCamera.getProjectionMatrix());
                 gl.uniformMatrix4fv(shu.view, false, r.activeCamera.getViewMatrix());
@@ -17682,10 +17829,10 @@
                     sha = p.attributes,
                     shu = p.uniforms;
 
-                gl.polygonOffset(
-                    this._handler._entityCollection.polygonOffsetFactor,
-                    this._handler._entityCollection.polygonOffsetUnits
-                );
+                // gl.polygonOffset(
+                //     this._handler._entityCollection.polygonOffsetFactor,
+                //     this._handler._entityCollection.polygonOffsetUnits
+                // );
 
                 sh.activate();
 
@@ -17728,10 +17875,10 @@
 
                 sh.activate();
 
-                gl.polygonOffset(
-                    this._handler._entityCollection.polygonOffsetFactor,
-                    this._handler._entityCollection.polygonOffsetUnits
-                );
+                // gl.polygonOffset(
+                //     this._handler._entityCollection.polygonOffsetFactor,
+                //     this._handler._entityCollection.polygonOffsetUnits
+                // );
 
                 gl.uniformMatrix4fv(
                     shu.projectionViewMatrix,
@@ -18985,6 +19132,7 @@
              * @type {Array.<Object>}
              */
             this._attribDivisor = [];
+
         }
 
         /**
@@ -19116,7 +19264,7 @@
             var a = this._attribArrays;
             for (let i = 0, len = a.length; i < len; i++) {
                 gl.disableVertexAttribArray(a[i]);
-                gl.vertexAttribDivisor(a[i], 0);
+                this.vertexAttribDivisor(a[i], 0);
             }
         }
 
@@ -19130,8 +19278,13 @@
             var d = this._attribDivisor;
             for (let i = 0, len = a.length; i < len; i++) {
                 gl.enableVertexAttribArray(a[i]);
-                gl.vertexAttribDivisor(a[i], d[i]);
+                this.vertexAttribDivisor(a[i], d[i]);
             }
+        }
+
+        vertexAttribDivisor(index, divisor) {
+            const gl = this.gl;
+            gl.vertexAttribDivisor ? gl.vertexAttribDivisor(index, divisor) : gl.getExtension('ANGLE_instanced_arrays').vertexAttribDivisorANGLE(index, divisor);
         }
 
         /**
@@ -19157,13 +19310,22 @@
             gl.attachShader(this._p, vs);
             gl.linkProgram(this._p);
 
+            if (!this.drawElementsInstanced) {
+                this.drawElementsInstanced = gl.drawElementsInstanced ? gl.drawElementsInstanced.bind(gl) : gl.getExtension('ANGLE_instanced_arrays').drawElementsInstancedANGLE.bind(gl.getExtension('ANGLE_instanced_arrays'));
+            }
+
+            if (!this.vertexAttribDivisor) {
+                this.vertexAttribDivisor = gl.vertexAttribDivisor ? gl.vertexAttribDivisor.bind(gl) : gl.getExtension('ANGLE_instanced_arrays').vertexAttribDivisorANGLE.bind(gl.getExtension('ANGLE_instanced_arrays'));
+            }
+
+
             if (!gl.getProgramParameter(this._p, gl.LINK_STATUS)) {
                 cons.logErr(
                     "og/Program/Program:" +
-                        this.name +
-                        " - couldn't initialise shaders. " +
-                        gl.getProgramInfoLog(this._p) +
-                        "."
+                    this.name +
+                    " - couldn't initialise shaders. " +
+                    gl.getProgramInfoLog(this._p) +
+                    "."
                 );
                 gl.deleteProgram(this._p);
                 return;
@@ -19362,6 +19524,164 @@
                 if( samplerCount == 4 ) return;
 
                 blend(gl_FragColor, samplerArr[4], tileOffsetArr[4], layerOpacityArr[4]);
+            }`
+        });
+    }
+
+    function drawnode_screen_wl() {
+        return new Program("drawnode_screen_wl", {
+            uniforms: {
+                projectionMatrix: "mat4",
+                viewMatrix: "mat4",
+                eyePositionHigh: "vec3",
+                eyePositionLow: "vec3",
+                height: "float",
+
+                uGlobalTextureCoord: "vec4",
+                uNormalMapBias: "vec3",
+
+                samplerCount: "int",
+                tileOffsetArr: "vec4",
+                layerOpacityArr: "float",
+                samplerArr: "sampler2darray",
+                defaultTexture: "sampler2d",
+                normalMatrix: "mat3",
+                uNormalMap: "sampler2d",
+                nightTexture: "sampler2d",
+                specularTexture: "sampler2d",
+                lightsPositions: "vec4",
+                diffuse: "vec3",
+                ambient: "vec3",
+                specular: "vec4"
+            },
+            attributes: {
+                aVertexPositionHigh: "vec3",
+                aVertexPositionLow: "vec3",
+                aTextureCoord: "vec2"
+            },
+
+            vertexShader: `attribute vec3 aVertexPositionHigh;
+            attribute vec3 aVertexPositionLow;
+            attribute vec2 aTextureCoord;
+
+            uniform mat4 projectionMatrix;
+            uniform mat4 viewMatrix;
+            uniform float height;
+            uniform vec4 uGlobalTextureCoord;
+            uniform vec3 uNormalMapBias;
+            uniform vec3 eyePositionHigh;
+            uniform vec3 eyePositionLow;
+
+            varying vec4 vTextureCoord;
+            varying vec2 vGlobalTextureCoord;
+            varying vec4 v_vertex;
+            varying float v_height;           
+
+            void main(void) {
+
+                vec3 aVertexPosition = aVertexPositionHigh + aVertexPositionLow;
+                vec3 highDiff = aVertexPositionHigh - eyePositionHigh;
+                vec3 lowDiff = aVertexPositionLow + normalize(aVertexPosition) * height - eyePositionLow;
+
+                mat4 viewMatrixRTE = viewMatrix;
+                viewMatrixRTE[3] = vec4(0.0, 0.0, 0.0, 1.0);
+
+                v_height = height;
+                vec3 heightVertex = aVertexPosition + normalize(aVertexPosition) * height;
+                v_vertex = viewMatrix * vec4(heightVertex, 1.0);
+                vTextureCoord.xy = aTextureCoord;
+                vGlobalTextureCoord = uGlobalTextureCoord.xy + (uGlobalTextureCoord.zw - uGlobalTextureCoord.xy) * aTextureCoord;
+                vTextureCoord.zw = uNormalMapBias.z * ( aTextureCoord + uNormalMapBias.xy );
+                gl_Position = projectionMatrix * viewMatrixRTE * vec4(highDiff + lowDiff, 1.0);
+            }`,
+
+            fragmentShader: `precision highp float;
+
+            #define MAX_POINT_LIGHTS 1
+            #define SLICE_SIZE ${SLICE_SIZE + 1}
+
+            uniform vec3 diffuse;
+            uniform vec3 ambient;
+            uniform vec4 specular;
+
+            uniform sampler2D uNormalMap;
+            uniform vec4 lightsPositions[MAX_POINT_LIGHTS];
+            uniform mat3 normalMatrix;
+            uniform sampler2D nightTexture;
+            uniform sampler2D specularTexture;
+
+            uniform vec4 tileOffsetArr[SLICE_SIZE];
+            uniform float layerOpacityArr[SLICE_SIZE];
+
+            uniform sampler2D defaultTexture;
+            uniform sampler2D samplerArr[SLICE_SIZE];
+            uniform int samplerCount;
+
+            varying vec4 vTextureCoord;
+            varying vec2 vGlobalTextureCoord;
+            varying vec4 v_vertex;
+            varying float v_height;
+
+            ${NIGHT$1}
+
+            ${DEF_BLEND_WEBGL1}
+
+            float shininess;
+            float reflection;
+            float diffuseLightWeighting;
+            vec3 night;
+
+            void main(void) {
+            
+                float overGround = 1.0 - step(0.1, v_height);
+                vec3 normal = normalize(normalMatrix * ((texture2D(uNormalMap, vTextureCoord.zw).rgb - 0.5) * 2.0));
+                vec3 lightDirection = normalize(lightsPositions[0].xyz - v_vertex.xyz * lightsPositions[0].w);
+                vec3 eyeDirection = normalize(-v_vertex.xyz);
+                vec3 reflectionDirection = reflect(-lightDirection, normal);
+                vec4 nightImageColor = texture2D( nightTexture, vGlobalTextureCoord.st );
+                shininess = texture2D( specularTexture, vGlobalTextureCoord.st ).r * 255.0 * overGround;
+                reflection = max( dot(reflectionDirection, eyeDirection), 0.0);
+                diffuseLightWeighting = max(dot(normal, lightDirection), 0.0);
+                night = nightStep * (.18 - diffuseLightWeighting * 3.0) * nightImageColor.rgb;
+                night *= overGround * step(0.0, night);
+
+                vec3 spec = specular.rgb * pow( reflection, specular.w) * shininess;
+                vec4 lightWeighting = vec4(ambient + diffuse * diffuseLightWeighting + spec + night, 1.0);
+
+                gl_FragColor = texture2D( defaultTexture, vTextureCoord.xy );
+                if( samplerCount == 0 ) {
+                    gl_FragColor *= lightWeighting;
+                    return;
+                }
+    
+                vec4 src;
+
+                blend(gl_FragColor, samplerArr[0], tileOffsetArr[0], layerOpacityArr[0]);
+                if( samplerCount == 1 ) {
+                    gl_FragColor *= lightWeighting;
+                    return;
+                }
+
+                blend(gl_FragColor, samplerArr[1], tileOffsetArr[1], layerOpacityArr[1]);
+                if( samplerCount == 2 ) {
+                    gl_FragColor *= lightWeighting;
+                    return;
+                }
+
+                blend(gl_FragColor, samplerArr[2], tileOffsetArr[2], layerOpacityArr[2]);
+                if( samplerCount == 3 ) {
+                    gl_FragColor *= lightWeighting;
+                    return;
+                }
+
+                blend(gl_FragColor, samplerArr[3], tileOffsetArr[3], layerOpacityArr[3]);
+                if( samplerCount == 4 ) {
+                    gl_FragColor *= lightWeighting;
+                    return;
+                }
+
+                blend(gl_FragColor, samplerArr[4], tileOffsetArr[4], layerOpacityArr[4]);
+                gl_FragColor *= lightWeighting;
             }`
         });
     }
@@ -20734,7 +21054,8 @@
                 eyePositionLow: "vec3",
                 planetRadius: "float",
                 uScaleByDistance: "vec3",
-                opacity: "float"
+                opacity: "float",
+                depthOffset: "float"
             },
             attributes: {
                 a_vertices: "vec2",
@@ -20765,6 +21086,7 @@
             uniform float opacity;
             uniform float planetRadius;
             uniform vec2 viewport;
+            uniform float depthOffset;
 
             const vec3 ZERO3 = vec3(0.0);
 
@@ -20797,11 +21119,22 @@
                 vec3 lowDiff = a_positionsLow - eyePositionLow;
                 vec4 posRTE = viewMatrixRTE * vec4(highDiff + lowDiff, 1.0);
                 vec4 projPos = projectionMatrix * posRTE;
+                                
+                float camSlope = dot(vec3(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2]), normalize(cameraPos));                
+                if(camSlope > 0.5) {
+                    float dist = dot(look, normalize(cameraPos));
+                    projPos.z += dist * 0.02;
+                }else{
+                    projPos.z += -(abs(projPos.z)) * 0.002;                 
+                }
+                
+                projPos.z += depthOffset + a_offset.z;
+                                
                 vec2 screenPos = project(projPos);
 
                 vec2 v =  screenPos + rotate2d(a_rotation) * (a_vertices * a_size * scd + a_offset.xy);
 
-                gl_Position = vec4((2.0 * v / viewport - 1.0) * projPos.w, projPos.z + a_offset.z, projPos.w);
+                gl_Position = vec4((2.0 * v / viewport - 1.0) * projPos.w, projPos.z, projPos.w);
             }`,
             fragmentShader:
                 `precision highp float;
@@ -20823,7 +21156,8 @@
                 eyePositionLow: "vec3",
                 planetRadius: "float",
                 uScaleByDistance: "vec3",
-                opacity: "float"
+                opacity: "float",
+                depthOffset: "float"
             },
             attributes: {
                 a_vertices: "vec2",
@@ -20857,6 +21191,7 @@
             uniform float opacity;
             uniform float planetRadius;
             uniform vec2 viewport;
+            uniform float depthOffset;
 
             const vec3 ZERO3 = vec3(0.0);
 
@@ -20890,11 +21225,22 @@
                 vec3 lowDiff = a_positionsLow - eyePositionLow;
                 vec4 posRTE = viewMatrixRTE * vec4(highDiff + lowDiff, 1.0);
                 vec4 projPos = projectionMatrix * posRTE;
+                                                
+                float camSlope = dot(vec3(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2]), normalize(cameraPos));                
+                if(camSlope > 0.5) {
+                    float dist = dot(look, normalize(cameraPos));
+                    projPos.z += dist * 0.02;
+                }else{
+                    projPos.z += -(abs(projPos.z)) * 0.002;                 
+                }
+                
+                projPos.z += depthOffset + a_offset.z;
+                
                 vec2 screenPos = project(projPos);
 
                 vec2 v = screenPos + rotate2d(a_rotation) * (a_vertices * a_size * scd + a_offset.xy);
 
-                gl_Position = vec4((2.0 * v / viewport - 1.0) * projPos.w, projPos.z + a_offset.z, projPos.w);
+                gl_Position = vec4((2.0 * v / viewport - 1.0) * projPos.w, projPos.z, projPos.w);
             }`,
             fragmentShader:
                 `precision highp float;
@@ -20922,6 +21268,8 @@
     const ROTATION_BUFFER$1 = 5;
     const TEXCOORD_BUFFER$1 = 6;
     const VERTEX_BUFFER$3 = 7;
+
+    window.BILLBOARD_DEPTH_OFFSET = 0.0;
 
     /*
      * og.BillboardHandler
@@ -21252,8 +21600,8 @@
 
             var gl = h.gl,
                 ec = this._entityCollection;
-
-            gl.polygonOffset(ec.polygonOffsetFactor, ec.polygonOffsetUnits);
+            
+            gl.uniform1f(shu.depthOffset, ec.polygonOffsetUnits + window.BILLBOARD_DEPTH_OFFSET);
 
             gl.uniform1i(shu.u_texture, 0);
 
@@ -21309,7 +21657,7 @@
             var gl = h.gl,
                 ec = this._entityCollection;
 
-            gl.polygonOffset(ec.polygonOffsetFactor, ec.polygonOffsetUnits);
+            gl.uniform1f(shu.depthOffset, ec.polygonOffsetUnits + window.BILLBOARD_DEPTH_OFFSET);
 
             gl.uniformMatrix4fv(shu.viewMatrix, false, r.activeCamera._viewMatrix._m);
             gl.uniformMatrix4fv(shu.projectionMatrix, false, r.activeCamera.getProjectionMatrix());
@@ -21770,7 +22118,7 @@
                     var bi = this._billboards[i];
                     var img = bi._image;
                     if (img) {
-                        var imageNode = ta.nodes[bi._image.__nodeIndex];
+                        var imageNode = ta.get(bi._image.__nodeIndex);
                         if (imageNode) {
                             this.setTexCoordArr(bi._handlerIndex, imageNode.texCoords);
                         }
@@ -21784,6 +22132,10 @@
      * @module og/shaders/label
      */
 
+    const DEFINE = `
+#define EMPTY -1.0
+#define RTL 1.0`;
+
     const PROJECT = `vec2 project(vec4 p) {
                     return (0.5 * p.xyz / p.w + 0.5).xy * viewport;
                 }`;
@@ -21795,7 +22147,6 @@
      }`;
 
     function label_webgl2() {
-
         return new Program("label", {
             uniforms: {
                 viewport: "vec2",
@@ -21806,10 +22157,10 @@
                 eyePositionHigh: "vec3",
                 eyePositionLow: "vec3",
                 planetRadius: "float",
-                uZ: "float",
                 scaleByDistance: "vec3",
                 opacity: "float",
-                isOutlinePass: "int"
+                isOutlinePass: "int",
+                depthOffset: "float"
             },
             attributes: {
                 a_outline: "float",
@@ -21826,7 +22177,9 @@
             },
             vertexShader:
                 `#version 300 es
-
+            
+            ${DEFINE}
+            
             in float a_outline;
             in vec4 a_gliphParam;
             in vec2 a_vertices;
@@ -21851,31 +22204,33 @@
             uniform vec3 eyePositionHigh;
             uniform vec3 eyePositionLow;
             uniform float planetRadius;
-            uniform float uZ;
             uniform vec3 scaleByDistance;
             uniform float opacity;
+            uniform float depthOffset;
 
             const vec3 ZERO3 = vec3(0.0);
-
+           
             ${PROJECT}
 
             ${ROTATE2D}
 
             void main() {
 
-                if(a_texCoord.z == -1.0/* || a_outline == 0.0*/) {
+                if(a_texCoord.w == EMPTY) {
                     gl_Position = vec4(0.0);
+                    v_fontIndex = -1;
                     return;
                 }
-
+               
                 vec3 a_positions = a_positionsHigh + a_positionsLow;
                 vec3 cameraPos = eyePositionHigh + eyePositionLow;
 
                 v_outline = a_outline;
 
                 v_fontIndex = int(a_fontIndex);
-                v_uv = vec2(a_texCoord.xy);
-                float lookDist = length(a_positions - cameraPos);
+                v_uv = a_texCoord.xy;
+                vec3 look = a_positions - cameraPos;
+                float lookDist = length(look);
                 v_rgba = a_rgba;
                 
                 if(opacity * step(lookDist, sqrt(dot(cameraPos,cameraPos) - planetRadius) + sqrt(dot(a_positions,a_positions) - planetRadius)) == 0.0){
@@ -21893,17 +22248,39 @@
                 vec3 lowDiff = a_positionsLow - eyePositionLow;
                 vec4 posRTE = viewMatrixRTE * vec4(highDiff + lowDiff, 1.0);
                 vec4 projPos = projectionMatrix * posRTE;
+                                
+                float camSlope = dot(vec3(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2]), normalize(cameraPos));                
+                if(camSlope > 0.5) {
+                    float dist = dot(look, normalize(cameraPos));
+                    projPos.z += dist * 0.02;                  
+                }else{
+                    projPos.z += -(abs(projPos.z)) * 0.002;                 
+                }
+                        
+                projPos.z += depthOffset + a_offset.z;
+                               
                 vec2 screenPos = project(projPos);
+                
+                vec2 vert = a_vertices;                
+                vec4 gp = a_gliphParam;                                
+                if(a_texCoord.w == RTL){
+                    vert.x = step(vert.x * 0.5 + 1.0, 1.0);
+                    gp.x = -a_gliphParam.x;
+                    gp.z = -(a_gliphParam.z + a_texCoord.z);
+                }else{
+                    gp.z = a_gliphParam.z + a_texCoord.z;
+                }
+                                
+                vec2 v = screenPos + rotate2d(a_rotation) * ((vert * gp.xy + gp.zw) * a_size * scd + a_offset.xy);
 
-                vec2 v = screenPos + rotate2d(a_rotation) * ((a_vertices * a_gliphParam.xy + a_gliphParam.zw + vec2(a_texCoord.z, 0.0) + vec2(a_texCoord.w, 0.0)) * a_size * scd + a_offset.xy);
-
-                gl_Position = vec4((2.0 * v / viewport - 1.0) * projPos.w, projPos.z + a_offset.z + uZ, projPos.w);
+                gl_Position = vec4((2.0 * v / viewport - 1.0) * projPos.w, projPos.z, projPos.w);
             }`,
             fragmentShader:
                 `#version 300 es
 
+            uniform int isOutlinePass;
+            
             precision highp float;
-            precision highp int;
 
             const int MAX_SIZE = 11;
 
@@ -21914,7 +22291,6 @@
 
             uniform sampler2D fontTextureArr[MAX_SIZE];
             uniform vec4 sdfParamsArr[MAX_SIZE];
-            uniform int isOutlinePass;
 
             flat in int v_fontIndex;
             in vec2 v_uv;
@@ -21957,174 +22333,29 @@
                 }
                 return median(msdf.r, msdf.g, msdf.b);
             }
-
-            vec4 getSDFParams() {
-                if(v_fontIndex == 0) {
-                    return sdfParamsArr[0];
-                } else if(v_fontIndex == 1){
-                    return sdfParamsArr[1];
-                } else if(v_fontIndex == 2){
-                    return sdfParamsArr[2];
-                } else if(v_fontIndex == 3){
-                    return sdfParamsArr[3];
-                } else if(v_fontIndex == 4){
-                    return sdfParamsArr[4];
-                } else if(v_fontIndex == 5){
-                    return sdfParamsArr[5];
-                } else if(v_fontIndex == 6){
-                    return sdfParamsArr[6];
-                } else if(v_fontIndex == 7){
-                    return sdfParamsArr[7];
-                } else if(v_fontIndex == 8){
-                    return sdfParamsArr[8];
-                } else if(v_fontIndex == 9){
-                    return sdfParamsArr[9];
-                } else if(v_fontIndex == 10){
-                    return sdfParamsArr[10];
-                }
-            }
-            
-            // void main () {
-            //
-            //     float sd = getDistance();
-            //    
-            //     vec4 sdfParams = getSDFParams();
-            //    
-            //     vec2 dxdy = fwidth(v_uv) * sdfParams.xy;
-            //     float dist = sd + min(0.001, 0.5 - 1.0 / sdfParams.w) - 0.5;
-            //     float opacity = clamp(dist * sdfParams.w / length(dxdy) + 0.5, 0.0, 1.0);
-            //    
-            //     float strokeDist = sd + min(v_outline, 0.5 - 1.0 / sdfParams.w) - 0.5;
-            //     float strokeAlpha = v_rgba.a * clamp(strokeDist * sdfParams.w / length(dxdy) + 0.5, 0.0, 1.0);
-            //    
-            //     if (strokeAlpha < 0.01) {
-            //         discard;
-            //     } 
-            //    
-            //     outScreen = v_rgba * opacity * v_rgba.a + v_outlineColor * v_outlineColor.a * strokeAlpha * (1.0 - opacity);
-            // }
-            
+                        
             void main () {
-
-                vec4 sdfParams = getSDFParams();
+            
+                if(v_fontIndex == -1) {
+                    return;
+                }
                 
+                vec4 sdfParams = sdfParamsArr[v_fontIndex];
+                float sd = getDistance();             
                 vec2 dxdy = fwidth(v_uv) * sdfParams.xy;
-                float dist = getDistance() + min(isOutlinePass == 0 ? 0.001 : v_outline, 0.5 - 1.0 / sdfParams.w) - 0.5;
+                float dist = sd + min(0.001, 0.5 - 1.0 / sdfParams.w) - 0.5;
                 float opacity = clamp(dist * sdfParams.w / length(dxdy) + 0.5, 0.0, 1.0);
 
-                vec4 color = v_rgba;
-                color.a *= opacity;
-                if (color.a < 0.01) {
-                    discard;
-                }
-
-                outScreen = vec4(v_rgba.rgb, opacity * v_rgba.a);
-            }
-            
-            `
-        });
-    }
-
-    function labelPicking() {
-        return new Program("labelPicking", {
-            uniforms: {
-                viewport: "vec2",
-                projectionMatrix: "mat4",
-                viewMatrix: "mat4",
-                eyePositionHigh: "vec3",
-                eyePositionLow: "vec3",
-                planetRadius: "float",
-                scaleByDistance: "vec3",
-                opacity: "float"
-            },
-            attributes: {
-                a_gliphParam: "vec4",
-                a_vertices: "vec2",
-                a_texCoord: "vec4",
-                a_positionsHigh: "vec3",
-                a_positionsLow: "vec3",
-                a_offset: "vec3",
-                a_size: "float",
-                a_rotation: "float",
-                a_rgba: "vec4"
-            },
-            vertexShader:
-                `
-            attribute vec4 a_gliphParam;
-            attribute vec2 a_vertices;
-            attribute vec4 a_texCoord;
-            attribute vec3 a_positionsHigh;
-            attribute vec3 a_positionsLow;
-            attribute vec3 a_offset;
-            attribute float a_size;
-            attribute float a_rotation;
-            attribute vec4 a_rgba;
-
-            varying vec4 v_rgba;
-
-            uniform vec2 viewport;
-            uniform mat4 viewMatrix;
-            uniform mat4 projectionMatrix;
-            uniform vec3 eyePositionHigh;
-            uniform vec3 eyePositionLow;
-            uniform float planetRadius;
-            uniform vec3 scaleByDistance;
-            uniform float opacity;
-
-            const vec3 ZERO3 = vec3(0.0);
-
-            ${PROJECT}
-
-            ${ROTATE2D}
-
-            void main() {
-                vec3 a_positions = a_positionsHigh + a_positionsLow;
-                vec3 cameraPos = eyePositionHigh + eyePositionLow;
-
-                if(a_texCoord.z == -1.0){
-                    gl_Position = vec4(0.0);
-                    return;
-                }
-
-                float lookDist = length(a_positions - cameraPos);
-                v_rgba = a_rgba;
-                if(opacity * step(lookDist, sqrt(dot(cameraPos,cameraPos) - planetRadius) + sqrt(dot(a_positions,a_positions) - planetRadius)) == 0.0){
-                    return;
-                }
-
-                float scd = (1.0 - smoothstep(scaleByDistance[0], scaleByDistance[1], lookDist)) * (1.0 - step(scaleByDistance[2], lookDist));
-
-                v_rgba.a *= opacity;
-
-                mat4 viewMatrixRTE = viewMatrix;
-                viewMatrixRTE[3] = vec4(0.0, 0.0, 0.0, 1.0);
-
-                vec3 highDiff = a_positionsHigh - eyePositionHigh;
-                vec3 lowDiff = a_positionsLow - eyePositionLow;
-                vec4 posRTE = viewMatrixRTE * vec4(highDiff + lowDiff, 1.0);
-                vec4 projPos = projectionMatrix * posRTE;
-                vec2 screenPos = project(projPos);
-
-                vec2 v = screenPos + rotate2d(a_rotation) * ((a_vertices * a_gliphParam.xy + a_gliphParam.zw + vec2(a_texCoord.z, 0.0) + vec2(a_texCoord.w, 0.0)) * a_size * scd + a_offset.xy);
-
-                gl_Position = vec4((2.0 * v / viewport - 1.0) * projPos.w, projPos.z + a_offset.z, projPos.w);
-            }`,
-            fragmentShader:
-                `
-            precision highp float;
-
-            varying vec4 v_rgba;
-
-            varying vec3 v_pickingColor;
-
-            void main () {
-
-                vec4 color = v_rgba;
-                if (color.a < 0.05) {
-                    discard;
-                }
-
-                gl_FragColor = vec4(v_rgba.rgb, v_rgba.a);
+                if(isOutlinePass == 0){                             
+                    outScreen = vec4(v_rgba.rgb, opacity * v_rgba.a);
+                } else {                
+                    float strokeDist = sd + min(v_outline, 0.5 - 1.0 / sdfParams.w) - 0.5;
+                    float strokeAlpha = v_rgba.a * clamp(strokeDist * sdfParams.w / length(dxdy) + 0.5, 0.0, 1.0);                    
+                    if(strokeAlpha < 0.1){
+                        discard;
+                    }
+                    outScreen = v_rgba * strokeAlpha * (0.5 - opacity) * 2.0;
+                }         
             }`
         });
     }
@@ -22134,14 +22365,16 @@
             uniforms: {
                 viewport: "vec2",
                 fontTextureArr: "sampler2darray",
+                sdfParamsArr: "vec4",
                 projectionMatrix: "mat4",
                 viewMatrix: "mat4",
                 eyePositionHigh: "vec3",
                 eyePositionLow: "vec3",
                 planetRadius: "float",
-                uZ: "float",
                 scaleByDistance: "vec3",
-                opacity: "float"
+                opacity: "float",
+                isOutlinePass: "int",
+                depthOffset: "float"
             },
             attributes: {
                 a_outline: "float",
@@ -22150,14 +22383,16 @@
                 a_texCoord: "vec4",
                 a_positionsHigh: "vec3",
                 a_positionsLow: "vec3",
-                a_offset: "vec3",
                 a_size: "float",
-                //a_rotation: "float",
+                a_rotation: "float",
                 a_rgba: "vec4",
-                a_fontIndex: "float",
+                a_offset: "vec3",
+                a_fontIndex: "float"
             },
             vertexShader:
-                `
+                `            
+            ${DEFINE}
+                        
             attribute float a_outline;
             attribute vec4 a_gliphParam;
             attribute vec2 a_vertices;
@@ -22166,14 +22401,14 @@
             attribute vec3 a_positionsLow;
             attribute vec3 a_offset;
             attribute float a_size;
-            //attribute float a_rotation;
+            attribute float a_rotation;
             attribute vec4 a_rgba;
             attribute float a_fontIndex;
 
+            varying float v_outline;
             varying vec2 v_uv;
             varying vec4 v_rgba;
-            varying float v_weight;
-            varying float v_fontIndex;
+            varying float v_fontIndex;            
 
             uniform vec2 viewport;
             uniform mat4 viewMatrix;
@@ -22181,9 +22416,9 @@
             uniform vec3 eyePositionHigh;
             uniform vec3 eyePositionLow;
             uniform float planetRadius;
-            uniform float uZ;
             uniform vec3 scaleByDistance;
             uniform float opacity;
+            uniform float depthOffset;
 
             const vec3 ZERO3 = vec3(0.0);
 
@@ -22193,20 +22428,23 @@
 
             void main() {
 
-                if(a_texCoord.z == -1.0 || a_outline == 0.0) {
+                if(a_texCoord.w == EMPTY) {
                     gl_Position = vec4(0.0);
+                    v_fontIndex = -1.0;
                     return;
                 }
-
-                v_weight = a_outline;
-                v_fontIndex = a_fontIndex;
-                v_uv = vec2(a_texCoord.xy);
-
+               
                 vec3 a_positions = a_positionsHigh + a_positionsLow;
                 vec3 cameraPos = eyePositionHigh + eyePositionLow;
 
-                float lookDist = length(a_positions - cameraPos);
+                v_outline = a_outline;
+                v_uv = vec2(a_texCoord.xy);
                 v_rgba = a_rgba;
+                v_fontIndex = a_fontIndex;
+                
+                vec3 look = a_positions - cameraPos;
+                float lookDist = length(look);
+                
                 if(opacity * step(lookDist, sqrt(dot(cameraPos,cameraPos) - planetRadius) + sqrt(dot(a_positions,a_positions) - planetRadius)) == 0.0){
                     return;
                 }
@@ -22222,31 +22460,56 @@
                 vec3 lowDiff = a_positionsLow - eyePositionLow;
                 vec4 posRTE = viewMatrixRTE * vec4(highDiff + lowDiff, 1.0);
                 vec4 projPos = projectionMatrix * posRTE;
+                                
+                float camSlope = dot(vec3(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2]), normalize(cameraPos));                
+                if(camSlope > 0.5) {
+                    float dist = dot(look, normalize(cameraPos));
+                    projPos.z += dist * 0.02;                  
+                }else{
+                    projPos.z += -(abs(projPos.z)) * 0.002;                 
+                }
+                        
+                projPos.z += depthOffset + a_offset.z;
+                               
                 vec2 screenPos = project(projPos);
-
-                vec2 v = screenPos + rotate2d(a_rotation) * ((a_vertices * a_gliphParam.xy + a_gliphParam.zw + vec2(a_texCoord.z, 0.0) + vec2(a_texCoord.w, 0.0)) * a_size * scd + a_offset.xy);
-
-                gl_Position = vec4((2.0 * v / viewport - 1.0) * projPos.w, projPos.z + a_offset.z + uZ, projPos.w);
+                
+                vec2 vert = a_vertices;                
+                vec4 gp = a_gliphParam;                                
+                if(a_texCoord.w == RTL){
+                    vert.x = step(vert.x * 0.5 + 1.0, 1.0);
+                    gp.x = -a_gliphParam.x;
+                    gp.z = -(a_gliphParam.z + a_texCoord.z);
+                }else{
+                    gp.z = a_gliphParam.z + a_texCoord.z;
+                }
+                                
+                vec2 v = screenPos + rotate2d(a_rotation) * ((vert * gp.xy + gp.zw) * a_size * scd + a_offset.xy);
+                
+                gl_Position = vec4((2.0 * v / viewport - 1.0) * projPos.w, projPos.z, projPos.w);
             }`,
             fragmentShader:
                 `#extension GL_OES_standard_derivatives : enable
 
             precision highp float;
+            precision highp int;
 
             const int MAX_SIZE = 11;
 
+            // x - ATLAS_WIDTH = 512.0;
+            // y - ATLAS_HEIGHT = 512.0;
+            // z - ATLAS_GLYPH_SIZE = 32.0;
+            // w - ATLAS_FIELD_RANGE = 8.0;
+
             uniform sampler2D fontTextureArr[MAX_SIZE];
-
-            varying float v_fontIndex;
-            varying float v_weight;
+            uniform vec4 sdfParamsArr[MAX_SIZE];
+            uniform int isOutlinePass;
+            
+            varying float v_outline;
             varying vec2 v_uv;
-            varying vec4 v_rgba;
-
-            varying vec3 v_pickingColor;
-
+            varying vec4 v_rgba;           
+            varying float v_fontIndex;
+            
             float fontIndex;
-
-            vec4 sdfParams = vec4(512.0, 512.0, 32.0, 8.0);
 
             float median(float r, float g, float b) {
                 return max(min(r, g), min(max(r, g), b));
@@ -22280,21 +22543,188 @@
                 return median(msdf.r, msdf.g, msdf.b);
             }
 
+
+            vec4 getSDFParams() {
+                if(fontIndex >= 0.0 && fontIndex < 1.0) {
+                    return sdfParamsArr[0];
+                } else if(fontIndex >= 1.0 && fontIndex < 2.0){
+                    return sdfParamsArr[1];
+                } else if(fontIndex >= 2.0 && fontIndex < 3.0){
+                    return sdfParamsArr[2];
+                } else if(fontIndex >= 3.0 && fontIndex < 4.0){
+                    return sdfParamsArr[3];
+                } else if(fontIndex >= 4.0 && fontIndex < 5.0){
+                    return sdfParamsArr[4];
+                } else if(fontIndex >= 5.0 && fontIndex < 6.0){
+                    return sdfParamsArr[5];
+                } else if(fontIndex >= 6.0 && fontIndex < 7.0){
+                    return sdfParamsArr[6];
+                } else if(fontIndex >= 7.0 && fontIndex < 8.0){
+                    return sdfParamsArr[7];
+                } else if(fontIndex >= 8.0 && fontIndex < 9.0){
+                    return sdfParamsArr[8];
+                } else if(fontIndex >= 9.0 && fontIndex < 10.0){
+                    return sdfParamsArr[9];
+                } else if(fontIndex >= 10.0 && fontIndex < 11.0){
+                    return sdfParamsArr[10];
+                }
+            }
+                    
             void main () {
 
                 fontIndex = v_fontIndex + 0.1;
-
+                
+                if(v_fontIndex < 0.0){
+                    return;
+                }
+                
+                vec4 sdfParams = getSDFParams();
+                float sd = getDistance();             
                 vec2 dxdy = fwidth(v_uv) * sdfParams.xy;
-                float dist = getDistance() + min(v_weight, 0.5 - 1.0 / sdfParams.w) - 0.5;
+                float dist = sd + min(0.001, 0.5 - 1.0 / sdfParams.w) - 0.5;
                 float opacity = clamp(dist * sdfParams.w / length(dxdy) + 0.5, 0.0, 1.0);
 
-                vec4 color = v_rgba;
-                color.a *= opacity;
-                if (color.a < 0.01) {
-                    discard;
+                if(isOutlinePass == 0){                             
+                    gl_FragColor = vec4(v_rgba.rgb, opacity * v_rgba.a);
+                } else {                
+                    float strokeDist = sd + min(v_outline, 0.5 - 1.0 / sdfParams.w) - 0.5;
+                    float strokeAlpha = v_rgba.a * clamp(strokeDist * sdfParams.w / length(dxdy) + 0.5, 0.0, 1.0);                    
+                    if(strokeAlpha < 0.1){
+                        discard;
+                    }
+                    gl_FragColor = v_rgba * strokeAlpha * (0.5 - opacity) * 2.0;
+                }
+            }`
+        });
+    }
+
+    function labelPicking() {
+        return new Program("labelPicking", {
+            uniforms: {
+                viewport: "vec2",
+                projectionMatrix: "mat4",
+                viewMatrix: "mat4",
+                eyePositionHigh: "vec3",
+                eyePositionLow: "vec3",
+                planetRadius: "float",
+                scaleByDistance: "vec3",
+                opacity: "float",
+                depthOffset: "float"
+            },
+            attributes: {
+                a_gliphParam: "vec4",
+                a_vertices: "vec2",
+                a_texCoord: "vec4",
+                a_positionsHigh: "vec3",
+                a_positionsLow: "vec3",
+                a_offset: "vec3",
+                a_size: "float",
+                a_rotation: "float",
+                a_rgba: "vec4"
+            },
+            vertexShader:
+                `
+            
+            ${DEFINE}
+            
+            attribute vec4 a_gliphParam;
+            attribute vec2 a_vertices;
+            attribute vec4 a_texCoord;
+            attribute vec3 a_positionsHigh;
+            attribute vec3 a_positionsLow;
+            attribute vec3 a_offset;
+            attribute float a_size;
+            attribute float a_rotation;
+            attribute vec4 a_rgba;
+
+            varying vec4 v_rgba;
+
+            uniform vec2 viewport;
+            uniform mat4 viewMatrix;
+            uniform mat4 projectionMatrix;
+            uniform vec3 eyePositionHigh;
+            uniform vec3 eyePositionLow;
+            uniform float planetRadius;
+            uniform vec3 scaleByDistance;
+            uniform float opacity;
+            uniform float depthOffset;
+
+            const vec3 ZERO3 = vec3(0.0);
+
+            ${PROJECT}
+
+            ${ROTATE2D}
+
+            void main() {
+                vec3 a_positions = a_positionsHigh + a_positionsLow;
+                vec3 cameraPos = eyePositionHigh + eyePositionLow;
+                v_rgba = a_rgba;
+                
+                if(a_texCoord.w == EMPTY) {
+                    v_rgba.a = 0.0;
+                    gl_Position = vec4(0.0);
+                    return;
                 }
 
-                gl_FragColor = vec4(v_rgba.rgb, opacity * v_rgba.a);
+                vec3 look = a_positions - cameraPos;
+                float lookDist = length(look);
+                if(opacity * step(lookDist, sqrt(dot(cameraPos,cameraPos) - planetRadius) + sqrt(dot(a_positions,a_positions) - planetRadius)) == 0.0){
+                    return;
+                }
+
+                float scd = (1.0 - smoothstep(scaleByDistance[0], scaleByDistance[1], lookDist)) * (1.0 - step(scaleByDistance[2], lookDist));
+
+                v_rgba.a *= opacity;
+
+                mat4 viewMatrixRTE = viewMatrix;
+                viewMatrixRTE[3] = vec4(0.0, 0.0, 0.0, 1.0);
+
+                vec3 highDiff = a_positionsHigh - eyePositionHigh;
+                vec3 lowDiff = a_positionsLow - eyePositionLow;
+                vec4 posRTE = viewMatrixRTE * vec4(highDiff + lowDiff, 1.0);
+                vec4 projPos = projectionMatrix * posRTE;
+                
+                float camSlope = dot(vec3(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2]), normalize(cameraPos));                
+                if(camSlope > 0.5) {
+                    float dist = dot(look, normalize(cameraPos));
+                    projPos.z += dist * 0.02;                  
+                }else{
+                    projPos.z += -(abs(projPos.z)) * 0.002;                 
+                }
+                        
+                projPos.z += depthOffset + a_offset.z;
+                
+                vec2 screenPos = project(projPos);
+                
+                vec2 vert = a_vertices;                
+                vec4 gp = a_gliphParam;                                
+                if(a_texCoord.w == RTL){
+                    vert.x = step(vert.x * 0.5 + 1.0, 1.0);
+                    gp.x = -a_gliphParam.x;
+                    gp.z = -(a_gliphParam.z + a_texCoord.z);
+                }else{
+                    gp.z = a_gliphParam.z + a_texCoord.z;
+                }
+                                
+                vec2 v = screenPos + rotate2d(a_rotation) * ((vert * gp.xy + gp.zw) * a_size * scd + a_offset.xy);
+                                
+                gl_Position = vec4((2.0 * v / viewport - 1.0) * projPos.w, projPos.z, projPos.w);
+            }`,
+            fragmentShader:
+                `precision highp float;
+
+            varying vec4 v_rgba;
+
+            varying vec3 v_pickingColor;
+
+            void main () {
+
+                vec4 color = v_rgba;
+                if (color.a < 0.05) {
+                    return;
+                }
+
+                gl_FragColor = vec4(v_rgba.rgb, v_rgba.a);
             }`
         });
     }
@@ -22315,8 +22745,11 @@
     const OUTLINE_BUFFER = 9;
     const OUTLINECOLOR_BUFFER = 10;
 
-    window.uZ = -2.0;
-    window.dZ = 1.1;
+    window.LABEL_DEPTH_OFFSET = -0;
+
+    const EMPTY = -1.0;
+    const RTL = 1.0;
+
     /*
      * og.LabelHandler
      *
@@ -22494,7 +22927,7 @@
             var gl = h.gl,
                 ec = this._entityCollection;
 
-            gl.polygonOffset(ec.polygonOffsetFactor, ec.polygonOffsetUnits);
+            gl.disable(gl.CULL_FACE);
 
             gl.uniform1iv(shu.fontTextureArr, r.fontAtlas.samplerArr);
             gl.uniform4fv(shu.sdfParamsArr, r.fontAtlas.sdfParamsArr);
@@ -22506,7 +22939,6 @@
             gl.uniform1f(shu.opacity, ec._fadingOpacity);
             gl.uniform1f(shu.planetRadius, ec.renderNode._planetRadius2 || 0);
             gl.uniform2fv(shu.viewport, [h.canvas.clientWidth, h.canvas.clientHeight]);
-            gl.uniform1f(shu.uZ, window.uZ);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this._texCoordBuffer);
             gl.vertexAttribPointer(sha.a_texCoord, this._texCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -22537,25 +22969,31 @@
 
             //
             // outline PASS
+            gl.uniform1i(shu.isOutlinePass, 1);
+            gl.uniform1f(shu.depthOffset, ec.polygonOffsetUnits + window.LABEL_DEPTH_OFFSET);
+
             gl.bindBuffer(gl.ARRAY_BUFFER, this._outlineColorBuffer);
             gl.vertexAttribPointer(sha.a_rgba, this._outlineColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this._outlineBuffer);
             gl.vertexAttribPointer(sha.a_outline, this._outlineBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-            gl.uniform1i(shu.isOutlinePass, 1);
-            gl.uniform1f(shu.uZ, window.uZ + window.dZ);
             gl.drawArrays(gl.TRIANGLES, 0, this._vertexBuffer.numItems);
 
             //
             // no outline PASS
+            gl.depthFunc(gl.EQUAL);
+            gl.uniform1i(shu.isOutlinePass, 0);
+            gl.uniform1f(shu.depthOffset, ec.polygonOffsetUnits + window.LABEL_DEPTH_OFFSET);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this._rgbaBuffer);
             gl.vertexAttribPointer(sha.a_rgba, this._rgbaBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-            gl.uniform1i(shu.isOutlinePass, 0);
-            gl.uniform1f(shu.uZ, window.uZ);
             gl.drawArrays(gl.TRIANGLES, 0, this._vertexBuffer.numItems);
+
+            gl.depthFunc(gl.LESS);
+
+            gl.enable(gl.CULL_FACE);
         }
 
         _pickingPASS() {
@@ -22568,8 +23006,6 @@
 
             var gl = h.gl,
                 ec = this._entityCollection;
-
-            gl.polygonOffset(ec.polygonOffsetFactor, ec.polygonOffsetUnits);
 
             var rn = ec.renderNode;
 
@@ -22592,7 +23028,7 @@
             gl.vertexAttribPointer(sha.a_vertices, this._vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this._positionHighBuffer);
-            gl.vertexAttribPointer(sha.a_positionsHigh, this._positionHighBuffer.itemSize, gl.FLOAT, false, 0,0);
+            gl.vertexAttribPointer(sha.a_positionsHigh, this._positionHighBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this._positionLowBuffer);
             gl.vertexAttribPointer(sha.a_positionsLow, this._positionLowBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -22608,6 +23044,9 @@
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this._pickingColorBuffer);
             gl.vertexAttribPointer(sha.a_rgba, this._pickingColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.uniform1f(shu.depthOffset, ec.polygonOffsetUnits + window.LABEL_DEPTH_OFFSET);
+
 
             gl.drawArrays(gl.TRIANGLES, 0, this._vertexBuffer.numItems);
         }
@@ -22650,7 +23089,10 @@
             label._isReady = false;
         }
 
-        setText(index, text, fontIndex, align) {
+        setText(index, text, fontIndex, align, isRTL = false) {
+
+            text = text.normalize('NFKC');
+
             var fa = this._renderer.fontAtlas.atlasesArr[fontIndex];
 
             if (!fa) return;
@@ -22661,15 +23103,19 @@
 
             let c = 0;
 
-            let n = fa.nodes[text[c]];
-            let offset = 0.0;
             let len = Math.min(this._maxLetters, text.length);
+            let _rtl_ = 0.0;
+            if (isRTL) {
+                _rtl_ = RTL;
+            }
+            
+            let offset = 0.0;
             let kern = fa.kernings;
 
             for (c = 0; c < len; c++) {
                 let j = i + c * 24;
                 let char = text[c];
-                n = fa.nodes[char] || fa.nodes[" "];
+                let n = fa.get(char.charCodeAt()) || fa.get(" ".charCodeAt());
                 let tc = n.texCoords;
 
                 let m = n.metrics;
@@ -22677,32 +23123,32 @@
                 a[j] = tc[0];
                 a[j + 1] = tc[1];
                 a[j + 2] = offset;
-                a[j + 3] = 0.0;
+                a[j + 3] = _rtl_;
 
                 a[j + 4] = tc[2];
                 a[j + 5] = tc[3];
                 a[j + 6] = offset;
-                a[j + 7] = 0.0;
+                a[j + 7] = _rtl_;
 
                 a[j + 8] = tc[4];
                 a[j + 9] = tc[5];
                 a[j + 10] = offset;
-                a[j + 11] = 0.0;
+                a[j + 11] = _rtl_;
 
                 a[j + 12] = tc[6];
                 a[j + 13] = tc[7];
                 a[j + 14] = offset;
-                a[j + 15] = 0.0;
+                a[j + 15] = _rtl_;
 
                 a[j + 16] = tc[8];
                 a[j + 17] = tc[9];
                 a[j + 18] = offset;
-                a[j + 19] = 0.0;
+                a[j + 19] = _rtl_;
 
                 a[j + 20] = tc[10];
                 a[j + 21] = tc[11];
                 a[j + 22] = offset;
-                a[j + 23] = 0.0;
+                a[j + 23] = _rtl_;
 
                 //
                 // Gliph
@@ -22737,9 +23183,9 @@
                 g[j + 22] = m.nXOffset;
                 g[j + 23] = m.nYOffset;
 
-                let k = kern[char];
-                if (k) {
-                    k = k[text[c + 1]];
+                let k = kern[char.charCodeAt()];
+                if (k && text[c + 1]) {
+                    k = k[text[c + 1].charCodeAt()];
                     if (k) {
                         offset += m.nAdvance + k;
                     } else {
@@ -22755,33 +23201,23 @@
                 offset *= -0.5;
                 for (c = 0; c < len; c++) {
                     let j = i + c * 24;
-                    a[j + 3] = offset;
-                    a[j + 7] = offset;
-                    a[j + 11] = offset;
-                    a[j + 15] = offset;
-                    a[j + 19] = offset;
-                    a[j + 23] = offset;
-                }
-            } else if (align === ALIGN.LEFT) {
-                for (c = 0; c < len; c++) {
-                    let j = i + c * 24;
-                    a[j + 3] = 0;
-                    a[j + 7] = 0;
-                    a[j + 11] = 0;
-                    a[j + 15] = 0;
-                    a[j + 19] = 0;
-                    a[j + 23] = 0;
+                    a[j + 2] += offset;
+                    a[j + 6] += offset;
+                    a[j + 10] += offset;
+                    a[j + 14] += offset;
+                    a[j + 18] += offset;
+                    a[j + 22] += offset;
                 }
             }
 
             for (; c < this._maxLetters; c++) {
                 let j = i + c * 24;
-                a[j + 2] = -1.0;
-                a[j + 6] = -1.0;
-                a[j + 10] = -1.0;
-                a[j + 14] = -1.0;
-                a[j + 18] = -1.0;
-                a[j + 17] = -1.0;
+                a[j + 3] = EMPTY;
+                a[j + 7] = EMPTY;
+                a[j + 11] = EMPTY;
+                a[j + 15] = EMPTY;
+                a[j + 19] = EMPTY;
+                a[j + 23] = EMPTY;
             }
 
             this._changedBuffers[TEXCOORD_BUFFER] = true;
@@ -23084,19 +23520,22 @@
 
             for (var q = 0; q < this._maxLetters; q++) {
                 var j = i + q * 12;
+
                 a[j] = vertexArr[0];
                 a[j + 1] = vertexArr[1];
-                a[j + 2] = vertexArr[2];
 
+                a[j + 2] = vertexArr[2];
                 a[j + 3] = vertexArr[3];
+
                 a[j + 4] = vertexArr[4];
                 a[j + 5] = vertexArr[5];
 
                 a[j + 6] = vertexArr[6];
                 a[j + 7] = vertexArr[7];
-                a[j + 8] = vertexArr[8];
 
+                a[j + 8] = vertexArr[8];
                 a[j + 9] = vertexArr[9];
+
                 a[j + 10] = vertexArr[10];
                 a[j + 11] = vertexArr[11];
             }
@@ -23191,7 +23630,8 @@
                 eyePositionLow: "vec3",
                 uFloatParams: "vec2",
                 thickness: "float",
-                opacity: "float"
+                opacity: "float",
+                depthOffset: "float"
             },
             attributes: {
                 prevHigh: "vec3",
@@ -23229,6 +23669,7 @@
                 uniform vec3 eyePositionHigh;
                 uniform vec3 eyePositionLow;
                 uniform float opacity;
+                uniform float depthOffset;
 
                 varying vec4 vColor;
                 varying vec3 vPos;
@@ -23342,8 +23783,8 @@
                             m = sCurrent + normalNext * d;
                         }
                     }
-
-                    gl_Position = vec4((2.0 * m / viewport - 1.0) * dCurrent.w, dCurrent.z, dCurrent.w);
+                                            
+                    gl_Position = vec4((2.0 * m / viewport - 1.0) * dCurrent.w, dCurrent.z + depthOffset, dCurrent.w);
                 }`,
 
             fragmentShader:
@@ -23371,7 +23812,8 @@
                 eyePositionLow: "vec3",
                 uFloatParams: "vec2",
                 color: "vec4",
-                thickness: "float"
+                thickness: "float",
+                depthOffset: "float"
             },
             attributes: {
                 prevHigh: "vec3",
@@ -23405,6 +23847,7 @@
                 uniform vec2 viewport;
                 uniform vec3 eyePositionHigh;
                 uniform vec3 eyePositionLow;
+                uniform float depthOffset;
 
                 varying vec4 vColor;
                 varying vec3 vPos;
@@ -23518,7 +23961,7 @@
                             m = sCurrent + normalNext * d;
                         }
                     }
-                    gl_Position = vec4((2.0 * m / viewport - 1.0) * dCurrent.w, dCurrent.z, dCurrent.w);
+                    gl_Position = vec4((2.0 * m / viewport - 1.0) * dCurrent.w, dCurrent.z + depthOffset, dCurrent.w);
                 }`,
 
             fragmentShader:
@@ -24092,7 +24535,7 @@
             var gl = h.gl,
                 ec = this._entityCollection;
 
-            gl.polygonOffset(ec.polygonOffsetFactor, ec.polygonOffsetUnits);
+            //gl.polygonOffset(ec.polygonOffsetFactor, ec.polygonOffsetUnits);
 
             gl.uniform1f(shu.uOpacity, ec._fadingOpacity);
 
@@ -25431,8 +25874,7 @@
             const h = this._renderer.handler;
             for (let i = 0, len = this._vertexArr.length; i < len; i++) {
                 this._vertexBuffer && h.gl.deleteBuffer(this._vertexBuffer[i]);
-                this._vertexArr[i] = makeArrayTyped(this._vertexArr[i]);
-                this._vertexBuffer[i] = h.createArrayBuffer(this._vertexArr[i], 3, this._vertexArr[i].length / 3);
+                this._vertexBuffer[i] = h.createArrayBuffer(new Float32Array(this._vertexArr[i]), 3, this._vertexArr[i].length / 3);
             }
         }
 
@@ -25440,8 +25882,7 @@
             const h = this._renderer.handler;
             for (let i = 0, len = this._pitchRollArr.length; i < len; i++) {
                 this._pitchRollBuffer && h.gl.deleteBuffer(this._pitchRollBuffer[i]);
-                this._pitchRollArr[i] = makeArrayTyped(this._pitchRollArr[i]);
-                this._pitchRollBuffer[i] = h.createArrayBuffer(this._pitchRollArr[i], 2, this._pitchRollArr[i].length / 2);
+                this._pitchRollBuffer[i] = h.createArrayBuffer(new Float32Array(this._pitchRollArr[i]), 2, this._pitchRollArr[i].length / 2);
             }
         }
 
@@ -25449,8 +25890,7 @@
             const h = this._renderer.handler;
             for (let i = 0, len = this._vehicleVisibleArr.length; i < len; i++) {
                 this._vehicleVisibleBuffer && h.gl.deleteBuffer(this._vehicleVisibleBuffer[i]);
-                this._vehicleVisibleArr[i] = makeArrayTyped(this._vehicleVisibleArr[i]);
-                this._vehicleVisibleBuffer[i] = h.createArrayBuffer(this._vehicleVisibleArr[i], 1, this._vehicleVisibleArr[i].length);
+                this._vehicleVisibleBuffer[i] = h.createArrayBuffer(new Float32Array(this._vehicleVisibleArr[i]), 1, this._vehicleVisibleArr[i].length);
             }
         }
 
@@ -25458,8 +25898,7 @@
             const h = this._renderer.handler;
             for (let i = 0, len = this._sizeArr.length; i < len; i++) {
                 this._sizeBuffer && h.gl.deleteBuffer(this._sizeBuffer[i]);
-                this._sizeArr[i] = makeArrayTyped(this._sizeArr[i]);
-                this._sizeBuffer[i] = h.createArrayBuffer(this._sizeArr[i], 1, this._sizeArr[i].length);
+                this._sizeBuffer[i] = h.createArrayBuffer(new Float32Array(this._sizeArr[i]), 1, this._sizeArr[i].length);
             }
         }
 
@@ -25467,11 +25906,9 @@
             let h = this._renderer.handler;
             for (let i = 0, len = this._positionHighArr.length; i < len; i++) {
                 this._positionHighBuffer && h.gl.deleteBuffer(this._positionHighBuffer[i]);
-                this._positionHighArr[i] = makeArrayTyped(this._positionHighArr[i]);
-                this._positionHighBuffer[i] = h.createArrayBuffer(this._positionHighArr[i], 3, this._positionHighArr[i].length / 3);
+                this._positionHighBuffer[i] = h.createArrayBuffer(new Float32Array(this._positionHighArr[i]), 3, this._positionHighArr[i].length / 3);
                 this._positionLowBuffer && h.gl.deleteBuffer(this._positionLowBuffer[i]);
-                this._positionLowArr[i] = makeArrayTyped(this._positionLowArr[i]);
-                this._positionLowBuffer[i] = h.createArrayBuffer(this._positionLowArr[i], 3, this._positionLowArr[i].length / 3);
+                this._positionLowBuffer[i] = h.createArrayBuffer(new Float32Array(this._positionLowArr[i]), 3, this._positionLowArr[i].length / 3);
             }
         }
 
@@ -25479,8 +25916,7 @@
             const h = this._renderer.handler;
             for (let i = 0, len = this._rgbaArr.length; i < len; i++) {
                 this._rgbaBuffer && h.gl.deleteBuffer(this._rgbaBuffer[i]);
-                this._rgbaArr[i] = makeArrayTyped(this._rgbaArr[i]);
-                this._rgbaBuffer[i] = h.createArrayBuffer(this._rgbaArr[i], 4, this._rgbaArr[i].length / 4);
+                this._rgbaBuffer[i] = h.createArrayBuffer(new Float32Array(this._rgbaArr[i]), 4, this._rgbaArr[i].length / 4);
             }
         }
 
@@ -25488,8 +25924,7 @@
             const h = this._renderer.handler;
             for (let i = 0, len = this._directionArr.length; i < len; i++) {
                 this._directionBuffer && h.gl.deleteBuffer(this._directionBuffer[i]);
-                this._directionArr[i] = makeArrayTyped(this._directionArr[i]);
-                this._directionBuffer[i] = h.createArrayBuffer(this._directionArr[i], 3, this._directionArr[i].length / 3);
+                this._directionBuffer[i] = h.createArrayBuffer(new Float32Array(this._directionArr[i]), 3, this._directionArr[i].length / 3);
             }
         }
 
@@ -25497,8 +25932,7 @@
             const h = this._renderer.handler;
             for (let i = 0, len = this._normalsArr.length; i < len; i++) {
                 this._normalsBuffer && h.gl.deleteBuffer(this._normalsBuffer[i]);
-                this._normalsArr[i] = makeArrayTyped(this._normalsArr[i]);
-                this._normalsBuffer[i] = h.createArrayBuffer(this._normalsArr[i], 3, this._normalsArr[i].length / 3);
+                this._normalsBuffer[i] = h.createArrayBuffer(new Float32Array(this._normalsArr[i]), 3, this._normalsArr[i].length / 3);
             }
         }
 
@@ -25506,8 +25940,7 @@
             const h = this._renderer.handler;
             for (let i = 0, len = this._indicesArr.length; i < len; i++) {
                 this._indicesBuffer && h.gl.deleteBuffer(this._indicesBuffer[i]);
-                this._indicesArr[i] = makeArrayTyped(this._indicesArr[i], Uint16Array);
-                this._indicesBuffer[i] = h.createElementArrayBuffer(this._indicesArr[i], 1, this._indicesArr[i].length);
+                this._indicesBuffer[i] = h.createElementArrayBuffer(new Uint16Array(this._indicesArr[i]), 1, this._indicesArr[i].length);
             }
         }
 
@@ -25515,8 +25948,7 @@
             const h = this._renderer.handler;
             for (let i = 0, len = this._pickingColorArr.length; i < len; i++) {
                 this._pickingColorBuffer && h.gl.deleteBuffer(this._pickingColorBuffer[i]);
-                this._pickingColorArr[i] = makeArrayTyped(this._pickingColorArr[i]);
-                this._pickingColorBuffer[i] = h.createArrayBuffer(this._pickingColorArr[i], 3, this._pickingColorArr[i].length / 3);
+                this._pickingColorBuffer[i] = h.createArrayBuffer(new Float32Array(this._pickingColorArr[i]), 3, this._pickingColorArr[i].length / 3);
             }
         }
 
@@ -25745,7 +26177,7 @@
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indicesBuffer[ti]);
 
                 if (tagData.iCounts) {
-                    gl.drawElementsInstanced(
+                    p.drawElementsInstanced(
                         gl.TRIANGLES,
                         this._indicesBuffer[ti].numItems / tagData.iCounts,
                         gl.UNSIGNED_SHORT,
@@ -25865,7 +26297,7 @@
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indicesBuffer[ti]);
 
                 if (tagData.iCounts) {
-                    gl.drawElementsInstanced(
+                    p.drawElementsInstanced(
                         gl.TRIANGLES,
                         this._indicesBuffer[ti].numItems / tagData.iCounts,
                         gl.UNSIGNED_SHORT,
@@ -26112,17 +26544,17 @@
             this._pickingColorArr = null;
             this._vehicleVisibleArr = null;
 
-            this._pitchRollArr = [new Float32Array()];
-            this._sizeArr = [new Float32Array()];
-            this._vertexArr = [new Float32Array()];
-            this._positionHighArr = [new Float32Array()];
-            this._positionLowArr = [new Float32Array()];
-            this._rgbaArr = [new Float32Array()];
-            this._directionArr = [new Float32Array()];
-            this._normalsArr = [new Float32Array()];
-            this._indicesArr = [new Uint16Array()];
-            this._pickingColorArr = [new Float32Array()];
-            this._vehicleVisibleArr = [new Int8Array()];
+            this._pitchRollArr = [];
+            this._sizeArr = [];
+            this._vertexArr = [];
+            this._positionHighArr = [];
+            this._positionLowArr = [];
+            this._rgbaArr = [];
+            this._directionArr = [];
+            this._normalsArr = [];
+            this._indicesArr = [];
+            this._pickingColorArr = [];
+            this._vehicleVisibleArr = [];
 
             this._removeGeoObjects();
             this._deleteBuffers();
@@ -26269,7 +26701,6 @@
      * Third index - far distance to the entity, when entity becomes invisible.
      * @param {number} [options.opacity] - Entity global opacity.
      * @param {boolean} [options.pickingEnabled=true] - Entity picking enable.
-     * @param {Number} [options.polygonOffsetFactor=0.0] - The scale factor for the variable depth offset. The default value is 0.
      * @param {Number} [options.polygonOffsetUnits=0.0] - The multiplier by which an implementation-specific value is multiplied with to create a constant depth offset. The default value is 0.
      * @fires og.EntityCollection#entitymove
      * @fires og.EntityCollection#draw
@@ -26336,14 +26767,6 @@
              * @type {boolean}
              */
             this._visibility = options.visibility == undefined ? true : options.visibility;
-
-            /**
-             * Specifies the scale factor for gl.polygonOffset function to calculate depth values, 0.0 is default.
-             * @public
-             * @type {Number}
-             */
-            this.polygonOffsetFactor =
-                options.polygonOffsetFactor != undefined ? options.polygonOffsetFactor : 0.0;
 
             /**
              * Specifies the scale Units for gl.polygonOffset function to calculate depth values, 0.0 is default.
@@ -26471,10 +26894,9 @@
             this._counter = n;
         }
 
-        setPolygonOffset(factor, units) {
-            this.polygonOffsetFactor = factor;
-            this.polygonOffsetUnits = units;
-        }
+        // setPolygonOffset(factor, units) {
+        //     this.polygonOffsetUnits = units;
+        // }
 
         /**
          * Sets collection visibility.
@@ -27180,7 +27602,7 @@
 
             this.count += entities.length;
 
-            if (entities.length > this.layer._nodeCapacity || this.zoom > this.layer.minZoom) {
+            if (entities.length > this.layer._nodeCapacity) {
                 var cn = this.childrenNodes;
                 if (!cn.length) {
                     this.createChildrenNodes();
@@ -27220,7 +27642,11 @@
         }
 
         isInside(entity) {
-            return this.extent.isInside(entity._lonlatMerc);
+            if (entity._lonlatMerc) {
+                return this.extent.isInside(entity._lonlatMerc);
+            } else {
+                return false;
+            }
         }
 
         createChildrenNodes() {
@@ -27332,8 +27758,6 @@
             ec._fadingOpacity = l._fadingOpacity;
             ec.scaleByDistance = l.scaleByDistance;
             ec.pickingScale = l.pickingScale;
-
-            ec.polygonOffsetFactor = l.polygonOffsetFactor;
             ec.polygonOffsetUnits = l.polygonOffsetUnits;
 
             outArr.push(ec);
@@ -27444,10 +27868,10 @@
         }
 
         /**
-         * 
-         * @param {*} outArr 
-         * @param {*} visibleNodes 
-         * @param {*} renderingNode 
+         *
+         * @param {*} outArr
+         * @param {*} visibleNodes
+         * @param {*} renderingNode
          */
         renderCollection(outArr, visibleNodes, renderingNode) {
 
@@ -29539,8 +29963,7 @@
      * @param {boolean} [options.async=true] - Asynchronous vector data handling before rendering. True for optimization huge data.
      * @param {boolean} [options.clampToGround = false] - Clamp vector data to the ground.
      * @param {boolean} [options.relativeToGround = false] - Place vector data relative to the ground relief.
-     * @param {Number} [options.polygonOffsetFactor=0.0] - The scale factor for the variable depth offset. The default value is 0.
-     * @param {Number} [options.polygonOffsetUnits=-637000.0] - The multiplier by which an implementation-specific value is multiplied with to create a constant depth offset.
+     * @param {Number} [options.polygonOffsetUnits=0.0] - The multiplier by which an implementation-specific value is multiplied with to create a constant depth offset.
      *
      * @fires og.layer.Vector#entitymove
      * @fires og.layer.Vector#draw
@@ -29637,20 +30060,12 @@
             this.setEntities(this._entities);
 
             /**
-             * Specifies the scale factor for gl.polygonOffset function to calculate depth values, 0.0 is default.
-             * @public
-             * @type {Number}
-             */
-            this.polygonOffsetFactor =
-                options.polygonOffsetFactor != undefined ? options.polygonOffsetFactor : 0.0;
-
-            /**
              * Specifies the scale Units for gl.polygonOffset function to calculate depth values, 0.0 is default.
              * @public
              * @type {Number}
              */
             this.polygonOffsetUnits =
-                options.polygonOffsetUnits != undefined ? options.polygonOffsetUnits : -637000.0;
+                options.polygonOffsetUnits != undefined ? options.polygonOffsetUnits : 0.0;
 
             this.pickingEnabled = this._pickingEnabled;
         }
@@ -30191,8 +30606,6 @@
             ec._fadingOpacity = this._fadingOpacity;
             ec.scaleByDistance = this.scaleByDistance;
             ec.pickingScale = this.pickingScale;
-
-            ec.polygonOffsetFactor = this.polygonOffsetFactor;
             ec.polygonOffsetUnits = this.polygonOffsetUnits;
 
             outArr.push(ec);
@@ -30207,8 +30620,6 @@
             ec._fadingOpacity = this._fadingOpacity;
             ec.scaleByDistance = this.scaleByDistance;
             ec.pickingScale = this.pickingScale;
-
-            ec.polygonOffsetFactor = this.polygonOffsetFactor;
             ec.polygonOffsetUnits = this.polygonOffsetUnits;
 
             outArr.push(ec);
@@ -30505,11 +30916,13 @@
 
             this.MAX_REQUESTS = maxRequests;
 
-            this.events = new Events(["loadend"]);
+            this.events = new Events(["loadend", "layerloadend"]);
 
             this._loading = 0;
 
             this._queue = [];//new QueueArray();
+
+            this._senderRequestCounter = [];
 
             this._promises = {
                 'json': r => r.json(),
@@ -30521,17 +30934,25 @@
         }
 
         load(params, callback) {
-    		
-    		this._queue.push({ 'params': params, 'callback': callback });
-    		this._exec();
-    		
+            if (params.sender) {
+                if (!this._senderRequestCounter[params.sender._id]) {
+                    this._senderRequestCounter[params.sender._id] = {
+                        sender: params.sender,
+                        counter: 0,
+                        __requestCounterFrame__: null
+                    };
+                }
+                this._senderRequestCounter[params.sender._id].counter++;
+            }
+            this._queue.push({ 'params': params, 'callback': callback });
+            this._exec();
         }
 
         fetch(params) {
             return fetch(
                 params.src,
-                params.options || {})
-
+                params.options || {}
+            )
                 .then(response => {
                     if (!response.ok) {
                         throw Error(`Unable to load '${params.src}'`);
@@ -30549,6 +30970,40 @@
                 });
         }
 
+        isIdle(sender) {
+            let request = this._senderRequestCounter[sender._id];
+            return request && request.counter === 0 && (!sender._planet || sender._planet._terrainCompletedActivated);
+
+        }
+
+        _checkLoadend(request, sender) {
+            if (request.counter === 0 && (sender._planet._terrainCompletedActivated || !sender._planet)) {
+                sender.events.dispatch(sender.events.loadend, sender);
+                this.events.dispatch(this.events.layerloadend, sender);
+                request.__requestCounterFrame__ = null;
+            } else {
+                request.__requestCounterFrame__ = requestAnimationFrame(() => {
+                    this._checkLoadend(request, sender);
+                });
+            }
+        }
+
+        _handleResponse(q, response) {
+            q.callback(response);
+            let sender = q.params.sender;
+            if (sender && (sender.events.loadend.handlers.length || this.events.layerloadend.handlers.length)) {
+                let request = this._senderRequestCounter[sender._id];
+                if (request && request.counter > 0) {
+                    request.counter--;
+                    cancelAnimationFrame(request.__requestCounterFrame__);
+                    request.__requestCounterFrame__ = requestAnimationFrame(() => {
+                        this._checkLoadend(request, sender);
+                    });
+                }
+            }
+            this._exec();
+        }
+
         _exec() {
 
             if (this._queue.length > 0 && this._loading < this.MAX_REQUESTS) {
@@ -30556,7 +31011,7 @@
                 let q = this._queue.pop(),
                     p = q.params;
 
-                if ( !p.filter || p.filter(p) )  {
+                if (!p.filter || p.filter(p)) {
 
                     this._loading++;
 
@@ -30569,18 +31024,15 @@
                         })
                         .then(data => {
                             this._loading--;
-                            q.callback({ 'status': "ready", 'data': data });
-                            this._exec();
+                            this._handleResponse(q, { status: "ready", data: data });
                         })
                         .catch(err => {
                             this._loading--;
-                            q.callback({ 'status': "error", 'msg': err.toString() });
-                            this._exec();
+                            this._handleResponse(q, { status: "error", msg: err.toString() });
                         });
 
                 } else {
-                    q.callback({ 'status': "abort" });
-                    this._exec();
+                    this._handleResponse(q, { status: "abort" });
                 }
             } else if (this._loading === 0) {
                 this.events.dispatch(this.events.loadend);
@@ -30588,14 +31040,19 @@
         }
 
         abort() {
-            //this._queue.each(e => e.callback({ 'status': "abort" }));
-            //this._queue.clear();
-
             for (let i = 0, len = this._queue.length; i < len; i++) {
-                this._queue[i].callback({ 'status': "abort" });
+                let qi = this._queue[i];
+                let sender = qi.params.sender;
+                if (sender && this._senderRequestCounter[sender._id]) {
+                    this._senderRequestCounter[sender._id].counter = 0;
+                    cancelAnimationFrame(this._senderRequestCounter[sender._id].__requestCounterFrame__);
+                    this._senderRequestCounter[sender._id].__requestCounterFrame__ = null;
+                }
+                qi.callback({ 'status': "abort" });
                 this._queue[i] = null;
             }
             this._queue = [];
+            this._loading = 0;
         }
     }
 
@@ -30924,7 +31381,7 @@
                 } else if (
                     seg.terrainReady &&
                     seg.tileZoom < planet.terrain._maxNodeZoom &&
-                    (!maxZoom || maxZoom && cam.projectedSize(seg.bsphere.center, seg.bsphere.radius) > this.planet._maxLodSize)) {
+                    (!maxZoom || cam.projectedSize(seg.bsphere.center, seg.bsphere.radius) > this.planet._maxLodSize)) {
                     this.traverseNodes(cam, maxZoom, seg, stopLoading);
                 } else if (altVis) {
                     seg.passReady = maxZoom ? seg.terrainReady : false;
@@ -31044,6 +31501,7 @@
 
             if (!this.segment.terrainReady) {
                 this.planet._renderCompleted = false;
+                this.planet._terrainCompleted = false;
             }
 
             let k = 0,
@@ -32958,7 +33416,7 @@
      * @param {number} [options.viewAngle=37] - Camera angle of view. Default is 35.0
      * @param {number} [options.near] - Camera near plane distance. Default is 1.0
      * @param {number} [options.far] - Camera far plane distance. Deafult is og.math.MAX
-     * @param {number} [options.minAltitude] - Minimal altitude for the camera. Deafult is 1
+     * @param {number} [options.minAltitude] - Minimal altitude for the camera. Deafult is 5
      * @param {number} [options.maxAltitude] - Maximal altitude for the camera. Deafult is 20000000
      * @param {Vec3} [options.eye] - Camera eye position. Default (0,0,0)
      * @param {Vec3} [options.look] - Camera look position. Default (0,0,0)
@@ -32992,7 +33450,7 @@
              * @public
              * @type {number}
              */
-            this.minAltitude = options.minAltitude || 1;
+            this.minAltitude = options.minAltitude || 5;
 
             /**
              * Maximal alltitude that camera can reach over the globe.
@@ -33975,10 +34433,6 @@
 
                 gl.disable(gl.CULL_FACE);
 
-                // Z-buffer offset
-                gl.enable(gl.POLYGON_OFFSET_FILL);
-                gl.polygonOffset(0.0, 0.0);
-
                 // billoard pass
                 var i = ec.length;
                 while (i--) {
@@ -34003,9 +34457,6 @@
                     ec[i]._fadingOpacity && ec[i].rayHandler.drawPicking();
                 }
 
-                gl.polygonOffset(0.0, 0.0);
-
-                gl.disable(gl.POLYGON_OFFSET_FILL);
                 gl.enable(gl.CULL_FACE);
 
                 // polylines pass
@@ -34405,7 +34856,7 @@
         }
 
         isEntityInside(e) {
-            return this._extent.isInside(e._lonlatMerc);
+            return this._extentLonLat.isInside(e._lonlat);
         }
 
         /**
@@ -35355,14 +35806,6 @@
         _addViewExtent() {
             var ext = this._extentLonLat;
 
-            if (!this.planet._viewExtent) {
-                this.planet._viewExtent = new Extent(
-                    new LonLat(ext.southWest.lon, ext.southWest.lat),
-                    new LonLat(ext.northEast.lon, ext.northEast.lat)
-                );
-                return;
-            }
-
             var viewExt = this.planet._viewExtent;
 
             if (ext.southWest.lon < viewExt.southWest.lon) {
@@ -35634,6 +36077,7 @@
 
                     if (!m.isReady) {
                         this.planet._renderCompleted = false;
+                        this.planet._terrainReady = false;
                     }
 
                     slice.append(li, m);
@@ -35894,6 +36338,7 @@
             // this._isNorth = false;
 
             this._projection = EPSG4326;
+
             this._extentMerc = new Extent(
                 extent.southWest.forwardMercatorEPS01(),
                 extent.northEast.forwardMercatorEPS01()
@@ -36103,10 +36548,6 @@
             }
         }
 
-        isEntityInside(e) {
-            return this._extent.isInside(e._lonlat);
-        }
-
         _getLayerExtentOffset(layer) {
             var v0s = layer._extent;
             var v0t = this._extent;
@@ -36196,30 +36637,42 @@
         }
 
         setGeoid(geoid) {
-            let m = geoid.model;
 
-            let model = {
-                scale: m.scale,
-                offset: m.offset,
-                width: m.width,
-                height: m.height,
-                rlonres: m.rlonres,
-                rlatres: m.rlatres,
-                i: m.i
-            };
+            let model = null;
 
-            this._workerQueue.forEach((w) => {
-                let rawfile = new Uint8Array(m.rawfile.length);
-                rawfile.set(m.rawfile);
+            if (geoid.model) {
+                let m = geoid.model;
+                model = {
+                    scale: m.scale,
+                    offset: m.offset,
+                    width: m.width,
+                    height: m.height,
+                    rlonres: m.rlonres,
+                    rlatres: m.rlatres,
+                    i: m.i
+                };
 
-                w.postMessage(
-                    {
-                        model: model,
-                        rawfile: rawfile
-                    },
-                    [rawfile.buffer]
-                );
-            });
+                this._workerQueue.forEach((w) => {
+                    let rawfile = new Uint8Array(m.rawfile.length);
+                    rawfile.set(m.rawfile);
+
+                    w.postMessage(
+                        {
+                            model: model,
+                            rawfile: rawfile
+                        },
+                        [rawfile.buffer]
+                    );
+                });
+            } else {
+                this._workerQueue.forEach((w) => {
+                    w.postMessage(
+                        {
+                            model: null
+                        }
+                    );
+                });
+            }
         }
 
         make(segment) {
@@ -36263,6 +36716,8 @@
 
     const _programm$1 = `
     'use strict';
+    
+    let model = null;
 
     let cached_ix = null;
     let cached_iy = null;
@@ -36331,8 +36786,6 @@
 
         return model.offset + model.scale * h;
     };
-
-    let model = null;
 
     const HALF_PI = Math.PI * 0.5;
     const POLE = 20037508.34;
@@ -37375,7 +37828,7 @@
                             height = _h;
                         }
 
-                        texture = (material._updateTexture && material._updateTexture) || h.createEmptyTexture_l(width, height);
+                        texture = material._updateTexture || h.createEmptyTexture_l(width, height);
 
                         f.setSize(width, height);
 
@@ -37604,6 +38057,25 @@
         }
 
         /**
+         * Returns the distance travelling from ‘this’ point to destination point along a rhumb line.
+         *
+         * @param   {LonLat} start coordinates.
+         * @param   {LonLat} end coordinates
+         * @returns {number} Distance in m between this point and destination point (same units as radius).
+         */
+        rhumbDistanceTo(startLonLat, endLonLat) {
+            const f1 = startLonLat.lat * RADIANS;
+            const f2 = endLonLat.lat * RADIANS;
+            const df = f2 - f1;
+            let d = Math.abs(endLonLat.lon - startLonLat.lon) * RADIANS;
+            if (Math.abs(d) > Math.PI) d = d > 0 ? -(2 * Math.PI - d) : (2 * Math.PI + d);
+            const dd = Math.log(Math.tan(f2 / 2 + Math.PI / 4) / Math.tan(f1 / 2 + Math.PI / 4));
+            const q = Math.abs(dd) > 10e-12 ? df / dd : Math.cos(f1);
+            const t = Math.sqrt(df * df + q * q * d * d); // angular distance in radians
+            return t * this._a;
+        }
+
+        /**
          * Returns the midpoint between two points on the great circle.
          * @param   {LonLat} lonLat1 - Longitude/latitude of first point.
          * @param   {LonLat} lonLat2 - Longitude/latitude of second point.
@@ -37673,7 +38145,7 @@
             var dLon = (lonLat2.lon - lonLat1.lon) * RADIANS;
             var dPhi = Math.log(
                 Math.tan((lonLat2.lat * RADIANS) / 2 + Math.PI / 4) /
-                    Math.tan((lonLat1.lat * RADIANS) / 2 + Math.PI / 4)
+                Math.tan((lonLat1.lat * RADIANS) / 2 + Math.PI / 4)
             );
             if (Math.abs(dLon) > Math.PI) {
                 if (dLon > 0) {
@@ -37734,7 +38206,7 @@
                 Math.asin(
                     Math.sqrt(
                         Math.sin(df / 2) * Math.sin(df / 2) +
-                            Math.cos(f1) * Math.cos(f2) * Math.sin(dl / 2) * Math.sin(dl / 2)
+                        Math.cos(f1) * Math.cos(f2) * Math.sin(dl / 2) * Math.sin(dl / 2)
                     )
                 );
             if (d12 == 0) return null;
@@ -37904,13 +38376,13 @@
             var recc2r0 =
                 r -
                 ecc2 *
-                    (-(p * ecc2 * r) / 1 +
-                        q +
-                        Math.sqrt(
-                            0.5 * this._a2 * (1.0 + 1.0 / q) -
-                                (p * (1.0 - ecc2) * z2) / (q * (1.0 + q)) -
-                                0.5 * p * r2
-                        ));
+                (-(p * ecc2 * r) / 1 +
+                    q +
+                    Math.sqrt(
+                        0.5 * this._a2 * (1.0 + 1.0 / q) -
+                        (p * (1.0 - ecc2) * z2) / (q * (1.0 + q)) -
+                        0.5 * p * r2
+                    ));
             var recc2r02 = recc2r0 * recc2r0;
             var v = Math.sqrt(recc2r02 + (1.0 - ecc2) * z2);
             var z0 = (this._b2 * z) / (this._a * v);
@@ -37927,7 +38399,7 @@
          * Gets ellipsoid surface normal.
          * @public
          * @param {Vec3} coord - Spatial coordiantes.
-         * @returns {Vec3} -
+         * @return {Vec3} -
          */
         getSurfaceNormal3v(coord) {
             var r2 = this._invRadii2;
@@ -37938,7 +38410,14 @@
             return new Vec3(nx * l, ny * l, nz * l);
         }
 
-        getBearingDestination(lonLat1, bearing, distance) {
+        /**
+         *
+         * @param {LonLat} lonLat1
+         * @param {number} [bearing]
+         * @param {number} [distance]
+         * @return {LonLat} -
+         */
+        getBearingDestination(lonLat1, bearing = 0.0, distance = 0) {
             bearing = bearing * RADIANS;
             var nlon = ((lonLat1.lon + 540) % 360) - 180;
             var f1 = lonLat1.lat * RADIANS,
@@ -37953,7 +38432,7 @@
                         Math.sin(bearing) * Math.sin(dR) * Math.cos(f1),
                         Math.cos(dR) - Math.sin(f1) * Math.sin(f2)
                     )) *
-                    DEGREES,
+                DEGREES,
                 f2 * DEGREES
             );
         }
@@ -37970,9 +38449,9 @@
             var a =
                 Math.sin(dLat / 2.0) * Math.sin(dLat / 2.0) +
                 Math.sin(dLon / 2.0) *
-                    Math.sin(dLon / 2) *
-                    Math.cos(lonLat1.lat * RADIANS) *
-                    Math.cos(lonLat2.lat * RADIANS);
+                Math.sin(dLon / 2) *
+                Math.cos(lonLat1.lat * RADIANS) *
+                Math.cos(lonLat2.lat * RADIANS);
             return this._a * 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
         }
 
@@ -38012,11 +38491,11 @@
                         sinSigma *
                         (cos2SigmaM +
                             (B / 4) *
-                                (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
-                                    (B / 6) *
-                                        cos2SigmaM *
-                                        (-3 + 4 * sinSigma * sinSigma) *
-                                        (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+                            (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
+                                (B / 6) *
+                                cos2SigmaM *
+                                (-3 + 4 * sinSigma * sinSigma) *
+                                (-3 + 4 * cos2SigmaM * cos2SigmaM)));
                 sigmaP = sigma;
                 sigma = s / (b * A) + deltaSigma;
             }
@@ -38033,12 +38512,12 @@
                 L =
                     lambda -
                     (1 - C) *
-                        f *
-                        sinAlpha *
-                        (sigma +
-                            C *
-                                sinSigma *
-                                (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+                    f *
+                    sinAlpha *
+                    (sigma +
+                        C *
+                        sinSigma *
+                        (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
      // final bearing
             return new LonLat(lon1 + L * DEGREES, lat2 * DEGREES);
         }
@@ -38073,7 +38552,9 @@
                 w2 = w.dot(w);
                 product = w2 * difference;
 
-                if (qw2 < product) {
+                let eps = Math.abs(qw2 - product);
+
+                if (eps > EPSILON15 && qw2 < product) {
                     // Imaginary roots (0 intersections).
                     return null;
                 } else if (qw2 > product) {
@@ -38166,119 +38647,124 @@
         }
 
         static loadModel(url) {
+            if (!url) {
+                return new Promise((resolve) => {
+                    resolve(null);
+                });
+            } else
 
-            return fetch(url, {})
+                return fetch(url, {})
 
-                .then((r) => {
-                    if (!r.ok) {
-                        throw Error("Geoid model file: HTTP error " + r.status);
-                    }
-                    return r.arrayBuffer();
-                })
-
-                .then((r) => {
-                    if (r) {
-                        return new Uint8Array(r);
-                    } else {
-                        throw Error("Geoid model file: no data from " + url);
-                    }
-                })
-
-                .then(function (rawfile) {
-
-                    if (!((rawfile[0] === 80) && (rawfile[1] === 53) && (
-                        ((rawfile[2] === 13) && (rawfile[3] === 10)) ||
-                        (rawfile[2] === 10)
-                    ))) {
-                        throw new Error("Geoid model file: no PGM header");
-                    }
-
-                    var i = (rawfile[2] === 13) ? 4 : 3;
-                    var offset = null;
-                    var scale = null;
-
-                    function getline() {
-                        var start = i;
-                        for (var j = i; ; j++) {
-                            if (j >= rawfile.length) {
-                                throw new Error("Geoid model file: missing newline in header");
-                            }
-                            if (rawfile[j] === 10) {
-                                i = j + 1;
-                                break;
-                            }
+                    .then((r) => {
+                        if (!r.ok) {
+                            throw Error("Geoid model file: HTTP error " + r.status);
                         }
-                        if ((j > start) && (rawfile[j - 1] === 13)) j--;
-                        return String.fromCharCode.apply(null, rawfile.slice(start, j));
-                    }
+                        return r.arrayBuffer();
+                    })
 
-                    var m, s;
-                    for (; ;) {
-                        s = getline();
-                        if (s[0] !== '#') break;
-                        m = s.match(/^# Offset (.*)$/);
-                        if (m) {
-                            offset = parseInt(m[1], 10);
-                            if (!isFinite(offset)) {
-                                throw new Error("Geoid model file: bad offset " + m[1]);
-                            }
+                    .then((r) => {
+                        if (r) {
+                            return new Uint8Array(r);
                         } else {
-                            m = s.match(/^# Scale (.*)$/);
+                            throw Error("Geoid model file: no data from " + url);
+                        }
+                    })
+
+                    .then(function (rawfile) {
+
+                        if (!((rawfile[0] === 80) && (rawfile[1] === 53) && (
+                            ((rawfile[2] === 13) && (rawfile[3] === 10)) ||
+                            (rawfile[2] === 10)
+                        ))) {
+                            throw new Error("Geoid model file: no PGM header");
+                        }
+
+                        var i = (rawfile[2] === 13) ? 4 : 3;
+                        var offset = null;
+                        var scale = null;
+
+                        function getline() {
+                            var start = i;
+                            for (var j = i; ; j++) {
+                                if (j >= rawfile.length) {
+                                    throw new Error("Geoid model file: missing newline in header");
+                                }
+                                if (rawfile[j] === 10) {
+                                    i = j + 1;
+                                    break;
+                                }
+                            }
+                            if ((j > start) && (rawfile[j - 1] === 13)) j--;
+                            return String.fromCharCode.apply(null, rawfile.slice(start, j));
+                        }
+
+                        var m, s;
+                        for (; ;) {
+                            s = getline();
+                            if (s[0] !== '#') break;
+                            m = s.match(/^# Offset (.*)$/);
                             if (m) {
-                                scale = parseFloat(m[1]);
-                                if (!isFinite(scale)) {
-                                    throw new Error("Geoid model file: bad scale " + m[1]);
+                                offset = parseInt(m[1], 10);
+                                if (!isFinite(offset)) {
+                                    throw new Error("Geoid model file: bad offset " + m[1]);
+                                }
+                            } else {
+                                m = s.match(/^# Scale (.*)$/);
+                                if (m) {
+                                    scale = parseFloat(m[1]);
+                                    if (!isFinite(scale)) {
+                                        throw new Error("Geoid model file: bad scale " + m[1]);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    m = s.match(/^\s*(\d+)\s+(\d+)\s*$/);
+                        m = s.match(/^\s*(\d+)\s+(\d+)\s*$/);
 
-                    var width = null;
-                    var height = null;
+                        var width = null;
+                        var height = null;
 
-                    if (m) {
-                        width = parseInt(m[1], 10);
-                        height = parseInt(m[2], 10);
-                    }
+                        if (m) {
+                            width = parseInt(m[1], 10);
+                            height = parseInt(m[2], 10);
+                        }
 
-                    if (!(m && (width >= 0) && (height >= 0))) {
-                        throw new Error("Geoid model file: bad PGM width&height line");
-                    }
+                        if (!(m && (width >= 0) && (height >= 0))) {
+                            throw new Error("Geoid model file: bad PGM width&height line");
+                        }
 
-                    var levels = parseInt(getline());
+                        var levels = parseInt(getline());
 
-                    if (levels != 65535) {
-                        throw new Error("Geoid model file: PGM file must have 65535 gray levels");
-                    }
-                    if (offset === null) {
-                        throw new Error("Geoid model file: PGM file does not contain offset");
-                    }
-                    if (scale === null) {
-                        throw new Error("Geoid model file: PGM file does not contain scale");
-                    }
-                    if ((width < 2) || (height < 2)) {
-                        throw new Error("Geoid model file: Raster size too small");
-                    }
+                        if (levels != 65535) {
+                            throw new Error("Geoid model file: PGM file must have 65535 gray levels");
+                        }
+                        if (offset === null) {
+                            throw new Error("Geoid model file: PGM file does not contain offset");
+                        }
+                        if (scale === null) {
+                            throw new Error("Geoid model file: PGM file does not contain scale");
+                        }
+                        if ((width < 2) || (height < 2)) {
+                            throw new Error("Geoid model file: Raster size too small");
+                        }
 
-                    var payload_len = rawfile.length - i;
+                        var payload_len = rawfile.length - i;
 
-                    if (payload_len !== (width * height * 2)) {
-                        throw new Error("Geoid model file: File has the wrong length");
-                    }
+                        if (payload_len !== (width * height * 2)) {
+                            throw new Error("Geoid model file: File has the wrong length");
+                        }
 
-                    return {
-                        scale: scale,
-                        offset: offset,
-                        width: width,
-                        height: height,
-                        rlonres: width / 360,
-                        rlatres: (height - 1) / 180,
-                        i: i,
-                        rawfile: rawfile
-                    };
-                });
+                        return {
+                            scale: scale,
+                            offset: offset,
+                            width: width,
+                            height: height,
+                            rlonres: width / 360,
+                            rlatres: (height - 1) / 180,
+                            i: i,
+                            rawfile: rawfile
+                        };
+                    });
         }
 
         setModel(model) {
@@ -38411,7 +38897,13 @@
          * Triggered when all data is loaded
          * @event og.scene.Planet#rendercompleted
          */
-        "rendercompleted"
+        "rendercompleted",
+
+        /**
+         * Triggered when all data is loaded
+         * @event og.scene.Planet#terraincompleted
+         */
+        "terraincompleted"
     ];
 
     /**
@@ -38544,7 +39036,7 @@
              */
             this.maxCurrZoom = MIN;
 
-            this._viewExtent = null;
+            this._viewExtent = new Extent(new LonLat(180, 180), new LonLat(-180, -180));
 
             /**
              * @protected
@@ -38751,6 +39243,10 @@
             this.always = [];
 
             this._renderCompleted = false;
+            this._renderCompletedActivated = false;
+
+            this._terrainCompleted = false;
+            this._terrainCompletedActivated = false;
         }
 
         static getBearingNorthRotationQuat(cartesian) {
@@ -38777,6 +39273,7 @@
             this._minLodSize = minLodSize || this._minLodSize;
             this._curLodSize = currentLodSize || this._curLodSize;
             this._renderCompletedActivated = false;
+            this._terrainCompletedActivated = false;
         }
 
         /**
@@ -38894,6 +39391,7 @@
          */
         setHeightFactor(factor) {
             this._renderCompletedActivated = false;
+            this._terrainCompletedActivated = false;
 
             if (this._heightFactor !== factor) {
                 this._heightFactor = factor;
@@ -38916,6 +39414,7 @@
          */
         setTerrain(terrain) {
             this._renderCompletedActivated = false;
+            this._terrainCompletedActivated = false;
 
             if (this._initialized) {
                 this.memClear();
@@ -38936,21 +39435,36 @@
                 this._quadTree.destroyBranches();
             }
 
-            if (terrain._geoid) {
-                if (!terrain._geoid.model) {
-                    terrain._geoid.model = null;
-                    Geoid.loadModel(terrain._geoid.src)
-                        .then((m) => {
-                            terrain.getGeoid().setModel(m);
-                            this._plainSegmentWorker.setGeoid(terrain.getGeoid());
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
-                } else {
-                    this._plainSegmentWorker.setGeoid(terrain.getGeoid());
-                }
+            //if (terrain._geoid) {
+
+            if (terrain._geoid.model) {
+                this._plainSegmentWorker.setGeoid(terrain.getGeoid());
+                terrain._isReady = true;
+            } else {
+                Geoid.loadModel(terrain._geoid.src)
+                    .then((m) => {
+                        terrain.getGeoid().setModel(m);
+                        this._plainSegmentWorker.setGeoid(terrain.getGeoid());
+                        terrain._isReady = true;
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
             }
+
+            // if (!terrain._geoid.model) {
+            //     Geoid.loadModel(terrain._geoid.src)
+            //         .then((m) => {
+            //             terrain.getGeoid().setModel(m);
+            //             this._plainSegmentWorker.setGeoid(terrain.getGeoid());
+            //         })
+            //         .catch((err) => {
+            //             console.log(err);
+            //         });
+            // } else {
+            //     this._plainSegmentWorker.setGeoid(terrain.getGeoid());
+            // }
+            //}
         }
 
         /**
@@ -38961,8 +39475,11 @@
             var h = this.renderer.handler;
 
             h.addProgram(drawnode_screen_nl(), true);
-            //h.addProgram(shaders.drawnode_screen_wl(), true);
-            h.addProgram(drawnode_screen_wl_webgl2(), true);
+            if (h.isWebGl2()) {
+                h.addProgram(drawnode_screen_wl_webgl2(), true);
+            } else {
+                h.addProgram(drawnode_screen_wl(), true);
+            }
             h.addProgram(drawnode_colorPicking(), true);
             h.addProgram(drawnode_depth(), true);
             h.addProgram(drawnode_heightPicking(), true);
@@ -39027,6 +39544,7 @@
 
             this.renderer.events.on("resize", () => {
                 this._renderCompletedActivated = false;
+                this._terrainCompletedActivated = false;
             });
 
             // Initialize texture coordinates buffer pool
@@ -39139,7 +39657,7 @@
         _preRender() {
             // Zoom 0
             this._quadTree.createChildrenNodes();
-            this._quadTree.segment.createPlainSegment();        
+            this._quadTree.segment.createPlainSegment();
 
             // Zoom 1
             for (let i = 0; i < this._quadTree.nodes.length; i++) {
@@ -39236,15 +39754,7 @@
                 }
             }
 
-            if (this.renderer) {
-                if (html.length) {
-                    this.renderer.div.attributions.style.display = "block";
-                    this.renderer.div.attributions.innerHTML = "<ul>" + html + "</ul>";
-                } else {
-                    this.renderer.div.attributions.style.display = "none";
-                    this.renderer.div.attributions.innerHTML = "";
-                }
-            }
+            this._applyAttribution(html);
         }
 
         /**
@@ -39290,17 +39800,28 @@
                 }
             }
 
+            this._applyAttribution(html);
+
+            this._sortLayers();
+        }
+
+        /**
+         * Apply to render list of layer attributions
+         * @private
+         */
+        _applyAttribution(html) {
             if (this.renderer) {
                 if (html.length) {
-                    this.renderer.div.attributions.style.display = "block";
-                    this.renderer.div.attributions.innerHTML = "<ul>" + html + "</ul>";
+                    html = "<ul>" + html + "</ul>";
+                    if (this.renderer.div.attributions.innerHTML !== html) {
+                        this.renderer.div.attributions.style.display = "block";
+                        this.renderer.div.attributions.innerHTML = html;
+                    }
                 } else {
                     this.renderer.div.attributions.style.display = "none";
                     this.renderer.div.attributions.innerHTML = "";
                 }
             }
-
-            this._sortLayers();
         }
 
         /**
@@ -39359,7 +39880,8 @@
             // clear first
             this._clearRenderedNodeList();
 
-            this._viewExtent = null;
+            this._viewExtent.southWest.set(180, 180);
+            this._viewExtent.northEast.set(-180, -180);
 
             this._visibleNodes = {};
             this._visibleNodesNorth = {};
@@ -39457,6 +39979,17 @@
                 this._renderCompletedActivated = false;
             }
             this._renderCompleted = true;
+
+            if (this._terrainCompleted) {
+                if (!this._terrainCompletedActivated) {
+                    this._terrainCompletedActivated = true;
+                    this.events.dispatch(this.events.terraincompleted, true);
+                }
+            } else {
+                this._terrainCompletedActivated = false;
+            }
+
+            this._terrainCompleted = true;
         }
 
         /**
@@ -39662,15 +40195,15 @@
                 rn[i].segment.colorPickingRendering(sh, sl[0], 0);
             }
 
-            gl.enable(gl.POLYGON_OFFSET_FILL);
+            //gl.enable(gl.POLYGON_OFFSET_FILL);
             for (let j = 1, len = sl.length; j < len; j++) {
                 i = rn.length;
-                gl.polygonOffset(0, -j);
+                //gl.polygonOffset(0, -j);
                 while (i--) {
                     rn[i].segment.colorPickingRendering(sh, sl[j], j, this.transparentTexture, true);
                 }
             }
-            gl.disable(gl.POLYGON_OFFSET_FILL);
+            //gl.disable(gl.POLYGON_OFFSET_FILL);
 
             gl.disable(gl.BLEND);
         }
@@ -40108,6 +40641,22 @@
                 }
             }
         }
+
+        async getHeightDefault(lonLat) {
+            return new Promise((resolve, reject) => {
+                this.terrain.getHeightAsync(lonLat.clone(), (alt) => {
+                    resolve(alt);
+                });
+            });
+        }
+
+        async getHeightAboveELL(lonLat) {
+            return new Promise((resolve, reject) => {
+                this.terrain.getHeightAsync(lonLat.clone(), (alt) => {
+                    resolve(alt + this.terrain.geoid.getHeightLonLat(lonLat));
+                });
+            });
+        }
     }
 
     /**
@@ -40295,6 +40844,10 @@
         setScale(scale) {
             this.scale = scale;
             this._handler && this._handler.setScaleArr(this._handlerIndex, scale);
+        }
+
+        getScale() {
+            return this.scale;
         }
 
         /**
@@ -40576,7 +41129,7 @@
          * @param {Boolean} [rightNow=false] - Entity insertion option for vector layer.
          * @returns {Entity} - This object.
          */
-        addTo(collection, rightNow) {
+        addTo(collection, rightNow = false) {
             collection.add(this, rightNow);
             return this;
         }
@@ -41085,25 +41638,187 @@
         }
 
         /**
-         * @private
+         * @public
          */
         _extractCoordonatesFromKml(xmlDoc) {
             const raw = Array.from(xmlDoc.getElementsByTagName("coordinates"));
             const rawText = raw.map(item => item.textContent.trim());
-            const coordinates = rawText.map(item => 
+            const coordinates = rawText.map(item =>
                 item
-                 .replace(/\n/g, " ")
-                 .replace(/\t/g, " ")
-                 .replace(/ +/g," ")
-                 .split(" ")
-                 .map((co) => co.split(",").map(parseFloat))
+                    .replace(/\n/g, " ")
+                    .replace(/\t/g, " ")
+                    .replace(/ +/g, " ")
+                    .split(" ")
+                    .map((co) => co.split(",").map(parseFloat))
             );
             return coordinates;
         }
 
         /**
-         * Creates billboards or polylines from array of lonlat.
          * @private
+         */
+        _AGBRtoRGBA(agbr) {
+            if (!agbr || agbr.length != 8) return
+
+            const a = parseInt(agbr.slice(0, 2), 16) / 255;
+            const b = parseInt(agbr.slice(2, 4), 16);
+            const g = parseInt(agbr.slice(4, 6), 16);
+            const r = parseInt(agbr.slice(6, 8), 16);
+
+            return `rgba(${r},${g},${b},${a})`;
+        }
+
+        /**
+         * @private
+         returns array of longitude, latitude, altitude (altitude optional)
+         */
+        _parseKMLcoordinates(coords) {
+            const coordinates = coords.innerHTML.trim()
+                .replace(/\n/g, ' ')
+                .replace(/\t/g, ' ')
+                .replace(/ +/g, ' ')
+                .split(" ")
+                .map((co) => co.split(",").map(parseFloat));
+
+            return coordinates;
+        }
+
+        /**
+         * @private
+         */
+        _kmlPlacemarkToEntity(placemark, extent) {
+            if (!placemark) return;
+
+            const nameTags = Array.from(placemark.getElementsByTagName("name"));
+            const name = nameTags && nameTags[0]?.innerHTML?.trim() || '';
+
+            const { iconHeading, iconURL, iconColor, lineWidth, lineColor } = this._extractStyle(placemark);
+
+            // TODO handle MultiGeometry
+
+            const lonLats = [];
+            for (const coord of placemark.getElementsByTagName("coordinates")) {
+                const coordinates = this._parseKMLcoordinates(coord) || [[0, 0, 0]];
+
+                for (const lonlatalt of coordinates) {
+                    const [lon, lat, alt] = lonlatalt;
+
+                    lonLats.push(new LonLat(lon, lat, alt));
+
+                    if (lon < extent.southWest.lon) extent.southWest.lon = lon;
+                    if (lat < extent.southWest.lat) extent.southWest.lat = lat;
+                    if (lon > extent.northEast.lon) extent.northEast.lon = lon;
+                    if (lat > extent.northEast.lat) extent.northEast.lat = lat;
+                }
+            }
+
+            if (lonLats.length === 1) {
+                const hdgrad = iconHeading * 0.01745329; // radians
+
+                return new Entity$1({
+                    name,
+                    lonlat: lonLats[0],
+                    billboard: {
+                        src: iconURL,
+                        size: [24, 24],
+                        color: iconColor,
+                        rotation: hdgrad
+                    },
+                    properties: {
+                        color: iconColor,
+                        heading: iconHeading
+                    }
+                });
+
+            } else {
+                return new Entity$1({
+                    polyline: {
+                        pathLonLat: [lonLats],
+                        thickness: lineWidth,
+                        color: lineColor,
+                        isClosed: false
+                    }
+                });
+            }
+        }
+
+        _extractStyle(placemark) {
+            let iconColor;
+            let iconHeading;
+            let iconURL;
+            let lineColor;
+            let lineWidth;
+
+            const style = placemark.getElementsByTagName("Style")[0];
+            if (style) {
+                let iconstyle = style.getElementsByTagName("IconStyle")[0];
+                if (iconstyle) {
+                    let color = iconstyle.getElementsByTagName("color")[0];
+                    if (color)
+                        iconColor = this._AGBRtoRGBA(color.innerHTML.trim());
+
+                    let heading = iconstyle.getElementsByTagName("heading")[0];
+                    if (heading) {
+                        const hdg = parseFloat(heading.innerHTML.trim());
+                        if (hdg >= 0 && hdg <= 360)
+                            iconHeading = hdg % 360;
+                    }
+
+                    let icon = iconstyle.getElementsByTagName("Icon")[0];
+                    if (icon) {
+                        let href = icon.getElementsByTagName("href")[0];
+                        if (href) {
+                            iconURL = href.innerHTML.trim();
+                        }
+                    }
+                }
+
+                let linestyle = style.getElementsByTagName("LineStyle")[0];
+                if (linestyle) {
+                    let color = linestyle.getElementsByTagName("color")[0];
+                    if (color)
+                        lineColor = this._AGBRtoRGBA(color.innerHTML.trim());
+                    let width = linestyle.getElementsByTagName("width")[0];
+                    if (width !== undefined)
+                        lineWidth = parseFloat(width.innerHTML.trim());
+                }
+            }
+
+            if (!iconColor) iconColor = "#FFFFFF";
+            if (!iconHeading) iconHeading = 0;
+            if (!iconURL) iconURL = "https://openglobus.org/examples/billboards/carrot.png";
+
+            if (!lineColor) lineColor = "#FFFFFF";
+            if (!lineWidth) lineWidth = 1;
+
+            return { iconHeading, iconURL, iconColor, lineWidth, lineColor };
+        }
+
+        _parseKML(xml, extent, entities = undefined) {
+            if (!entities)
+                entities = [];
+
+            if (xml.documentElement.nodeName !== "kml")
+                return entities;
+
+            for (const placemark of xml.getElementsByTagName("Placemark")) {
+                const entity = this._kmlPlacemarkToEntity(placemark, extent);
+                if (entity) entities.push(entity);
+            }
+
+            return entities;
+        }
+
+        _convertKMLintoEntities(xml) {
+            const extent = new Extent(new LonLat(180.0, 90.0), new LonLat(-180.0, -90.0));
+            const entities = this._parseKML(xml, extent);
+
+            return { entities, extent }
+        }
+
+        /**
+         * Creates billboards or polylines from array of lonlat.
+         * @public
          * @param {Array} coordonates
          * @param {string} color
          * @returns {Array<Entity>}
@@ -41141,7 +41856,7 @@
         }
 
         /**
-         * @private
+         * @public
          * @returns {Document}
          */
         _getXmlContent(file) {
@@ -41154,7 +41869,7 @@
         }
 
         /**
-         * @private
+         * @public
          */
         _expandExtents(extent1, extent2) {
             if (!extent1) return extent2;
@@ -41177,6 +41892,7 @@
          * @returns {Promise<{entities: Entity[], extent: Extent}>}
          */
         async addKmlFromFiles(kmls, color = null, billboard = null) {
+            if (!Array.isArray(kmls)) return null
             const kmlObjs = await Promise.all(kmls.map(this._getXmlContent));
             const coordonates = kmlObjs.map(this._extractCoordonatesFromKml);
             const { entities, extent } = this._convertCoordonatesIntoEntities(
@@ -41199,7 +41915,7 @@
         }
 
         /**
-         * @private
+         * @public
          */
         _getKmlFromUrl(url) {
             return new Promise((resolve, reject) => {
@@ -41227,14 +41943,20 @@
          */
         async addKmlFromUrl(url, color = null, billboard = null) {
             const kml = await this._getKmlFromUrl(url);
-            const coordonates = this._extractCoordonatesFromKml(kml);
-            const { entities, extent } = this._convertCoordonatesIntoEntities(
-                [coordonates],
-                color || this._color,
-                billboard || this._billboard
-            );
+            /*
+                    const coordonates = this._extractCoordonatesFromKml(kml);
+                    const { entities, extent } = this._convertCoordonatesIntoEntities(
+                        [coordonates],
+                        color || this._color,
+                        billboard || this._billboard
+                    );
+            */
+            const { entities, extent } = this._convertKMLintoEntities(kml);
+
             this._extent = this._expandExtents(this._extent, extent);
+
             entities.forEach(this.add.bind(this));
+
             return { entities, extent };
         }
     	
@@ -41345,6 +42067,10 @@
             this._urlRewriteCallback = options.urlRewrite || null;
         }
 
+        get isIdle() {
+            return !this._planet || this._planet._tileLoader.isIdle(this);
+        }
+
         get instanceName() {
             return "XYZ";
         }
@@ -41415,6 +42141,7 @@
 
                     this._planet._tileLoader.load(
                         {
+                            sender: this,
                             src: this._getHTTPRequestString(material.segment),
                             type: "imageBitmap",
                             filter: () =>
@@ -41438,7 +42165,8 @@
                                     material.textureNotExists();
                                 }
                             }
-                        }
+                        },
+                        this._id
                     );
                 } else {
                     material.textureNotExists();
@@ -41556,7 +42284,7 @@
         clearMaterial(material) {
             if (material.isReady && material.textureExists) {
                 !material.texture.default &&
-                material.segment.handler.gl.deleteTexture(material.texture);
+                    material.segment.handler.gl.deleteTexture(material.texture);
                 material.texture = null;
 
                 if (material.image) {
@@ -42408,6 +43136,8 @@
 
     const vendorPrefixes = ["", "WEBKIT_", "MOZ_"];
 
+    const CONTEXT_TYPE = ["webgl2", "webgl"];
+
     // Maximal mipmap levels
     const MAX_LEVELS = 2;
 
@@ -42513,7 +43243,8 @@
              * @private
              * @type {frameCallback}
              */
-            this._frameCallback = function () { };
+            this._frameCallback = function () {
+            };
 
             this.transparentTexture = null;
 
@@ -42531,6 +43262,8 @@
             if (params.autoActivate || isEmpty(params.autoActivate)) {
                 this.initialize();
             }
+
+            this.createTexture_n = this.gl.type === "webgl2" ? this.createTexture_n_webgl2 : this.createTexture_n_webgl1;
         }
 
         /**
@@ -42557,7 +43290,6 @@
          * @returns {Object} -
          */
         static getContext(canvas, contextAttributes) {
-            const CONTEXT_TYPE = ["webgl2", "webgl"];
             let ctx = null;
 
             try {
@@ -43029,6 +43761,7 @@
                 this._params.extensions.push("OES_standard_derivatives");
                 this._params.extensions.push("OES_element_index_uint");
                 this._params.extensions.push("WEBGL_depth_texture");
+                this._params.extensions.push("ANGLE_instanced_arrays");
                 //this._params.extensions.push("EXT_frag_depth");
             } else {
                 this._params.extensions.push("EXT_color_buffer_float");
@@ -43073,67 +43806,20 @@
          * @private
          */
         _setDefaults() {
-            this.activateDepthTest();
+            let gl = this.gl;
+            gl.depthFunc(gl.LESS);
+            gl.enable(gl.DEPTH_TEST);
             this.setSize(
                 this.canvas.clientWidth || this._params.width,
                 this.canvas.clientHeight || this._params.height
             );
-            this.gl.frontFace(this.gl.CCW);
-            this.gl.cullFace(this.gl.BACK);
-            this.activateFaceCulling();
-            this.deactivateBlending();
-            let that = this;
-            this.createDefaultTexture({ color: "rgba(0,0,0,0.0)" }, function (t) {
-                that.transparentTexture = t;
+            gl.frontFace(gl.CCW);
+            gl.cullFace(gl.BACK);
+            gl.enable(gl.CULL_FACE);
+            gl.disable(gl.BLEND);
+            this.createDefaultTexture({ color: "rgba(0,0,0,0.0)" }, (t) => {
+                this.transparentTexture = t;
             });
-        }
-
-        /**
-         * Activate depth test.
-         * @public
-         */
-        activateDepthTest() {
-            this.gl.enable(this.gl.DEPTH_TEST);
-        }
-
-        /**
-         * Deactivate depth test.
-         * @public
-         */
-        deactivateDepthTest() {
-            this.gl.disable(this.gl.DEPTH_TEST);
-        }
-
-        /**
-         * Activate face culling.
-         * @public
-         */
-        activateFaceCulling() {
-            this.gl.enable(this.gl.CULL_FACE);
-        }
-
-        /**
-         * Deactivate face cullting.
-         * @public
-         */
-        deactivateFaceCulling() {
-            this.gl.disable(this.gl.CULL_FACE);
-        }
-
-        /**
-         * Activate blending.
-         * @public
-         */
-        activateBlending() {
-            this.gl.enable(this.gl.BLEND);
-        }
-
-        /**
-         * Deactivate blending.
-         * @public
-         */
-        deactivateBlending() {
-            this.gl.disable(this.gl.BLEND);
         }
 
         /**
@@ -43355,6 +44041,14 @@
         }
 
         /**
+         * Check is gl context type equals webgl2
+         * @public
+         */
+        isWebGl2() {
+            return this.gl.type === "webgl2"
+        }
+
+        /**
          * Make animation.
          * @private
          */
@@ -43374,10 +44068,12 @@
         createDefaultTexture(params, success) {
             let imgCnv;
             let texture;
+            this.isWebGl2();
+
             if (params && params.color) {
                 imgCnv = new ImageCanvas(2, 2);
                 imgCnv.fillColor(params.color);
-                texture = this.createTexture_n_webgl2(imgCnv._canvas);
+                texture = this.createTexture_n(imgCnv._canvas);
                 texture.default = true;
                 success(texture);
             } else if (params && params.url) {
@@ -43392,7 +44088,7 @@
             } else {
                 imgCnv = new ImageCanvas(2, 2);
                 imgCnv.fillColor("#C5C5C5");
-                texture = this.createTexture_n_webgl2(imgCnv._canvas);
+                texture = this.createTexture_n(imgCnv._canvas);
                 texture.default = true;
                 success(texture);
             }
@@ -43821,7 +44517,13 @@
              */
             this._planet = null;
 
-            this._geoid = null;
+            this._geoid =
+                options.geoid ||
+                new Geoid({
+                    src: options.geoidSrc || null
+                });
+
+            this._isReady = false;
 
             // const _ellToAltFn = [
             //     (lon, lat, alt, callback) => callback(alt),
@@ -43871,6 +44573,10 @@
             return this._geoid;
         }
 
+        getGeoid() {
+            return this._geoid;
+        }
+
         /**
          * Loads or creates segment elevation data.
          * @public
@@ -43884,7 +44590,7 @@
         }
 
         isReady() {
-            return (this._geoid && this._geoid.model) || !this._geoid;
+            return this._isReady;
         }
 
         /**
@@ -43892,14 +44598,21 @@
          * @public
          * @abstract
          */
-        abortLoading() {}
+        abortLoading() {
+        }
 
         /**
          * Abstract function
          * @public
          * @abstract
          */
-        clearCache() {}
+        clearCache() {
+        }
+
+        getHeightAsync(lonLat, callback) {
+            callback(0);
+            return true;
+        }
     }
 
     /**
@@ -43942,10 +44655,8 @@
          * @param {string} [name]
          * @param {*} [options]
          */
-        constructor(name, options) {
-            super();
-
-            options = options || {};
+        constructor(name, options = {}) {
+            super({ geoidSrc: "//openglobus.org/geoid/egm84-30.pgm", ...options });
 
             /**
              * Events handler.
@@ -43981,11 +44692,12 @@
 
             /**
              * Terrain source path url template.
-    		 * 9th March 2022 - Robert PASTOR
+             * 9th March 2022 - Robert PASTOR
              * @public
              * @type {string}
              */
-            this.url = options.url ;
+            //this.url = options.url || "//srtm3.openglobus.org/{z}/{y}/{x}.ddm";
+            this.url = options.url;
 
             /**
              * Array of segment triangulation grid sizes where array index agreed to the segment zoom index.
@@ -44004,12 +44716,6 @@
              * @type {number}
              */
             this.plainGridSize = options.plainGridSize || 32;
-
-            this._geoid =
-                options.geoid ||
-                new Geoid({
-                    src: options.geoidSrc || "//openglobus.org/geoid/egm84-30.pgm"
-                });
 
             this._extent = createExtent(
                 options.extent,
@@ -44056,10 +44762,6 @@
             this._fetchCache = {};
         }
 
-        getGeoid() {
-            return this._geoid;
-        }
-
         isBlur(segment) {
             if (segment.tileZoom >= 8) {
                 return true;
@@ -44086,7 +44788,7 @@
 
             if (cache) {
                 if (!cache.heights) {
-                    callback(this._geoid.getHeightLonLat(lonLat));
+                    callback(0);
                 } else {
                     callback(this._getGroundHeightMerc(merc, cache));
                 }
@@ -44105,20 +44807,23 @@
                 }
 
                 this._fetchCache[tileIndex].then((response) => {
+
+                    let extent = getTileExtent(x, y, z);
+
                     if (response.status === "ready") {
                         let cache = {
-                            heights: this._createHeights(response.data),
-                            extent: getTileExtent(x, y, z)
+                            heights: this._createHeights(response.data, tileIndex, x, y, z, extent),
+                            extent: extent
                         };
                         this._elevationCache[tileIndex] = cache;
                         callback(this._getGroundHeightMerc(merc, cache));
                     } else if (response.status === "error") {
                         let cache = {
                             heights: null,
-                            extent: getTileExtent(x, y, z)
+                            extent: extent
                         };
                         this._elevationCache[tileIndex] = cache;
-                        callback(this._geoid.getHeightLonLat(lonLat));
+                        callback(0);
                     } else {
                         this._fetchCache[tileIndex] = null;
                         delete this._fetchCache[tileIndex];
@@ -44177,10 +44882,10 @@
                 h3 = tileData.heights[v3Ind];
 
             let v0 = new Vec3(
-                    tileData.extent.southWest.lon + size * j,
-                    h0,
-                    tileData.extent.northEast.lat - size * i - size
-                ),
+                tileData.extent.southWest.lon + size * j,
+                h0,
+                tileData.extent.northEast.lat - size * i - size
+            ),
                 v1 = new Vec3(v0.x + size, h1, v0.z),
                 v2 = new Vec3(v0.x, h2, v0.z + size),
                 v3 = new Vec3(v0.x + size, h3, v0.z + size);
@@ -44263,12 +44968,20 @@
                             },
                             (response) => {
                                 if (response.status === "ready") {
-                                    let heights = this._createHeights(response.data, segment);
+
+                                    let heights = this._createHeights(response.data,
+                                        segment.tileIndex,
+                                        segment.tileX, segment.tileY, segment.tileZoom,
+                                        segment.getExtent()
+                                    );
+
                                     this._elevationCache[segment.tileIndex] = {
                                         heights: heights,
                                         extent: segment.getExtent()
                                     };
+
                                     this._applyElevationsData(segment, heights);
+
                                 } else if (response.status === "abort") {
                                     segment.terrainIsLoading = false;
                                 } else if (response.status === "error") {
@@ -44357,10 +45070,8 @@
         "pk.eyJ1IjoiZm94bXVsZGVyODMiLCJhIjoiY2pqYmR3dG5oM2Z1bzNrczJqYm5pODhuNSJ9.Y4DRmEPhb-XSlCR9CAXACQ";
 
     class MapboxTerrain extends GlobusTerrain {
-        constructor(name, options) {
+        constructor(name, options = {}) {
             super(name, options);
-
-            options = options || {};
 
             this.equalizeVertices =
                 options.equalizeVertices != undefined ? options.equalizeVertices : true;
@@ -44379,8 +45090,8 @@
                 options.url != undefined
                     ? options.url
                     : `//api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=${
-                      options.key || KEY
-                  }`;
+                    options.key || KEY
+                }`;
 
             this.noDataValues = options.noDataValues || [-65537, -10000];
 
@@ -44407,7 +45118,7 @@
             return canvas.getContext("2d");
         }
 
-        _createHeights(data, segment) {
+        _createHeights(data, tileIndex, tileX, tileY, tileZoom, extent) {
             const SIZE = data.width;
 
             this._ctx.clearRect(0, 0, SIZE, SIZE);
@@ -44461,16 +45172,16 @@
                 outChildrenElevations
             );
 
-            this._elevationCache[segment.tileIndex] = {
+            this._elevationCache[tileIndex] = {
                 heights: outCurrenElevations,
-                extent: segment.getExtent()
+                extent: extent//segment.getExtent()
             };
 
             for (let i = 0; i < d; i++) {
                 for (let j = 0; j < d; j++) {
-                    let x = segment.tileX * 2 + j,
-                        y = segment.tileY * 2 + i,
-                        z = segment.tileZoom + 1;
+                    let x = tileX * 2 + j,
+                        y = tileY * 2 + i,
+                        z = tileZoom + 1;
                     let tileIndex = Layer$1.getTileIndex(x, y, z);
                     this._elevationCache[tileIndex] = {
                         heights: outChildrenElevations[i][j],
@@ -44572,9 +45283,9 @@
                 bottomHeight =
                     -10000 +
                     0.1 *
-                        (rgbaData[k4 + sourceSize4] * 256 * 256 +
-                            rgbaData[k4 + sourceSize4 + 1] * 256 +
-                            rgbaData[k4 + sourceSize4 + 2]);
+                    (rgbaData[k4 + sourceSize4] * 256 * 256 +
+                        rgbaData[k4 + sourceSize4 + 1] * 256 +
+                        rgbaData[k4 + sourceSize4 + 2]);
 
                 isNoDataBottom = MapboxTerrain.checkNoDataValue(noDataValues, bottomHeight);
 
@@ -44606,9 +45317,9 @@
                 let rightBottomHeight =
                     -10000 +
                     0.1 *
-                        (rgbaData[k4 + sourceSize4 + 4] * 256 * 256 +
-                            rgbaData[k4 + sourceSize4 + 5] * 256 +
-                            rgbaData[k4 + sourceSize4 + 6]);
+                    (rgbaData[k4 + sourceSize4 + 4] * 256 * 256 +
+                        rgbaData[k4 + sourceSize4 + 5] * 256 +
+                        rgbaData[k4 + sourceSize4 + 6]);
 
                 let isNoDataRightBottom = MapboxTerrain.checkNoDataValue(
                     noDataValues,
@@ -44931,7 +45642,7 @@
             this.renderer.div.appendChild(this.el);
 
             this.renderer.events.on("draw", (e) => {
-                if (e.events.mouseState.anyEvent()) {
+                if (e.events.pointerEvent()) {
                     this._draw();
                 }
             });
@@ -45311,28 +46022,6 @@
              * @enum {Object}
              */
             this.mouseState = {
-                anyEvent: () => {
-                    let ms = this.mouseState;
-                    return (
-                        ms.leftButtonUp ||
-                        ms.rightButtonUp ||
-                        ms.middleButtonUp ||
-                        ms.leftButtonDown ||
-                        ms.rightButtonDown ||
-                        ms.middleButtonDown ||
-                        ms.leftButtonHold ||
-                        ms.rightButtonHold ||
-                        ms.middleButtonHold ||
-                        ms.leftButtonDoubleClick ||
-                        ms.rightButtonDoubleClick ||
-                        ms.middleButtonDoubleClick ||
-                        ms.leftButtonClick ||
-                        ms.rightButtonClick ||
-                        ms.middleButtonClick ||
-                        ms.moving ||
-                        ms.justStopped
-                    );
-                },
                 /** Current screen mouse X position. */
                 clientX: 0,
                 /** Current screen mouse Y position. */
@@ -45431,6 +46120,8 @@
                 prev_x: 0,
                 /** Previous touch Y coordinate. */
                 prev_y: 0,
+                /** Screen touch position world direction. */
+                direction: new Vec3(),
                 /** JavaScript touching system event message. */
                 sys: null,
                 /** Current touched(picking) object. */
@@ -45460,6 +46151,19 @@
             this._mclickY = 0;
         }
 
+        pointerEvent() {
+            let ms = this.mouseState,
+                ts = this.touchState;
+            return (
+                ms.moving ||
+                ms.justStopped ||
+                ms.wheelDelta ||
+                ts.moving ||
+                ts.touchStart ||
+                ts.touchEnd
+            )
+        }
+
         get active() {
             return this._active;
         }
@@ -45478,6 +46182,13 @@
                 this.mouseState.direction = this.renderer.activeCamera.unproject(
                     this.mouseState.x,
                     this.mouseState.y
+                );
+                //
+                // TODO: Replace in some other place with a thought that we do            
+                // not need to make unproject when we do not make touching
+                this.touchState.direction = this.renderer.activeCamera.unproject(
+                    this.touchState.x,
+                    this.touchState.y
                 );
                 this.entityPickingEvents();
                 this._keyboardHandler.handleEvents();
@@ -45750,7 +46461,7 @@
             var ts = this.touchState;
             ts.sys = event;
 
-            ts.clienX = event.touches.item(0).clientX - event.offsetLeft;
+            ts.clientX = event.touches.item(0).clientX - event.offsetLeft;
             ts.clientY = event.touches.item(0).clientY - event.offsetTop;
 
             let h = this.renderer.handler;
@@ -45826,8 +46537,13 @@
 
             ts.sys = event;
             ts.moving = true;
-            this._dblTchBegins = 0;
-            this._oneTouchStart = false;
+
+            var dX = ts.x - ts.prev_x;
+            var dY = ts.y - ts.prev_y;
+            if (Math.abs(dX) > 9 || Math.abs(dY) > 9) {
+                this._dblTchBegins = 0;
+                this._oneTouchStart = false;
+            }
         }
 
         /**
@@ -46041,7 +46757,6 @@
                     pe && pe.dispatch(pe.mousewheel, ms);
                 }
                 this.dispatch(this.mousewheel, ms);
-                ms.wheelDelta = 0;
             }
 
             if (ms.moving) {
@@ -46056,7 +46771,6 @@
 
             if (ms.justStopped) {
                 this.dispatch(this.mousestop, ms);
-                ms.justStopped = false;
             }
         }
 
@@ -46609,7 +47323,7 @@
              * @public
              * @type {Array.<utils.TextureAtlasNode >}
              */
-            this.nodes = [];
+            this.nodes = new Map();
 
             /**
              * Created gl texture.
@@ -46696,7 +47410,7 @@
 
             this._makeAtlas(fastInsert);
 
-            return this.nodes[image.__nodeIndex];
+            return this.get(image.__nodeIndex);
         }
 
         _completeNode(nodes, node) {
@@ -46727,7 +47441,7 @@
                 tc[10] = (r.left + bs) / w;
                 tc[11] = (r.top + bs) / h;
 
-                nodes[im.__nodeIndex] = node;
+                nodes.set(im.__nodeIndex, node);
             }
         }
 
@@ -46758,13 +47472,21 @@
 
                 this.clearCanvas();
 
-                var newNodes = [];
+                var newNodes = new Map();
                 for (var i = 0; i < im.length; i++) {
                     this._completeNode(newNodes, this._btree.insert(im[i]));
                 }
-                this.nodes = [];
+                this.nodes = null;
                 this.nodes = newNodes;
             }
+        }
+
+        get(key) {
+            return this.nodes.get(key);
+        }
+
+        set(key, value) {
+            this.nodes.set(key, value);
         }
 
         /**
@@ -46799,8 +47521,11 @@
         }
 
         getImageTexCoordinates(img) {
-            if (img.__nodeIndex != null && this.nodes[img.__nodeIndex]) {
-                return this.nodes[img.__nodeIndex].texCoords;
+            if (img.__nodeIndex != null) {
+                let n = this.get(img.__nodeIndex);
+                if (n) {
+                    return n.texCoords;
+                }
             }
         }
     }
@@ -46959,16 +47684,20 @@
                 tc[10] = r.left / w;
                 tc[11] = r.top / h;
 
-                atlas.nodes[ti] = new TextureAtlasNode(r, tc);
-                atlas.nodes[ti].metrics = ci;
+                let taNode = new TextureAtlasNode(r, tc);
+                let ciNorm = ci.char.normalize('NFKC');
+                let ciCode = ciNorm.charCodeAt();
+                taNode.metrics = ci;
+                taNode.metrics.nChar = ciNorm;
+                taNode.metrics.nCode = ciCode;
+                taNode.metrics.nWidth = taNode.metrics.width / s;
+                taNode.metrics.nHeight = taNode.metrics.height / s;
+                taNode.metrics.nAdvance = taNode.metrics.xadvance / s;
+                taNode.metrics.nXOffset = taNode.metrics.xoffset / s;
+                taNode.metrics.nYOffset = 1.0 - taNode.metrics.yoffset / s;
+                taNode.emptySize = 1;
 
-                atlas.nodes[ti].metrics.nWidth = atlas.nodes[ti].metrics.width / s;
-                atlas.nodes[ti].metrics.nHeight = atlas.nodes[ti].metrics.height / s;
-                atlas.nodes[ti].metrics.nAdvance = atlas.nodes[ti].metrics.xadvance / s;
-                atlas.nodes[ti].metrics.nXOffset = atlas.nodes[ti].metrics.xoffset / s;
-                atlas.nodes[ti].metrics.nYOffset = 1.0 - atlas.nodes[ti].metrics.yoffset / s;
-
-                atlas.nodes[ti].emptySize = 1;
+                atlas.nodes.set(ciNorm.charCodeAt(), taNode);
             }
 
             atlas.kernings = {};
@@ -46979,14 +47708,20 @@
                 let first = ki.first,
                     second = ki.second;
 
-                let charFirst = idToChar[first],
-                    charSecond = idToChar[second];
+                //let charFirst = idToChar[first],
+                //    charSecond = idToChar[second];
 
-                if (!atlas.kernings[charFirst]) {
-                    atlas.kernings[charFirst] = {};
+                // if (!atlas.kernings[charFirst]) {
+                //     atlas.kernings[charFirst] = {};
+                // }
+                //
+                // atlas.kernings[charFirst][charSecond] = ki.amount / s;
+
+                if (!atlas.kernings[first]) {
+                    atlas.kernings[first] = {};
                 }
 
-                atlas.kernings[charFirst][charSecond] = ki.amount / s;
+                atlas.kernings[first][second] = ki.amount / s;
             }
         }
 
@@ -51492,7 +52227,7 @@
             params = params || {};
 
             /**
-             * Div element with WebGL canvas.
+             * Div element with WebGL canvas. Assigned in Globe class.
              * @public
              * @type {object}
              */
@@ -51945,16 +52680,16 @@
             this.sceneFramebuffer.setSize(c.width, c.height);
 
             this.blitFramebuffer &&
-                this.blitFramebuffer.setSize(c.width, c.height, true);
+            this.blitFramebuffer.setSize(c.width, c.height, true);
 
             this.toneMappingFramebuffer &&
-                this.toneMappingFramebuffer.setSize(c.width, c.height, true);
+            this.toneMappingFramebuffer.setSize(c.width, c.height, true);
 
             this.depthFramebuffer &&
-                this.depthFramebuffer.setSize(c.clientWidth, c.clientHeight, true);
+            this.depthFramebuffer.setSize(c.clientWidth, c.clientHeight, true);
 
             this.screenDepthFramebuffer &&
-                this.screenDepthFramebuffer.setSize(c.clientWidth, c.clientHeight, true);
+            this.screenDepthFramebuffer.setSize(c.clientWidth, c.clientHeight, true);
 
             if (this.handler.gl.type === "webgl") {
                 this.screenTexture.screen = this.sceneFramebuffer.textures[0];
@@ -52059,10 +52794,6 @@
                 gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
                 gl.disable(gl.CULL_FACE);
 
-                // Z-buffer offset
-                gl.enable(gl.POLYGON_OFFSET_FILL);
-                gl.polygonOffset(0.0, 0.0);
-
                 // billboards pass
                 gl.activeTexture(gl.TEXTURE0);
                 gl.bindTexture(gl.TEXTURE_2D, this.billboardsTextureAtlas.texture);
@@ -52136,9 +52867,6 @@
                     }
                 }
 
-                // gl.polygonOffset(0.0, 0.0);
-                gl.disable(gl.POLYGON_OFFSET_FILL);
-
                 this._entityCollections.length = 0;
                 this._entityCollections = [];
             }
@@ -52169,12 +52897,9 @@
 
             e.dispatch(e.draw, this);
 
-            //h.gl.activeTexture(h.gl.TEXTURE0);
-            //h.gl.bindTexture(h.gl.TEXTURE_2D, h.transparentTexture);
-
             let frustums = this.activeCamera.frustums;
 
-            let anyEvent = this.events.mouseState.anyEvent();
+            let pointerEvent = e.pointerEvent() || this.activeCamera.isMoved;
 
             // Rendering scene nodes and entityCollections
             let rn = this._renderNodesArr;
@@ -52188,7 +52913,7 @@
                 }
                 this._drawEntityCollections();
 
-                if (anyEvent) {
+                if (pointerEvent) {
                     this._drawPickingBuffer(k);
                 }
             }
@@ -52197,9 +52922,11 @@
 
             this.blitFramebuffer && sfb.blitTo(this.blitFramebuffer);
 
-            if (anyEvent) {
+            if (pointerEvent) {
                 // It works ONLY for 0 (closest) frustum
-                this._drawDepthBuffer();
+                if (h.isWebGl2()) {
+                    this._drawDepthBuffer();
+                }
 
                 this._readPickingColor();
             }
@@ -52209,6 +52936,8 @@
 
             e.dispatch(e.postdraw, this);
 
+            e.mouseState.wheelDelta = 0;
+            e.mouseState.justStopped = false;
             e.mouseState.moving = false;
             e.touchState.moving = false;
         }
@@ -52510,10 +53239,10 @@
             this.renderer.div = this.div;
             this.renderer.div.attributions = document.createElement("div");
             if (options.attributionContainer) {
-                options.attributionContainer.appendChild(this.renderer.div.attributions);
+                options.attributionContainer.appendChild(this.div.attributions);
             } else {
-                this.renderer.div.attributions.classList.add("ogAttribution");
-                this.div.appendChild(this.renderer.div.attributions);
+                this.div.attributions.classList.add("ogAttribution");
+                this.div.appendChild(this.div.attributions);
             }
 
             // Skybox
@@ -52851,7 +53580,7 @@
     }
 
     var name = "@openglobus/og";
-    var version$1 = "0.12.4";
+    var version$1 = "0.13.7";
     var description = "[OpenGlobus](http://www.openglobus.org/) is a javascript library designed to display interactive 3d maps and planets with map tiles, imagery and vector data, markers and 3d objects. It uses the WebGL technology, open source and completely free.";
     var directories = {
     	example: "./sandbox"

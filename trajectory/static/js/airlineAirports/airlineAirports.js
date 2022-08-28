@@ -41,7 +41,7 @@ function loadAirports(layerAirports, dataJson) {
 	}
 }
 
-function airports(globus) {
+function initAirports(globus) {
 	
 	//console.log("start airports");
 	let layerAirports = new og.layer.Vector("AirlineAirports", {
@@ -52,6 +52,9 @@ function airports(globus) {
 	let show = true;
 	let first = true;
     	
+	if ( !document.getElementById("btnAirports") ) {
+		return;
+	}
     document.getElementById("btnAirports").onclick = function () {
             
         if (show) {

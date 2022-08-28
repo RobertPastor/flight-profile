@@ -46,17 +46,18 @@ function removeLayer( globus , layerName ) {
 			layerOne.remove();
 		}
 	} catch (err) {
-		console.log("layerOne is probably not existing anymore...")
+		console.log(JSON.stringify(err));
+		console.log("layerOne is probably not existing anymore...");
 	}
 	try {
 		let layerTwo = globus.planet.getLayerByName( layerName );
 		if (layerTwo) {
 			
 			layerTwo._entityCollectionsTree.entityCollection.clear();
-			
 		}
 	} catch (err) {
-		console.log("layerTwo is probably not existing anymore...")
+		console.log(JSON.stringify(err));
+		console.log("layerTwo is probably not existing anymore...");
 	}
 }
 
@@ -110,23 +111,34 @@ function initWorker() {
 
 function initTools(globus, viewExtent) {
 			
+	globus.planet.addControl(new MainControl());
+	globus.planet.addControl(new HelpControl());
+	globus.planet.addControl(new D3Control());
+	globus.planet.addControl(new DialogControl());
+	
+	globus.planet.addControl(new AirlineFleetControl());
+	// load airline fleet
+	initAirlineFleet();
+	
+	globus.planet.addControl(new AirlineRoutesControl());
+	// load routes
+	initAirlineRoutes(globus);
+	
 	//console.log("init other tools");
 	// load the airline airports
-	airports(globus);
-			
+	// need to do it after the show airports button is defined in MainControl
+	initAirports(globus);
+	
 	// load the airline routes waypoints
-	wayPoints(globus, viewExtent)
-			
+	initWayPoints(globus, viewExtent)
+	
 	// load a flight profile
-	showFlightProfile(globus);
-			
+	//showFlightProfile(globus);
+	
 	// compute Flight Profile
+	globus.planet.addControl(new FlighProfileControl());
 	launchFlightProfile(globus);
 	
-	// load routes
-	loadAirlineRoutes(globus);
-	
-	$('#divOverlayId').show();
 }
 
 function initMain(viewExtent) {

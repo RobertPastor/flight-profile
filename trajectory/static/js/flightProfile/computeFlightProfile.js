@@ -213,8 +213,8 @@ function displayD3LineChart( arrayAltitudeMSLtime ) {
 	width = parentDiv.getBoundingClientRect().width;
 	height = width/2;
 	
-	var topTable = document.getElementById("mainTableId")
-	height = height - topTable.clientHeight
+	var topTable = document.getElementById("mainTableId");
+	height = height - topTable.clientHeight;
 
 	// append the svg object to the body of the page
 	//removeAllChilds (document.getElementById("dialogId"))
@@ -448,7 +448,6 @@ function populateAirlineRunWaysFlightProfileSelector( airlineRunWaysArray ) {
 			$('#airlineArrivalRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
 		}
 	}
-	
 }
 
 function launchFlightProfile(globus) {
@@ -476,11 +475,7 @@ function launchFlightProfile(globus) {
             });
 	layerFlightProfileWayPoints.addTo(globus.planet);
 	*/
-	    
-	$("#trComputeFlightProfileId").hide();
-	$("#aircraftSelectionId").hide();
-	$("#routesSelectionId").hide();
-	
+	    	
 	// listen to select route change
 	$( "#airlineRouteId" ).change(function() {
 		//console.log( "Handler for airlineRouteId selection change called." );
@@ -511,17 +506,21 @@ function launchFlightProfile(globus) {
 	});
 	
 	let show = true;
-	
+	$("#flightProfileMainDivId").hide();
+
 	/**
 	* monitor the button used to show the table with the inputs
 	* it allows only to choose the aircraft, the route before clicking to launch the profile computation
 	**/
+	if ( ! document.getElementById("btnLaunchFlightProfile") ) {
+		return;
+	}
 	document.getElementById("btnLaunchFlightProfile").onclick = function () {
 
 		if (show) {
 			show = false;
 			
-			$('#tableFlightProfileId').show();
+			$('#flightProfileMainDivId').show();
 			
 			// change name on the button
 			document.getElementById("btnLaunchFlightProfile").innerText = "Hide Flight Profile";
@@ -559,7 +558,7 @@ function launchFlightProfile(globus) {
 			document.getElementById("btnLaunchFlightProfile").innerText = "Show Flight Profile";
 			document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
 
-			$('#tableFlightProfileId').hide();
+			$('#flightProfileMainDivId').hide();
 		}
 	} 
 	 

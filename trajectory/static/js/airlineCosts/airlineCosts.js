@@ -163,6 +163,9 @@ function launchCostsComputation() {
 	* it allows only to choose the aircraft, the route before clicking to launch the profile computation
 	* the button is defined in /flight-profile/trajectory/templates/index-og.html
 	**/
+	if ( !document.getElementById("btnLaunchCosts") ) {
+		return;
+	}
 	document.getElementById("btnLaunchCosts").onclick = function () {
 		
 		if (show) {

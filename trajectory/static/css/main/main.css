@@ -1,9 +1,9 @@
 body {
 	height: 100%;
+	width: 100%;
 	font-family: arial, serif;
 	font-size: 11px;
 }
-
 
 button {
 	font-family: arial, serif;
@@ -67,3 +67,34 @@ th {
 	z-index: 100; /* Specify a stack order in case you're using a different order for other elements */
 	cursor: pointer; /* Add a pointer on hover */
 }
+
+.mainTable {
+	position: absolute;
+	top : 10px;
+	left : 10px;
+}
+
+.airlineFleetTableDiv {
+	position: absolute;
+	top : 60px;
+	left : 10px;
+}
+
+.airlineRoutesTableDiv {
+	position: absolute;
+	top : 60px;
+	left : 10px;
+}
+
+.flightProfileTableDiv {
+	position: absolute;
+	top : 60px;
+	left : 10px;
+}
+
+.d3Div {
+	position: absolute;
+	top : 60px;
+	left : 10px;
+}
+

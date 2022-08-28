@@ -43,7 +43,7 @@ function loadWayPoints(layerWayPoints, dataJson) {
 	}
 }
 
-function wayPoints(globus, viewExtent) {
+function initWayPoints(globus, viewExtent) {
 	
 	//console.log("start WayPoints");
 	let layerWayPoints = new og.layer.Vector("WayPoints", {
@@ -66,12 +66,15 @@ function wayPoints(globus, viewExtent) {
 	    
 	let show = true;
     	
+	if ( !document.getElementById("btnWayPoints") ) {
+		return;
+	}
 	document.getElementById("btnWayPoints").onclick = function () {
 		
 		//console.log( globus.planet.getViewExtent() )
-		let viewExtent = globus.planet.getViewExtent() 
-		let northEast = viewExtent["northEast"]
-		let southWest = viewExtent["southWest"]
+		let viewExtent = globus.planet.getViewExtent();
+		let northEast = viewExtent["northEast"];
+		let southWest = viewExtent["southWest"];
 		
 		if (show) {
 			document.getElementById("btnWayPoints").disabled = true
@@ -81,10 +84,10 @@ function wayPoints(globus, viewExtent) {
 			document.getElementById("btnWayPoints").style.backgroundColor = "green";
 
 			// use ajax to get the data 
-			data = 'minlatitude=' + parseInt(southWest["lat"]).toString() + "&"
-			data += 'maxlatitude=' + parseInt(northEast["lat"]).toString() + "&"
-			data += 'minlongitude=' + parseInt(southWest["lon"]).toString() + "&"
-			data += 'maxlongitude=' + parseInt(northEast["lon"]).toString()
+			data = 'minlatitude=' + parseInt(southWest["lat"]).toString() + "&";
+			data += 'maxlatitude=' + parseInt(northEast["lat"]).toString() + "&";
+			data += 'minlongitude=' + parseInt(southWest["lon"]).toString() + "&";
+			data += 'maxlongitude=' + parseInt(northEast["lon"]).toString();
 			$.ajax( {
 				method: 'get',
 				url :  "trajectory/waypoints",
@@ -98,11 +101,11 @@ function wayPoints(globus, viewExtent) {
 				},
 				error: function(data, status) {
 					console.log("Error - Show Airline WayPoints : " + status + " Please contact your admin");
-					showMessage( "Error - Show Airline WayPoints" , data )
+					showMessage( "Error - Show Airline WayPoints" , data );
 				},
 				complete : function() {
 					stopBusyAnimation();
-					document.getElementById("btnWayPoints").disabled = false
+					document.getElementById("btnWayPoints").disabled = false;
 				}
 			} );
 			
