@@ -92,6 +92,18 @@ th {
 	left : 10px;
 }
 
+.airlineCostsMainDiv {
+	position: absolute;
+	top : 60px;
+	left : 10px;
+}
+
+.airlineCostsResultsMainDiv {
+	position: absolute;
+	top: 200px;
+	left: 10px;
+}
+
 .d3Div {
 	position: absolute;
 	top : 60px;

@@ -2,7 +2,6 @@
 document.addEventListener('DOMContentLoaded', (event) => { 
        
 	//console.log("Airline Costs is loaded");
-	launchCostsComputation();
 	
 }); 
 
@@ -93,7 +92,8 @@ function showCostsResults( dataJson ) {
 	let arrivalRunWay = $("#airlineArrivalRunWayCostsId option:selected").val()
 	
 	//console.log("before tableCostsResultsId tbody tr append")
-	$("#tableCostsResultsId")
+	
+	$("#airlineCostsResultsTableId")
 	.find('tbody')
     .append($('<tr>')
 
@@ -119,14 +119,10 @@ function showCostsResults( dataJson ) {
 }
 
 
-function launchCostsComputation() {
+function initCostsComputation() {
 	
-	$('#tableCostsId').hide();
-	$("#trComputeCostsResultsHeaderId").hide()
-
-	$("#trComputeCostsId").hide();
-	$("#aircraftSelectionCostsId").hide();
-	$("#routesSelectionCostsId").hide();
+	$('#airlineCostsMainDivId').hide();
+	$('#airlineCostsTableId').hide();
 	
 	// listen to the route selector changes
 	$( "#airlineRouteCostsId" ).change(function() {
@@ -170,12 +166,9 @@ function launchCostsComputation() {
 		
 		if (show) {
 			show = false;
-			$('#tableCostsId').show();
-			$('#tableCostsResultsId').show();
 			
-			$("#trComputeCostsId").show();
-			$("#aircraftSelectionCostsId").show();
-			$("#routesSelectionCostsId").show();
+			$('#airlineCostsMainDivId').show();
+			$('#airlineCostsTableId').show();
 			
 			// change name on the button
 			document.getElementById("btnLaunchCosts").innerText = "Hide Compute Costs";
@@ -210,8 +203,9 @@ function launchCostsComputation() {
 
 		} else {
 			show = true;
-			$('#tableCostsId').hide();
-			$('#tableCostsResultsId').hide();
+			
+			$('#airlineCostsMainDivId').hide();
+			$('#airlineCostsTableId').hide();
 
 			// change name on the button
 			document.getElementById("btnLaunchCosts").innerText = "Show Compute Costs";
@@ -255,7 +249,7 @@ function launchCostsComputation() {
 							
 						} else {
 							
-							$("#trComputeCostsResultsHeaderId").show()
+							$("#airlineCostsResultsMainDivId").show();
 									
 							//alert("Data: " + data + "\nStatus: " + status);
 							//showMessage( "End of Costs computations" , dataJson )
@@ -275,8 +269,5 @@ function launchCostsComputation() {
 						document.getElementById("btnLaunchFlightProfile").disabled = false
 					},
 			});
-		
 	}
-
-	
 }

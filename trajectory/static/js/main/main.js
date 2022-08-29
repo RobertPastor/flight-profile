@@ -139,6 +139,10 @@ function initTools(globus, viewExtent) {
 	globus.planet.addControl(new FlighProfileControl());
 	launchFlightProfile(globus);
 	
+	// compute Flight Profile
+	globus.planet.addControl(new AirlineCostsControl());
+	globus.planet.addControl(new AirlineCostsResultsControl());
+	initCostsComputation();
 }
 
 function initMain(viewExtent) {
@@ -163,7 +167,7 @@ function initMain(viewExtent) {
 	
 	setTimeout( function() {
 		initTools (globus, viewExtent);
-	} , 1500 );
+	} , 500 );
 }
 
 
