@@ -19,9 +19,30 @@
 				let row_1 = document.createElement('tr');
 				
 				let row_1_data_1 = document.createElement('td');
-				row_1_data_1.colSpan = "8";
-				row_1_data_1.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
+				row_1_data_1.colSpan = "1";
+				
+				let div_1 = document.createElement('div');
+				
+				let select = document.createElement("select");
+                select.id = "airlineSelectId";
+				select.name = "airlineSelectName";                             
+
+                let option_1 = document.createElement("option");
+                option_1.text = "AmericanWings";
+				select.add(option_1);
+
+                let option_2 = document.createElement("option");  
+				option_2.text = "EuropeanWings";
+				select.add(option_2);
+
+                div_1.appendChild(select);
+				row_1_data_1.appendChild(div_1);
 				row_1.appendChild(row_1_data_1);
+				
+				let row_1_data_2 = document.createElement('td');
+				row_1_data_2.colSpan = "7";
+				row_1_data_2.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
+				row_1.appendChild(row_1_data_2);
 				
 				tbody.appendChild(row_1);
 				

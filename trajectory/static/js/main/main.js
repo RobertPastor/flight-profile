@@ -109,6 +109,46 @@ function initWorker() {
     }
 }
 
+function switchAirlines(globus) {
+	
+	$( "#airlineSelectId" ).change(function() {
+
+		let airlineName = $("#airlineSelectId option:selected").val();
+        if (airlineName == "AmericanWings") {
+  
+			let MinLongitude = "-130.0";
+			let MinLatitude = "25.0";
+			let MaxLongitude = "-70.0";
+			let MaxLatitude = "50.0";
+
+			let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
+			let NorthEast = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
+			let viewExtent = new og.Extent( SouthWest , NorthEast );
+
+			globus.planet.viewExtent(viewExtent);
+		
+        }
+
+        if (airlineName == "EuropeanWings") {
+
+            let MinLongitude = "-17.0";
+            let MinLatitude = "30.0";
+            let MaxLongitude = "32.0";
+            let MaxLatitude = "50.0";
+
+            let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
+            let NorthEast = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
+
+            let viewExtent = new og.Extent( SouthWest , NorthEast );
+
+            globus.planet.viewExtent(viewExtent);
+
+         }
+
+    });
+	
+}
+
 function initTools(globus, viewExtent) {
 			
 	globus.planet.addControl(new MainControl());
@@ -143,6 +183,8 @@ function initTools(globus, viewExtent) {
 	globus.planet.addControl(new AirlineCostsControl());
 	globus.planet.addControl(new AirlineCostsResultsControl());
 	initCostsComputation();
+	
+	switchAirlines(globus);
 }
 
 function initMain(viewExtent) {
