@@ -1,19 +1,13 @@
 
-from xml.dom import minidom
 import logging
 logger = logging.getLogger(__name__)
-import xmltodict
 
 from django.template import loader
 from django.core import serializers
 from django.http import HttpResponse , JsonResponse
 
-from airline.models import AirlineRoute, AirlineAircraft
-from airline.views import getAirlineRoutesFromDB
-from trajectory.models import AirlineWayPoint, AirlineAirport
-from trajectory.models import BadaSynonymAircraft
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
-from trajectory.Guidance.FlightPathFile import FlightPath
+from airline.models import AirlineRoute
+from trajectory.models import  AirlineAirport
 
 # Create your views here.
 def indexTrajectory(request):

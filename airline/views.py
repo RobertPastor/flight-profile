@@ -97,6 +97,3 @@ def getRouteWayPoints(request, Adep, Ades):
         
         
         
-        
-        
-        

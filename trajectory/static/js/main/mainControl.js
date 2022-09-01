@@ -24,16 +24,18 @@
 				let div_1 = document.createElement('div');
 				
 				let select = document.createElement("select");
-                select.id = "airlineSelectId";
-				select.name = "airlineSelectName";                             
+				select.id = "airlineSelectId";
+				
+                //select.id = "airlineSelectId";
+				//select.name = "airlineSelectName";                             
 
-                let option_1 = document.createElement("option");
-                option_1.text = "AmericanWings";
-				select.add(option_1);
+                //let option_1 = document.createElement("option");
+                //option_1.text = "AmericanWings";
+				//select.add(option_1);
 
-                let option_2 = document.createElement("option");  
-				option_2.text = "EuropeanWings";
-				select.add(option_2);
+                //let option_2 = document.createElement("option");  
+				//option_2.text = "EuropeanWings";
+				//select.add(option_2);
 
                 div_1.appendChild(select);
 				row_1_data_1.appendChild(div_1);

@@ -2,7 +2,19 @@ from django.db import models
 # Create your models here.
 from trajectory.models import AirlineAirport, AirlineRunWay
 
+class Airline(models.Model):
+    Name = models.CharField(max_length = 500)
+    MinLongitudeDegrees = models.FloatField()
+    MinLatitudeDegrees = models.FloatField()
+    MaxLongitudeDegrees = models.FloatField()
+    MaxLatitudeDegrees = models.FloatField()
+
+    def __str__(self):
+        return "{0}".format(self.Name)
+
+
 class AirlineRoute(models.Model):
+    #Airline = models.ForeignKey(Airline, on_delete=models.CASCADE)
     DepartureAirport = models.CharField(max_length = 500)
     DepartureAirportICAOCode = models.CharField(max_length = 50)
     ArrivalAirport = models.CharField(max_length = 500)
@@ -69,8 +81,8 @@ class AirlineRoute(models.Model):
         return strRoute
   
 
-
 class AirlineRouteWayPoints(models.Model):
+    #Airline = models.ForeignKey(Airline, on_delete=models.CASCADE)
     Route = models.ForeignKey(AirlineRoute, on_delete=models.CASCADE)
     Order = models.IntegerField()
     # linked to the WayPoint class in the trajectory
@@ -90,7 +102,7 @@ class AirlineRouteWayPoints(models.Model):
         
 
 class AirlineAircraft(models.Model):
-    
+    #Airline = models.ForeignKey(Airline, on_delete=models.CASCADE)
     aircraftICAOcode = models.CharField(max_length = 50, primary_key = True)
     aircraftFullName = models.CharField(max_length = 500)
     numberOfAircraftsInService = models.IntegerField(default = 0)

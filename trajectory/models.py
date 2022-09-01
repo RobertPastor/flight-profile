@@ -1,8 +1,6 @@
 import os
-from django.utils import timezone
 from django.db import models
 
-from trajectory.Guidance.Haversine import points2distanceMeters
 
 BADA_381_DATA_FILES = 'Bada381DataFiles'
 OPFfileExtension = '.OPF'

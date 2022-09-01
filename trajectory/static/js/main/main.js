@@ -114,39 +114,49 @@ function switchAirlines(globus) {
 	$( "#airlineSelectId" ).change(function() {
 
 		let airlineName = $("#airlineSelectId option:selected").val();
-        if (airlineName == "AmericanWings") {
-  
-			let MinLongitude = "-130.0";
-			let MinLatitude = "25.0";
-			let MaxLongitude = "-70.0";
-			let MaxLatitude = "50.0";
-
-			let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
-			let NorthEast = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
-			let viewExtent = new og.Extent( SouthWest , NorthEast );
-
-			globus.planet.viewExtent(viewExtent);
 		
-        }
+		if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 
-        if (airlineName == "EuropeanWings") {
+			airlines.forEach ( function ( airline ) {
+				
+				if (airlineName == airline["Name"] ) {
+					
+					let MinLongitude = airline["MinLongitudeDegrees"]
+					let MinLatitude = airline["MinLatitudeDegrees"]
+					let MaxLongitude = airline["MaxLongitudeDegrees"]
+					let MaxLatitude = airline["MaxLatitudeDegrees"]
 
-            let MinLongitude = "-17.0";
-            let MinLatitude = "30.0";
-            let MaxLongitude = "32.0";
-            let MaxLatitude = "50.0";
+					let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
+					let NorthEast = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
+					let viewExtent = new og.Extent( SouthWest , NorthEast );
 
-            let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
-            let NorthEast = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
-
-            let viewExtent = new og.Extent( SouthWest , NorthEast );
-
-            globus.planet.viewExtent(viewExtent);
-
-         }
-
+					globus.planet.viewExtent(viewExtent);
+				
+				}
+			})
+		}
+  
     });
+}
+
+function loadAirlines() {
 	
+	if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
+		
+		airlines.forEach ( function ( airline ) {
+			
+			let option = document.createElement("option");
+            option.text = "AmericanWings";
+			let select = document.getElementById("airlineSelectId")
+			if ( select ) {
+				
+				let option = document.createElement("option");
+                option.text = airline["Name"];
+				select.add(option);
+				
+			}
+		});
+	}
 }
 
 function initTools(globus, viewExtent) {
@@ -184,6 +194,7 @@ function initTools(globus, viewExtent) {
 	globus.planet.addControl(new AirlineCostsResultsControl());
 	initCostsComputation();
 	
+	loadAirlines();
 	switchAirlines(globus);
 }
 
@@ -219,20 +230,25 @@ function init() {
 	//$( window ).on( "load", function () {
 	//the event occurred
 		  
-	// hide the overlay
-	$('#divOverlayId').hide();
-		  
-	let MinLongitude = "-130.0";
-	let MinLatitude = "25.0";
-	let MaxLongitude = "-70.0";
-	let MaxLatitude = "50.0";
-	let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
-	let NorthEast = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
-	let viewExtent = new og.Extent( SouthWest , NorthEast );
+	//let airlineList = JSON.parse('{{ airlines|escapejs }}');
+	if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
+		
+		console.log("receive Airline list");
+		
+		let airline = airlines[0]
+		let MinLongitude = airline["MinLongitudeDegrees"]
+		let MinLatitude = airline["MinLatitudeDegrees"]
+		let MaxLongitude = airline["MaxLongitudeDegrees"]
+		let MaxLatitude = airline["MaxLatitudeDegrees"]
+		
+		let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
+		let NorthEast = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
+		let viewExtent = new og.Extent( SouthWest , NorthEast );
 	
-	setTimeout( function() {
-		initMain(viewExtent);
-	} , 500 );
+		setTimeout( function() {
+			initMain(viewExtent);
+		} , 500 );
+	}
 		
 }
 	
