@@ -46,6 +46,16 @@ Running migrations:
 PS C:\Users\rober\Documents\04 - Workspace\flight-profile>
 
 
+# when tables are not created
+=============================
+
+python manage.py migrate --fake APPNAME zero
+This will make your migration to fake. Now you can run the migrate script
+
+python manage.py migrate APPNAME
+Tables will be created and you solved your problem.. Cheers!!!
+
+
 
 
 

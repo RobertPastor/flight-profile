@@ -8,11 +8,11 @@ import os
 import logging
 
 from xlrd import open_workbook
-from airline.models import AirlineAircraft
+from airline.models import AirlineAircraft, Airline
 
 ''' in service means number of available aircrafts '''
-HeaderNames = ['Aircraft' , 'In service', 'Orders' , 'Passengers Delta One', 'Passengers First Class', 'Passengers Premium Select' ,
-               'Passengers Delta Confort Plus' , 'Passengers Main Cabin' , 'Passengers Total' , 'Costs per flying hours dollars', 'Refs', 'Notes']
+HeaderNames = ['Airline', 'Aircraft' , 'In service', 'Orders' , 'Passengers Delta One', 'Passengers First Class', 'Passengers Premium Select' ,
+               'Passengers Delta Confort Plus' , 'Passengers Main Cabin' , 'Passengers Total' , 'Costs per flying hours dollars', 'Crew Costs per flying hours dollars', 'Refs', 'Notes']
 
 
 class AirlineFleetDataBase(object):
@@ -39,40 +39,45 @@ class AirlineFleetDataBase(object):
 
     def read(self, badaAircraftDatabase):
         ''' this method reads the whole file - not only the headers '''
-        logging.info (self.FilePath)
+        print (self.FilePath)
         assert len(self.FilePath)>0 and os.path.isfile(self.FilePath) 
         book = open_workbook(self.FilePath, formatting_info=True)
         ''' assert there is only one sheet '''
         self.sheet = book.sheet_by_index(0)
         #logging.info ( 'Sheet contains - number of rows = {0}'.format(self.sheet.nrows))
         for row in range(self.sheet.nrows):
-            #logging.info ( '--> row --> {0}'.format(row) )
+            print ( '--> row --> {0}'.format(row) )
             rowValues = self.sheet.row_values(row, start_colx=0, end_colx=self.sheet.ncols)
             if row == 0:
                 self.ColumnNames = {}
                 index = 0
                 for column in rowValues:
                     if column not in HeaderNames:
-                        logging.info ( self.className + ': ERROR - expected Fleet column name= {0} not in Header names'.format(column) )
+                        print ( self.className + ': ERROR - expected Fleet column name= {0} not in Header names'.format(column) )
                         return False
                     else:
                         self.ColumnNames[column] = index
                     index += 1
 
             else:
-                #logging.info ( str(row) )
+                print ( str(row) )
                 index = 0
+                airlineName = ""
                 aircraftFullName = ""
                 nbAvailableAircrafts = 0
                 nbMaxPassengers = 0
                 costsFlyingDollars = 0
+                crewCostsFlyingDollars = 0
                 for cell in rowValues:
                     if index == 0:
                         if len(str(cell))>0:
                             #logging.info ( cell )
-                            aircraftFullName = str(cell).strip()
+                            airlineName = str(cell).strip()
                         index = index + 1
                     else:
+                        if (HeaderNames[index] == "Aircraft"):
+                            aircraftFullName = str(cell).strip()
+                            
                         if (HeaderNames[index] == "In service"):
                             if len (str(cell).strip()) > 0 :
                                 #logging.info ( str(cell).strip() )
@@ -91,7 +96,13 @@ class AirlineFleetDataBase(object):
                                 #logging.info ( cell )
                                 assert ( type (str(cell).strip() == float ))
                                 costsFlyingDollars = float( str(cell).strip() )
-                            
+                                
+                        if (HeaderNames[index] == "Crew Costs per flying hours dollars"):
+                            if len (str(cell).strip()) > 0 :
+                                #logging.info ( cell )
+                                assert ( type (str(cell).strip() == float ))
+                                crewCostsFlyingDollars = float( str(cell).strip() )
+
                         index = index + 1
                         
                 ''' one ac per row '''
@@ -100,13 +111,20 @@ class AirlineFleetDataBase(object):
                 print ( aircraftFullName )
                 if (aircraftICAOcode):
                     logging.info ("aircraft ICAO code found = {0} for aircraft full name = {1}".format(aircraftICAOcode, aircraftFullName))
-                    airlineAircraft = AirlineAircraft( 
-                        aircraftICAOcode = aircraftICAOcode, 
-                        aircraftFullName = aircraftFullName, 
-                        numberOfAircraftsInService = nbAvailableAircrafts, 
-                        maximumOfPassengers = nbMaxPassengers, 
-                        costsFlyingPerHoursDollars = costsFlyingDollars)
-                    airlineAircraft.save()
+                    airline = Airline.objects.filter(Name=airlineName).first()
+                    if (airline):
+                        airlineAircraft = AirlineAircraft( 
+                            airline = airline,
+                            aircraftICAOcode = aircraftICAOcode, 
+                            aircraftFullName = aircraftFullName, 
+                            numberOfAircraftsInService = nbAvailableAircrafts, 
+                            maximumOfPassengers = nbMaxPassengers, 
+                            costsFlyingPerHoursDollars = costsFlyingDollars,
+                            crewCostsPerFlyingHoursDollars = crewCostsFlyingDollars)
+
+                        airlineAircraft.save()
+                        print ( airline )
+                        print ( aircraftFullName )
                     self.FleetAircrafts.append( airlineAircraft )
                 
         return True

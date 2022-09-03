@@ -8,34 +8,35 @@ document.addEventListener('DOMContentLoaded', (event) => {
 function addOneAirlineAircraft( oneAirlineAircraft ) {
 	
 	$("#tableAirlineFleetId").find('tbody')
-    .append($('<tr>')
-        .append($('<td>')
-            .append( oneAirlineAircraft["AircraftICAOcode"] )
-        )
-		.append($('<td>')
-            .append( oneAirlineAircraft["AircraftFullName"] )
-        )
-		.append($('<td>')
-            .append( oneAirlineAircraft["NumberOfAircrafts"] )
-        )
-		.append($('<td>')
-            .append( oneAirlineAircraft["MaxNumberOfPassengers"] )
-        )
-		.append($('<td>')
-            .append( oneAirlineAircraft["CostsFlyingHoursDollars"] )
-        )
-		.append($('<td>')
-            .append( "Crew costs not yet implemented" )
-        )
-    );
+		.append($('<tr>')
+			.append($('<td>')
+				.append( oneAirlineAircraft["AircraftICAOcode"] )
+			)
+			.append($('<td>')
+				.append( oneAirlineAircraft["AircraftFullName"] )
+			)
+			.append($('<td>')
+				.append( oneAirlineAircraft["NumberOfAircrafts"] )
+			)
+			.append($('<td>')
+				.append( oneAirlineAircraft["MaxNumberOfPassengers"] )
+			)
+			.append($('<td>')
+				.append( oneAirlineAircraft["CostsFlyingHoursDollars"] )
+			)
+			.append($('<td>')
+				.append( "Crew costs not yet implemented" )
+			)
+		);
 }
 
 
 function addAirlineFleetArray(airlineFleetArray) {
 	
+	// empty the table
 	$('#tableAirlineFleetId tbody').empty();
 	for (var airlineFleetId = 0; airlineFleetId < airlineFleetArray.length; airlineFleetId++ ) {
-		// insert one waypoint
+		// insert one airline
 		addOneAirlineAircraft( airlineFleetArray[airlineFleetId] );
 	}
 }

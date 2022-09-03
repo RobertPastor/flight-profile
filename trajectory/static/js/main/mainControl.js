@@ -25,6 +25,7 @@
 				
 				let select = document.createElement("select");
 				select.id = "airlineSelectId";
+				select.classList.add('airlineSelect');
 				
                 //select.id = "airlineSelectId";
 				//select.name = "airlineSelectName";                             

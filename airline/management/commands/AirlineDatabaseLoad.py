@@ -5,7 +5,6 @@ Created on 1 sept. 2022
 '''
 
 from django.core.management.base import BaseCommand
-
 from airline.models import Airline
 
 class Command(BaseCommand):

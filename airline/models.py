@@ -3,15 +3,18 @@ from django.db import models
 from trajectory.models import AirlineAirport, AirlineRunWay
 
 class Airline(models.Model):
-    Name = models.CharField(max_length = 500)
+    Name = models.CharField( max_length = 500 , unique=True)
     MinLongitudeDegrees = models.FloatField()
-    MinLatitudeDegrees = models.FloatField()
+    MinLatitudeDegrees  = models.FloatField()
     MaxLongitudeDegrees = models.FloatField()
-    MaxLatitudeDegrees = models.FloatField()
+    MaxLatitudeDegrees  = models.FloatField()
 
     def __str__(self):
         return "{0}".format(self.Name)
 
+
+def get_default_airline():
+    return Airline.objects.get_or_create(Name="AmericanWings")[0]
 
 class AirlineRoute(models.Model):
     #Airline = models.ForeignKey(Airline, on_delete=models.CASCADE)
@@ -102,15 +105,18 @@ class AirlineRouteWayPoints(models.Model):
         
 
 class AirlineAircraft(models.Model):
-    #Airline = models.ForeignKey(Airline, on_delete=models.CASCADE)
-    aircraftICAOcode = models.CharField(max_length = 50, primary_key = True)
+    aircraftICAOcode = models.CharField(max_length = 50)
     aircraftFullName = models.CharField(max_length = 500)
     numberOfAircraftsInService = models.IntegerField(default = 0)
     maximumOfPassengers = models.IntegerField(default = 0)
     costsFlyingPerHoursDollars = models.FloatField(default = 0)
+    crewCostsPerFlyingHoursDollars = models.FloatField(default = 0)
     
     landingLengthMeters = models.FloatField(default = 0)
     takeOffMTOWLengthMeters = models.FloatField(default = 0)
+    
+    airline = models.ForeignKey(Airline, on_delete=models.CASCADE  )
+
         
     def __str__(self):
         return "{0}-{1}".format(self.aircraftFullName, self.aircraftICAOcode)
