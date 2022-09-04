@@ -17,8 +17,6 @@ from django.contrib import admin
 from django.urls import re_path
 from django.urls import include
 
-from django.views.generic.base import RedirectView
-from django.contrib.staticfiles.storage import staticfiles_storage
 
 from . import views
 

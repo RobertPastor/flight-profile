@@ -1,10 +1,14 @@
 from django.urls import re_path, path
 
-from . import views
+
+from airline.views.viewsAirlineFleet import getAirlineFleet
+from airline.views.viewsAirlineRoutes import getAirlineRoutes
+from airline.views.viewsAirlineRoutesWayPoints import getRouteWayPoints
 
 urlpatterns = [
-    re_path(r'^airlineRoutes$' , views.getAirlineRoutes , name='getAirlineRoutes'),
-    re_path(r'^airlineFleet$' , views.getAirlineFleet , name='getAirlineFleet'),
+    re_path(r'^airlineRoutes$' , getAirlineRoutes , name='getAirlineRoutes'),
     
-    path('wayPointsRoute/<slug:Adep>/<slug:Ades>' , views.getRouteWayPoints , name='getRouteWayPoints'),
+    path('airlineFleet/<slug:airlineName>' , getAirlineFleet , name='getAirlineFleet'),
+    
+    path('wayPointsRoute/<slug:Adep>/<slug:Ades>' , getRouteWayPoints , name='getRouteWayPoints'),
 ]

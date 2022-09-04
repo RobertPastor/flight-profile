@@ -10,6 +10,9 @@ function addOneAirlineAircraft( oneAirlineAircraft ) {
 	$("#tableAirlineFleetId").find('tbody')
 		.append($('<tr>')
 			.append($('<td>')
+				.append( oneAirlineAircraft["Airline"] )
+			)
+			.append($('<td>')
 				.append( oneAirlineAircraft["AircraftICAOcode"] )
 			)
 			.append($('<td>')
@@ -25,7 +28,7 @@ function addOneAirlineAircraft( oneAirlineAircraft ) {
 				.append( oneAirlineAircraft["CostsFlyingHoursDollars"] )
 			)
 			.append($('<td>')
-				.append( "Crew costs not yet implemented" )
+				.append( oneAirlineAircraft["CrewCostsFlyingHoursDollars"] )
 			)
 		);
 }
@@ -67,11 +70,15 @@ function initAirlineFleet() {
 
 			// disable the button 
 			document.getElementById("btnAirlineFleet").disabled = true
+			
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
 
 			// use ajax to get the data 
 			$.ajax( {
 						method: 'get',
-						url :  "airline/airlineFleet",
+						url :  "airline/airlineFleet/" + airlineName,
 						async : true,
 						success: function(data, status) {
 										

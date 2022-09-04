@@ -20,7 +20,7 @@
 				let thead = document.createElement('thead');
 				let row_1 = document.createElement('tr');
 				
-				let th_list = [ 'Aircraft ICAO Code' , 'Aircraft Full Name', 'Number of Aircrafts', 'Max Number of Passengers', 'Flying Costs per Hour (US Dollars)', 'Crew Costs per Hour (US Dollars)']
+				let th_list = [ 'Airline' , 'Aircraft ICAO Code' , 'Aircraft Full Name', 'Number of Aircrafts', 'Max Number of Passengers', 'Flying Costs per Hour (US Dollars)', 'Crew Costs per Hour (US Dollars)']
 				let th = undefined;
 				th_list.forEach ( function ( element ) {
 					th = document.createElement('th');

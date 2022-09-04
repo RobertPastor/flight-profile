@@ -9,7 +9,7 @@ from django.core import serializers
 from django.http import HttpResponse , JsonResponse
 
 from airline.models import AirlineRoute, AirlineAircraft
-from airline.views import getAirlineRoutesFromDB
+from airline.views.viewsAirlineRoutes import getAirlineRoutesFromDB
 from trajectory.models import  AirlineAirport, AirlineRunWay
 
 from trajectory.models import BadaSynonymAircraft
