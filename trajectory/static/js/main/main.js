@@ -233,7 +233,7 @@ function init() {
 	//let airlineList = JSON.parse('{{ airlines|escapejs }}');
 	if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 		
-		console.log("receive Airline list");
+		//console.log("receive Airline list");
 		
 		let airline = airlines[0]
 		let MinLongitude = airline["MinLongitudeDegrees"]

@@ -77,7 +77,7 @@ class AirlineFleetDataBase(object):
                     else:
                         if (HeaderNames[index] == "Aircraft"):
                             aircraftFullName = str(cell).strip()
-                            
+                        ''' specific code for all integer or float values '''
                         if (HeaderNames[index] == "In service"):
                             if len (str(cell).strip()) > 0 :
                                 #logging.info ( str(cell).strip() )

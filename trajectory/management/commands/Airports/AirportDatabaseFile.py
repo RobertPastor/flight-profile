@@ -94,7 +94,7 @@ class AirportsDatabase(object):
 
 
     def read(self, airlineRoutesAirportsList):
-        ''' read and loaf only airports that are defined in the airline routes '''
+        ''' read and load only airports that are defined in the airline routes '''
         try:
             dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), delimiter = ";", fieldnames=fieldNames)
             for row in dictReader:
@@ -110,7 +110,7 @@ class AirportsDatabase(object):
                 self.airportsDb[row["ICAO Code"]] = airportDict
                 print ( row["ICAO Code"] )
                 try:
-                    ''' read and loaf only airports that are defined in the airline routes '''
+                    ''' read and load only airports that are defined in the airline routes '''
                     if ( row["ICAO Code"] in airlineRoutesAirportsList ):
                         ''' record only airports that are in the airline routes '''
                         airport = AirlineAirport(AirportICAOcode = row["ICAO Code"],

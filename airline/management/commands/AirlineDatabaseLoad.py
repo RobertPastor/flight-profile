@@ -37,7 +37,7 @@ class Command(BaseCommand):
                         MinLongitudeDegrees = 60.0, 
                         MinLatitudeDegrees = 8.0, 
                         MaxLongitudeDegrees = 92.0, 
-                        MaxLatitudeDegrees = 27.0)
+                        MaxLatitudeDegrees = 32.0)
             
         airlineThree.save() 
         print ( airlineThree )

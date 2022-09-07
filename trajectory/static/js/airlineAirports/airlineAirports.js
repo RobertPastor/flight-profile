@@ -43,14 +43,7 @@ function loadAirports(layerAirports, dataJson) {
 
 function initAirports(globus) {
 	
-	//console.log("start airports");
-	let layerAirports = new og.layer.Vector("AirlineAirports", {
-            clampToGround: true,
-    });
-	layerAirports.addTo(globus.planet);
-	    
 	let show = true;
-	let first = true;
     	
 	if ( !document.getElementById("btnAirports") ) {
 		return;
@@ -62,36 +55,49 @@ function initAirports(globus) {
 			document.getElementById("btnAirports").innerText = "Hide Airline Airports";
 			document.getElementById("btnAirports").style.backgroundColor = "green";
 
-			if (first) {
-				document.getElementById("btnAirports").disabled = true;
+			document.getElementById("btnAirports").disabled = true;
+				
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
+			
+			let layerName = airlineName + "-" + "AirlineAirports";
+			let layerAirports = globus.planet.getLayerByName( layerName );
+			if (! layerAirports ) {
+				// layer is not existing
+				console.log("layer = " + layerName + " is not existing");
+				layerAirports = new og.layer.Vector(layerName , { clampToGround: true, 	});
+				layerAirports.addTo(globus.planet);
 				
 				// init progress bar.
 				initProgressBar();
 				initWorker();
-				
-				first = false;
+					
 				// use ajax to get the data 
 				$.ajax( {
-					method: 'get',
-					url :  "trajectory/airports",
-					async : true,
-					success: function(data, status) {
-									
-						//alert("Data: " + data + "\nStatus: " + status);
-						var dataJson = eval(data);
-						loadAirports( layerAirports, dataJson );	
-					},
-					error: function(data, status) {
-						console.log("Error - show Airports : " + status + " Please contact your admin");
-						showMessage ( "Error - show Airports" , data );
-					},
-					complete : function() {
-						stopBusyAnimation();
-						document.getElementById("btnAirports").disabled = false
-					}
+						method: 'get',
+						url :  "trajectory/airports/" + airlineName,
+						async : true,
+						success: function(data, status) {
+										
+							//alert("Data: " + data + "\nStatus: " + status);
+							var dataJson = eval(data);
+							loadAirports( layerAirports, dataJson );	
+						},
+						error: function(data, status) {
+							console.log("Error - show Airports : " + status + " Please contact your admin");
+							showMessage ( "Error - show Airports" , data );
+						},
+						complete : function() {
+							stopBusyAnimation();
+							document.getElementById("btnAirports").disabled = false
+						}
 				} );
+				
 			} else {
+				console.log("layer = " + layerName + " is existing");
 				layerAirports.setVisibility(true);
+				document.getElementById("btnAirports").disabled = false
 			}
 			
 		} else {
@@ -99,8 +105,21 @@ function initAirports(globus) {
 			document.getElementById("btnAirports").innerText = "Show Airline Airports";
 			document.getElementById("btnAirports").style.backgroundColor = "yellow";
 
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
+
 			// hide the airports
-			layerAirports.setVisibility(false);
+			let layerName = airlineName + "-" + "AirlineAirports";
+			let layerAirports = globus.planet.getLayerByName( layerName );
+			if (layerAirports) {
+				// layer is existing
+				console.log("layer = " + layerName + " is existing");
+				layerAirports.setVisibility(false);
+				//removeLayer(globus, layerAirports);
+			} else {
+				console.log("layer = " + layerName + " is not existing");
+			}
 		}
     };
 }

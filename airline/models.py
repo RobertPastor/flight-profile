@@ -17,7 +17,8 @@ def get_default_airline():
     return Airline.objects.get_or_create(Name="AmericanWings")[0]
 
 class AirlineRoute(models.Model):
-    #Airline = models.ForeignKey(Airline, on_delete=models.CASCADE)
+    airline = models.ForeignKey(Airline, on_delete=models.CASCADE , default=None )
+
     DepartureAirport = models.CharField(max_length = 500)
     DepartureAirportICAOCode = models.CharField(max_length = 50)
     ArrivalAirport = models.CharField(max_length = 500)

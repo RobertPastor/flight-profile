@@ -8,8 +8,10 @@ import logging
 
 from xlrd import open_workbook
 from airline.models import AirlineRoute
+from airline.models import Airline
 
-HeaderNames = ["Departure Airport", "Departure Airport ICAO Code", "Arrival Airport", "Arrival Airport ICAO Code"]
+
+HeaderNames = ["Airline" , "Departure Airport", "Departure Airport ICAO Code", "Arrival Airport", "Arrival Airport ICAO Code"]
 
 class AirlineRoutesDataBase(object):
     FilePath = ''
@@ -48,7 +50,7 @@ class AirlineRoutesDataBase(object):
                 index = 0
                 for column in rowValues:
                     if column not in HeaderNames:
-                        logging.info ( self.className + ': ERROR - expected Routes Airports column name= {0} not in Header names'.format(column) )
+                        print ( self.className + ': ERROR - expected Routes Airports column name= {0} not in Header names'.format(column) )
                         return False
                     else:
                         self.ColumnNames[column] = index
@@ -66,15 +68,18 @@ class AirlineRoutesDataBase(object):
                         
                     index = index + 1
                 logging.info ( route )
-                airlineRoute = AirlineRoute(
-                    DepartureAirport = route[HeaderNames[0]],
-                    DepartureAirportICAOCode = route[HeaderNames[1]],
-                    ArrivalAirport = route[HeaderNames[2]],
-                    ArrivalAirportICAOCode = route[HeaderNames[3]]
-                    )
-                print ( str(airlineRoute))
-                airlineRoute.save()
-                self.RoutesAirports.append(route)
+                airline = Airline.objects.filter(Name=route[HeaderNames[0]]).first()
+                if (airline):
+                    airlineRoute = AirlineRoute(
+                        airline = airline,
+                        DepartureAirport = route[HeaderNames[1]],
+                        DepartureAirportICAOCode = route[HeaderNames[2]],
+                        ArrivalAirport = route[HeaderNames[3]],
+                        ArrivalAirportICAOCode = route[HeaderNames[4]]
+                        )
+                    print ( str(airlineRoute) )
+                    airlineRoute.save()
+                    self.RoutesAirports.append(route)
         
         return True
     

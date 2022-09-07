@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import re_path, path
 
 from trajectory.views.viewsAirports import getAirports
 from trajectory.views.viewsWayPoints import getWayPoints
@@ -9,7 +9,7 @@ from trajectory.views.computeCosts import computeCosts
 app_name = "trajectory"
 
 urlpatterns = [
-    re_path(r'^airports$' , getAirports , name='getAirports'),
+    path('airports/<slug:airlineName>' , getAirports , name='getAirports'),
     re_path(r'^waypoints$' , getWayPoints , name='getWayPoints'),
 
     re_path(r'^launchFlightProfile$' , launchFlightProfile , name='launchFlightProfile'),
