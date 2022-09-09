@@ -6,7 +6,7 @@ Created on 4 sept. 2022
 
 from django.http import  JsonResponse
 
-from airline.models import Airline, AirlineRoute, AirlineAircraft, AirlineRouteWayPoints
+from airline.models import AirlineRoute
 
 import logging
 logger = logging.getLogger(__name__)
@@ -17,6 +17,7 @@ def getAirlineRoutesFromDB():
     for airlineRoute in AirlineRoute.objects.all():
         #logger.debug ( str ( airlineRoute ) )
         airlineRoutesList.append({
+                "Airline": airlineRoute.airline.Name,
                 "DepartureAirport" : airlineRoute.DepartureAirport ,
                 "DepartureAirportICAOCode": airlineRoute.DepartureAirportICAOCode,
                 "ArrivalAirport": airlineRoute.ArrivalAirport,

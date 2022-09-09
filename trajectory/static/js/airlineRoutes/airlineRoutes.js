@@ -126,6 +126,9 @@ function addOneAirlineRoute( globus, oneAirlineRoute ) {
 	
 	$("#airlineRoutesTableId").find('tbody')
     .append($('<tr>')
+		.append($('<td>')
+            .append( oneAirlineRoute["Airline"] )
+        )
         .append($('<td>')
             .append( oneAirlineRoute["DepartureAirport"] )
         )
@@ -155,7 +158,7 @@ function addOneAirlineRoute( globus, oneAirlineRoute ) {
 	let layerName = LayerNamePrefix + oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"] 
 	let layer = globus.planet.getLayerByName( layerName );
 	if (layer) {
-		// layer is existing -> hide it
+		// layer is existing -> hide -> show button as hidden
 		document.getElementById(elemButton.id).value = "Hide"
 		document.getElementById(elemButton.id).style.backgroundColor = "green";
 	}
@@ -164,10 +167,9 @@ function addOneAirlineRoute( globus, oneAirlineRoute ) {
 	* on click function forwarding the globus argument
 	*/
 	$('#'+elemButton.id).click(function () {
-		//console.log("button clicked") 
+		//console.log("button show route clicked") 
 		showHideWayPoints(globus, this);
 	});
-
 }
 
 /**
@@ -194,7 +196,6 @@ function removeOneAirlineRoute ( globus, oneAirlineRoute ) {
 	} catch (err) {
 		console.log(JSON.stringify(err));
 	}
-	
 }
 
 function removeGlobusRoutesWayPointsLayers( globus , airlineRoutesArray) {

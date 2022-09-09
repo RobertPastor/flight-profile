@@ -56,7 +56,6 @@ class AirlineRoutesWayPointsDatabase(object):
 
         route_KJFK_LFPG = [
             
-            {'Name':'YNKEE','Latitude':'N40°29\'00.90"','Longitude':'W073°50\'57.17"'}, \
             {'Name':'CREEL','Latitude':'N40°26\'50.50"','Longitude':'W073°33\'10.67"'}, \
             {'Name':'RIFLE','Latitude':'N40°41\'24.17"','Longitude':'W072°34\'54.89"'}, \
             {'Name':'HTO','Latitude':'N40°55\'08.38"','Longitude':'W072°19\'00.13"'}, \

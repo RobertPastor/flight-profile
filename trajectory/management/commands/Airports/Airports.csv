@@ -3382,7 +3382,7 @@
 3481;Pope Field;Fort Bragg;United States;POB;KPOB;35.170883;-79.014472;217;-5;A
 3482;Dalhart Muni;Dalhart;United States;DHT;KDHT;36.022586;-102.547278;3991;-6;A
 3483;Laughlin Afb;Del Rio;United States;DLF;KDLF;29.359486;-100.777975;1082;-6;A
-3484;Los Angeles-Los Angeles Intl;Los Angeles;United States;LAX;KLAX;33.942536;-118.408075;126;-8;A
+3484;Los Angeles Intl;Los Angeles;United States;LAX;KLAX;33.942536;-118.408075;126;-8;A
 3485;Anniston Metro;Anniston;United States;ANB;KANB;33.588167;-85.858111;612;-6;A
 3486;Cleveland Hopkins Intl;Cleveland;United States;CLE;KCLE;41.411689;-81.849794;791;-5;A
 3487;Dover Afb;Dover;United States;DOV;KDOV;39.129539;-75.465958;28;-5;A
@@ -3475,7 +3475,7 @@
 3574;Alice Intl;Alice;United States;ALI;KALI;27.740889;-98.026944;178;-6;A
 3575;Moody Afb;Valdosta;United States;VAD;KVAD;30.967833;-83.193;233;-5;A
 3576;Miami Intl;Miami;United States;MIA;KMIA;25.79325;-80.290556;8;-5;A
-3577;Seattle-Seattle Tacoma Intl;Seattle;United States;SEA;KSEA;47.449;-122.309306;433;-8;A
+3577;Seattle Tacoma Intl;Seattle;United States;SEA;KSEA;47.449;-122.309306;433;-8;A
 3578;Lovell Fld;Chattanooga;United States;CHA;KCHA;35.035278;-85.203808;683;-5;A
 3579;Igor I Sikorsky Mem;Stratford;United States;BDR;KBDR;41.163472;-73.126167;9;-5;A
 3580;Jackson Evers Intl;Jackson;United States;JAN;KJAN;32.311167;-90.075889;346;-6;A
