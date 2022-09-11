@@ -8,6 +8,9 @@ Created on 4 sept. 2021
 This class manages the ordered list of wayPoints of one route
 '''
 
+import os
+import pandas as pd
+import json
 
 from airline.models import AirlineRoute, AirlineRouteWayPoints
 
@@ -56,34 +59,34 @@ class AirlineRoutesWayPointsDatabase(object):
 
         route_KJFK_LFPG = [
             
-            {'Name':'CREEL','Latitude':'N40°26\'50.50"','Longitude':'W073°33\'10.67"'}, \
-            {'Name':'RIFLE','Latitude':'N40°41\'24.17"','Longitude':'W072°34\'54.89"'}, \
-            {'Name':'HTO','Latitude':'N40°55\'08.38"','Longitude':'W072°19\'00.13"'}, \
-            {'Name':'PARCH','Latitude':'N41°05\'57.21"','Longitude':'W072°07\'14.66"'}, \
-            {'Name':'TRAIT','Latitude':'N41°17\'04.75"','Longitude':'W071°55\'03.35"'}, \
-            {'Name':'PVD','Latitude':'N41°43\'27.63"','Longitude':'W071°25\'46.70"'}, \
-            {'Name':'BOS','Latitude':'N42°21\'26.82"','Longitude':'W070°59\'22.37"'}, \
-            {'Name':'COPLY','Latitude':'N42°29\'52.21"','Longitude':'W070°33\'28.56"'}, \
-            {'Name':'SCUPP','Latitude':'N42°36\'11.01"','Longitude':'W070°13\'49.34"'}, \
-            {'Name':'CANAL','Latitude':'N42°40\'08.51"','Longitude':'W070°01\'21.75"'}, \
-            {'Name':'TUSKY','Latitude':'N43°33\'53.99"','Longitude':'W067°00\'00.00"'}, \
-            {'Name':'OMSAT','Latitude':'N47°00\'00.00"','Longitude':'W052°00\'00.00"'}, \
-            {'Name':'47N050W','Latitude':'N47°30\'00.00"','Longitude':'W050°00\'00.00"'}, \
-            {'Name':'49N040W','Latitude':'N49°30\'00.00"','Longitude':'W040°00\'00.00"'}, \
-            {'Name':'51N030W','Latitude':'N51°30\'00.00"','Longitude':'W030°00\'00.00"'}, \
-            {'Name':'52N020W','Latitude':'N52°30\'00.00"','Longitude':'W020°00\'00.00"'}, \
-            {'Name':'LIMRI','Latitude':'N52°00\'00.00"','Longitude':'W015°00\'00.00"'}, \
-            {'Name':'XETBO','Latitude':'N52°00\'00.00"','Longitude':'W014°00\'00.00"'}, \
-            {'Name':'DOLIP','Latitude':'N52°00\'00.00"','Longitude':'W012°00\'00.00"'}, \
-            {'Name':'LINRA','Latitude':'N51°34\'47.00"','Longitude':'W010°01\'55.99"'}, \
-            {'Name':'LESLU','Latitude':'N51°00\'00.00"','Longitude':'W008°00\'00.00"'}, \
-            {'Name':'INSUN','Latitude':'N50°23\'43.00"','Longitude':'W006°19\'23.99"'}, \
-            {'Name':'LND','Latitude':'N50°08\'10.99"','Longitude':'W005°38\'13.00"'}, \
-            {'Name':'NAKID','Latitude':'N49°42\'54.00"','Longitude':'W004°37\'22.99"'}, \
-            {'Name':'ANNET','Latitude':'N49°39\'04.99"','Longitude':'W004°00\'05.00"'}, \
-            {'Name':'UVSUV','Latitude':'N49°29\'16.99"','Longitude':'W001°40\'27.99"'}, \
-            {'Name':'INGOR','Latitude':'N49°21\'52.00"','Longitude':'W000°15\'00.00"'}, \
-            {'Name':'LUKIP','Latitude':'N49°18\'56.99"','Longitude':'E000°29\'46.99"'},                                                                       
+            {'Name':'CREEL','latitude':'N40°26\'50.50"','longitude':'W073°33\'10.67"'}, \
+            {'Name':'RIFLE','latitude':'N40°41\'24.17"','longitude':'W072°34\'54.89"'}, \
+            {'Name':'HTO','latitude':'N40°55\'08.38"','longitude':'W072°19\'00.13"'}, \
+            {'Name':'PARCH','latitude':'N41°05\'57.21"','longitude':'W072°07\'14.66"'}, \
+            {'Name':'TRAIT','latitude':'N41°17\'04.75"','longitude':'W071°55\'03.35"'}, \
+            {'Name':'PVD','latitude':'N41°43\'27.63"','longitude':'W071°25\'46.70"'}, \
+            {'Name':'BOS','latitude':'N42°21\'26.82"','longitude':'W070°59\'22.37"'}, \
+            {'Name':'COPLY','latitude':'N42°29\'52.21"','longitude':'W070°33\'28.56"'}, \
+            {'Name':'SCUPP','latitude':'N42°36\'11.01"','longitude':'W070°13\'49.34"'}, \
+            {'Name':'CANAL','latitude':'N42°40\'08.51"','longitude':'W070°01\'21.75"'}, \
+            {'Name':'TUSKY','latitude':'N43°33\'53.99"','longitude':'W067°00\'00.00"'}, \
+            {'Name':'OMSAT','latitude':'N47°00\'00.00"','longitude':'W052°00\'00.00"'}, \
+            {'Name':'47N050W','latitude':'N47°30\'00.00"','longitude':'W050°00\'00.00"'}, \
+            {'Name':'49N040W','latitude':'N49°30\'00.00"','longitude':'W040°00\'00.00"'}, \
+            {'Name':'51N030W','latitude':'N51°30\'00.00"','longitude':'W030°00\'00.00"'}, \
+            {'Name':'52N020W','latitude':'N52°30\'00.00"','longitude':'W020°00\'00.00"'}, \
+            {'Name':'LIMRI','latitude':'N52°00\'00.00"','longitude':'W015°00\'00.00"'}, \
+            {'Name':'XETBO','latitude':'N52°00\'00.00"','longitude':'W014°00\'00.00"'}, \
+            {'Name':'DOLIP','latitude':'N52°00\'00.00"','longitude':'W012°00\'00.00"'}, \
+            {'Name':'LINRA','latitude':'N51°34\'47.00"','longitude':'W010°01\'55.99"'}, \
+            {'Name':'LESLU','latitude':'N51°00\'00.00"','longitude':'W008°00\'00.00"'}, \
+            {'Name':'INSUN','latitude':'N50°23\'43.00"','longitude':'W006°19\'23.99"'}, \
+            {'Name':'LND','latitude':'N50°08\'10.99"','longitude':'W005°38\'13.00"'}, \
+            {'Name':'NAKID','latitude':'N49°42\'54.00"','longitude':'W004°37\'22.99"'}, \
+            {'Name':'ANNET','latitude':'N49°39\'04.99"','longitude':'W004°00\'05.00"'}, \
+            {'Name':'UVSUV','latitude':'N49°29\'16.99"','longitude':'W001°40\'27.99"'}, \
+            {'Name':'INGOR','latitude':'N49°21\'52.00"','longitude':'W000°15\'00.00"'}, \
+            {'Name':'LUKIP','latitude':'N49°18\'56.99"','longitude':'E000°29\'46.99"'},                                                                       
 
             ]
         
@@ -111,6 +114,61 @@ class AirlineRoutesWayPointsDatabase(object):
     def exists(self):
         return ( len ( self.detailedRoutes ) > 0)
         
+
+    def createRoutesFiles(self):
+        
+        wayPointsList = []
+        wayPointsDict = {}
+        
+        for route in self.detailedRoutes:
+            
+            self.FileName = "AirlineRoute-" + route["Adep"] + '-' + route["Ades"] + ".xls" 
+            self.FilesFolder = os.path.dirname(__file__)
+
+            print ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
+            self.FilePath = os.path.abspath(self.FilesFolder+ os.path.sep + self.FileName)
+            print ( self.className + ': file path= {0}'.format(self.FilePath) ) 
+            
+            if os.path.exists(self.FilePath):
+                os.remove(self.FilePath)
+            
+            orderedWayPoints = []
+            routeWithWayPoints = route["route"]
+            index = 1
+            for wayPoint in routeWithWayPoints:
+                orderedWayPoint = {}
+                orderedWayPoint[self.ColumnNames[0]] = str(index)
+                orderedWayPoint[self.ColumnNames[1]] = str(wayPoint["Name"]).strip()
+                orderedWayPoint[self.ColumnNames[2]] = wayPoint["latitude"]
+                orderedWayPoint[self.ColumnNames[3]] = wayPoint["longitude"]
+                orderedWayPoints.append(orderedWayPoint)
+                index = index + 1
+                
+                wayPointName = str(wayPoint["Name"]).strip()
+                if wayPointName in wayPointsList:
+                    print ( " wayPoint = {0} already in list".format(wayPointName))
+                    wayPointDict = wayPointsDict[wayPointName]
+                    
+                    if ( wayPointDict["latitude"] != wayPoint["latitude"]):
+                        raise ValueError("Waypoint = {0} - latitude are not identical")
+                    if ( wayPointDict["longitude"] != wayPoint["longitude"]):
+                        raise ValueError("Waypoint = {0} - longitude are not identical")
+
+                    
+                else:
+                    #print ( " wayPoint = {0} not yet in list - list size {1}".format(wayPoint, len(wayPointsList)))
+                    wayPointDict = {}
+                    wayPointDict["latitude"] =  wayPoint["latitude"]
+                    wayPointDict["longitude"] =  wayPoint["longitude"]
+                    
+                    wayPointsDict[wayPointName] = wayPointDict
+                    
+                    wayPointsList.append(wayPointName)
+                
+            df = pd.DataFrame(orderedWayPoints)
+            df.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames)
+            
+            
         
     def load(self):
         for route in self.detailedRoutes:

@@ -4,7 +4,7 @@ from airline.management.commands.AirlineRoutesWayPoints.AirlineRoutesWayPointsRe
 from airline.models import AirlineRouteWayPoints
 
 class Command(BaseCommand):
-    help = 'Reads the Synonym file and load the Aircrafts table'
+    help = 'Reads the WayPoints of the Routes '
 
     def handle(self, *args, **options):
         
@@ -12,6 +12,9 @@ class Command(BaseCommand):
         
         airlineRoutesWayPointsDatabase = AirlineRoutesWayPointsDatabase()
         if airlineRoutesWayPointsDatabase.exists():
+            ''' create the EXCEL files containing the WayPoints '''
+            airlineRoutesWayPointsDatabase.createRoutesFiles()
+            
             print("airline routes waypoints database exists")
             ret = airlineRoutesWayPointsDatabase.load()
             print ("load airline routes WayPoints database result = {0}".format(ret))

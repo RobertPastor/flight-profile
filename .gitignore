@@ -138,3 +138,5 @@ dmypy.json
 #static files
 staticfiles/
 staticfiles/*
+
+airline/management/commands/AirlineRoutesWayPoints/*.xls
