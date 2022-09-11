@@ -90,6 +90,64 @@ class AirlineRoutesWayPointsDatabase(object):
 
             ]
         
+        route_LFPG_LPPT = [
+            
+            { "Name":'ERIXU', "latitude" :'N48°05\'00.00"', "longitude" :'E002°15\'35.00"'},\
+            { "Name":'ARKIP', "latitude" :'N47°37\'59.99"', "longitude" :'E002°02\'10.99"'},\
+            { "Name":'BALAN', "latitude" :'N46°30\'57.99"', "longitude" :'E001°02\'00.00"'},\
+            { "Name":'FOUCO', "latitude" :'N45°45\'16.99"', "longitude" :'E000°28\'49.99"'},\
+            { "Name":'OSMOB', "latitude" :'N44°38\'57.00"', "longitude" :'W000°20\'18.00"'},\
+            { "Name":'BIDAC', "latitude" :'N43°25\'01.99"', "longitude" :'W001°08\'08.00"'},\
+            { "Name":'ARVID', "latitude" :'N43°04\'33.99"', "longitude" :'W001°27\'53.00"'},\
+            { "Name":'PPN', "latitude" :'N42°44\'02.00"', "longitude" :'W001°42\'07.00"'},\
+            { "Name":'NOLSA', "latitude" :'N42°25\'39.00"', "longitude" :'W001°54\'27.00"'},\
+            { "Name":'ALEPO', "latitude" :'N42°20\'36.99"', "longitude" :'W001°57\'48.00"'},\
+            { "Name":'VASUM', "latitude" :'N42°16\'18.99"', "longitude" :'W002°00\'39.99"'},\
+            { "Name":'GARVU', "latitude" :'N42°10\'15.99"', "longitude" :'W002°04\'40.00"'},\
+            { "Name":'BANEV', "latitude" :'N41°30\'08.99"', "longitude" :'W002°30\'52.00"'},\
+            { "Name":'BAN', "latitude" :'N41°19\'25.00"', "longitude" :'W002°37\'47.00"'},\
+            { "Name":'GOTOR', "latitude" :'N40°06\'38.99"', "longitude" :'W003°43\'28.00"'},\
+            { "Name":'KAMPO', "latitude" :'N39°44\'00.00"', "longitude" :'W004°03\'18.99"'},\
+            { "Name":'MONTO', "latitude" :'N39°13\'17.99"', "longitude" :'W004°29\'49.00"'},\
+            { "Name":'MOLIN', "latitude" :'N39°00\'00.00"', "longitude" :'W004°41\'08.99"'},\
+            { "Name":'HIJ', "latitude" :'N38°30\'29.00"', "longitude" :'W005°05\'58.99"'},\
+            { "Name":'SVL', "latitude" :'N37°25\'39.00"', "longitude" :'W005°45\'45.00"'},\
+            { "Name":'SANTA', "latitude" :'N37°40\'07.00"', "longitude" :'W006°17\'53.99"'},\
+            { "Name":'ROSAL', "latitude" :'N38°01\'16.99"', "longitude" :'W007°06\'03.99"'},\
+            { "Name":'EXONA', "latitude" :'N38°54\'15.99"', "longitude" :'W008°01\'00.00"'},
+
+            
+            ]
+        
+        route_LFPG_LFML = [
+            
+            { "Name":'OKASI', "latitude" :'N48°05\'00.00"', "longitude" :'E002°46\'40.00"'},\
+            { "Name":'SIQLE', "latitude" :'N47°01\'15.99"', "longitude" :'E003°14\'12.99"'},\
+            { "Name":'UTUVA', "latitude" :'N45°51\'48.00"', "longitude" :'E003°29\'27.99"'},\
+            { "Name":'LERGA', "latitude" :'N45°15\'26.00"', "longitude" :'E003°45\'00.99"'},
+            
+            ]
+        
+        route_VOBL_VIDP = [
+            
+            { "Name":'LATID', "latitude" :'N14°28\'35.00"', "longitude" :'E077°56\'55.99"'},\
+            { "Name":'VIRAM', "latitude" :'N15°21\'33.99"', "longitude" :'E078°05\'55.00"'},\
+            { "Name":'BOSGA', "latitude" :'N16°12\'33.99"', "longitude" :'E078°14\'16.00"'},\
+            { "Name":'SAKRO', "latitude" :'N16°34\'00.16"', "longitude" :'E078°17\'47.35"'},\
+            { "Name":'HIA', "latitude" :'N17°13\'40.10"', "longitude" :'E078°24\'20.87"'},\
+            { "Name":'BUSBO', "latitude" :'N19°14\'58.00"', "longitude" :'E078°07\'30.00"'},\
+            { "Name":'ASIPI', "latitude" :'N20°31\'29.99"', "longitude" :'E077°52\'44.99"'},\
+            { "Name":'TAMID', "latitude" :'N20°41\'17.99"', "longitude" :'E077°50\'56.00"'},\
+            { "Name":'KAMLO', "latitude" :'N20°55\'08.99"', "longitude" :'E077°48\'02.99"'},\
+            { "Name":'UPTAR', "latitude" :'N21°30\'42.00"', "longitude" :'E077°40\'54.99"'},\
+            { "Name":'BIGIL', "latitude" :'N22°07\'01.99"', "longitude" :'E077°33\'56.00"'},\
+            { "Name":'BPL', "latitude" :'N23°16\'59.73"', "longitude" :'E077°20\'11.85"'},\
+            { "Name":'PUKES', "latitude" :'N24°42\'02.00"', "longitude" :'E077°16\'11.99"'},\
+            { "Name":'BUKLO', "latitude" :'N25°00\'01.00"', "longitude" :'E077°15\'26.00"'},\
+            { "Name":'BAVOX', "latitude" :'N26°08\'30.99"', "longitude" :'E077°12\'55.99"'},
+
+            ]
+        
         self.detailedRoutes = []
         #self.detailedRoutes.append ( { "Adep" : "KATL" , "Ades": "PHNL" , "route": route_KATL_PHNL })
         self.detailedRoutes.append ( { "Adep" : "KATL" , "Ades": "KLAX" , "route": route_KATL_KLAX })
@@ -109,7 +167,11 @@ class AirlineRoutesWayPointsDatabase(object):
         self.detailedRoutes.append ( { "Adep" : "KATL" , "Ades": "PANC" , "route": route_KATL_PANC })
         ''' 31st July 2022 -  KJFK -  LFPG '''
         self.detailedRoutes.append ( { "Adep" : "KJFK" , "Ades": "LFPG" , "route": route_KJFK_LFPG })
-        
+        ''' 11sept 2022 - LFPG - LPPT '''
+        self.detailedRoutes.append ( { "Adep" : "LFPG" , "Ades": "LPPT" , "route": route_LFPG_LPPT })
+        self.detailedRoutes.append ( { "Adep" : "LFPG" , "Ades": "LFML" , "route": route_LFPG_LFML })
+        self.detailedRoutes.append ( { "Adep" : "VOBL" , "Ades": "VIDP" , "route": route_VOBL_VIDP })
+
         
     def exists(self):
         return ( len ( self.detailedRoutes ) > 0)
