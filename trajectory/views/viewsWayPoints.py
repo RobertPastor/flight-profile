@@ -8,7 +8,8 @@ from django.template import loader
 from django.core import serializers
 from django.http import HttpResponse , JsonResponse
 
-from airline.models import AirlineRoute, AirlineAircraft
+from airline.models import AirlineRoute, AirlineAircraft, Airline,\
+    AirlineRouteWayPoints
 from airline.views.viewsAirlineRoutes import getAirlineRoutesFromDB
 from trajectory.models import AirlineWayPoint, AirlineAirport
 from trajectory.models import BadaSynonymAircraft
@@ -62,26 +63,33 @@ def getPlaceMarks(XmlDocument):
     
 
     
-def getWayPointsFromDB(viewExtent):
+def getWayPointsFromDB(viewExtent, airlineName):
     wayPointsList = []
-    for waypoint in AirlineWayPoint.objects.all():
-        logger.debug (waypoint.WayPointName)
-        '''
-        if waypoint.Latitude >= viewExtent["minlatitude"] and \
-            waypoint.Latitude <= viewExtent["maxlatitude"] and \
-            waypoint.Longitude >= viewExtent["minlongitude"] and \
-            waypoint.Longitude <= viewExtent["maxlongitude"] :
-        '''
-        wayPointsList.append({
-                "name" : waypoint.WayPointName ,
-                "Longitude": waypoint.Longitude,
-                "Latitude": waypoint.Latitude
-                } )
+    airline = Airline.objects.filter(Name=airlineName).first()
+    if (airline):
+        for airlineRoute in AirlineRoute.objects.filter(airline=airline):
+            for airlineRouteWayPoints in AirlineRouteWayPoints.objects.filter(Route = airlineRoute):
+                wayPointName = airlineRouteWayPoints.WayPoint
+                print ( wayPointName )
+                wayPoint = AirlineWayPoint.objects.filter(WayPointName = wayPointName).first()
+                if wayPoint:
+                    print (wayPoint.WayPointName)
+                    '''
+                    if waypoint.Latitude >= viewExtent["minlatitude"] and \
+                        waypoint.Latitude <= viewExtent["maxlatitude"] and \
+                        waypoint.Longitude >= viewExtent["minlongitude"] and \
+                        waypoint.Longitude <= viewExtent["maxlongitude"] :
+                    '''
+                    wayPointsList.append({
+                            "name" : wayPoint.WayPointName ,
+                            "Longitude": wayPoint.Longitude,
+                            "Latitude": wayPoint.Latitude
+                            } )
     #print ( "length of waypoints list = {0}".format(len(wayPointsList)))
     return wayPointsList
     
 
-def getWayPoints(request):
+def getWayPoints(request, airlineName):
     logger.debug ("get WayPoints")
     if (request.method == 'GET'):
         logger.debug("get request received - WayPoints")
@@ -94,8 +102,12 @@ def getWayPoints(request):
         }
         logger.debug(viewExtent)
         #print ( viewExtent )
-        waypoints = getWayPointsFromDB(viewExtent)
+        waypoints = getWayPointsFromDB(viewExtent, airlineName)
         response_data = {'waypoints': waypoints}
+        return JsonResponse(response_data)
+    
+    else:
+        response_data = { "errors" : "Expecting a GET - received something else = {0}".format(request.method)}
         return JsonResponse(response_data)
   
   

@@ -44,25 +44,6 @@ function loadWayPoints(layerWayPoints, dataJson) {
 }
 
 function initWayPoints(globus, viewExtent) {
-	
-	//console.log("start WayPoints");
-	let layerWayPoints = new og.layer.Vector("WayPoints", {
-			billboard: { 
-				src: '/static/trajectory/images/marker.png', 
-				color: '#6689db' ,
-				width : 4,
-				height : 4
-				},
-            clampToGround: true,
-            });
-	layerWayPoints.addTo(globus.planet);
-	
-	layerWayPoints.events.on("add", function (e) {
-		console.log("event is add")
-		if (e.pickingObject instanceof og.Layer) {
-			console.log("picking object is instance of layer")
-		}
-	});
 	    
 	let show = true;
     	
@@ -88,35 +69,76 @@ function initWayPoints(globus, viewExtent) {
 			data += 'maxlatitude=' + parseInt(northEast["lat"]).toString() + "&";
 			data += 'minlongitude=' + parseInt(southWest["lon"]).toString() + "&";
 			data += 'maxlongitude=' + parseInt(northEast["lon"]).toString();
-			$.ajax( {
-				method: 'get',
-				url :  "trajectory/waypoints",
-				data:  data,
-				async : true,
-				success: function(data, status) {
-								
-					//alert("Data: " + data + "\nStatus: " + status);
-					var dataJson = eval(data);
-					loadWayPoints ( layerWayPoints , dataJson );	
-				},
-				error: function(data, status) {
-					console.log("Error - Show Airline WayPoints : " + status + " Please contact your admin");
-					showMessage( "Error - Show Airline WayPoints" , data );
-				},
-				complete : function() {
-					stopBusyAnimation();
-					document.getElementById("btnWayPoints").disabled = false;
-				}
-			} );
+			
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
+			
+			let layerName = airlineName + "-" + "WayPoints";
+			let layerWayPoints = globus.planet.getLayerByName( layerName );
+			if (! layerWayPoints ) {
+				
+				// layer is not existing
+				console.log("layer = " + layerName + " is not existing");
+				
+				let layerWayPoints = new og.layer.Vector(layerName, {
+					billboard: { 
+						src: '/static/trajectory/images/marker.png', 
+						color: '#6689db' ,
+						width : 4,
+						height : 4
+						},
+					clampToGround: true,
+				});
+				layerWayPoints.addTo(globus.planet);
+	
+				$.ajax( {
+					method: 'get',
+					url :  "trajectory/waypoints/" + airlineName,
+					data:  data,
+					async : true,
+					success: function(data, status) {
+									
+						//alert("Data: " + data + "\nStatus: " + status);
+						var dataJson = eval(data);
+						loadWayPoints ( layerWayPoints , dataJson );	
+					},
+					error: function(data, status) {
+						console.log("Error - Show Airline WayPoints : " + status + " Please contact your admin");
+						showMessage( "Error - Show Airline WayPoints" , data );
+					},
+					complete : function() {
+						stopBusyAnimation();
+						document.getElementById("btnWayPoints").disabled = false;
+					}
+				} );
+				
+			} else {
+				console.log("layer = " + layerName + " is existing");
+				layerWayPoints.setVisibility(true);
+				document.getElementById("btnWayPoints").disabled = false
+			}
 			
 		} else {
 			show = true;
 			document.getElementById("btnWayPoints").innerText = "Show Airline WayPoints";
 			document.getElementById("btnWayPoints").style.backgroundColor = "yellow";
+			
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
 
-			let entities = layerWayPoints.getEntities();
-			layerWayPoints.removeEntities(entities);
+			// hide the airports
+			let layerName = airlineName + "-" + "WayPoints";
+			let layerWayPoints = globus.planet.getLayerByName( layerName );
+			if (layerWayPoints) {
+				// layer is existing
+				console.log("layer = " + layerName + " is existing");
+				layerWayPoints.setVisibility(false);
+
+			} else {
+				console.log("layer = " + layerName + " is not existing");
+			}
 		}
     };
-			
 }

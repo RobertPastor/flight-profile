@@ -10,7 +10,7 @@ app_name = "trajectory"
 
 urlpatterns = [
     path('airports/<slug:airlineName>' , getAirports , name='getAirports'),
-    re_path(r'^waypoints$' , getWayPoints , name='getWayPoints'),
+    path('waypoints/<slug:airlineName>' , getWayPoints , name='getWayPoints'),
 
     re_path(r'^launchFlightProfile$' , launchFlightProfile , name='launchFlightProfile'),
     re_path(r'^computeFlightProfile$' , computeFlightProfile , name='computeFlightProfile'),
