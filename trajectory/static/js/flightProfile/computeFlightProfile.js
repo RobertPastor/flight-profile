@@ -525,11 +525,15 @@ function launchFlightProfile(globus) {
 			// change name on the button
 			document.getElementById("btnLaunchFlightProfile").innerText = "Hide Flight Profile";
 			document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "green";
+			
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
 
 			// use ajax to get the data 
 			$.ajax( {
 					method: 'get',
-					url :  "trajectory/launchFlightProfile",
+					url :  "trajectory/launchFlightProfile/" + airlineName,
 					async : true,
 					success: function(data, status) {
 									
@@ -575,8 +579,13 @@ function launchFlightProfile(globus) {
 		
 		let aircraft = $("#airlineAircraftId option:selected").val()
 		let route =  $("#airlineRouteId option:selected").val()
+		
 		let departureRunWay = $("#airlineDepartureRunWayFlightProfileId option:selected").val()
 		let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val()
+		
+		// get the name of the airline
+		let airlineName = $("#airlineSelectId option:selected").val();
+		airlineName = encodeURIComponent(airlineName);
 		
 		// init progress bar.
 		initProgressBar();
@@ -584,7 +593,7 @@ function launchFlightProfile(globus) {
 		
 		$.ajax({
 					method: 'get',
-					url :  "trajectory/computeFlightProfile",
+					url :  "trajectory/computeFlightProfile/" + airlineName,
 					async : true,
 					data: 'aircraft=' + aircraft + '&route=' + route + '&AdepRwy=' + departureRunWay + '&AdesRwy=' + arrivalRunWay,
 					success: function(data, status) {

@@ -128,9 +128,14 @@ function initCostsComputation() {
 	$( "#airlineRouteCostsId" ).change(function() {
 		//console.log( "Handler for airlineRouteCostsId selection change called." );
 		// for the begin of the computation we use the same URL route as the Flight Profile computation
+		
+		// get the name of the airline
+		let airlineName = $("#airlineSelectId option:selected").val();
+		airlineName = encodeURIComponent(airlineName);
+
 		$.ajax( {
 					method: 'get',
-					url :  "trajectory/launchFlightProfile",
+					url :  "trajectory/launchFlightProfile/" + airlineName,
 					async : true,
 					success: function(data, status) {
 									
@@ -174,10 +179,14 @@ function initCostsComputation() {
 			document.getElementById("btnLaunchCosts").innerText = "Hide Compute Costs";
 			document.getElementById("btnLaunchCosts").style.backgroundColor = "green";
 			
-						// use ajax to get the data 
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
+			
+			// use ajax to get the data 
 			$.ajax( {
 					method: 'get',
-					url :  "trajectory/launchFlightProfile",
+					url :  "trajectory/launchFlightProfile/" + airlineName,
 					async : true,
 					success: function(data, status) {
 									
@@ -221,12 +230,15 @@ function initCostsComputation() {
 		let aircraftICAOcode = $("#airlineAircraftCostsId option:selected").val()
 		let route =  $("#airlineRouteCostsId option:selected").val()
 		let departureRunWay = $("#airlineDepartureRunWayCostsId option:selected").val()
-		let arrivalRunWay = $("#airlineArrivalRunWayCostsId option:selected").val()
+		let arrivalRunWay = $("#airlineArrivalRunWayCostsId option:selected").val();
+		
+		// get the name of the airline
+		let airlineName = $("#airlineSelectId option:selected").val();
+		airlineName = encodeURIComponent(airlineName);
 
 		// init progress bar.
 		initProgressBar();
 		initWorker();
-		
 		
 		data = {
 			aircraft : aircraftICAOcode,
@@ -237,7 +249,7 @@ function initCostsComputation() {
 		
 		$.ajax( {
 					method: 'get',
-					url :  "trajectory/computeCosts",
+					url :  "trajectory/computeCosts/" + airlineName,
 					async : true,
 					data :  data,
 					success: function(data, status) {

@@ -12,9 +12,9 @@ urlpatterns = [
     path('airports/<slug:airlineName>' , getAirports , name='getAirports'),
     path('waypoints/<slug:airlineName>' , getWayPoints , name='getWayPoints'),
 
-    re_path(r'^launchFlightProfile$' , launchFlightProfile , name='launchFlightProfile'),
-    re_path(r'^computeFlightProfile$' , computeFlightProfile , name='computeFlightProfile'),
+    path('launchFlightProfile/<slug:airlineName>' , launchFlightProfile , name='launchFlightProfile'),
+    path('computeFlightProfile/<slug:airlineName>' , computeFlightProfile , name='computeFlightProfile'),
 
-    re_path(r'^computeCosts$' , computeCosts , name='computeCosts'),
+    path('computeCosts/<slug:airlineName>' , computeCosts , name='computeCosts'),
 
 ]

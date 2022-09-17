@@ -8,8 +8,7 @@ from django.template import loader
 from django.core import serializers
 from django.http import HttpResponse , JsonResponse
 
-from airline.models import AirlineRoute, AirlineAircraft, Airline,\
-    AirlineRouteWayPoints
+from airline.models import AirlineRoute, AirlineAircraft, Airline,    AirlineRouteWayPoints
 from airline.views.viewsAirlineRoutes import getAirlineRoutesFromDB
 from trajectory.models import AirlineWayPoint, AirlineAirport
 from trajectory.models import BadaSynonymAircraft
@@ -70,10 +69,10 @@ def getWayPointsFromDB(viewExtent, airlineName):
         for airlineRoute in AirlineRoute.objects.filter(airline=airline):
             for airlineRouteWayPoints in AirlineRouteWayPoints.objects.filter(Route = airlineRoute):
                 wayPointName = airlineRouteWayPoints.WayPoint
-                print ( wayPointName )
+                #print ( wayPointName )
                 wayPoint = AirlineWayPoint.objects.filter(WayPointName = wayPointName).first()
                 if wayPoint:
-                    print (wayPoint.WayPointName)
+                    #print (wayPoint.WayPointName)
                     '''
                     if waypoint.Latitude >= viewExtent["minlatitude"] and \
                         waypoint.Latitude <= viewExtent["maxlatitude"] and \

@@ -7,7 +7,7 @@ Created on 4 sept. 2022
 from django.http import  JsonResponse
 
 # Create your views here.
-from airline.models import Airline, AirlineRoute, AirlineAircraft, AirlineRouteWayPoints
+from airline.models import  AirlineRoute,  AirlineRouteWayPoints
 from trajectory.models import AirlineWayPoint
 
 import logging

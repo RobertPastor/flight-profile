@@ -229,11 +229,16 @@ function initAirlineRoutes(globus) {
 			
 			// disable the button 
 			document.getElementById("btnAirlineRoutes").disabled = true
+			
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
+
 
 			// use ajax to get the data 
 			$.ajax( {
 						method: 'get',
-						url :  "airline/airlineRoutes",
+						url :  "airline/airlineRoutes/" + airlineName,
 						async : true,
 						success: function(data, status) {
 										
@@ -258,12 +263,17 @@ function initAirlineRoutes(globus) {
 			show = true;
 			document.getElementById("btnAirlineRoutes").innerText = "Show Airline Routes";
 			document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
+			
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
+
 
 			// only to retrieve the list of Adep Ades
 			// use ajax to get the data 
 			$.ajax( {
 						method: 'get',
-						url :  "airline/airlineRoutes",
+						url :  "airline/airlineRoutes/" + airlineName,
 						async : true,
 						success: function(data, status) {
 										

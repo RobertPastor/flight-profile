@@ -15,21 +15,20 @@ class Command(BaseCommand):
         if not wayPointsDatabase.exists():
             print ("WayPoints EXCEL database is not existing")
             wayPointsDatabase.create()
-            
         
         airlineRoutesWayPointsDatabase = AirlineRoutesWayPointsDatabase()
         if airlineRoutesWayPointsDatabase.exists():
-                ''' create the EXCEL files containing the WayPoints '''
-                airlineRoutesWayPointsDatabase.createRoutesFiles()
+            ''' create the EXCEL files containing the WayPoints '''
+            airlineRoutesWayPointsDatabase.createRoutesFiles()
                 
-                print("airline routes waypoints database exists")
-                ret = airlineRoutesWayPointsDatabase.load()
-                print ("load airline routes WayPoints database result = {0}".format(ret))
+            print("airline routes waypoints database exists")
+            ret = airlineRoutesWayPointsDatabase.load()
+            print ("load airline routes WayPoints database result = {0}".format(ret))
                 
-                airlineRoutesWayPointsDatabase.fillWayPointsFile(wayPointsDatabase)
+            airlineRoutesWayPointsDatabase.fillWayPointsFile(wayPointsDatabase)
                 
         else:
-                print("airline routes database does not exists")
+            print("airline routes database does not exists")
                 
         
         wayPointsDatabase.dropDuplicates()

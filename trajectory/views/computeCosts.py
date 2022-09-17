@@ -7,8 +7,9 @@ Created on 30 juil. 2022
 import logging
 logger = logging.getLogger(__name__)
 from django.http import  JsonResponse
+
 from trajectory.models import BadaSynonymAircraft
-from airline.models import AirlineRoute, AirlineAircraft
+from airline.models import Airline, AirlineRoute, AirlineAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
@@ -29,7 +30,7 @@ def computeDurationHours( durationSeconds ):
     return durationHours
         
 
-def computeCosts(request):
+def computeCosts(request, airlineName):
     logger.setLevel(logging.INFO)
     logger.info ("compute Flight Profile")
     
@@ -54,56 +55,59 @@ def computeCosts(request):
             
             arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
             arrivalAirportRunWayName = request.GET['AdesRwy']
-
-            airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
             
-            if (airlineRoute):
-                #print ( airlineRoute )
-                '''  use runways defined in the web page '''
-                routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
-                logger.info ( routeAsString )
-                
-                acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-                logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
+            airline = Airline.objects.filter(Name=airlineName).first()
+            if (airline):
 
-                flightPath = FlightPath(
-                                route = routeAsString, 
-                                aircraftICAOcode = aircraftICAOcode,
-                                RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
-                                cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
-
-                flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
+            
+                if (airlineRoute):
+                    #print ( airlineRoute )
+                    '''  use runways defined in the web page '''
+                    routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
+                    logger.info ( routeAsString )
+                    
+                    acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                    logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                    logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
     
-                logger.info ( "=========== Flight Plan computation is over  =========== " )
-                
-                fuelCostsUSdollars =  ( flightPath.aircraft.getAircraftInitialMassKilograms() - flightPath.aircraft.getAircraftCurrentMassKilograms() )  * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
-
-                airlineAircraft = AirlineAircraft.objects.filter(aircraftICAOcode=aircraftICAOcode).first()
-                operationalFlyingCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
-                #print ( airlineAircraft.getCostsFlyingPerHoursDollars() )
-                #print ( flightPath.getFlightDurationSeconds() / 3600.0  )
-                   
-                response_data = {
-                                'seats' : airlineAircraft.getMaximumNumberOfPassengers(),
-                                'isAborted': flightPath.abortedFlight ,
-                                'initialMassKilograms' : flightPath.aircraft.getAircraftInitialMassKilograms(),
-                                'finalMassKilograms' : round ( flightPath.aircraft.getAircraftCurrentMassKilograms() , 1),
-                                'massLossFilograms' : round ( flightPath.aircraft.getAircraftInitialMassKilograms()-flightPath.aircraft.getAircraftCurrentMassKilograms() , 1 ),
-                                'fuelCostsDollars' : round( fuelCostsUSdollars , 0),
-                                'flightDurationHours' : round ( ( float(flightPath.getFlightDurationSeconds() ) / 3600.0 ), 4 ),
-                                'operationalFlyingCostsDollars' : round ( operationalFlyingCostsUSdollars , 0),
-                                'totalCostsDollars' : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars , 0)
-                                }
-                return JsonResponse(response_data)
-                
-
-            else:
-                logger.info ('airline route not found = {0}'.format(airlineRoute))
-                response_data = {
-                    'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
-                return JsonResponse(response_data)
+                    flightPath = FlightPath(
+                                    route = routeAsString, 
+                                    aircraftICAOcode = aircraftICAOcode,
+                                    RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
+                                    cruiseMach = acPerformance.getMaxOpMachNumber(), 
+                                    takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
+    
+                    flightPath.computeFlight(deltaTimeSeconds = 1.0)
+        
+                    logger.info ( "=========== Flight Plan computation is over  =========== " )
+                    
+                    fuelCostsUSdollars =  ( flightPath.aircraft.getAircraftInitialMassKilograms() - flightPath.aircraft.getAircraftCurrentMassKilograms() )  * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
+    
+                    airlineAircraft = AirlineAircraft.objects.filter(aircraftICAOcode=aircraftICAOcode).first()
+                    operationalFlyingCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
+                    #print ( airlineAircraft.getCostsFlyingPerHoursDollars() )
+                    #print ( flightPath.getFlightDurationSeconds() / 3600.0  )
+                       
+                    response_data = {
+                                    'seats' : airlineAircraft.getMaximumNumberOfPassengers(),
+                                    'isAborted': flightPath.abortedFlight ,
+                                    'initialMassKilograms' : flightPath.aircraft.getAircraftInitialMassKilograms(),
+                                    'finalMassKilograms' : round ( flightPath.aircraft.getAircraftCurrentMassKilograms() , 1),
+                                    'massLossFilograms' : round ( flightPath.aircraft.getAircraftInitialMassKilograms()-flightPath.aircraft.getAircraftCurrentMassKilograms() , 1 ),
+                                    'fuelCostsDollars' : round( fuelCostsUSdollars , 0),
+                                    'flightDurationHours' : round ( ( float(flightPath.getFlightDurationSeconds() ) / 3600.0 ), 4 ),
+                                    'operationalFlyingCostsDollars' : round ( operationalFlyingCostsUSdollars , 0),
+                                    'totalCostsDollars' : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars , 0)
+                                    }
+                    return JsonResponse(response_data)
+                    
+    
+                else:
+                    logger.info ('airline route not found = {0}'.format(airlineRoute))
+                    response_data = {
+                        'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
+                    return JsonResponse(response_data)
                 
         else:
             logger.info ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))

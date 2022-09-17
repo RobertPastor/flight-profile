@@ -11,7 +11,7 @@ class Command(BaseCommand):
         
         AirlineRunWay.objects.all().delete()
         
-        ''' load only runways for airports defined in the airline routes '''
+        ''' load only run-ways for airports defined in the airline routes '''
         airlineRoutes = AirlineRoute()
         airlineRoutesAirportsList = airlineRoutes.getAirportsList()
 

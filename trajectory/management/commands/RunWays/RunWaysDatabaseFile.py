@@ -63,7 +63,7 @@ class RunWaysDatabase(object):
         
     def getInternalRunWays(self, rowValues):
         '''
-        in one row there might be TWO run-ways
+        in one row there might be one or TWO run-ways
         '''
         #print ( 'id content= {0}'.format( rowValues[self.ColumnNames['id']] ) )
         #print ( type ( rowValues[self.ColumnNames['id']] ) )
@@ -93,7 +93,7 @@ class RunWaysDatabase(object):
                     runwayDict[column] = str(rowValues[self.ColumnNames[column]]).strip()
                     
             ''' we have transformed the row values into a Dictionary => now create the run-ways '''
-            if (len(str(rowValues[self.ColumnNames['le_ident']]).strip()) > 0 and
+            if (    len(str(rowValues[self.ColumnNames['le_ident']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['airport_ident']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['length_ft']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['le_heading_degT']]).strip()) > 0 and
@@ -107,9 +107,9 @@ class RunWaysDatabase(object):
                     len(str(rowValues[self.ColumnNames['he_latitude_deg']]).strip()) > 0 and
                     len(str(rowValues[self.ColumnNames['he_longitude_deg']]).strip()) > 0 ):
                    
-                print ( runwayDict['le_ident'] )
-                print ( runwayDict['he_ident'] )
-                print ( runwayDict['airport_ident'])
+                #print ( runwayDict['le_ident'] )
+                #print ( runwayDict['he_ident'] )
+                #print ( runwayDict['airport_ident'])
                 '''
                 print ( runwayDict['length_ft'] )
                 print ( runwayDict['le_heading_degT'] )
@@ -161,7 +161,7 @@ class RunWaysDatabase(object):
             
         
     def findAirportRunWays(self, airportICAOcode , runwayLengthFeet = 0.0):
-        ''' returns a dictionnary with runways '''
+        ''' returns a dictionary with run-ways '''
         ''' assert there is only one sheet '''
         assert not(self.sheet is None)
         assert (isinstance(airportICAOcode, str)) and len(airportICAOcode)>0
@@ -180,7 +180,6 @@ class RunWaysDatabase(object):
         
         
     def read(self, airlineRoutesAirportsList):
-        
         
         ''' this method does not read the whole file - only the headers '''
         print (self.FilePath)
@@ -206,8 +205,8 @@ class RunWaysDatabase(object):
                 if ( "airport_ident" in runwayDict ) and ( runwayDict['airport_ident'] in airlineRoutesAirportsList ):
                     
                     airport = AirlineAirport.objects.filter(AirportICAOcode = runwayDict['airport_ident']).first()
-
-                    ''' some airports have only one runway '''
+                    print ("airport = {0}".format(runwayDict['airport_ident']))
+                    ''' some airports have only one run-way '''
                     if ( len(runwayDict['le_ident']) > 0 ) and airport:
                         
                         runWay = AirlineRunWay ( 
