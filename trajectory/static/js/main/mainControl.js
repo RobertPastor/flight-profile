@@ -43,7 +43,7 @@
 				row_1.appendChild(row_1_data_1);
 				
 				let row_1_data_2 = document.createElement('td');
-				row_1_data_2.colSpan = "7";
+				row_1_data_2.colSpan = "6";
 				row_1_data_2.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
 				row_1.appendChild(row_1_data_2);
 				
@@ -67,9 +67,12 @@
 				row_2_data_4.innerHTML = '<div><button id="btnAirlineRoutes" >Show Airline Routes</button></div>';
 				row_2.appendChild(row_2_data_4);
 				
+				/**
+				// 18th September 2022 - airline way points is useless as we can show them for any route
 				let row_2_data_5 = document.createElement('td');
 				row_2_data_5.innerHTML = '<div><button id="btnWayPoints" >Show Airline WayPoints</button></div>';
 				row_2.appendChild(row_2_data_5);
+				**/
 				
 				let row_2_data_6 = document.createElement('td');
 				row_2_data_6.innerHTML = '<div><button id="btnLaunchFlightProfile" >Compute Flight Profile</button></div>';

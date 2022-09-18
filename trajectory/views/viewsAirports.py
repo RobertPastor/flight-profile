@@ -35,7 +35,7 @@ def getAirportsFromDB(airline):
             #print ( airlineRoute )
             if (airport.AirportICAOcode == airlineRoute.getDepartureAirportICAOcode()) or (airport.AirportICAOcode == airlineRoute.getArrivalAirportICAOcode() ):
                 if ( airport.AirportICAOcode not in ICAOlist):
-                    print (airport.AirportICAOcode)
+                    logger.debug (airport.AirportICAOcode)
                     ICAOlist.append(airport.AirportICAOcode)
                     airportsList.append({
                         "AirportICAOcode" : airport.AirportICAOcode ,
@@ -47,12 +47,12 @@ def getAirportsFromDB(airline):
 
 
 def getAirports(request, airlineName):
-    print ("get Airports")
+    logger.debug ("get Airports")
     if (request.method == 'GET'):
-        print ("get request received - airports")
+        logger.debug ("get request received - airports")
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
-            print ( airline )
+            logger.debug ( airline )
             airports = getAirportsFromDB(airline)
             response_data = {'airports': airports}
             return JsonResponse(response_data)
@@ -62,3 +62,4 @@ def getAirports(request, airlineName):
     else:
         response_data = { "errors" : "Expecting a GET - received something else = {0}".format(request.method)}
         return JsonResponse(response_data)
+

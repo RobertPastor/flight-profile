@@ -28,7 +28,7 @@ def getAirlineFleetFromDB(airline):
     
     
 def getAirlineFleet(request, airlineName):
-    print ("get Airline Fleet for airline = {0}".format(airlineName))
+    logger.debug ("get Airline Fleet for airline = {0}".format(airlineName))
     if (request.method == 'GET'):
         logger.debug("get request received - Airline Fleet")
         airline = Airline.objects.filter(Name=airlineName).first()
