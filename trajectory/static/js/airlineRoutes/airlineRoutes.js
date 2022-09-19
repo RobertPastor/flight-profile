@@ -206,26 +206,35 @@ function removeGlobusRoutesWayPointsLayers( globus , airlineRoutesArray) {
 	}
 }
 
+function hideAirlineRoutesDiv() {
+	
+	if ( $('#airlineRoutesDivId').is(":visible") ) {
+		
+		$("#airlineRoutesDivId").hide();
+		
+		document.getElementById("btnAirlineRoutes").innerText = "Show Airline Routes";
+		document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
+
+	}
+}
+
 function initAirlineRoutes(globus) {
 	
-	let show = true;
 	$("#airlineRoutesDivId").hide();
-	$("#airlineRoutesTableId").hide();
 
 	if ( ! document.getElementById("btnAirlineRoutes") ) {
 		return;
 	}
 	document.getElementById("btnAirlineRoutes").onclick = function () {
 		
-		if (show) {
+		if ( ! $('#airlineRoutesDivId').is(":visible") ) {
+				
+			hideAllDiv();
 			$("#airlineRoutesDivId").show();
-			$("#airlineRoutesTableId").show();
 
-			show = false;
 			// change name on the button
 			document.getElementById("btnAirlineRoutes").innerText = "Hide Airline Routes";
 			document.getElementById("btnAirlineRoutes").style.backgroundColor = "green";
-			$('#tableAirlineRoutesId').show();
 			
 			// disable the button 
 			document.getElementById("btnAirlineRoutes").disabled = true
@@ -260,14 +269,12 @@ function initAirlineRoutes(globus) {
 
 		} else {
 
-			show = true;
 			document.getElementById("btnAirlineRoutes").innerText = "Show Airline Routes";
 			document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
 			
 			// get the name of the airline
 			let airlineName = $("#airlineSelectId option:selected").val();
 			airlineName = encodeURIComponent(airlineName);
-
 
 			// only to retrieve the list of Adep Ades
 			// use ajax to get the data 
@@ -295,7 +302,6 @@ function initAirlineRoutes(globus) {
 			});
 			
 			$("#airlineRoutesDivId").hide();
-			$("#airlineRoutesTableId").hide();
 		}
 	}
 }

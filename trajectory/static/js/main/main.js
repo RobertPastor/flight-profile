@@ -159,6 +159,13 @@ function loadAirlines() {
 	}
 }
 
+function hideAllDiv() {
+	hideAirlineFleetDiv();
+	hideAirlineRoutesDiv();
+	hideFlightProfileDiv();
+	hideAirlineCostsDiv();
+}
+
 function initTools(globus, viewExtent) {
 			
 	globus.planet.addControl(new MainControl());

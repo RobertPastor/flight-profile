@@ -44,13 +44,22 @@ function addAirlineFleetArray(airlineFleetArray) {
 	}
 }
 
+function hideAirlineFleetDiv() {
+	
+	if ( $('#divAirlineFleetId').is(":visible") ) {
+		
+		$('#divAirlineFleetId').hide();
+		
+		document.getElementById("btnAirlineFleet").innerText = "Show Airline Fleet";
+		document.getElementById("btnAirlineFleet").style.backgroundColor = "yellow";
+	}
+}
+
 
 function initAirlineFleet() {
 	
 	$('#divAirlineFleetId').hide();
-	$('#tableAirlineFleetId').hide();
 	
-	let show = true;
 	if ( ! document.getElementById("btnAirlineFleet") ) {
 		return;
 	}
@@ -58,12 +67,11 @@ function initAirlineFleet() {
 		
 		//console.log("btnAirlineFleet clicked");
 		
-		if (show) {
+		if ( ! $('#divAirlineFleetId').is(":visible") ) {
 			
+			hideAllDiv();
 			$('#divAirlineFleetId').show();
-			$('#tableAirlineFleetId').show();
 						
-			show = false;
 			// change name on the button
 			document.getElementById("btnAirlineFleet").innerText = "Hide Airline Fleet";
 			document.getElementById("btnAirlineFleet").style.backgroundColor = "green";
@@ -99,12 +107,11 @@ function initAirlineFleet() {
 			});
 
 		} else {
-			show = true;
+
 			document.getElementById("btnAirlineFleet").innerText = "Show Airline Fleet";
 			document.getElementById("btnAirlineFleet").style.backgroundColor = "yellow";
 
 			$('#divAirlineFleetId').hide();
-			$('#tableAirlineFleetId').hide();
 		}
 	}
 }

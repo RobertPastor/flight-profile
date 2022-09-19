@@ -65,7 +65,6 @@ function loadOneFlightProfileWayPoint( layerWayPoints, waypoint ) {
 					offset: [0, -2]
 				    }
 	}));
-				
 }
 
 function loadFlightProfileWayPoints( layerWayPoints, dataJson) {
@@ -450,6 +449,19 @@ function populateAirlineRunWaysFlightProfileSelector( airlineRunWaysArray ) {
 	}
 }
 
+function hideFlightProfileDiv() {
+	
+	if ( $('#flightProfileMainDivId').is(":visible") ) {
+		
+		$("#flightProfileMainDivId").hide();
+		
+		//document.getElementById("btnLaunchFlightProfile").disabled = true
+		document.getElementById("btnLaunchFlightProfile").innerText = "Show Flight Profile";
+		document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
+		
+	}
+}
+
 function launchFlightProfile(globus) {
 	
 	globus.planet.events.on("layeradd", function (e) {
@@ -502,10 +514,8 @@ function launchFlightProfile(globus) {
 						document.getElementById("btnLaunchFlightProfile").disabled = false
 					},
 			});
-			
 	});
 	
-	let show = true;
 	$("#flightProfileMainDivId").hide();
 
 	/**
@@ -517,9 +527,9 @@ function launchFlightProfile(globus) {
 	}
 	document.getElementById("btnLaunchFlightProfile").onclick = function () {
 
-		if (show) {
-			show = false;
+		if ( ! $('#flightProfileMainDivId').is(":visible") ) {
 			
+			hideAllDiv();
 			$('#flightProfileMainDivId').show();
 			
 			// change name on the button
@@ -557,7 +567,7 @@ function launchFlightProfile(globus) {
 					},
 			});
 		} else {
-			show = true;
+
 			//document.getElementById("btnLaunchFlightProfile").disabled = true
 			document.getElementById("btnLaunchFlightProfile").innerText = "Show Flight Profile";
 			document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";

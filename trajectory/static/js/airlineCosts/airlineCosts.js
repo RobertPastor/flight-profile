@@ -118,11 +118,21 @@ function showCostsResults( dataJson ) {
 
 }
 
+function hideAirlineCostsDiv() {
+	
+	if ( $('#airlineCostsMainDivId').is(":visible") ) {
+		
+		$('#airlineCostsMainDivId').hide();
+		
+		// change name on the button
+		document.getElementById("btnLaunchCosts").innerText = "Show Compute Costs";
+		document.getElementById("btnLaunchCosts").style.backgroundColor = "yellow";
+	}
+}
 
 function initCostsComputation() {
 	
 	$('#airlineCostsMainDivId').hide();
-	$('#airlineCostsTableId').hide();
 	
 	// listen to the route selector changes
 	$( "#airlineRouteCostsId" ).change(function() {
@@ -157,7 +167,6 @@ function initCostsComputation() {
 			});
 	});
 	
-	let show = true;
 	
 	/**
 	* monitor the button used to show the table with the inputs
@@ -169,11 +178,10 @@ function initCostsComputation() {
 	}
 	document.getElementById("btnLaunchCosts").onclick = function () {
 		
-		if (show) {
-			show = false;
+		if ( ! $('#airlineCostsMainDivId').is(":visible") ) {
 			
+			hideAllDiv();
 			$('#airlineCostsMainDivId').show();
-			$('#airlineCostsTableId').show();
 			
 			// change name on the button
 			document.getElementById("btnLaunchCosts").innerText = "Hide Compute Costs";
@@ -211,10 +219,8 @@ function initCostsComputation() {
 			});
 
 		} else {
-			show = true;
 			
 			$('#airlineCostsMainDivId').hide();
-			$('#airlineCostsTableId').hide();
 
 			// change name on the button
 			document.getElementById("btnLaunchCosts").innerText = "Show Compute Costs";
