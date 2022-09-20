@@ -237,19 +237,19 @@ class AircraftConfiguration(FlightEnvelope):
                                 altitude = altitudeMeanSeaLevelMeters,
                                 alt_units='m',
                                 speed_units='m/s',)
-        print ( self.className + ' ====================================' )
-        print ( self.className + ': entering {0} configuration - distance flown {1:.2f} meters - distance flown {2:.2f} nautics'.format(newConfiguration, currentDistanceFlownMeters, currentDistanceFlownMeters*Meter2NauticalMiles) )
-        print  ( self.className + ': alt= {0:.2f} meters alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, (altitudeMeanSeaLevelMeters*Meter2Feet)) ) 
-        print ( self.className + ': tas= {0:.2f} m/s - tas= {1:.2f} knots - cas= {2:.2f} m/s - cas= {3:.2f} knots - mach= {4:.2f}'.format(tas, (tas*MeterSecond2Knots), cas, (cas*MeterSecond2Knots), mach) )
+        logger.debug ( self.className + ' ====================================' )
+        logger.debug ( self.className + ': entering {0} configuration - distance flown {1:.2f} meters - distance flown {2:.2f} nautics'.format(newConfiguration, currentDistanceFlownMeters, currentDistanceFlownMeters*Meter2NauticalMiles) )
+        logger.debug  ( self.className + ': alt= {0:.2f} meters alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, (altitudeMeanSeaLevelMeters*Meter2Feet)) ) 
+        logger.debug ( self.className + ': tas= {0:.2f} m/s - tas= {1:.2f} knots - cas= {2:.2f} m/s - cas= {3:.2f} knots - mach= {4:.2f}'.format(tas, (tas*MeterSecond2Knots), cas, (cas*MeterSecond2Knots), mach) )
         if elapsedTimeSeconds >= 60.0 and elapsedTimeSeconds < 3600.0:
             minutes, seconds = divmod(elapsedTimeSeconds, 60)
-            print  ( self.className + ': real time = {0:.2f} seconds - {1:.2f} minutes {2:.2f} seconds'.format(elapsedTimeSeconds, minutes, seconds) )
+            logger.debug  ( self.className + ': real time = {0:.2f} seconds - {1:.2f} minutes {2:.2f} seconds'.format(elapsedTimeSeconds, minutes, seconds) )
         else:
             minutes, seconds = divmod(elapsedTimeSeconds, 60)
             hours, minutes = divmod(minutes, 60)
-            print  ( self.className + ': real time = {0:.2f} seconds - {1:.2f} hours {2:.2f} minutes {3:.2f} seconds'.format(elapsedTimeSeconds, hours, minutes, seconds) )
+            logger.debug  ( self.className + ': real time = {0:.2f} seconds - {1:.2f} hours {2:.2f} minutes {3:.2f} seconds'.format(elapsedTimeSeconds, hours, minutes, seconds) )
 
-        print ( self.className + ' ====================================' )
+        logger.debug ( self.className + ' ====================================' )
 
 
     def setTakeOffConfiguration(self, elapsedTimeSeconds):

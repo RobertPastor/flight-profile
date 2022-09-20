@@ -71,9 +71,9 @@ def showFlightProfile(request):
         return JsonResponse(response_data)
 
     
-def getAirlineAircraftsFromDB():
+def getAirlineAircraftsFromDB(airline):
     airlineAircraftsList = []
-    for airlineAircraft in AirlineAircraft.objects.all():
+    for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
         #print (str(airlineAircraft))
         airlineAircraftsList.append({
             "airlineAircraftICAOcode" : airlineAircraft.aircraftICAOcode,
@@ -96,10 +96,11 @@ def getAirlineRunWaysFromDB():
 def launchFlightProfile(request , airlineName):
     print  ("launch Flight Profile - with airline = {0}".format(airlineName))
     if (request.method == 'GET'):
-        airlineAircraftsList = getAirlineAircraftsFromDB()
         
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
+            
+            airlineAircraftsList = getAirlineAircraftsFromDB(airline)
             
             airlineRoutesList = getAirlineRoutesFromDB(airline)
             airlineRunWaysList = getAirlineRunWaysFromDB()

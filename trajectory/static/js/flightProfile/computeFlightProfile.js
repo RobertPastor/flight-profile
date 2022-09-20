@@ -490,10 +490,15 @@ function launchFlightProfile(globus) {
 	    	
 	// listen to select route change
 	$( "#airlineRouteId" ).change(function() {
+		
+		// get the name of the airline
+		let airlineName = $("#airlineSelectId option:selected").val();
+		airlineName = encodeURIComponent(airlineName);
+
 		//console.log( "Handler for airlineRouteId selection change called." );
 		$.ajax( {
 					method: 'get',
-					url :  "trajectory/launchFlightProfile",
+					url :  "trajectory/launchFlightProfile/" + airlineName,
 					async : true,
 					success: function(data, status) {
 									

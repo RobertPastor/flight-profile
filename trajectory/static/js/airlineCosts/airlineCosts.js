@@ -123,7 +123,8 @@ function hideAirlineCostsDiv() {
 	if ( $('#airlineCostsMainDivId').is(":visible") ) {
 		
 		$('#airlineCostsMainDivId').hide();
-		
+		$("#airlineCostsResultsMainDivId").hide();
+
 		// change name on the button
 		document.getElementById("btnLaunchCosts").innerText = "Show Compute Costs";
 		document.getElementById("btnLaunchCosts").style.backgroundColor = "yellow";
