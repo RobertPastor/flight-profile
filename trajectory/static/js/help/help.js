@@ -21,7 +21,13 @@ function Help () {
 		this.helpArray.push(htmlContent);
 
 		this.helpArray.push("<h3>Goals</h3>");
-		this.helpArray.push("The solution allows to manage an airline, its fleet, the airways , the routes, the wayPoints , etc...<br>");
+		this.helpArray.push("The solution allows to manage a set of airlines, their fleet, the airways , the routes, the wayPoints , etc...<br>");
+		this.helpArray.push("With the aim to assess costs and resource availability.<br>");
+		
+		this.helpArray.push("<h3>Airlines</h3>");
+		this.helpArray.push("There are 3 defined airlines, each with its fleet, airports, routes, and costs.<br>");
+		this.helpArray.push("All these informations are some kind of parameters, they are configurable.<br>");
+
 		
 		this.helpArray.push("<h3>Airline Fleet</h3>");
 		this.helpArray.push("The fleet is composed of types of aircrafts, number of available aircrafts, number of seats, and operational costs per flight hour.<br>");
@@ -48,9 +54,10 @@ function Help () {
 		this.helpArray.push("Warning: case where a A330 takes off from Atlanta 08L after 2915 meters of ground run (more than the length of the runway). <br>");
 
 		this.helpArray.push("<h3>Airline Costs</h3>");
-		this.helpArray.push("Costs are based upon :<br>");
-		this.helpArray.push("   1) flight duration TIMES operational costs per flight hours.<br>");
+		this.helpArray.push("Costs are split into :<br>");
+		this.helpArray.push("   1) operational costs based upon flight duration TIMES hourly flight costs.<br>");
 		this.helpArray.push("   2) fuel costs based upon aircraft mass loss - translated into liters of fuel TIMES cost of one liter of fuel.<br>");
+		this.helpArray.push("   3) crew costs based upon flight duration TIMES hourly crew costs.<br>");
 		
 		this.helpArray.push("<h4>Fuel Costs</h4>");
 		this.helpArray.push("Fuel costs are based upon aircraft mass difference between initial mass and final mass.<br>");

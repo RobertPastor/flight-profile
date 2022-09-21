@@ -80,7 +80,7 @@ def computeCosts(request, airlineName):
     
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
         
-                    logger.info ( "=========== Flight Plan computation is over  =========== " )
+                    logger.info ( "=========== Flight Plan computation is done  =========== " )
                     
                     fuelCostsUSdollars =  ( flightPath.aircraft.getAircraftInitialMassKilograms() - flightPath.aircraft.getAircraftCurrentMassKilograms() )  * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
     
@@ -88,6 +88,8 @@ def computeCosts(request, airlineName):
                     operationalFlyingCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
                     #print ( airlineAircraft.getCostsFlyingPerHoursDollars() )
                     #print ( flightPath.getFlightDurationSeconds() / 3600.0  )
+                    ''' 21st September 2022 - Crew Costs '''
+                    crewCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
                        
                     response_data = {
                                     'seats' : airlineAircraft.getMaximumNumberOfPassengers(),
@@ -98,7 +100,8 @@ def computeCosts(request, airlineName):
                                     'fuelCostsDollars' : round( fuelCostsUSdollars , 0),
                                     'flightDurationHours' : round ( ( float(flightPath.getFlightDurationSeconds() ) / 3600.0 ), 4 ),
                                     'operationalFlyingCostsDollars' : round ( operationalFlyingCostsUSdollars , 0),
-                                    'totalCostsDollars' : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars , 0)
+                                    'crewFlyingCostsDollars': round( crewCostsUSdollars , 0 ),
+                                    'totalCostsDollars' : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars , 0 )
                                     }
                     return JsonResponse(response_data)
                     
@@ -108,6 +111,12 @@ def computeCosts(request, airlineName):
                     response_data = {
                         'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
                     return JsonResponse(response_data)
+                
+            else:
+                logger.info ('airline  not found = {0}'.format(airlineName))
+                response_data = {
+                        'errors' : 'Airline not found = {0}'.format(airlineName)}
+                return JsonResponse(response_data)
                 
         else:
             logger.info ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))

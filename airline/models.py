@@ -137,6 +137,9 @@ class AirlineAircraft(models.Model):
     def getCostsFlyingPerHoursDollars(self):
         return self.costsFlyingPerHoursDollars
     
+    def getCrewCostsPerFlyingHoursDollars(self):
+        return self.crewCostsPerFlyingHoursDollars
+    
     ''' added as an extension from other databases '''
     def setAircraftICAOcode(self, acICAOcode):
         self.aircraftICAOcode = acICAOcode

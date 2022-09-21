@@ -91,12 +91,17 @@ function showCostsResults( dataJson ) {
 	let departureRunWay = $("#airlineDepartureRunWayCostsId option:selected").val()
 	let arrivalRunWay = $("#airlineArrivalRunWayCostsId option:selected").val()
 	
+	// get the name of the airline
+	let airlineName = $("#airlineSelectId option:selected").val();
+	airlineName = encodeURIComponent(airlineName);
+
 	//console.log("before tableCostsResultsId tbody tr append")
 	
 	$("#airlineCostsResultsTableId")
 	.find('tbody')
     .append($('<tr>')
 
+		.append('<td>'+ airlineName +'</td>')
 		.append('<td>'+ aircraftName +'</td>')
 		.append('<td>'+ dataJson["seats"] +'</td>')
 		.append('<td>'+ route.split("-")[0] +'</td>')
@@ -112,6 +117,8 @@ function showCostsResults( dataJson ) {
 		.append('<td>'+ dataJson["fuelCostsDollars"] +'</td>')
 		.append('<td>'+ dataJson["flightDurationHours"] +'</td>')
 		.append('<td>'+ dataJson["operationalFlyingCostsDollars"] +'</td>')
+		.append('<td>'+ dataJson["crewFlyingCostsDollars"] +'</td>')
+
 		.append('<td>'+ dataJson["totalCostsDollars"] +'</td>')
 	);
 	//console.log("after tableCostsResultsId tbody tr append")
