@@ -43,15 +43,24 @@ function loadOneAirport( globus, airport , showHide ) {
 						}
 		}));
 		layerAirport.events.on("lclick", function (e) {
-			console.log("left click - layer name = " + e.pickingObject.label._text);
+			console.log("left click - airport name = " + e.pickingObject.label._text);
+			console.log("left click - layer name = " + this.name);
 		});
+		
+		layerAirport.events.on("mouseenter", function (e) {
+            e.renderer.handler.canvas.style.cursor = "pointer";
+			e.renderer.handler.canvas.title = this.name.split("-")[1];
+        });
+
+        layerAirport.events.on("mouseleave", function (e) {
+            e.renderer.handler.canvas.style.cursor = "default";
+			e.renderer.handler.canvas.title = "";
+        });
 		
 	} else {
 		// no need to create the layer
 		layer.setVisibility(showHide)
-		
 	}
-				
 }
 
 function loadAirports( globus, dataJson , showHide ) {

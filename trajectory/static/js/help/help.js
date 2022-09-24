@@ -37,11 +37,12 @@ function Help () {
 		this.helpArray.push("<h3>Airline Airports</h3>");
 		this.helpArray.push("The airline has a set of departure and arrival airports.<br>");
 		this.helpArray.push("These airports are the starting or ending points of the flight legs.<br>");
-		this.helpArray.push("Warning : you will have to dezoom in order to see an airport in Alaska or in France.<br>");
+		this.helpArray.push("<u><b>Note:</b></u> When the cursor mouves over an airport, the pointer changes its shape meaning that the mouse buttons are active.<br>");
+		this.helpArray.push("<u><b>Warning:</b></u> you will have to dezoom in order to see an airport in Alaska or in France.<br>");
 
 		this.helpArray.push("<h3>Airline Routes</h3>");
 		this.helpArray.push("The airline routes are defined by a set of WayPoints that are linking a departure to an arrival airport.<br>");
-		this.helpArray.push("Warning : for the time being, these routes are not dependent upon the departure and arrival runways.<br>");
+		this.helpArray.push("<u><b>Warning:</b></u> for the time being, these routes are not dependent upon the departure and arrival runways.<br>");
 		this.helpArray.push("Future improvements : SID and STAR have to be implemented.<br>");
 
 
