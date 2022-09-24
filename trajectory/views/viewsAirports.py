@@ -29,6 +29,7 @@ def indexTrajectory(request):
 def getAirportsFromDB(airline):
     ICAOlist = []
     airportsList = []
+    ''' airports are not related to airlines '''
     for airport in AirlineAirport.objects.all():
         
         for airlineRoute in AirlineRoute.objects.filter(airline = airline):
@@ -36,6 +37,7 @@ def getAirportsFromDB(airline):
             if (airport.AirportICAOcode == airlineRoute.getDepartureAirportICAOcode()) or (airport.AirportICAOcode == airlineRoute.getArrivalAirportICAOcode() ):
                 if ( airport.AirportICAOcode not in ICAOlist):
                     logger.debug (airport.AirportICAOcode)
+                    # add airport only once
                     ICAOlist.append(airport.AirportICAOcode)
                     airportsList.append({
                         "AirportICAOcode" : airport.AirportICAOcode ,

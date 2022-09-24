@@ -56,6 +56,7 @@ class AirlineWayPoint(models.Model):
         print ( self.WayPointName , str(self.Latitude) , str(self.Longitude) )
 
 
+''' an airport is not related to an airline '''
 class AirlineAirport(models.Model):
     AirportICAOcode = models.CharField(max_length = 100, primary_key = True)
     AirportName = models.CharField(max_length = 100, unique = True)
