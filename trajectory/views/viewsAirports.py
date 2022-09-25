@@ -31,7 +31,7 @@ def getAirportsFromDB(airline):
     airportsList = []
     ''' airports are not related to airlines '''
     for airport in AirlineAirport.objects.all():
-        
+        ''' routes are related to airlines '''
         for airlineRoute in AirlineRoute.objects.filter(airline = airline):
             #print ( airlineRoute )
             if (airport.AirportICAOcode == airlineRoute.getDepartureAirportICAOcode()) or (airport.AirportICAOcode == airlineRoute.getArrivalAirportICAOcode() ):

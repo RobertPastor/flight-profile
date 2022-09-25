@@ -31,15 +31,16 @@ function loadOneAirport( globus, airport , showHide ) {
 						text: name,
 						outline: 0.77,
 						outlineColor: "rgba(255,255,255,.4)",
-						size: 12,
+						size: 11,
 						color: "black",
-						offset: [10, -2]
+						offset: [10, -2],
+						align: "center"
 						},
 				billboard: {
 						src: "/static/images/plane.png",
 						width: 16,
 						height: 16,
-						offset: [0, -2]
+						offset: [0, -10]
 						}
 		}));
 		layerAirport.events.on("lclick", function (e) {
@@ -49,6 +50,7 @@ function loadOneAirport( globus, airport , showHide ) {
 		
 		layerAirport.events.on("mouseenter", function (e) {
             e.renderer.handler.canvas.style.cursor = "pointer";
+			// show ICAO code of the airport
 			e.renderer.handler.canvas.title = this.name.split("-")[1];
         });
 
