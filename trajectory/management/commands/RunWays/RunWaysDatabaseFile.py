@@ -217,6 +217,7 @@ class RunWaysDatabase(object):
                             LatitudeDegrees = runwayDict['le_latitude_deg'],
                             LongitudeDegrees = runwayDict['le_longitude_deg']
                             )
+                        print ( runWay )
                         runWay.save()
                         
                     if ( len(runwayDict['he_ident']) > 0 ) and airport:

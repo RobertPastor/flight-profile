@@ -456,7 +456,7 @@ function hideFlightProfileDiv() {
 		$("#flightProfileMainDivId").hide();
 		
 		//document.getElementById("btnLaunchFlightProfile").disabled = true
-		document.getElementById("btnLaunchFlightProfile").innerText = "Show Flight Profile";
+		document.getElementById("btnLaunchFlightProfile").innerText = "Show Profile / Costs";
 		document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
 		
 	}
@@ -538,7 +538,7 @@ function launchFlightProfile(globus) {
 			$('#flightProfileMainDivId').show();
 			
 			// change name on the button
-			document.getElementById("btnLaunchFlightProfile").innerText = "Hide Flight Profile";
+			document.getElementById("btnLaunchFlightProfile").innerText = "Hide Profile / Costs";
 			document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "green";
 			
 			// get the name of the airline
@@ -574,7 +574,7 @@ function launchFlightProfile(globus) {
 		} else {
 
 			//document.getElementById("btnLaunchFlightProfile").disabled = true
-			document.getElementById("btnLaunchFlightProfile").innerText = "Show Flight Profile";
+			document.getElementById("btnLaunchFlightProfile").innerText = "Show Profile / Costs";
 			document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
 
 			$('#flightProfileMainDivId').hide();
@@ -592,8 +592,8 @@ function launchFlightProfile(globus) {
 	
 		document.getElementById("btnComputeFlightProfileId").disabled = true
 		
-		let aircraft = $("#airlineAircraftId option:selected").val()
-		let route =  $("#airlineRouteId option:selected").val()
+		let aircraft = $("#airlineAircraftId option:selected").val();
+		let route =  $("#airlineRouteId option:selected").val();
 		
 		let departureRunWay = $("#airlineDepartureRunWayFlightProfileId option:selected").val()
 		let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val()

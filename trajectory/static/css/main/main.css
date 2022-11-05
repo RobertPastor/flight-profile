@@ -76,31 +76,31 @@ th {
 
 .airlineFleetTableDiv {
 	position: absolute;
-	top : 70px;
+	top : 90px;
 	left : 10px;
 }
 
 .airlineRoutesTableDiv {
 	position: absolute;
-	top : 70px;
+	top : 90px;
 	left : 10px;
 }
 
 .flightProfileTableDiv {
 	position: absolute;
-	top : 70px;
+	top : 90px;
 	left : 10px;
 }
 
 .airlineCostsMainDiv {
 	position: absolute;
-	top : 70px;
+	top : 90px;
 	left : 10px;
 }
 
 .airlineCostsResultsMainDiv {
 	position: absolute;
-	top: 170px;
+	top: 230px;
 	left: 10px;
 }
 
@@ -113,5 +113,12 @@ th {
 .airlineSelect {
 	width : 100%;
 	background-color: cyan;
+}
+
+.draggableDivHeader {
+  cursor: move;
+  z-index: 10;
+  background-color: #2196F3;
+  color: #fff;
 }
 

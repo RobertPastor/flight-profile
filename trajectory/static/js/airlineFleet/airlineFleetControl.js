@@ -14,6 +14,12 @@
 				mainDiv.style="display: none;";
 				mainDiv.classList.add('airlineFleetTableDiv');
 				
+				let draggableMainDiv = document.createElement('div');
+				draggableMainDiv.id = mainDiv.id  + "Header";
+				draggableMainDiv.innerHTML = "Click here to move";
+				draggableMainDiv.classList.add("draggableDivHeader");
+				mainDiv.appendChild(draggableMainDiv);
+				
 				let table = document.createElement('table');
 				table.id = "tableAirlineFleetId";
 
@@ -36,6 +42,9 @@
 				mainDiv.appendChild(table);
                 
                 this.renderer.div.appendChild(mainDiv);
+				
+				// Make the Main Div element draggable:
+				dragElement(document.getElementById("divAirlineFleetId"));
             }
 
             oninit() {

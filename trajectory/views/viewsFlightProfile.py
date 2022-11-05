@@ -60,7 +60,7 @@ def getPlaceMarks(XmlDocument):
     logging.info ( "length place marks = {0}".format(len ( placeMarksList )) )
     return placeMarksList
     
-
+'''
 def showFlightProfile(request):
     print ("show Flight Profile")
     if (request.method == 'GET'):
@@ -69,7 +69,7 @@ def showFlightProfile(request):
             'kmlURL': "/static/kml/" + fileName,
             'placeMarks' : getPlaceMarks(fileName)}
         return JsonResponse(response_data)
-
+'''
     
 def getAirlineAircraftsFromDB(airline):
     airlineAircraftsList = []
@@ -90,6 +90,7 @@ def getAirlineRunWaysFromDB():
             'airlineAirport': airlineRunWay.Airport.AirportICAOcode,
             'airlineRunWayName' : airlineRunWay.Name,
             'airlineRunWayTrueHeadindDegrees': airlineRunWay.TrueHeadingDegrees})
+    print ( "Size of RunWays list = {0}".format(len(airlineRunWaysList)))
     return airlineRunWaysList
 
 
@@ -100,8 +101,7 @@ def launchFlightProfile(request , airlineName):
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
             
-            airlineAircraftsList = getAirlineAircraftsFromDB(airline)
-            
+            airlineAircraftsList = getAirlineAircraftsFromDB(airline)     
             airlineRoutesList = getAirlineRoutesFromDB(airline)
             airlineRunWaysList = getAirlineRunWaysFromDB()
             response_data = {

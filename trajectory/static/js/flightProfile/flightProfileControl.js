@@ -15,6 +15,12 @@
 				mainDiv.style="display: none;";
 				mainDiv.classList.add('flightProfileTableDiv');
 				
+				let draggableMainDiv = document.createElement('div');
+				draggableMainDiv.id = mainDiv.id  + "Header";
+				draggableMainDiv.innerHTML = "Click here to move";
+				draggableMainDiv.classList.add("draggableDivHeader");
+				mainDiv.appendChild(draggableMainDiv);
+				
 				let table = document.createElement('table');
 				table.id = "flightProfileTableId";
 				
@@ -95,26 +101,46 @@
 				// --------------------
 
 				let div_5 = document.createElement('div');
-				div_5.id = "launchComputeId";
-				div_5.classList.add("launchComputeClass");
+				div_5.id = "launchComputeProfileId";
+				div_5.classList.add("launchComputeProfileClass");
 
 				let label_5 = document.createElement("label");
 				label_5.innerHTML = "Click to launch the profile computation -> " ;
 				div_5.appendChild(label_5);
 				
-				let button = document.createElement("button");
-				button.id = "btnComputeFlightProfileId";
-				button.innerHTML = "Compute Flight Profile";
-				div_5.appendChild(button);
+				let button_5 = document.createElement("button");
+				button_5.id = "btnComputeFlightProfileId";
+				button_5.innerHTML = "Compute Flight Profile";
+				div_5.appendChild(button_5);
 
 				td.appendChild(div_5);
 
+				// --------------------
+
+				let div_6 = document.createElement('div');
+				div_6.id = "launchComputeCostsId";
+				div_6.classList.add("launchComputeCostsClass");
+
+				let label_6 = document.createElement("label");
+				label_6.innerHTML = "Click to launch the costs computation -> " ;
+				div_6.appendChild(label_6);
+				
+				let button_6 = document.createElement("button");
+				button_6.id = "btnComputeCostsId";
+				button_6.innerHTML = "Compute Costs";
+				div_6.appendChild(button_6);
+
+				td.appendChild(div_6);
+				
 				// --------------------
 				
 				row_1.appendChild(td);
 				table.appendChild(row_1);
 				mainDiv.appendChild(table);
                 this.renderer.div.appendChild(mainDiv);
+				
+				// Make the Main Div element draggable:
+				dragElement(document.getElementById("flightProfileMainDivId"));
             }
 
             oninit() {
