@@ -35,7 +35,7 @@ class AirlineRoutesWayPointsDatabase(object):
 
         route_KJFK_KSEA = [{'Name': 'SAX', 'latitude': 'N41°04\'03.15"', 'longitude': 'W074°32\'17.92"'}, {'Name': 'COATE', 'latitude': 'N41°08\'10.42"', 'longitude': 'W074°41\'42.60"'}, {'Name': 'LAAYK', 'latitude': 'N41°28\'32.64"', 'longitude': 'W075°28\'57.31"'}, {'Name': 'YYOST', 'latitude': 'N41°34\'57.78"', 'longitude': 'W075°51\'21.05"'}, {'Name': 'DGRAF', 'latitude': 'N41°41\'10.52"', 'longitude': 'W076°13\'21.15"'}, {'Name': 'MTCAF', 'latitude': 'N41°46\'11.34"', 'longitude': 'W076°31\'20.58"'}, {'Name': 'REBBL', 'latitude': 'N41°52\'57.63"', 'longitude': 'W076°55\'58.06"'}, {'Name': 'REXXY', 'latitude': 'N42°00\'39.83"', 'longitude': 'W077°24\'34.97"'}, {'Name': 'HERBA', 'latitude': 'N42°14\'35.29"', 'longitude': 'W078°16\'27.84"'}, {'Name': 'RAAKK', 'latitude': 'N42°23\'59.00"', 'longitude': 'W078°54\'39.00"'}, {'Name': 'FARGN', 'latitude': 'N42°36\'42.19"', 'longitude': 'W079°47\'18.42"'}, {'Name': 'ICHOL', 'latitude': 'N42°38\'31.46"', 'longitude': 'W080°30\'13.99"'}, {'Name': 'JAAJA', 'latitude': 'N42°40\'00.00"', 'longitude': 'W081°16\'00.00"'}, {'Name': 'TWIGS', 'latitude': 'N42°48\'34.10"', 'longitude': 'W082°33\'10.30"'}, {'Name': 'BERYS', 'latitude': 'N42°54\'33.97"', 'longitude': 'W083°17\'59.75"'}, {'Name': 'FNT', 'latitude': 'N42°58\'00.38"', 'longitude': 'W083°44\'49.08"'}, {'Name': 'MONEE', 'latitude': 'N43°14\'25.80"', 'longitude': 'W084°27\'50.95"'}, {'Name': 'GRB', 'latitude': 'N44°33\'18.57"', 'longitude': 'W088°11\'41.48"'}, {'Name': 'TWINZ', 'latitude': 'N45°02\'55.67"', 'longitude': 'W092°17\'21.64"'}, {'Name': 'GEP', 'latitude': 'N45°08\'44.46"', 'longitude': 'W093°22\'23.45"'}, {'Name': 'ABR', 'latitude': 'N45°25\'02.47"', 'longitude': 'W098°22\'07.39"'}, {'Name': 'MLS', 'latitude': 'N46°22\'56.00"', 'longitude': 'W105°57\'12.72"'}, {'Name': 'ISAME', 'latitude': 'N46°25\'43.25"', 'longitude': 'W106°11\'05.39"'}, {'Name': 'ESTRO', 'latitude': 'N46°57\'09.42"', 'longitude': 'W109°00\'37.65"'}, {'Name': 'LWT', 'latitude': 'N47°03\'10.69"', 'longitude': 'W109°36\'22.20"'}, {'Name': 'MLP', 'latitude': 'N47°27\'24.85"', 'longitude': 'W115°38\'45.76"'}]
 
-        route_KBOS_KATL = [{'Name': 'BOSOX', 'latitude': 'N42°12\'06.79"', 'longitude': 'W071°37\'39.64"'}, {'Name': 'GRIPE', 'latitude': 'N42°08\'08.87"', 'longitude': 'W071°54\'32.47"'}, {'Name': 'GRAYM', 'latitude': 'N42°06\'04.27"', 'longitude': 'W072°01\'53.49"'}, {'Name': 'WITNY', 'latitude': 'N42°02\'57.82"', 'longitude': 'W072°14\'11.96"'}, {'Name': 'BDL', 'latitude': 'N41°56\'27.63"', 'longitude': 'W072°41\'18.88"'}, {'Name': 'BRISS', 'latitude': 'N41°42\'09.36"', 'longitude': 'W073°01\'00.15"'}, {'Name': 'JUDDS', 'latitude': 'N41°38\'04.82"', 'longitude': 'W073°06\'29.68"'}, {'Name': 'SOARS', 'latitude': 'N41°30\'42.07"', 'longitude': 'W073°16\'17.77"'}, {'Name': 'GREKI', 'latitude': 'N41°28\'48.03"', 'longitude': 'W073°18\'50.98"'}, {'Name': 'CMK', 'latitude': 'N41°16\'48.33"', 'longitude': 'W073°34\'52.78"'}, {'Name': 'DUEYS', 'latitude': 'N41°09\'09.46"', 'longitude': 'W073°47\'48.52"'}, {'Name': 'JERSY', 'latitude': 'N40°47\'28.99"', 'longitude': 'W074°23\'58.00"'}, {'Name': 'SBJ', 'latitude': 'N40°34\'58.96"', 'longitude': 'W074°44\'30.45"'}, {'Name': 'DIRPE', 'latitude': 'N40°28\'22.94"', 'longitude': 'W074°59\'37.03"'}, {'Name': 'PTW', 'latitude': 'N40°13\'20.05"', 'longitude': 'W075°33\'36.93"'}, {'Name': 'BYRDD', 'latitude': 'N40°05\'31.93"', 'longitude': 'W075°49\'07.29"'}, {'Name': 'HAAGN', 'latitude': 'N39°57\'41.39"', 'longitude': 'W076°04\'34.32"'}, {'Name': 'PENSY', 'latitude': 'N39°54\'25.96"', 'longitude': 'W076°10\'57.13"'}, {'Name': 'EMI', 'latitude': 'N39°29\'42.02"', 'longitude': 'W076°58\'42.85"'}, {'Name': 'CSN', 'latitude': 'N38°38\'28.32"', 'longitude': 'W077°51\'55.79"'}, {'Name': 'MOL', 'latitude': 'N37°54\'01.88"', 'longitude': 'W079°06\'24.80"'}]
+        route_KBOS_KATL = [{'Name': 'BOSOX', 'latitude': 'N42°12\'06.79"', 'longitude': 'W071°37\'39.64"'}, {'Name': 'GRIPE', 'latitude': 'N42°08\'08.87"', 'longitude': 'W071°54\'32.47"'}, {'Name': 'GRAYM', 'latitude': 'N42°06\'04.27"', 'longitude': 'W072°01\'53.49"'}, {'Name': 'WITNY', 'latitude': 'N42°02\'57.82"', 'longitude': 'W072°14\'11.96"'}, {'Name': 'BDL', 'latitude': 'N41°56\'27.63"', 'longitude': 'W072°41\'18.88"'}, {'Name': 'BRISS', 'latitude': 'N41°42\'09.36"', 'longitude': 'W073°01\'00.15"'}, {'Name': 'JUDDS', 'latitude': 'N41°38\'04.82"', 'longitude': 'W073°06\'29.68"'}, {'Name': 'SOARS', 'latitude': 'N41°30\'42.07"', 'longitude': 'W073°16\'17.77"'}, {'Name': 'GREKI', 'latitude': 'N41°28\'48.03"', 'longitude': 'W073°18\'50.98"'}, {'Name': 'CMK', 'latitude': 'N41°16\'48.33"', 'longitude': 'W073°34\'52.78"'}, {'Name': 'DUEYS', 'latitude': 'N41°09\'09.46"', 'longitude': 'W073°47\'48.52"'}, {'Name': 'JERSY', 'latitude': 'N40°47\'28.99"', 'longitude': 'W074°23\'58.00"'}, {'Name': 'SBJ', 'latitude': 'N40°34\'58.96"', 'longitude': 'W074°44\'30.45"'}, {'Name': 'DIRPE', 'latitude': 'N40°28\'22.94"', 'longitude': 'W074°59\'37.03"'}, {'Name': 'PTW', 'latitude': 'N40°13\'20.05"', 'longitude': 'W075°33\'36.93"'}, {'Name': 'BYRDD', 'latitude': 'N40°05\'31.93"', 'longitude': 'W075°49\'07.29"'}, {'Name': 'HAAGN', 'latitude': 'N39°57\'41.39"', 'longitude': 'W076°04\'34.32"'}, {'Name': 'PENSY', 'latitude': 'N39°54\'25.96"', 'longitude': 'W076°10\'57.13"'}, {'Name': 'EMI', 'latitude': 'N39°29\'42.02"', 'longitude': 'W076°58\'42.85"'}, {'Name': 'CSN', 'latitude': 'N38°38\'28.32"', 'longitude': 'W077°51\'55.79"'}, {'Name': 'MOL', 'latitude': 'N37°54\'01.88"', 'longitude': 'W079°06\'24.80"'} , {'Name': 'FLASK', 'latitude': 'N37°01\'03.92"', 'longitude': 'W080°18\'58.62"'},  {'Name': 'REAVS', 'latitude': 'N36°42\'10.99"', 'longitude': 'W080°44\'12.03"'},  {'Name': 'ODF', 'latitude': 'N34°41\'45.14"', 'longitude': 'W083°17\'51.58"'} , {'Name': 'CORCE', 'latitude': 'N34°27\'34.99"', 'longitude': 'W083°33\'10.59"'} , {'Name': 'MACEY', 'latitude': 'N34°20\'00.25"', 'longitude': 'W083°41\'19.08"'} , {'Name': 'WOMAC', 'latitude': 'N34°07\'48.86"', 'longitude': 'W083°54\'20.77"'} , {'Name': 'LOGEN', 'latitude': 'N33°59\'16.98"', 'longitude': 'W084°03\'24.43"'}]
 
         route_KIAD_KSFO = [{'Name': 'GILBY', 'latitude': 'N38°58\'23.61"', 'longitude': 'W077°35\'20.64"'}, {'Name': 'MANNE', 'latitude': 'N39°00\'14.40"', 'longitude': 'W077°41\'13.17"'}, {'Name': 'JASEN', 'latitude': 'N39°03\'38.50"', 'longitude': 'W077°52\'05.19"'}, {'Name': 'HOAGE', 'latitude': 'N39°07\'42.96"', 'longitude': 'W078°05\'12.41"'}, {'Name': 'TRIXY', 'latitude': 'N39°08\'21.20"', 'longitude': 'W078°07\'16.00"'}, {'Name': 'DRUZZ', 'latitude': 'N39°09\'48.28"', 'longitude': 'W078°21\'28.71"'}, {'Name': 'ESL', 'latitude': 'N39°13\'31.77"', 'longitude': 'W078°59\'22.20"'}, {'Name': 'MOTME', 'latitude': 'N39°27\'26.47"', 'longitude': 'W079°35\'47.23"'}, {'Name': 'MGW', 'latitude': 'N39°33\'24.10"', 'longitude': 'W079°51\'37.41"'}, {'Name': 'TEDDS', 'latitude': 'N39°38\'18.76"', 'longitude': 'W080°16\'34.08"'}, {'Name': 'BURGS', 'latitude': 'N39°41\'54.66"', 'longitude': 'W080°35\'10.99"'}, {'Name': 'BEALL', 'latitude': 'N39°47\'06.55"', 'longitude': 'W081°02\'35.51"'}, {'Name': 'HISOM', 'latitude': 'N39°52\'35.48"', 'longitude': 'W081°32\'13.19"'}, {'Name': 'MUNOE', 'latitude': 'N39°53\'42.66"', 'longitude': 'W081°38\'22.27"'}, {'Name': 'ZZV', 'latitude': 'N39°56\'27.10"', 'longitude': 'W081°53\'33.36"'}, {'Name': 'CINAB', 'latitude': 'N40°00\'52.49"', 'longitude': 'W082°08\'04.13"'}, {'Name': 'APE', 'latitude': 'N40°09\'03.82"', 'longitude': 'W082°35\'17.88"'}, {'Name': 'TRAKK', 'latitude': 'N40°18\'32.35"', 'longitude': 'W083°10\'17.75"'}, {'Name': 'WHETT', 'latitude': 'N41°09\'36.64"', 'longitude': 'W086°35\'02.93"'}, {'Name': 'MOPER', 'latitude': 'N41°25\'52.54"', 'longitude': 'W087°47\'12.40"'}, {'Name': 'JOT', 'latitude': 'N41°32\'47.09"', 'longitude': 'W088°19\'06.28"'}, {'Name': 'VORIN', 'latitude': 'N41°32\'52.81"', 'longitude': 'W089°20\'10.95"'}, {'Name': 'IOW', 'latitude': 'N41°31\'08.26"', 'longitude': 'W091°36\'47.69"'}, {'Name': 'DSM', 'latitude': 'N41°26\'15.44"', 'longitude': 'W093°38\'54.80"'}, {'Name': 'OBH', 'latitude': 'N41°22\'32.64"', 'longitude': 'W098°21\'12.94"'}, {'Name': 'ELJAY', 'latitude': 'N41°13\'30.37"', 'longitude': 'W101°13\'17.26"'}, {'Name': 'SNY', 'latitude': 'N41°05\'48.00"', 'longitude': 'W102°58\'58.80"'}, {'Name': 'FROGS', 'latitude': 'N40°31\'12.12"', 'longitude': 'W105°53\'41.21"'}, {'Name': 'EKR', 'latitude': 'N40°04\'02.79"', 'longitude': 'W107°55\'29.81"'}, {'Name': 'DTA', 'latitude': 'N39°18\'07.96"', 'longitude': 'W112°30\'20.00"'}, {'Name': 'PAWLY', 'latitude': 'N39°11\'49.70"', 'longitude': 'W113°26\'23.38"'}, {'Name': 'MVA', 'latitude': 'N38°33\'55.07"', 'longitude': 'W118°01\'58.27"'}]
 
@@ -122,13 +122,12 @@ class AirlineRoutesWayPointsDatabase(object):
             {'Name':'LINRA','latitude':'N51°34\'47.00"','longitude':'W010°01\'55.99"'}, \
             {'Name':'LESLU','latitude':'N51°00\'00.00"','longitude':'W008°00\'00.00"'}, \
             {'Name':'INSUN','latitude':'N50°23\'43.00"','longitude':'W006°19\'23.99"'}, \
-            {'Name':'LND','latitude':'N50°08\'10.99"','longitude':'W005°38\'13.00"'}, \
+            {'Name':'LND'  ,'latitude':'N50°08\'10.99"','longitude':'W005°38\'13.00"'}, \
             {'Name':'NAKID','latitude':'N49°42\'54.00"','longitude':'W004°37\'22.99"'}, \
             {'Name':'ANNET','latitude':'N49°39\'04.99"','longitude':'W004°00\'05.00"'}, \
             {'Name':'UVSUV','latitude':'N49°29\'16.99"','longitude':'W001°40\'27.99"'}, \
             {'Name':'INGOR','latitude':'N49°21\'52.00"','longitude':'W000°15\'00.00"'}, \
             {'Name':'LUKIP','latitude':'N49°18\'56.99"','longitude':'E000°29\'46.99"'},                                                                       
-
             ]
         
         route_LFPG_LPPT = [
@@ -140,23 +139,22 @@ class AirlineRoutesWayPointsDatabase(object):
             { "Name":'OSMOB', "latitude" :'N44°38\'57.00"', "longitude" :'W000°20\'18.00"'},\
             { "Name":'BIDAC', "latitude" :'N43°25\'01.99"', "longitude" :'W001°08\'08.00"'},\
             { "Name":'ARVID', "latitude" :'N43°04\'33.99"', "longitude" :'W001°27\'53.00"'},\
-            { "Name":'PPN', "latitude" :'N42°44\'02.00"', "longitude" :'W001°42\'07.00"'},\
+            { "Name":'PPN'  , "latitude" :'N42°44\'02.00"', "longitude" :'W001°42\'07.00"'},\
             { "Name":'NOLSA', "latitude" :'N42°25\'39.00"', "longitude" :'W001°54\'27.00"'},\
             { "Name":'ALEPO', "latitude" :'N42°20\'36.99"', "longitude" :'W001°57\'48.00"'},\
             { "Name":'VASUM', "latitude" :'N42°16\'18.99"', "longitude" :'W002°00\'39.99"'},\
             { "Name":'GARVU', "latitude" :'N42°10\'15.99"', "longitude" :'W002°04\'40.00"'},\
             { "Name":'BANEV', "latitude" :'N41°30\'08.99"', "longitude" :'W002°30\'52.00"'},\
-            { "Name":'BAN', "latitude" :'N41°19\'25.00"', "longitude" :'W002°37\'47.00"'},\
+            { "Name":'BAN'  , "latitude" :'N41°19\'25.00"', "longitude" :'W002°37\'47.00"'},\
             { "Name":'GOTOR', "latitude" :'N40°06\'38.99"', "longitude" :'W003°43\'28.00"'},\
             { "Name":'KAMPO', "latitude" :'N39°44\'00.00"', "longitude" :'W004°03\'18.99"'},\
             { "Name":'MONTO', "latitude" :'N39°13\'17.99"', "longitude" :'W004°29\'49.00"'},\
             { "Name":'MOLIN', "latitude" :'N39°00\'00.00"', "longitude" :'W004°41\'08.99"'},\
-            { "Name":'HIJ', "latitude" :'N38°30\'29.00"', "longitude" :'W005°05\'58.99"'},\
-            { "Name":'SVL', "latitude" :'N37°25\'39.00"', "longitude" :'W005°45\'45.00"'},\
+            { "Name":'HIJ'  , "latitude" :'N38°30\'29.00"', "longitude" :'W005°05\'58.99"'},\
+            { "Name":'SVL'  , "latitude" :'N37°25\'39.00"', "longitude" :'W005°45\'45.00"'},\
             { "Name":'SANTA', "latitude" :'N37°40\'07.00"', "longitude" :'W006°17\'53.99"'},\
             { "Name":'ROSAL', "latitude" :'N38°01\'16.99"', "longitude" :'W007°06\'03.99"'},\
             { "Name":'EXONA', "latitude" :'N38°54\'15.99"', "longitude" :'W008°01\'00.00"'},
-
             ]
         
         route_LFPG_LFML = [
@@ -165,7 +163,6 @@ class AirlineRoutesWayPointsDatabase(object):
             { "Name":'SIQLE', "latitude" :'N47°01\'15.99"', "longitude" :'E003°14\'12.99"'},\
             { "Name":'UTUVA', "latitude" :'N45°51\'48.00"', "longitude" :'E003°29\'27.99"'},\
             { "Name":'LERGA', "latitude" :'N45°15\'26.00"', "longitude" :'E003°45\'00.99"'},
-            
             ]
         
         route_VOBL_VIDP = [
@@ -174,18 +171,17 @@ class AirlineRoutesWayPointsDatabase(object):
             { "Name":'VIRAM', "latitude" :'N15°21\'33.99"', "longitude" :'E078°05\'55.00"'},\
             { "Name":'BOSGA', "latitude" :'N16°12\'33.99"', "longitude" :'E078°14\'16.00"'},\
             { "Name":'SAKRO', "latitude" :'N16°34\'00.16"', "longitude" :'E078°17\'47.35"'},\
-            { "Name":'HIA', "latitude" :'N17°13\'40.10"', "longitude" :'E078°24\'20.87"'},\
+            { "Name":'HIA'  , "latitude" :'N17°13\'40.10"', "longitude" :'E078°24\'20.87"'},\
             { "Name":'BUSBO', "latitude" :'N19°14\'58.00"', "longitude" :'E078°07\'30.00"'},\
             { "Name":'ASIPI', "latitude" :'N20°31\'29.99"', "longitude" :'E077°52\'44.99"'},\
             { "Name":'TAMID', "latitude" :'N20°41\'17.99"', "longitude" :'E077°50\'56.00"'},\
             { "Name":'KAMLO', "latitude" :'N20°55\'08.99"', "longitude" :'E077°48\'02.99"'},\
             { "Name":'UPTAR', "latitude" :'N21°30\'42.00"', "longitude" :'E077°40\'54.99"'},\
             { "Name":'BIGIL', "latitude" :'N22°07\'01.99"', "longitude" :'E077°33\'56.00"'},\
-            { "Name":'BPL', "latitude" :'N23°16\'59.73"', "longitude" :'E077°20\'11.85"'},\
+            { "Name":'BPL'  , "latitude" :'N23°16\'59.73"', "longitude" :'E077°20\'11.85"'},\
             { "Name":'PUKES', "latitude" :'N24°42\'02.00"', "longitude" :'E077°16\'11.99"'},\
             { "Name":'BUKLO', "latitude" :'N25°00\'01.00"', "longitude" :'E077°15\'26.00"'},\
             { "Name":'BAVOX', "latitude" :'N26°08\'30.99"', "longitude" :'E077°12\'55.99"'},
-
             ]
         
         self.detailedRoutes = []
@@ -210,6 +206,7 @@ class AirlineRoutesWayPointsDatabase(object):
         ''' 11sept 2022 - LFPG - LPPT '''
         self.detailedRoutes.append ( { "Adep" : "LFPG" , "Ades": "LPPT" , "route": route_LFPG_LPPT })
         self.detailedRoutes.append ( { "Adep" : "LFPG" , "Ades": "LFML" , "route": route_LFPG_LFML })
+        ''' Bangalore to Indira Ghandi '''
         self.detailedRoutes.append ( { "Adep" : "VOBL" , "Ades": "VIDP" , "route": route_VOBL_VIDP })
 
         
@@ -223,7 +220,7 @@ class AirlineRoutesWayPointsDatabase(object):
         
         for route in self.detailedRoutes:
             
-            self.FileName = "AirlineRoute-" + route["Adep"] + '-' + route["Ades"] + ".xls" 
+            self.FileName = "AirlineRoute-" + route["Adep"] + '-' + route["Ades"] + ".xlsx" 
             self.FilesFolder = os.path.dirname(__file__)
 
             print ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
@@ -249,7 +246,7 @@ class AirlineRoutesWayPointsDatabase(object):
                 if wayPointName in wayPointsList:
                     print ( " wayPoint = {0} already in list".format(wayPointName))
                     wayPointDict = wayPointsDict[wayPointName]
-                    
+                    ''' if waypoint already in database then Lat and Lon must be identical '''
                     if ( wayPointDict["latitude"] != wayPoint["latitude"]):
                         raise ValueError("Waypoint = {0} - latitude are not identical")
                     if ( wayPointDict["longitude"] != wayPoint["longitude"]):
@@ -267,7 +264,7 @@ class AirlineRoutesWayPointsDatabase(object):
                     wayPointsList.append(wayPointName)
                 
             df = pd.DataFrame(orderedWayPoints)
-            df.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames)
+            df.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames , engine="openpyxl")
             
             
     def load(self):

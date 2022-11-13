@@ -16,7 +16,7 @@ class WayPointsDatabase(object):
     def __init__(self):
         self.className = self.__class__.__name__
         
-        self.FileName = 'WayPoints.xls'  
+        self.FileName = 'WayPoints.xlsx'  
         self.FilesFolder = os.path.dirname(__file__)
 
         print ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
@@ -49,7 +49,7 @@ class WayPointsDatabase(object):
             if df_source is not None:
                 df = df_source.append(df)
                 
-        df.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames)
+        df.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames, engine="openpyxl")
         
 
     def exists(self):

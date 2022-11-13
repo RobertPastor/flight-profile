@@ -90,12 +90,12 @@ def getAirlineRunWaysFromDB():
             'airlineAirport': airlineRunWay.Airport.AirportICAOcode,
             'airlineRunWayName' : airlineRunWay.Name,
             'airlineRunWayTrueHeadindDegrees': airlineRunWay.TrueHeadingDegrees})
-    print ( "Size of RunWays list = {0}".format(len(airlineRunWaysList)))
+    #print ( "Size of RunWays list = {0}".format(len(airlineRunWaysList)))
     return airlineRunWaysList
 
 
 def launchFlightProfile(request , airlineName):
-    print  ("launch Flight Profile - with airline = {0}".format(airlineName))
+    #print  ("launch Flight Profile - with airline = {0}".format(airlineName))
     if (request.method == 'GET'):
         
         airline = Airline.objects.filter(Name=airlineName).first()
@@ -106,8 +106,8 @@ def launchFlightProfile(request , airlineName):
             airlineRunWaysList = getAirlineRunWaysFromDB()
             response_data = {
                 'airlineAircrafts': airlineAircraftsList,
-                'airlineRoutes': airlineRoutesList,
-                'airlineRunWays': airlineRunWaysList
+                'airlineRoutes'   : airlineRoutesList,
+                'airlineRunWays'  : airlineRunWaysList
                 }
             return JsonResponse(response_data)
         else:

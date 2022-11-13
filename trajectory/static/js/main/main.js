@@ -1,6 +1,7 @@
 
 var worker = undefined;
 
+
 document.addEventListener('DOMContentLoaded', () => {
 	//console.log("DOM content loaded");
 	init();
@@ -96,7 +97,7 @@ function initWorker() {
 				
 				//console.log(`message received - ${event.data}`);
 
-                var progressBar = document.getElementById('workerId');
+                let progressBar = document.getElementById('workerId');
 				if (progressBar) {
 					progressBar.style.width = event.data + '%';
 					//progressBar.innerText = event.data + '%';
@@ -109,10 +110,30 @@ function initWorker() {
     }
 }
 
+function hideAllDiv(globus) {
+	
+	let airlineFleet = SingletonAirlineFleet.getInstance()
+	airlineFleet.hideAirlineFleetDiv();
+	
+	let airlineAirports = SingletonAirlineAirports.getInstance();
+	// false means hide
+	airlineAirports.showHideAllAirports(globus , false);
+	
+	let airlineRoutes = SingletonAirlineRoutes.getInstance();
+	airlineRoutes.hideAirlineRoutesDiv();
+	
+	let airlineProfileCosts = SingletonProfileCosts.getInstance();
+	airlineProfileCosts.hideFlightProfileDiv();
+	//hideAirlineCostsDiv();
+}
+
 function switchAirlines(globus) {
 	
 	$( "#airlineSelectId" ).change(function() {
-
+		
+		// hide all div created for the other airlines
+		hideAllDiv(globus)
+		
 		let airlineName = $("#airlineSelectId option:selected").val();
 		
 		if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
@@ -131,77 +152,77 @@ function switchAirlines(globus) {
 					let viewExtent = new og.Extent( SouthWest , NorthEast );
 
 					globus.planet.viewExtent(viewExtent);
-				
 				}
 			})
 		}
-  
     });
 }
 
 function loadAirlines() {
 	
 	if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
-		
 		airlines.forEach ( function ( airline ) {
-			
 			let option = document.createElement("option");
-            option.text = "AmericanWings";
+            //option.text = "AmericanWings";
 			let select = document.getElementById("airlineSelectId")
 			if ( select ) {
 				
 				let option = document.createElement("option");
                 option.text = airline["Name"];
 				select.add(option);
-				
 			}
 		});
 	}
 }
 
-function hideAllDiv() {
-	hideAirlineFleetDiv();
-	hideAirlineRoutesDiv();
-	hideFlightProfileDiv();
-	hideAirlineCostsDiv();
-}
-
 function initTools(globus, viewExtent) {
 			
+	// add all controls that are derived from an og control class
 	globus.planet.addControl(new MainControl());
 	globus.planet.addControl(new HelpControl());
 	globus.planet.addControl(new D3Control());
 	globus.planet.addControl(new DialogControl());
 	
 	globus.planet.addControl(new AirlineFleetControl());
-	// load airline fleet
-	initAirlineFleet();
 	
-	globus.planet.addControl(new AirlineRoutesControl());
-	// load routes
-	initAirlineRoutes(globus);
+	// load airline fleet
+	let airlineFleet = SingletonAirlineFleet.getInstance()
+	airlineFleet.initAirlineFleet();
 	
 	//console.log("init other tools");
-	// load the airline airports
-	// need to do it after the show airports button is defined in MainControl
-	initAirports(globus);
+	// contextual menu to show the routes from one right click selected airport 
+	globus.planet.addControl(new AirlineAirportsRoutesControl());
 	
+	// load the airline airports
+	let airlineAirports = SingletonAirlineAirports.getInstance();
+	airlineAirports.initAirports(globus);
+	
+	globus.planet.addControl(new AirlineRoutesControl());
+
 	// load the airline routes waypoints
-	initWayPoints(globus, viewExtent)
+	let airlineRoutes = SingletonAirlineRoutes.getInstance();
+	airlineRoutes.initAirlineRoutes(globus);
+
+	let airlineWayPoints = SingletonAirlineWayPoints.getInstance();
+	airlineWayPoints.initWayPoints(globus, viewExtent)
 	
 	// load a flight profile
 	//showFlightProfile(globus);
 	
 	// compute Flight Profile
 	globus.planet.addControl(new FlighProfileControl());
-	launchFlightProfile(globus);
+	let airlineProfileCosts = SingletonProfileCosts.getInstance();
+	airlineProfileCosts.launchFlightProfile(globus);
 	
 	// compute costs
-	globus.planet.addControl(new AirlineCostsControl());
+	// flight profile inputs are shared with cost controls inputs
+	//globus.planet.addControl(new AirlineCostsControl());
 	globus.planet.addControl(new AirlineCostsResultsControl());
 	initCostsComputation();
 	
+	// now finish by loading the different airlines
 	loadAirlines();
+	// prepare to switch from one airline to the other
 	switchAirlines(globus);
 }
 

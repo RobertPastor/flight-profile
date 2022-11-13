@@ -50,6 +50,7 @@ function showCostsResults( dataJson ) {
 
 function hideAirlineCostsDiv() {
 	
+	// html elements are defined in AirlineCostsControls.js 
 	if ( $('#airlineCostsMainDivId').is(":visible") ) {
 		
 		$('#airlineCostsMainDivId').hide();

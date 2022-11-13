@@ -105,7 +105,7 @@ class AirlineFleetDataBase(object):
 
                         index = index + 1
                         
-                ''' one ac per row '''
+                ''' one aircraft per row '''
                 aircraftICAOcode = badaAircraftDatabase.getAircraftICAOcode(aircraftFullName)
                 logging.info ( aircraftFullName )
                 print ( aircraftFullName )

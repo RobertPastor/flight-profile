@@ -25,14 +25,12 @@ function Help () {
 		this.helpArray.push("With the aim to assess costs and resource availability.<br>");
 		
 		this.helpArray.push("<h3>Airlines</h3>");
-		this.helpArray.push("There are 3 defined airlines, each with its fleet, airports, routes, and costs.<br>");
+		this.helpArray.push("There are 3 defined airlines, each with its fleet, airports, routes, and unitary costs.<br>");
 		this.helpArray.push("All these informations are some kind of parameters, they are configurable.<br>");
 
-		
 		this.helpArray.push("<h3>Airline Fleet</h3>");
 		this.helpArray.push("The fleet is composed of types of aircrafts, number of available aircrafts, number of seats, and operational costs per flight hour.<br>");
 		this.helpArray.push("Using a flight leg duration, it allows to compute costs based upon flight duration Added to fuel costs.<br>");
-
 
 		this.helpArray.push("<h3>Airline Airports</h3>");
 		this.helpArray.push("The airline has a set of departure and arrival airports.<br>");
@@ -44,7 +42,6 @@ function Help () {
 		this.helpArray.push("The airline routes are defined by a set of WayPoints that are linking a departure to an arrival airport.<br>");
 		this.helpArray.push("<u><b>Warning:</b></u> for the time being, these routes are not dependent upon the departure and arrival runways.<br>");
 		this.helpArray.push("Future improvements : SID and STAR have to be implemented.<br>");
-
 
 		this.helpArray.push("<h3>Flight Profile</h3>");
 		this.helpArray.push("A vertical profile is drawn on top of the horizontal route.<br>");
@@ -72,7 +69,6 @@ function Help () {
 		this.helpArray.push('<a href="https://trajectoire-predict.monsite-orange.fr/page-557223c123784.html" target="_blank">Aircraft Trajectory Prediction</a>');
 		this.helpArray.push("<br>");
 		this.helpArray.push('<a href="https://trajectoire-predict.monsite-orange.fr/index.html" target="_blank">Prédiction de Trajectoire des Avions de Ligne</a>');
-
 
 	};
 }
