@@ -19,7 +19,7 @@ class AirlineAirportsRoutesControl extends og.Control {
 		let thead = document.createElement('thead');
 		let row_1 = document.createElement('tr');
 								
-		let th_list = [ 'Airline' , 'Departure Airport' , 'ADep ICAO Code', 'Destination Airport', 'ADes ICAO Code']
+		let th_list = [ 'Airline' , 'Departure Airport' , 'Departure ICAO Code', 'Arrival Airport', 'Arrival ICAO Code']
 		let th = undefined;
 		th_list.forEach ( function ( element ) {
 			th = document.createElement('th');

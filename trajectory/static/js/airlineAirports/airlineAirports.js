@@ -28,7 +28,16 @@ class AirlineAirports {
 		console.log("Airline Airports constructor") 
 	}
 	
-	writeRoutesFromStartingAirport( globus , departureAirportICAOcode , airlineRoutesArray ) {
+	writeRoutesFromStartingAirport( globus , departureAirportICAOcode , airlineRoutesArray , position ) {
+		
+		// modify the div position
+		// Update the position of `#div` dynamically
+		$('#airlineAirportsRoutesMainDivId').css({
+			'position': 'absolute',
+			'top': position["y"] + 5, // Leave some margin
+			'left': position["x"] + 5, // Leave some margin
+			'display': 'block'
+		});
 		
 		$('#airlineAirportsRoutesMainDivId tbody').empty();
 		for (let airlineRouteId = 0; airlineRouteId < airlineRoutesArray.length; airlineRouteId++ ) {
@@ -60,7 +69,7 @@ class AirlineAirports {
 		}
 	}
 	
-	loadRoutesStartingFromAirport ( globus, departureAirportICAOcode ) {
+	loadRoutesStartingFromAirport ( globus, departureAirportICAOcode , position ) {
 		
 		// get the name of the airline
 		let airlineName = $("#airlineSelectId option:selected").val();
@@ -76,7 +85,7 @@ class AirlineAirports {
 					//alert("Data: " + data + "\nStatus: " + status);
 					var dataJson = eval(data);		
 					var airlineRoutesArray = dataJson["airlineRoutes"]
-					SingletonAirlineAirports.getInstance().writeRoutesFromStartingAirport(  globus, departureAirportICAOcode, airlineRoutesArray );
+					SingletonAirlineAirports.getInstance().writeRoutesFromStartingAirport(  globus, departureAirportICAOcode, airlineRoutesArray , position );
 					
 				},
 				error: function(data, status) {
@@ -133,12 +142,15 @@ class AirlineAirports {
 				console.log("right click - layer name = " + this.name);
 				console.log("right click - airport name = " + e.pickingObject.label._text);
 				
+				let position = {}
+				position["x"] = e.clientX;
+				position["y"] = e.clientY
 				
 				// show table with routes starting in this airport
 				$("#airlineAirportsRoutesMainDivId").show();
 				
 				let airportICAOcode = this.name.split("-")[1];
-				SingletonAirlineAirports.getInstance().loadRoutesStartingFromAirport(globus, airportICAOcode);
+				SingletonAirlineAirports.getInstance().loadRoutesStartingFromAirport(globus, airportICAOcode, position);
 
 			});
 			
