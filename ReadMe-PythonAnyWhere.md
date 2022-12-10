@@ -345,4 +345,86 @@ You're using the staticfiles app without having set the STATIC_ROOT setting to a
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+# configure the airline database
+
+(airlineservices) 19:27 ~/flight-profile (master)$ python manage.py AirlineDatabaseLoad
+AmericanWings
+EuropeanWings
+IndianWings
+(airlineservices) 19:27 ~/flight-profile (master)$
+
+# configure the airline fleet database
+
+airlineservices) 19:27 ~/flight-profile (master)$ python manage.py AirlineFleetDatabaseLoad
+airline fleet database exists
+Bada aircraft database read correctly = True
+/home/airlineservices/flight-profile/airline/management/commands/AirlineFleet/AirlineFleet.xls
+--> row --> 0
+--> row --> 1
+1
+Airbus A320-200
+--> row --> 2
+2
+Airbus A320
+AmericanWings
+Airbus A320
+--> row --> 3
+--> row --> 3
+3
+Airbus A330-200
+AmericanWings
+Airbus A330-200
+--> row --> 4
+4
+Boeing 737-800
+AmericanWings
+Boeing 737-800
+--> row --> 5
+5
+Boeing 737-900ER
+--> row --> 6
+6
+Airbus A320-200
+--> row --> 7
+7
+Airbus A320
+EuropeanWings
+Airbus A320
+--> row --> 8
+8
+Airbus A330-200
+EuropeanWings
+Airbus A330-200
+--> row --> 9
+9
+Boeing 737-800
+EuropeanWings
+Boeing 737-800
+--> row --> 10
+10
+Boeing 737-900ER
+--> row --> 11
+11
+Airbus A320-200
+--> row --> 12
+12
+Airbus A320
+IndianWings
+Airbus A320
+--> row --> 13
+13
+Airbus A330-200
+IndianWings
+Airbus A330-200
+--> row --> 14
+14
+Boeing 737-800
+IndianWings
+Boeing 737-800
+--> row --> 15
+15
+Boeing 737-900ER
+read airline fleet database result = True
+(airlineservices) 19:29 ~/flight-profile (master)$
+
 

@@ -135,6 +135,9 @@ dmypy.json
 *.xlsx
 *.kml
 
+#exception for configuration file with xlsx extension
+!airline/management/commands/AirlineRoutes/AirlineRoutesAirportsDepartureArrival.xlsx
+
 #static files
 staticfiles/
 staticfiles/*
