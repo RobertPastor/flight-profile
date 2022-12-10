@@ -46,6 +46,14 @@ th {
 	display: none;
 }
 
+.launchComputeProfileClass {
+	 display: table-cell;
+}
+
+.launchComputeCostsClass {
+	 display: table-cell;
+}
+
 .question_mark_bg {
 	background-color:	#60D6A7;
 }

@@ -1,26 +1,27 @@
 '''
-Created on 1 sept. 2021
+Created on 29 nov. 2022
 
-@author: robert PASTOR
+@author: robert
 '''
 import os
 import logging 
+import pandas as pd
 
-from xlrd import open_workbook
 from airline.models import AirlineRoute
 from airline.models import Airline
 
-
 HeaderNames = ["Airline" , "Departure Airport", "Departure Airport ICAO Code", "Arrival Airport", "Arrival Airport ICAO Code"]
 
-class AirlineRoutesDataBase(object):
+
+class AirlineRoutesDataBaseXlsx(object):
+    
     FilePath = ''
     RoutesAirports = []
 
     def __init__(self):
         self.className = self.__class__.__name__
 
-        self.FilePath = "AirlineRoutesAirportsDepartureArrival.xls"
+        self.FilePath = "AirlineRoutesAirportsDepartureArrival.xlsx"
         
         #self.FilesFolder = os.getcwd()
         self.FilesFolder = os.path.dirname(__file__)
@@ -29,63 +30,41 @@ class AirlineRoutesDataBase(object):
         self.FilePath = os.path.abspath(self.FilesFolder+ os.path.sep + self.FilePath)
         logging.info ( self.className + ': file path= {0}'.format(self.FilePath) )
         
+        self.sheetName = "Routes"
+        
         
     def exists(self):
         return os.path.exists(self.FilePath) 
     
-    
     def read(self):
-        ''' this method reads the whole dataset file - not only the headers '''
-        logging.info (self.FilePath)
-        assert len(self.FilePath)>0 and os.path.isfile(self.FilePath) 
         
-        book = open_workbook(self.FilePath, formatting_info=True)
-        ''' assert there is only one sheet '''
-        self.sheet = book.sheet_by_index(0)
-        #logging.info ( self.className + ' Sheet contains - number of rows = {0}'.format(self.sheet.nrows))
-        for row in range(self.sheet.nrows):
-            #logging.info ( '--> row --> {0}'.format(row) )
-            rowValues = self.sheet.row_values(row, start_colx=0, end_colx=self.sheet.ncols)
-            if row == 0:
-                ''' header row '''
-                self.ColumnNames = {}
-                index = 0
-                for column in rowValues:
-                    if column not in HeaderNames:
-                        print ( self.className + ': ERROR - expected Routes Airports column name= {0} not in Header names'.format(column) )
-                        return False
-                    else:
-                        self.ColumnNames[column] = index
-                    index += 1
+        if os.path.exists(self.FilePath):
+            df_source = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName , engine="openpyxl"))
+            
+            for index, row in df_source.iterrows():
+                print('Index is: {}'.format(index))
+                print('ID is: {} - Airline is: {} - Departure Airport = {}'.format(index, row['Airline'], row['Departure Airport ICAO Code']))
+                print('ID is: {} - Airline is: {} - Arrival AIrport = {}'.format(index, row['Airline'], row['Arrival Airport ICAO Code']))
 
-            else:
-                #logging.info ( str(row) )
-                index = 0
-                route = {}
-                for cell in rowValues:
-                    
-                    if len(str(cell))>0:
-                        #logging.info ( str(cell) )
-                        route[HeaderNames[index]] = str(cell)
-                        
-                    index = index + 1
-                logging.info ( route )
-                airline = Airline.objects.filter(Name=route[HeaderNames[0]]).first()
+                Route = {}
+                for header in HeaderNames:
+                    Route[header] = row[header]
+                
+                self.RoutesAirports.append(Route)
+                
+                airline = Airline.objects.filter(Name=row[HeaderNames[0]]).first()
                 if (airline):
                     airlineRoute = AirlineRoute(
                         airline = airline,
-                        DepartureAirport = route[HeaderNames[1]],
-                        DepartureAirportICAOCode = route[HeaderNames[2]],
-                        ArrivalAirport = route[HeaderNames[3]],
-                        ArrivalAirportICAOCode = route[HeaderNames[4]]
+                        DepartureAirport = row[HeaderNames[1]],
+                        DepartureAirportICAOCode = row[HeaderNames[2]],
+                        ArrivalAirport = row[HeaderNames[3]],
+                        ArrivalAirportICAOCode = row[HeaderNames[4]]
                         )
                     print ( str(airlineRoute) )
                     airlineRoute.save()
-                    self.RoutesAirports.append(route)
-        
-        return True
-    
-    
+                
+                
     def dump(self):
         for route in self.RoutesAirports:
             logging.info ( route )

@@ -105,6 +105,8 @@ class AirlineAirports {
 		let airlineName = $("#airlineSelectId option:selected").val();
 		airlineName = encodeURIComponent(airlineName);
 
+		// need to prefix an airport ICAO code with the airline name 
+		// as the same airport might be used by several airlines
 		let layerName = airlineName + "-" + airport.AirportICAOcode;
 		//console.log( layerName ) ;
 		
@@ -188,6 +190,8 @@ class AirlineAirports {
 	}
 
 	showHideAllAirports( globus, showHide ) {
+		
+		console.log("show hide all airports = " + showHide.toString() );
 	
 		// init progress bar.
 		initProgressBar();
@@ -197,26 +201,29 @@ class AirlineAirports {
 		let airlineName = $("#airlineSelectId option:selected").val();
 		airlineName = encodeURIComponent(airlineName);
 
-		// use ajax to get the data 
-		$.ajax( {
-			method: 'get',
-			url :  "trajectory/airports/" + airlineName,
-			async : true,
-			success: function(data, status) {
-											
-				//alert("Data: " + data + "\nStatus: " + status);
-				var dataJson = eval(data);
-				SingletonAirlineAirports.getInstance().loadAirports( globus, dataJson , showHide );	
-			},
-			error: function(data, status) {
-				console.log("Error - show Airports : " + status + " Please contact your admin");
-				showMessage ( "Error - show Airports" , data );
-			},
-			complete : function() {
-				stopBusyAnimation();
-				document.getElementById("btnAirports").disabled = false
-			}
-		} );
+		if ( showHide == true ) {
+
+			// use ajax to get the data 
+			$.ajax( {
+				method: 'get',
+				url :  "trajectory/airports/" + airlineName,
+				async : true,
+				success: function(data, status) {
+												
+					//alert("Data: " + data + "\nStatus: " + status);
+					var dataJson = eval(data);
+					SingletonAirlineAirports.getInstance().loadAirports( globus, dataJson , showHide );	
+				},
+				error: function(data, status) {
+					console.log("Error - show Airports : " + status + " Please contact your admin");
+					showMessage ( "Error - show Airports" , data );
+				},
+				complete : function() {
+					stopBusyAnimation();
+					document.getElementById("btnAirports").disabled = false
+				}
+			} );
+		}
 	
 	}
 

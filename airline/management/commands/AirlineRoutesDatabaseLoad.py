@@ -1,6 +1,6 @@
 
 from django.core.management.base import BaseCommand
-from airline.management.commands.AirlineRoutes.AirlineRoutesAirportsReader import AirlineRoutesDataBase
+from airline.management.commands.AirlineRoutes.AirlineRoutesAirportsReaderNew import AirlineRoutesDataBaseXlsx
 from airline.models import AirlineRoute
 
 class Command(BaseCommand):
@@ -10,7 +10,7 @@ class Command(BaseCommand):
         
         AirlineRoute.objects.all().delete()
         
-        airlineRoutes = AirlineRoutesDataBase()
+        airlineRoutes = AirlineRoutesDataBaseXlsx()
         if (airlineRoutes.exists()):
             print("airline routes database exists")
             ret = airlineRoutes.read()

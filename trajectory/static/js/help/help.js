@@ -33,7 +33,7 @@ function Help () {
 		this.helpArray.push("Using a flight leg duration, it allows to compute costs based upon flight duration Added to fuel costs.<br>");
 
 		this.helpArray.push("<h3>Airline Airports</h3>");
-		this.helpArray.push("The airline has a set of departure and arrival airports.<br>");
+		this.helpArray.push("Each airline has a set of departure and arrival airports.<br>");
 		this.helpArray.push("These airports are the starting or ending points of the flight legs.<br>");
 		this.helpArray.push("<u><b>Note:</b></u> When the cursor mouves over an airport, the pointer changes its shape meaning that the mouse buttons are active.<br>");
 		this.helpArray.push("<u><b>Warning:</b></u> you will have to dezoom in order to see an airport in Alaska or in France.<br>");
