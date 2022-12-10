@@ -78,6 +78,7 @@ WSGI_APPLICATION = 'FlightProfile.wsgi.application'
 ''' you need to create the database before in pgAdmin4 '''
 ''' superuser is admin '''
 ''' password is bobby1xx '''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -86,6 +87,21 @@ DATABASES = {
         'PASSWORD': 'bobby1xx',
         'HOST': '127.0.0.1',
         'PORT': '5432',    }
+}
+
+DATABASES = {
+    
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'airlines$airlines',
+        'USER': 'airlines',
+        'PASSWORD': 'Bobby1&&&xxx',
+        'HOST': 'airlines.mysql.eu.pythonanywhere-services.com',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+            }
+    }
 }
 
 
@@ -130,8 +146,8 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'flight-profile.storage.WhiteNoiseStaticFilesStorage'
 
 # Configure Django App for Heroku.
-import django_heroku
-django_heroku.settings(locals())
+#import django_heroku
+#django_heroku.settings(locals())
 
 
 LOGGING = {
