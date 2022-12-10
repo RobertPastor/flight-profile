@@ -338,7 +338,11 @@ in settings.py add the allowed host
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'airlineservices.eu.pythonanywhere.com']
 
 
+#ImproperlyConfigured at /
+You're using the staticfiles app without having set the STATIC_ROOT setting to a filesystem path.
 
-
+'# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
