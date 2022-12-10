@@ -223,6 +223,48 @@ Database name: airlineservices
 
 MySQL password:
 
+# check git remote in the bash console
+need to move in the folder containing the .git
+
+airlineservices) 14:22 ~ $ cd flight-profile/
+(airlineservices) 14:22 ~/flight-profile (master)$ git remote -v
+origin  https://github.com/RobertPastor/flight-profile.git (fetch)
+origin  https://github.com/RobertPastor/flight-profile.git (push)
+(airlineservices) 14:22 ~/flight-profile (master)$ 
+
+## update MySQL database settings (after performing changes in GitHub) - run git pull
+
+(airlineservices) 14:23 ~/flight-profile (master)$ git pull
+remote: Enumerating objects: 9, done.
+remote: Counting objects: 100% (9/9), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 5 (delta 3), reused 5 (delta 3), pack-reused 0
+Unpacking objects: 100% (5/5), 2.92 KiB | 42.00 KiB/s, done.
+From https://github.com/RobertPastor/flight-profile
+   20ea4e9..4409c8b  master     -> origin/master
+Updating 20ea4e9..4409c8b
+Fast-forward
+ FlightProfile/settings.py |   6 ++---
+ ReadMe-PythonAnyWhere.md  | 198 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 201 insertions(+), 3 deletions(-)
+(airlineservices) 14:23 ~/flight-profile (master)$ 
+
+
+# make migrations and migrate
+
+airlineservices) 14:25 ~/flight-profile (master)$ python manage.py makemigrations
+SystemCheckError: System check identified some issues:
+ERRORS:
+airline.Airline.Name: (mysql.E001) MySQL does not allow unique CharFields to have a max_length > 255.
+(airlineservices) 14:25 ~/flight-profile (master)$ 
+
+## change the models and reduce the name to 250
+
+
+
+
+
+
 
 
 

@@ -3,7 +3,7 @@ from django.db import models
 from trajectory.models import AirlineAirport, AirlineRunWay
 
 class Airline(models.Model):
-    Name = models.CharField( max_length = 500 , unique=True)
+    Name = models.CharField( max_length = 250 , unique=True)
     MinLongitudeDegrees = models.FloatField()
     MinLatitudeDegrees  = models.FloatField()
     MaxLongitudeDegrees = models.FloatField()
