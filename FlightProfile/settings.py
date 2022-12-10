@@ -93,10 +93,10 @@ DATABASES = {
     
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'airlines$airlines',
-        'USER': 'airlines',
+        'NAME': 'airlineservices$airlineservices',
+        'USER': 'airlineservices',
         'PASSWORD': 'Bobby1&&&xxx',
-        'HOST': 'airlines.mysql.eu.pythonanywhere-services.com',
+        'HOST': 'airlineservices.mysql.eu.pythonanywhere-services.com',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
