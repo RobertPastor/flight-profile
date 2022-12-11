@@ -647,8 +647,8 @@ class AirlineProfileCosts {
 								
 							} else {
 								// create layers does also a delete layer if name found
-								let layerKML = deleteCreateKMLLayer(globus , route);
-								let rayLayer = deleteCreateRayLayer(globus , route)
+								let layerKML = SingletonProfileCosts.getInstance().deleteCreateKMLLayer(globus , route);
+								let rayLayer = SingletonProfileCosts.getInstance().deleteCreateRayLayer(globus , route)
 								
 								// convert JSON to XML
 								var x2js = new X2JS();
