@@ -105,7 +105,7 @@ class FlighProfileControl extends og.Control {
 		div_5.classList.add("launchComputeProfileClass");
 
 		let label_5 = document.createElement("label");
-		label_5.innerHTML = "Click to launch the computation -> " ;
+		label_5.innerHTML = "Click to -> " ;
 		div_5.appendChild(label_5);
 		
 		let button_5 = document.createElement("button");
@@ -122,7 +122,7 @@ class FlighProfileControl extends og.Control {
 		div_6.classList.add("launchComputeCostsClass");
 
 		let label_6 = document.createElement("label");
-		label_6.innerHTML = "Click to launch the computation -> " ;
+		label_6.innerHTML = "Click to -> " ;
 		div_6.appendChild(label_6);
 		
 		let button_6 = document.createElement("button");

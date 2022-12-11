@@ -129,7 +129,7 @@ def getAirport(airportICAOcode):
 def computeFlightProfile(request, airlineName):
     
     logger.setLevel(logging.INFO)
-    print ("compute Flight Profile - for airline = {0}".format(airlineName))
+    logging.info ("compute Flight Profile - for airline = {0}".format(airlineName))
     
     #routeWayPointsList = []
     if (request.method == 'GET'):

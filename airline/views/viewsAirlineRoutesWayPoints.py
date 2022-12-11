@@ -43,7 +43,7 @@ def getRouteWayPoints(request, Adep, Ades):
         logger.debug  ( Ades )
         route = AirlineRoute.objects.filter(DepartureAirportICAOCode=Adep, ArrivalAirportICAOCode=Ades).first()
         if route :
-            print ( str(route) )
+            logging.info ( str(route) )
             routeWayPoints = AirlineRouteWayPoints.objects.filter(Route=route)
             response_data = {'airlineRouteWayPoints': getWayPointsOfRoute(routeWayPoints)}
             return JsonResponse(response_data)

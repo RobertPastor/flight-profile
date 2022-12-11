@@ -116,7 +116,9 @@ th {
 	position: absolute;
 	top : 60px;
 	left : 10px;
+	z-index: 100;
 }
+
 
 .airlineSelect {
 	width : 100%;

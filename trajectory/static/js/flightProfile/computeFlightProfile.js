@@ -243,6 +243,7 @@ class AirlineProfileCosts {
 		// append the svg object to the body of the page
 		//removeAllChilds (document.getElementById("dialogId"))
 		removeAllChilds (document.getElementById("d3vizId"));
+		document.getElementById("d3vizId").classList.add("d2Div");
 		
 		// Creating a div element at the end
 		//$("#dialogId").append('<div id="d3vizId" style="width: 100%; height: 100%;"></div>');   

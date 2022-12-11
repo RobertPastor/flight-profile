@@ -1,4 +1,5 @@
 from django.db import models
+import logging
 # Create your models here.
 from trajectory.models import AirlineAirport, AirlineRunWay
 
@@ -45,11 +46,11 @@ class AirlineRoute(models.Model):
         for airlineRoute in airlineRoutes:
             adep = airlineRoute.DepartureAirportICAOCode
             if ( adep in airportsICAOcodeList ) == False :
-                print ( adep )
+                logging.info ( adep )
                 airportsICAOcodeList.append(adep)
             ades = airlineRoute.ArrivalAirportICAOCode
             if ( ades in airportsICAOcodeList ) == False :
-                print ( ades )
+                logging.info ( ades )
                 airportsICAOcodeList.append(ades)
             
         return airportsICAOcodeList
@@ -81,7 +82,7 @@ class AirlineRoute(models.Model):
                 if AdesRunWay and ( len (AdesRunWay.Name ) > 0):
                     strRoute += "/" + AdesRunWay.Name 
             
-        print ( strRoute )
+        logging.info ( strRoute )
         return strRoute
   
 
@@ -101,7 +102,7 @@ class AirlineRouteWayPoints(models.Model):
                 first = False
             else:
                 routeAsString += "-" + str(wayPoint.WayPoint).strip()
-        print ( routeAsString )
+        logging.info ( routeAsString )
         return routeAsString
         
 

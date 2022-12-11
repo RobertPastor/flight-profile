@@ -311,16 +311,16 @@ class TurnLeg(Graph):
                         continueTurning = (currentHeadingDegrees >= self.finalHeadingDegrees)
                 
             ''' define the name of the new way-point '''
-            name = 'turn-{0:.1f}-degrees'.format( currentHeadingDegrees)
+            name = 'turn-{0:.1f}-deg'.format( currentHeadingDegrees)
             ''' patch do not define a name as it slows opening the KML file in Google Earth '''
             name = ''
             #logging.info self.className + ' next way-point= ' + name
             ''' convert heading into bearing '''
             bearingDegrees = math.fmod ( currentHeadingDegrees + 180.0 , 360.0 ) - 180.0
             newIntermediateWayPoint = intermediateWayPoint.getWayPointAtDistanceBearing(
-                                                                                        Name = name, 
-                                                                                  DistanceMeters = deltaDistanceMeters, 
-                                                                                  BearingDegrees = bearingDegrees)
+                                                                                Name = name, 
+                                                                                DistanceMeters = deltaDistanceMeters, 
+                                                                                BearingDegrees = bearingDegrees)
             
 #             if lastTurn == True:
 #                 arrivalTouchDownWayPoint = self.aircraft.getArrivalRunwayTouchDownWayPoint()
@@ -352,7 +352,7 @@ class TurnLeg(Graph):
             
             
         ''' set name of last point '''
-        name = 'turn-{0:.1f}-degrees'.format(currentHeadingDegrees)
+        name = 'turn-{0:.1f}-deg'.format(currentHeadingDegrees)
         newIntermediateWayPoint.setName(name)
         ''' reverse the list if needed => and build the route  '''
         if self.reverse == True:
