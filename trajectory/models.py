@@ -1,4 +1,5 @@
 import os
+import logging
 from django.db import models
 
 
@@ -20,7 +21,7 @@ class BadaSynonymAircraft(models.Model):
     def getAircraftPerformanceFile(self):
         OPFfilePrefix = self.AircraftFile    
         filePath = os.path.join ( os.path.dirname(__file__) , BADA_381_DATA_FILES , OPFfilePrefix + OPFfileExtension )
-        print ( filePath )
+        logging.info ( filePath )
         return filePath
         
     def aircraftPerformanceFileExists(self):

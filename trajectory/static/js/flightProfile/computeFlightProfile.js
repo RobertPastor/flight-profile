@@ -242,8 +242,9 @@ class AirlineProfileCosts {
 
 		// append the svg object to the body of the page
 		//removeAllChilds (document.getElementById("dialogId"))
+		// d3vizId is define in MainControl.js
 		removeAllChilds (document.getElementById("d3vizId"));
-		document.getElementById("d3vizId").classList.add("d2Div");
+		//document.getElementById("d3vizId").classList.add("d3Div");
 		
 		// Creating a div element at the end
 		//$("#dialogId").append('<div id="d3vizId" style="width: 100%; height: 100%;"></div>');   
@@ -365,16 +366,18 @@ class AirlineProfileCosts {
 			 
 		// What happens when the mouse move -> show the annotations at the right positions.
 		function mouseover() {
+			console.log("mouse over")
 			focus.style("opacity", 1)
 			focusText.style("opacity",1)
 		}
 
 		function mousemove(domElement) {
+			console.log("mouse move")
 			// recover coordinate we need
 			let x0 = x.invert(d3.pointer(domElement)[0]);
 			let i = bisect(data, x0, 1);
 			try {
-				selectedData = data[i]
+				let selectedData = data[i]
 				focus
 					.attr("cx", x(selectedData.x))
 					.attr("cy", y(selectedData.y))
@@ -383,7 +386,7 @@ class AirlineProfileCosts {
 					.attr("x", x(selectedData.x) + 15)
 					.attr("y", y(selectedData.y) + 15)
 			} catch (err) {
-					console.log(JSON.stringify(err))
+				console.log(JSON.stringify(err))
 			}
 		}
 						

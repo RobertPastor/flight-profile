@@ -58,6 +58,7 @@ Sample entries
 '''
 import os
 import csv
+import logging
 
 from trajectory.models import AirlineAirport
 from airline.models import AirlineRoute
@@ -84,9 +85,9 @@ class AirportsDatabase(object):
         
         self.airportsFilesFolder = os.path.dirname(__file__)
 
-        print ( self.className + ': file folder= {0}'.format(self.airportsFilesFolder) )
+        logging.info ( self.className + ': file folder= {0}'.format(self.airportsFilesFolder) )
         self.FilePath = (self.airportsFilesFolder + os.path.sep + self.FilePath)
-        print ( self.className + ': file path= {0}'.format(self.FilePath) )
+        logging.info ( self.className + ': file path= {0}'.format(self.FilePath) )
         
         
     def exists(self):
@@ -108,7 +109,7 @@ class AirportsDatabase(object):
                         if not(country in self.countriesDb):
                             self.countriesDb.append(country)
                 self.airportsDb[row["ICAO Code"]] = airportDict
-                print ( row["ICAO Code"] )
+                logging.info ( row["ICAO Code"] )
                 try:
                     ''' read and load only airports that are defined in the airline routes '''
                     if ( row["ICAO Code"] in airlineRoutesAirportsList ):
@@ -157,11 +158,12 @@ class AirportsDatabase(object):
         if self.airportsDb is None: 
             return
         for row in self.airportsDb:
-            print ( self.className + ' - ' + row )
+            logging.info ( self.className + ' - ' + row )
     
     
     def getNumberOfAirports(self):
-        if self.airportsDb is None: return 0
+        if self.airportsDb is None:
+            return 0
         return len(self.airportsDb.keys())
             
             
@@ -173,7 +175,8 @@ class AirportsDatabase(object):
                
                 
     def getICAOCode(self, airportName = ''):
-        if self.airportsDb is None: return ""
+        if self.airportsDb is None:
+            return ""
         airportsIcaoCodeList = []
         for key, airport in self.airportsDb.items():
             if str(airportName).lower() in str(airport["Airport Name"]).lower():
