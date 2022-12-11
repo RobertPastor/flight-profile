@@ -15,7 +15,7 @@ const SingletonProfileCosts = (function () {
 	let instance;
 
     function createInstance() {
-        var object = new AirlineProfileCosts();
+        let object = new AirlineProfileCosts();
         return object;
     }
 
@@ -45,7 +45,7 @@ class AirlineProfileCosts {
 		// empty the selector
 		$('#airlineAircraftId').empty()
 
-		for (var index = 0; index < airlineAircraftsArray.length; index++) {
+		for (let index = 0; index < airlineAircraftsArray.length; index++) {
 		  $('#airlineAircraftId').append('<option value="' + airlineAircraftsArray[index]["airlineAircraftICAOcode"] + '">' + airlineAircraftsArray[index]["airlineAircraftFullName"] + '</option>');
 		}
 	}
@@ -60,9 +60,9 @@ class AirlineProfileCosts {
 		// empty the selector
 		$('#airlineRouteId').empty()
 
-		for (var index = 0; index < airlineRoutesArray.length; index++) {
-			var airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
-			var airlineRouteKey = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
+		for (let index = 0; index < airlineRoutesArray.length; index++) {
+			let airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
+			let airlineRouteKey = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
 			$('#airlineRouteId').append('<option value="' + airlineRouteKey + '">' + airlineRouteName + '</option>');
 		}
 	}
@@ -95,10 +95,10 @@ class AirlineProfileCosts {
 	loadFlightProfileWayPoints( layerWayPoints, dataJson) {
 	
 		// get all waypoints
-		var waypoints = eval(dataJson['waypoints']);
+		let waypoints = eval(dataJson['waypoints']);
 
 		// add the waypoints
-		for (var wayPointId = 0; wayPointId < waypoints.length; wayPointId++ ) {
+		for (let wayPointId = 0; wayPointId < waypoints.length; wayPointId++ ) {
 			// insert one waypoint
 			loadOneFlightProfileWayPoint( layerWayPoints, waypoints[wayPointId] );
 		}
@@ -107,8 +107,8 @@ class AirlineProfileCosts {
 	loadFlightProfileOneAirport( layerAirports, airport ) {
 	
 		let longitude = parseFloat(airport.Longitude);
-		var latitude = parseFloat(airport.Latitude);
-		var name = airport.AirportName;
+		let latitude = parseFloat(airport.Latitude);
+		let name = airport.AirportName;
 		
 		layerAirports.add(new og.Entity({
 				lonlat: [longitude, latitude],
@@ -223,13 +223,13 @@ class AirlineProfileCosts {
 	displayD3LineChart( arrayAltitudeMSLtime ) {
 	
 		// set the dimensions and margins of the graph
-		var margin = {top: 10, right: 50, bottom: 10, left: 50}
-		var width = 700 - margin.left - margin.right;
-		var height = 700 - margin.top - margin.bottom;
+		let margin = {top: 10, right: 50, bottom: 10, left: 50}
+		let width = 700 - margin.left - margin.right;
+		let height = 700 - margin.top - margin.bottom;
 		
-		var data =  arrayAltitudeMSLtime["groundTrack"] 
+		let data =  arrayAltitudeMSLtime["groundTrack"] 
 		
-		var parentDiv = document.getElementById("globusDivId");
+		let parentDiv = document.getElementById("globusDivId");
 		
 		width = parentDiv.clientWidth - margin.left - margin.right; 
 		height = parentDiv.clientHeight - margin.top - margin.bottom;
@@ -237,7 +237,7 @@ class AirlineProfileCosts {
 		width = parentDiv.getBoundingClientRect().width;
 		height = width/2;
 		
-		var topTable = document.getElementById("mainTableId");
+		let topTable = document.getElementById("mainTableId");
 		height = height - topTable.clientHeight;
 
 		// append the svg object to the body of the page
@@ -247,7 +247,7 @@ class AirlineProfileCosts {
 		// Creating a div element at the end
 		//$("#dialogId").append('<div id="d3vizId" style="width: 100%; height: 100%;"></div>');   
 		
-		var svg = d3.select("#d3vizId")
+		let svg = d3.select("#d3vizId")
 			.data(data)
 			.append("svg")
 			.attr("width", width)
@@ -258,7 +258,7 @@ class AirlineProfileCosts {
 		let maxX = arrayAltitudeMSLtime["maxElapsedTimeSeconds"]
 			
 		// Add X axis --> it is a integer format
-		var x = d3.scaleLinear()
+		let x = d3.scaleLinear()
 			.domain([1,maxX ])
 			.range([ 0, width ]);
 		
@@ -348,7 +348,7 @@ class AirlineProfileCosts {
 				})
 			  )
 			  
-		var path = svg.selectAll("dot")
+		let path = svg.selectAll("dot")
 			 .data(data)
 			 .enter().append("circle")
 			 .attr("r", 1.5)
@@ -436,7 +436,7 @@ class AirlineProfileCosts {
 		// empty the selector
 		$('#airlineDepartureRunWayFlightProfileId').empty()
 		
-		for ( var index = 0 ; index < airlineRunWaysArray.length ; index++) {
+		for ( let index = 0 ; index < airlineRunWaysArray.length ; index++) {
 			
 			let route = $("#airlineRouteId option:selected").val();
 			
@@ -447,8 +447,8 @@ class AirlineProfileCosts {
 				
 				//console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
 			
-				var airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
-				var airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
+				let airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
+				let airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
 				$('#airlineDepartureRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
 			}
 		}
@@ -456,7 +456,7 @@ class AirlineProfileCosts {
 		// empty the selector
 		$('#airlineArrivalRunWayFlightProfileId').empty()
 		
-		for ( var index = 0 ; index < airlineRunWaysArray.length ; index++) {
+		for ( let index = 0 ; index < airlineRunWaysArray.length ; index++) {
 			
 			let route = $("#airlineRouteId option:selected").val();
 			
@@ -467,8 +467,8 @@ class AirlineProfileCosts {
 				
 				//console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
 
-				var airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
-				var airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
+				let airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
+				let airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
 				$('#airlineArrivalRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
 			}
 		}
@@ -528,7 +528,7 @@ class AirlineProfileCosts {
 						success: function(data, status) {
 										
 							//alert("Data: " + data + "\nStatus: " + status);
-							var dataJson = eval(data);
+							let dataJson = eval(data);
 							// airlineAircrafts
 							SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
 							
@@ -580,7 +580,7 @@ class AirlineProfileCosts {
 						success: function(data, status) {
 										
 							//alert("Data: " + data + "\nStatus: " + status);
-							var dataJson = eval(data);
+							let dataJson = eval(data);
 							// airlineAircrafts
 							SingletonProfileCosts.getInstance().populateAircraftFlightProfileSelector( dataJson["airlineAircrafts"] );
 							SingletonProfileCosts.getInstance().populateAirlineRoutesFlightProfileSelector( dataJson["airlineRoutes"] );
@@ -640,7 +640,7 @@ class AirlineProfileCosts {
 						data: 'aircraft=' + aircraft + '&route=' + route + '&AdepRwy=' + departureRunWay + '&AdesRwy=' + arrivalRunWay,
 						success: function(data, status) {
 							
-							var dataJson = eval(data);
+							let dataJson = eval(data);
 							if ( dataJson.hasOwnProperty("errors") ) {
 								stopBusyAnimation();
 								showMessage( "Error" , dataJson["errors"] );
@@ -651,13 +651,13 @@ class AirlineProfileCosts {
 								let rayLayer = SingletonProfileCosts.getInstance().deleteCreateRayLayer(globus , route)
 								
 								// convert JSON to XML
-								var x2js = new X2JS();
-								var xml = x2js.js2xml(dataJson["kmlXMLjson"]);
+								let x2js = new X2JS();
+								let xml = x2js.js2xml(dataJson["kmlXMLjson"]);
 								
 								let parser = new DOMParser();
 								let xmlDoc = parser.parseFromString(xml, "text/xml");
 								
-								layerKML.addKmlFromXml( kmlAsXml = xmlDoc , color = null , billboard = null );
+								layerKML.addKmlFromXml(  xmlDoc ,  null ,  null );
 								
 								// add rays to Rays layer
 								SingletonProfileCosts.getInstance().addRays( rayLayer , dataJson["placeMarks"] );

@@ -8,7 +8,7 @@ const SingletonAirlineAirports = (function () {
 	let instance;
 
     function createInstance() {
-        var object = new AirlineAirports();
+        let object = new AirlineAirports();
         return object;
     }
 
@@ -83,8 +83,8 @@ class AirlineAirports {
 				success: function(data, status) {
 								
 					//alert("Data: " + data + "\nStatus: " + status);
-					var dataJson = eval(data);		
-					var airlineRoutesArray = dataJson["airlineRoutes"]
+					let dataJson = eval(data);		
+					let airlineRoutesArray = dataJson["airlineRoutes"]
 					SingletonAirlineAirports.getInstance().writeRoutesFromStartingAirport(  globus, departureAirportICAOcode, airlineRoutesArray , position );
 					
 				},
@@ -180,10 +180,10 @@ class AirlineAirports {
 	loadAirports( globus, dataJson , showHide ) {
 	
 		// get all airports
-		var airports = eval(dataJson['airports']);
+		let airports = eval(dataJson['airports']);
 
 		// add the reservations
-		for (var airportId = 0; airportId < airports.length; airportId++ ) {
+		for (let airportId = 0; airportId < airports.length; airportId++ ) {
 			// insert one airport
 			SingletonAirlineAirports.getInstance().loadOneAirport(  globus, airports[airportId] , showHide );
 		}
@@ -211,7 +211,7 @@ class AirlineAirports {
 				success: function(data, status) {
 												
 					//alert("Data: " + data + "\nStatus: " + status);
-					var dataJson = eval(data);
+					let dataJson = eval(data);
 					SingletonAirlineAirports.getInstance().loadAirports( globus, dataJson , showHide );	
 				},
 				error: function(data, status) {
