@@ -366,13 +366,13 @@ class AirlineProfileCosts {
 			 
 		// What happens when the mouse move -> show the annotations at the right positions.
 		function mouseover() {
-			console.log("mouse over")
+			//console.log("mouse over")
 			focus.style("opacity", 1)
 			focusText.style("opacity",1)
 		}
 
 		function mousemove(domElement) {
-			console.log("mouse move")
+			//console.log("mouse move")
 			// recover coordinate we need
 			let x0 = x.invert(d3.pointer(domElement)[0]);
 			let i = bisect(data, x0, 1);

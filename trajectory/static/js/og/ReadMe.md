@@ -1,11 +1,11 @@
-How to rebuild the final og after applying modifications
+#How to rebuild the final og after applying modifications
 
 
 go to the repo and launch PowerShell
 
 PS D:\Node.js\openglobus.0.13.7> npm install
 
-=================================================
+#=================================================
 
 PS D:\Node.js\openglobus.0.13.7> npm run build
 
@@ -37,7 +37,7 @@ Browserslist: caniuse-lite is outdated. Please run:
 created dist/@openglobus/og.css in 686ms
 PS D:\Node.js\openglobus.0.13.7>
 
-=================================================
+#=================================================
 
 PS D:\Node.js\openglobus> npm run build
 
@@ -69,14 +69,14 @@ Browserslist: caniuse-lite is outdated. Please run:
 created dist/@openglobus/og.css in 665ms
 PS D:\Node.js\openglobus>
 
-=================================
+#=================================
 copy from D:\Node.js\openglobus\dist\@openglobus
 1) og.umd.js
 2) og.umd.js.map
 
 to the project static js folder : /flight-profile/trajectory/static/js/og
 
-=================================
+#=========== avoid compressing ======================
 to avoid compressing minifying 
 
 in file rollup.config.js suppress terser in the 1st plugin befiore the json() plugin
@@ -94,3 +94,44 @@ export default [
         ],
         plugins: [json()]
 
+# apply patches
+
+## add function to KML layer
+layerKML.addKmlFromXml(  xmlDoc ,  null ,  null );
+
+/**
+	* Robert - 18th July 2022
+	* @public
+	* @param {string} [color]
+    * @param {Billboard} [billboard]
+    * @returns {Promise<{entities: Entity[], extent: Extent}>}
+	*/
+	async addKmlFromXml( kmlAsXml , color = null, billboard = null ) {
+		const coordinates = this._extractCoordonatesFromKml(kmlAsXml);
+        const { entities, extent } = this._convertCoordonatesIntoEntities(
+            [coordinates],
+            color || this._color,
+            billboard || this._billboard
+        );
+        this._extent = this._expandExtents(this._extent, extent);
+        entities.forEach(this.add.bind(this));
+        return { entities, extent };
+		
+	}
+
+
+## in GlobusTerrain _createHeights
+
+/**
+     * Converts loaded data to segment elevation data type(columr major elevation data array in meters)
+     * @public
+     * @virtual
+     * @param {*} data - Loaded elevation data.
+     * @returns {Array.<number>} -
+     */
+    _createHeights(data) {
+		// Robert - 11-dec-2022 - error Float32Array size should be multiple of 4
+		var len = data.byteLength;
+		len = len - (len % 4);
+        return new Float32Array(data.slice(0,len));
+    }

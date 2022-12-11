@@ -240,7 +240,7 @@ function initMain(viewExtent) {
     var globus = new og.Globe({
             "target": "globusDivId", 
             "name": "Earth",
-            "terrain": new og.terrain.EmptyTerrain(),
+            "terrain": new og.terrain.GlobusTerrain(),
             "layers": [osm],
             "autoActivated": true,
 			"viewExtent" : viewExtent

@@ -44696,8 +44696,8 @@
              * @public
              * @type {string}
              */
-            //this.url = options.url || "//srtm3.openglobus.org/{z}/{y}/{x}.ddm";
-            this.url = options.url;
+            this.url = options.url || "//srtm3.openglobus.org/{z}/{y}/{x}.ddm";
+            //this.url = options.url
 
             /**
              * Array of segment triangulation grid sizes where array index agreed to the segment zoom index.
@@ -45044,7 +45044,10 @@
          * @returns {Array.<number>} -
          */
         _createHeights(data) {
-            return new Float32Array(data);
+    		// Robert - 11-dec-2022 - error Float32Array size should be multiple of 4
+    		var len = data.byteLength;
+    		len = len - (len % 4);
+            return new Float32Array(data.slice(0,len));
         }
 
         /**
