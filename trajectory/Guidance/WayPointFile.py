@@ -127,7 +127,7 @@ class WayPoint(GeographicalPoint):
         return WayPoint(Name, latitudeDegrees, longitudeDegrees)    
     
     def dump(self):
-        logging.info ( "WayPoint Name= ", self.Name, " Lat-deg= ",self.LatitudeDegrees, " Long-deg= ",self.LongitudeDegrees, " flight-level= ", self.AltitudeMeanSeaLevelMeters, " meters" )
+        logging.info ( "WayPoint Name= {0} Lat-deg={1} - Long-deg={2} - flight-level={3} meters".format( self.Name, self.LatitudeDegrees, self.LongitudeDegrees, self.AltitudeMeanSeaLevelMeters ))
         if isinstance(self, Airport):
             logging.info ( "way point is an airport" )
         if self.isTopOfDescent==True:
@@ -203,8 +203,8 @@ class Airport(WayPoint):
     
     def dump(self):
         WayPoint.dump(self)
-        logging.info ( "airport field Elevation above Sea Level Meters=",self.fieldElevationAboveSeaLevelMeters, " meters" )
-        logging.info ( 'airport ICAO code= ' + self.ICAOcode )
+        logging.info ( "airport field Elevation above Sea Level Meters= {0} meters".format(self.fieldElevationAboveSeaLevelMeters) )
+        logging.info ( 'airport ICAO code= {0}'.format(self.ICAOcode ) )
 
 
 

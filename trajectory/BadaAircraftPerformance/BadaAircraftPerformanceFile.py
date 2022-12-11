@@ -53,7 +53,7 @@ def fortran_float(input_string):
             processed_string = match.group(1)+'E'+match.group(2)
             fl = float(processed_string)
         else:
-            logging.info ( "Trying to find number from ",input_string )
+            logging.info ( "Trying to find number from {0}".format(input_string) )
             raise ValueError()
     return fl
 
