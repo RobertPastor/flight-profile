@@ -90,7 +90,7 @@ class BadaAircraftDatabase(object):
         return self.BadaSynonymFilePath
     
     def read(self):
-        logging.info ( self.className + ': opening file= ', self.BadaSynonymFilePath )
+        logging.info ( self.className + ': opening file= {0}'.format( self.BadaSynonymFilePath ) )
         try:
             f = open(self.BadaSynonymFilePath, "r")
             for line in f:
