@@ -34,9 +34,29 @@ class AirlineRoutesDataBaseXlsx(object):
         
         
     def exists(self):
-        return os.path.exists(self.FilePath) 
+        return os.path.exists(self.FilePath)
+    
     
     def read(self):
+        pass
+        if os.path.exists(self.FilePath):
+            df_source = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName , engine="openpyxl"))
+            
+            for index, row in df_source.iterrows():
+                print('Index is: {}'.format(index))
+                print('ID is: {} - Airline is: {} - Departure Airport = {}'.format(index, row['Airline'], row['Departure Airport ICAO Code']))
+                print('ID is: {} - Airline is: {} - Arrival AIrport = {}'.format(index, row['Airline'], row['Arrival Airport ICAO Code']))
+
+                Route = {}
+                for header in HeaderNames:
+                    Route[header] = row[header]
+                
+                self.RoutesAirports.append(Route)
+            return True
+        else:
+            return False
+    
+    def createAirlineRoutes(self):
         
         if os.path.exists(self.FilePath):
             df_source = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName , engine="openpyxl"))
@@ -72,6 +92,14 @@ class AirlineRoutesDataBaseXlsx(object):
     #def getDepartureArrivalAirportICAOcode(self):
     #    for route in self.RoutesAirports:
     #        yield route[HeaderNames[1]] , route[HeaderNames[3]]
+    
+    def getICAORoutes(self):
+        for route in self.RoutesAirports:
+            airlineRoute = {}
+            airlineRoute["Adep"] = route[HeaderNames[2]]
+            airlineRoute["Ades"] = route[HeaderNames[4]]
+            yield airlineRoute
+            
             
     def getRoutes(self):
         for route in self.RoutesAirports:
@@ -79,6 +107,7 @@ class AirlineRoutesDataBaseXlsx(object):
             airlineRoute.setRoute(route)
             #logging.info (route)
             yield airlineRoute
+    
     
     def getFlightLegList(self):
         flightLegList = []
@@ -88,10 +117,12 @@ class AirlineRoutesDataBaseXlsx(object):
             flightLegList.append( Adep + "-" + Ades)
         return flightLegList
     
+    
     def getDepartureAirportsICAOcode(self):
         for route in self.RoutesAirports:
             airportICAOcode = route[HeaderNames[1]]
             yield airportICAOcode
+             
              
     def getDepartureAirportsICAOcodeList(self):
         
@@ -102,10 +133,12 @@ class AirlineRoutesDataBaseXlsx(object):
                 
         return departureAirportICAOcodeList
 
+
     def getArrivalAirportsICAOcode(self):
         for route in self.RoutesAirports:
             airportICAOcode = route[HeaderNames[3]]
             yield airportICAOcode
+            
             
     def getArrivalAirportsICAOcodeList(self):
         

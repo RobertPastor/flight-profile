@@ -40,7 +40,6 @@ function Help () {
 		this.helpArray.push("<br>");
 		this.helpArray.push("<u><b>Note:</b></u> Right click on an airport to see the routes starting from this airport.<br>");
 		
-
 		this.helpArray.push("<h3>Airline Routes</h3>");
 		this.helpArray.push("The airline routes are defined by a set of WayPoints that are linking a departure to an arrival airport.<br>");
 		this.helpArray.push("<u><b>Warning:</b></u> for the time being, these routes are not dependent upon the departure and arrival runways.<br>");

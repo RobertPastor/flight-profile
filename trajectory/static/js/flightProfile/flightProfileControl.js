@@ -33,15 +33,23 @@ class FlighProfileControl extends og.Control {
 		div_1.id = "aircraftSelectionId";
 		div_1.classList.add("aircraftSelectionClass");
 		
-		let label_1 = document.createElement("label");
-		label_1.innerHTML = "Select an aircraft ->" ;
-		div_1.appendChild(label_1);
+		let label_1_1 = document.createElement("label");
+		label_1_1.innerHTML = "Select an aircraft ->" ;
+		div_1.appendChild(label_1_1);
 		
 		let select_1 = document.createElement("select");
 		select_1.id = "airlineAircraftId";
 		select_1.name = "airlineAircraftName";
 		div_1.appendChild(select_1);
-
+		
+		let label_1_2 = document.createElement("label");
+		label_1_2.innerHTML = " Enter TakeOff Weight (kg) ->" ;
+		div_1.appendChild(label_1_2);
+		
+		let input_1 = document.createElement("input");
+		input_1.id = "maxTakeOffMassKgId" ;
+		div_1.appendChild(input_1);
+		
 		td.appendChild(div_1);
 		
 		// ---------------

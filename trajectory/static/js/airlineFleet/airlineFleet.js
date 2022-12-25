@@ -27,7 +27,7 @@ const SingletonAirlineFleet = (function () {
 class AirlineFleet {
 	
 	constructor() {
-		console.log("AirlineFleet constructor") 
+		//console.log("AirlineFleet constructor") 
 	}
 
 	addOneAirlineAircraft( oneAirlineAircraft ) {

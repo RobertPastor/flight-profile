@@ -31,7 +31,7 @@ read an EXCEL file containing the way points
 import os
 import logging 
 
-from Home.Guidance.WayPointFile import WayPoint
+from trajectory.Guidance.WayPointFile import WayPoint
 from xlrd import open_workbook
 
 fieldNames = ['WayPoint', 'Country' , 'Type', 'Latitude', 'Longitude' , 'Name']

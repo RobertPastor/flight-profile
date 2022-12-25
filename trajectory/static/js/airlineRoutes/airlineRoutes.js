@@ -29,7 +29,7 @@ const SingletonAirlineRoutes = (function () {
 class AirlineRoutes {
 	
 	constructor() {
-		console.log("Airline Routes constructor");
+		//console.log("Airline Routes constructor");
 	}
 
 	loadOneRouteWayPoint( layerRouteWayPoints, waypoint ) {

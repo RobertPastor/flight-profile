@@ -13,7 +13,8 @@ class Command(BaseCommand):
         airlineRoutes = AirlineRoutesDataBaseXlsx()
         if (airlineRoutes.exists()):
             print("airline routes database exists")
-            ret = airlineRoutes.read()
+            #ret = airlineRoutes.read()
+            ret = airlineRoutes.createAirlineRoutes()
             print ("read airline routes database result = {0}".format(ret))
         else:
             print("airline routes database does not exists")

@@ -60,7 +60,7 @@ def convertDegreeMinuteSecondToDecimal(DegreeMinuteSecond='43-40-51.00-N'):
         coeff = -1.0
     
     else :
-        raise ValueError ('Degrees Minutes Seconds string should be started or ended by N-E-S-W')
+        raise ValueError ('Degrees Minutes Seconds string should be starting or ending by N-E-S-W')
     
     if  ( str(DegreeMinuteSecond).endswith("N") or 
           str(DegreeMinuteSecond).endswith("E") or 
@@ -165,8 +165,12 @@ class WayPointsDatabase(object):
     
                     ''' create a way point '''    
                     Continent = 'unknown'
-                    if (wayPointDict['Latitude'] >= 20. and wayPointDict['Longitude'] >= -170. and wayPointDict['Longitude'] <= -50.):
+                    if (wayPointDict['Latitude'] >= 20. and wayPointDict['Longitude'] >= -170. and wayPointDict['Longitude'] < -50.):
                         Continent = 'North America'
+                    if (wayPointDict['Latitude'] >= 35. and wayPointDict['Longitude'] >= -50. and wayPointDict['Longitude'] < 50.):
+                        Continent = 'Europe'
+                    if (wayPointDict['Latitude'] >= 5. and wayPointDict['Longitude'] >= 50. and wayPointDict['Longitude'] < 90.):
+                        Continent = 'India'
                     wayPoint = AirlineWayPoint(WayPointName = wayPointDict['WayPoint'],
                                         Type = 'WayPoint',
                                         Continent = Continent,

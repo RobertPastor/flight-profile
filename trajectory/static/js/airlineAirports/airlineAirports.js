@@ -25,7 +25,7 @@ const SingletonAirlineAirports = (function () {
 class AirlineAirports {
 	
 	constructor() {
-		console.log("Airline Airports constructor") 
+		//console.log("Airline Airports constructor") 
 	}
 	
 	writeRoutesFromStartingAirport( globus , departureAirportICAOcode , airlineRoutesArray , position ) {
@@ -191,7 +191,7 @@ class AirlineAirports {
 
 	showHideAllAirports( globus, showHide ) {
 		
-		console.log("show hide all airports = " + showHide.toString() );
+		//console.log("show hide all airports = " + showHide.toString() );
 	
 		// init progress bar.
 		initProgressBar();

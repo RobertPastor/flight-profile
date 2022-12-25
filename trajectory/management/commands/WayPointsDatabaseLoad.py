@@ -1,6 +1,6 @@
 
 from django.core.management.base import BaseCommand
-from trajectory.management.commands.WayPoints.WayPointsDatabaseFile  import WayPointsDatabase
+from trajectory.management.commands.WayPoints.WayPointsDatabaseFileXlsx  import WayPointsDatabaseXlsx
 from trajectory.models import AirlineWayPoint
 
 class Command(BaseCommand):
@@ -10,7 +10,7 @@ class Command(BaseCommand):
         
         AirlineWayPoint.objects.all().delete()
         
-        wayPointsBD = WayPointsDatabase()
+        wayPointsBD = WayPointsDatabaseXlsx()
         if (wayPointsBD.exists()):
             print("acBD exists")
             ret = wayPointsBD.read()

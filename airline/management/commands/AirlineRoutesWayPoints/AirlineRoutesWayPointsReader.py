@@ -252,7 +252,6 @@ class AirlineRoutesWayPointsDatabase(object):
                     if ( wayPointDict["longitude"] != wayPoint["longitude"]):
                         raise ValueError("Waypoint = {0} - longitude are not identical")
 
-                    
                 else:
                     #print ( " wayPoint = {0} not yet in list - list size {1}".format(wayPoint, len(wayPointsList)))
                     wayPointDict = {}
@@ -302,7 +301,9 @@ class AirlineRoutesWayPointsDatabase(object):
             if ( airlineRoute ):
                 print ( airlineRoute )
                 routeWithWayPoints = route["route"]
-    
+                
                 for wayPoint in routeWithWayPoints:
+                    ''' insert WayPoint in xlsx WayPoints database file '''
                     wayPointsDatabase.insertWayPoint( wayPoint["Name"],  wayPoint["latitude"], wayPoint["longitude"])
+                    
                     

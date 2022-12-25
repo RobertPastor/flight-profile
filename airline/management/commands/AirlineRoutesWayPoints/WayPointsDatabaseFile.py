@@ -68,7 +68,6 @@ class WayPointsDatabase(object):
         df.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames)
 
     
-
     def hasDuplicates(self):
         if os.path.exists(self.FilePath):
             df = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName))

@@ -31015,21 +31015,27 @@
 
                     this._loading++;
 
-                    return fetch(p.src, p.options || {})
-                        .then(response => {
-                            if (!response.ok) {
-                                throw Error(`Unable to load '${p.src}'`);
-                            }
-                            return this._promises[p.type || "blob"](response);
-                        })
-                        .then(data => {
-                            this._loading--;
-                            this._handleResponse(q, { status: "ready", data: data });
-                        })
-                        .catch(err => {
-                            this._loading--;
-                            this._handleResponse(q, { status: "error", msg: err.toString() });
-                        });
+    				// 12-Dec-2022 - Robert - path to avoid warning messages
+    				try {
+    					return fetch(p.src, p.options || {})
+    						.then(response => {
+    							if (!response.ok) {
+    								throw Error(`Unable to load '${p.src}'`);
+    							}
+    							return this._promises[p.type || "blob"](response);
+    						})
+    						.then(data => {
+    							this._loading--;
+    							this._handleResponse(q, { status: "ready", data: data });
+    						})
+    						.catch(err => {
+    							this._loading--;
+    							this._handleResponse(q, { status: "error", msg: err.toString() });
+    						});
+    				} catch ( err ) {
+    					this._loading--;
+    					this._handleResponse(q, { status: "error", msg: err.toString() });
+    				}
 
                 } else {
                     this._handleResponse(q, { status: "abort" });

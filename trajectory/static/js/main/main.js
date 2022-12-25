@@ -134,6 +134,8 @@ function switchAirlines(globus) {
 		// hide all div created for the other airlines
 		hideAllDiv(globus)
 		
+		stopBusyAnimation()
+		
 		let airlineName = $("#airlineSelectId option:selected").val();
 		
 		if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
