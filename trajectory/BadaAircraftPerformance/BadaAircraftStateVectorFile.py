@@ -251,3 +251,176 @@ class StateVector(object):
         xlsxOutput.close()
                     
                     
+    def writeHeaders(self, ws, style, headers):
+        row = 0
+        col = 0
+        for header in headers:
+            ws.write(row, col , header , style)
+            col = col + 1
+            
+    def writeValues(self, ws, row, elapsedTimeSeconds, 
+                                                 altitudeMeanSeaLevelMeters,
+                                                 altitudeMeanSeaLevelFeet,
+                                                 
+                                                 trueAirSpeedMetersSecond,
+                                                 trueAirSpeedKnots,
+                                                 calibratesAirSpeedKnots,
+                                                 mach,
+                                                 rateOfClimbDescentFeetMinute,
+                                                 
+                                                 cumulatedDistanceFlownNautics,
+                                                 distanceStillToFlyNautics,
+                                                 
+                                                 aircraftMassKilograms,
+                                                 flightPathAngleDegrees,    
+                                                 
+                                                 thrustNewtons          ,
+                                                 dragNewtons            ,
+                                                 liftNewtons            ,
+                                                 loadFactor             ,
+                                                 endOfSimulation):
+        pass
+        ColumnIndex = 0
+        ws.write(row, ColumnIndex, elapsedTimeSeconds)
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, altitudeMeanSeaLevelMeters)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, altitudeMeanSeaLevelFeet)                
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, trueAirSpeedMetersSecond)                
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, trueAirSpeedKnots)                
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, calibratesAirSpeedKnots)                
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, mach)
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, rateOfClimbDescentFeetMinute)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, cumulatedDistanceFlownNautics)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, distanceStillToFlyNautics)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, aircraftMassKilograms)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, flightPathAngleDegrees)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, thrustNewtons)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, dragNewtons)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, liftNewtons)
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, loadFactor)    
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, str(endOfSimulation))     
+        row += 1    
+        return row
+        
+                    
+    def createStateVectorHistorySheet(self, workbook):
+        
+        ws = workbook.add_worksheet("StateVector")
+        styleEntete = workbook.add_format({'bold': False, 'border':True})
+        styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
+
+        self.writeHeaders(ws, styleLavender, ['elapsed-time-seconds', 
+                                
+                                'altitude-MSL-meters',
+                                 'altitude-MSL-feet',
+
+                                 'true-air-speed-meters-second',
+                                 'true-air-speed-knots',
+                                 
+                                 'calibrated-air-speed-knots',
+                                 'mach',
+                                 'rate-of-climb-descent-feet-minute',
+                                 
+                                 'distance-flown-nautical-miles',
+                                 'distance-to-fly-nautical-miles',
+                                 
+                                 'aircraft-mass-kilograms'      ,
+                                 'flight-path-angle-degrees'    ,
+                                 
+                                 'thrust-newtons'               ,
+                                 'drag-newtons'                 ,
+                                 'lift-newtons'                 ,
+                                 
+                                 'load-factor-g'                ,
+                                 'end of simulation'
+                                 ])
+
+        previousAltitudeMeanSeaLevelFeet = 0.0
+        previousElapsedTimeSeconds = 0.0
+        cumulatedDistanceFlownNautics = 0.0
+        
+        row = 1
+        
+        for stateVectorHistory in self.aircraftStateHistory:
+            for elapsedTimeSeconds, valueList in stateVectorHistory.items():
+
+                ''' altitude '''
+                altitudeMeanSeaLevelMeters = valueList[0]
+                altitudeMeanSeaLevelFeet = altitudeMeanSeaLevelMeters * Meter2Feet
+
+                ''' speeds '''
+                trueAirSpeedMetersSecond = valueList[1]
+                trueAirSpeedKnots = trueAirSpeedMetersSecond * MeterSecond2Knots 
+
+                ''' total distance flown in Meters '''
+                totalDistanceFlownMeters = valueList[2]
+                cumulatedDistanceFlownNautics = totalDistanceFlownMeters * Meter2NauticalMiles
+                
+                distanceStillToFlyMeters = valueList[3]
+                distanceStillToFlyNautics = distanceStillToFlyMeters * Meter2NauticalMiles
+                
+                ''' aircraft Mass History in Kilograms '''
+                aircraftMassKilograms = valueList[4]
+                flightPathAngleDegrees = valueList[5]
+
+                thrustNewtons = valueList[6]
+                dragNewtons = valueList[7]
+                liftNewtons = valueList[8]
+                loadFactor = liftNewtons / aircraftMassKilograms
+
+                calibratedAirSpeedMetersSecond = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond,
+                                                  altitude = altitudeMeanSeaLevelMeters,
+                                                  speed_units = 'm/s',
+                                                  alt_units='m' )
+                calibratesAirSpeedKnots = calibratedAirSpeedMetersSecond * MeterSecond2Knots
+                mach = self.atmosphere.tas2mach(tas = trueAirSpeedMetersSecond,
+                                altitude = altitudeMeanSeaLevelMeters,
+                                speed_units='m/s', 
+                                alt_units='m')
+
+                if (elapsedTimeSeconds-previousElapsedTimeSeconds)>0.0:
+                    rateOfClimbDescentFeetMinute = (altitudeMeanSeaLevelFeet-previousAltitudeMeanSeaLevelFeet)/ ((elapsedTimeSeconds-previousElapsedTimeSeconds)/60.)
+                else:
+                    rateOfClimbDescentFeetMinute = 0.0
+                previousAltitudeMeanSeaLevelFeet = altitudeMeanSeaLevelFeet
+                
+                previousElapsedTimeSeconds = elapsedTimeSeconds
+                ''' 5th September 2021 - write endOfSimulation '''
+                endOfSimulation = valueList[9]
+                row = self.writeValues(ws, row, elapsedTimeSeconds, 
+                                                 altitudeMeanSeaLevelMeters,
+                                                 altitudeMeanSeaLevelFeet,
+                                                 
+                                                 trueAirSpeedMetersSecond,
+                                                 trueAirSpeedKnots,
+                                                 calibratesAirSpeedKnots,
+                                                 mach,
+                                                 rateOfClimbDescentFeetMinute,
+                                                 
+                                                 cumulatedDistanceFlownNautics,
+                                                 distanceStillToFlyNautics,
+                                                 
+                                                 aircraftMassKilograms,
+                                                 flightPathAngleDegrees,    
+                                                 
+                                                 thrustNewtons          ,
+                                                 dragNewtons            ,
+                                                 liftNewtons            ,
+                                                 loadFactor             ,
+                                                 endOfSimulation)
+        

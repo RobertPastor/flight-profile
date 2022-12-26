@@ -66,19 +66,18 @@ function initCostsComputation() {
 	
 	$('#airlineCostsMainDivId').hide();
 	
-	
 	// btnComputeCostsId
 	// listen to the button
 	document.getElementById("btnComputeCostsId").onclick = function () {
 		
-		document.getElementById("btnComputeCostsId").disabled = true
+		document.getElementById("btnComputeCostsId").disabled = true;
 		
-		let aircraftICAOcode = $("#airlineAircraftId option:selected").val()
-		let route =  $("#airlineRouteId option:selected").val()
+		let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
+		let route =  $("#airlineRouteId option:selected").val();
 		
 		// use the selector of the Flight Profile computation
-		let departureRunWay = $("#airlineDepartureRunWayFlightProfileId option:selected").val()
-		let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val()
+		let departureRunWay = $("#airlineDepartureRunWayFlightProfileId option:selected").val();
+		let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val();
 		
 		// get the name of the airline
 		let airlineName = $("#airlineSelectId option:selected").val();
@@ -88,7 +87,7 @@ function initCostsComputation() {
 		initProgressBar();
 		initWorker();
 		
-		data = {
+		let data = {
 			aircraft : aircraftICAOcode,
 			route    : route,
 			AdepRwy  : departureRunWay,

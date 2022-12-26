@@ -12,6 +12,8 @@ from airline.models import Airline, AirlineRoute, AirlineAircraft
 from airline.views.viewsAirlineRoutes import getAirlineRoutesFromDB
 from trajectory.models import  AirlineAirport, AirlineRunWay
 
+from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB
+
 from trajectory.models import BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
@@ -60,38 +62,6 @@ def getPlaceMarks(XmlDocument):
     logging.info ( "length place marks = {0}".format(len ( placeMarksList )) )
     return placeMarksList
     
-'''
-def showFlightProfile(request):
-    print ("show Flight Profile")
-    if (request.method == 'GET'):
-        fileName = "A319-KATL-PANC-Atlanta-Hartsfield-Jackson-Atlanta-Intl-Rwy-08L-Anchorage-Ted-Stevens-Anchorage-Intl-rwy-07L-16-Jan-2022-11h28m27.kml"
-        response_data = {
-            'kmlURL': "/static/kml/" + fileName,
-            'placeMarks' : getPlaceMarks(fileName)}
-        return JsonResponse(response_data)
-'''
-    
-def getAirlineAircraftsFromDB(airline):
-    airlineAircraftsList = []
-    for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
-        #print (str(airlineAircraft))
-        airlineAircraftsList.append({
-            "airlineAircraftICAOcode" : airlineAircraft.aircraftICAOcode,
-            "airlineAircraftFullName" : airlineAircraft.aircraftFullName
-            })
-    #print ("length of airline aircrafts list = {0}".format(len(airlineAircraftsList)))
-    return airlineAircraftsList
-
-
-def getAirlineRunWaysFromDB():
-    airlineRunWaysList = []
-    for airlineRunWay in AirlineRunWay.objects.all():
-        airlineRunWaysList.append( {
-            'airlineAirport': airlineRunWay.Airport.AirportICAOcode,
-            'airlineRunWayName' : airlineRunWay.Name,
-            'airlineRunWayTrueHeadindDegrees': airlineRunWay.TrueHeadingDegrees})
-    #print ( "Size of RunWays list = {0}".format(len(airlineRunWaysList)))
-    return airlineRunWaysList
 
 
 def launchFlightProfile(request , airlineName):
@@ -157,7 +127,7 @@ def computeFlightProfile(request, airlineName):
 
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 if (airlineRoute):
-                    #print ( airlineRoute )
+                    print ( airlineRoute )
                     '''  use run-ways defined in the web page '''
                     routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                     logger.info ( routeAsString )

@@ -45,7 +45,7 @@ class WayPointsDatabase(object):
         df = pd.DataFrame(wayPoint, index=[0])
         
         if os.path.exists(self.FilePath):
-            df_source = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName))
+            df_source = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName , engine="openpyxl"))
             if df_source is not None:
                 df = df_source.append(df)
                 
@@ -53,7 +53,7 @@ class WayPointsDatabase(object):
         
 
     def exists(self):
-        return os.path.exists(self.FilePath)
+        return os.path.exists(self.FilePath) and os.path.isfile(self.FilePath)
     
     
     def create(self):
@@ -65,7 +65,7 @@ class WayPointsDatabase(object):
         wayPoint[self.ColumnNames[4]] = "0.0"
         wayPoint[self.ColumnNames[5]] = "Unknown Name"
         df = pd.DataFrame(wayPoint, index=[0])
-        df.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames)
+        df.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames, engine="openpyxl")
 
     
     def hasDuplicates(self):
@@ -85,7 +85,7 @@ class WayPointsDatabase(object):
     
     def getNumberOfRows(self):
         if os.path.exists(self.FilePath):
-            df = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName))
+            df = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName, engine="openpyxl"))
             return df.shape[0]
         else:
             return 0
@@ -93,14 +93,14 @@ class WayPointsDatabase(object):
     
     def dropDuplicates(self):
         
-        if os.path.exists(self.FilePath):
+        if self.exists():
             ''' get previous content '''
-            df = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName))
+            df = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName, engine="openpyxl"))
             df = df.drop_duplicates()
             ''' delete old file '''
             os.remove(self.FilePath)
             ''' re create new file '''
-            df.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames)
+            df.to_excel(excel_writer=self.FilePath, sheet_name=self.sheetName, index = False, columns=self.ColumnNames, engine="openpyxl")
             return True
         else:
             return False

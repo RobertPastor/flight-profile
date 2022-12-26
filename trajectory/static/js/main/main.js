@@ -222,6 +222,9 @@ function initTools(globus, viewExtent) {
 	globus.planet.addControl(new AirlineCostsResultsControl());
 	initCostsComputation();
 	
+	// init download EXCEL Vertical Flight Profile
+	initDownloadVerticalProfile();
+	
 	// now finish by loading the different airlines
 	loadAirlines();
 	// prepare to switch from one airline to the other

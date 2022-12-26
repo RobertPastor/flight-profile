@@ -17,6 +17,8 @@ class Airline(models.Model):
 def get_default_airline():
     return Airline.objects.get_or_create(Name="AmericanWings")[0]
 
+
+
 class AirlineRoute(models.Model):
     airline = models.ForeignKey(Airline, on_delete=models.CASCADE , default=None )
 
@@ -68,7 +70,8 @@ class AirlineRoute(models.Model):
                     strRoute += "/" + AdepRunway.Name
             
         strRoute += "-"
-        for airlineRouteWayPoint in AirlineRouteWayPoints.objects.all().filter(Route=self).order_by("Order"):
+        airlineRouteWayPoints = AirlineRouteWayPoints.objects.all().filter(Route=self).distinct("Order").order_by("Order")
+        for airlineRouteWayPoint in airlineRouteWayPoints:
             strRoute += airlineRouteWayPoint.WayPoint
             strRoute += "-"
         
@@ -85,7 +88,7 @@ class AirlineRoute(models.Model):
         logging.info ( strRoute )
         return strRoute
   
-
+  
 class AirlineRouteWayPoints(models.Model):
     #Airline = models.ForeignKey(Airline, on_delete=models.CASCADE)
     Route = models.ForeignKey(AirlineRoute, on_delete=models.CASCADE)
@@ -105,6 +108,7 @@ class AirlineRouteWayPoints(models.Model):
         logging.info ( routeAsString )
         return routeAsString
         
+
 
 class AirlineAircraft(models.Model):
     aircraftICAOcode = models.CharField(max_length = 50)

@@ -539,10 +539,12 @@ class FlightPath(FlightPlan):
             logging.info ( self.className + ': diff mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getAircraftInitialMassKilograms()-self.aircraft.getAircraftCurrentMassKilograms(),
                                                                                             (self.aircraft.getAircraftInitialMassKilograms()-self.aircraft.getAircraftCurrentMassKilograms())*Kilogram2Pounds) )
             logging.info ( self.className + ' ========== delta mass status ==============' )
+            return True
         
         except Exception as e:
             logging.info ("----> flight did not go to a normal end ---> {0}".format(e))
             self.abortedFlight = True
+            return False
             
             
     def createXlsOutputFile(self):
@@ -561,6 +563,10 @@ class FlightPath(FlightPlan):
     
     def createStateVectorOutputFile(self):
         self.aircraft.createStateVectorOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
+
+
+    def createStateVectorOutputSheet(self, workbook):
+        self.aircraft.createStateVectorOutputSheet(workbook, self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
 
     
     def createCsvAltitudeTimeProfile(self):

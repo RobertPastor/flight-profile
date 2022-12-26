@@ -43,14 +43,17 @@ class VerticalProfile {
 		let width = 700 - margin.left - margin.right;
 		let height = 700 - margin.top - margin.bottom;
 		
-		let data =  arrayAltitudeMSLtime["groundTrack"] 
+		let data =  arrayAltitudeMSLtime["groundTrack"];
 		
 		let parentDiv = document.getElementById("globusDivId");
+		//let parentDiv = document.getElementById("d3vizId");
 		
 		width = parentDiv.clientWidth - margin.left - margin.right; 
 		height = parentDiv.clientHeight - margin.top - margin.bottom;
 		
 		width = parentDiv.getBoundingClientRect().width;
+		// path width 
+		width = width - 200;
 		height = width/2;
 		
 		let topTable = document.getElementById("mainTableId");
@@ -68,6 +71,7 @@ class VerticalProfile {
 		let svg = d3.select("#d3vizId")
 			.data(data)
 			.append("svg")
+			
 			.attr("width", width)
 			.attr("height", height)
 			.append("g")
@@ -255,7 +259,7 @@ class VerticalProfile {
 class AirlineProfileCosts {
 	
 	constructor() {
-		console.log("Airline Profile Costs constructor") 
+		//console.log("Airline Profile Costs constructor") 
 	}
 
 	populateAircraftFlightProfileSelector( airlineAircraftsArray ) {

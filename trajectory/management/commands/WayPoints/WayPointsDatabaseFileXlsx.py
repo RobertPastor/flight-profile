@@ -116,21 +116,20 @@ class WayPointsDatabaseXlsx(object):
                 WayPointName = str(row['WayPoint']).strip().upper()
                 if not(WayPointName in self.WayPointsDict.keys()):
                     
-                    
-                    strLatitude = (row['Latitude']).strip()
-                    strLongitude = (row['Longitude']).strip()
+                    strLatitude = str(row['Latitude']).strip()
+                    strLongitude = str(row['Longitude']).strip()
                     
                     wayPointDict = {}
                     wayPointDict["WayPoint"] = WayPointName
                     
                     if '°' in strLatitude:
-                        strLatitude = (strLatitude).replace('°','-')
+                        strLatitude = str(strLatitude).replace('°','-')
         
                         strLatitude = str(strLatitude).strip().replace("'", '-').replace(' ','').replace('"','')
                         wayPointDict["Latitude"] = convertDegreeMinuteSecondToDecimal(strLatitude)
                         
                     if '°' in strLongitude:
-                        strLongitude = (strLongitude).replace('°','-')
+                        strLongitude = str(strLongitude).replace('°','-')
         
                         strLongitude = str(strLongitude).strip().replace("'", '-').replace(' ','').replace('"','')
                         wayPointDict["Longitude"] = convertDegreeMinuteSecondToDecimal(strLongitude)

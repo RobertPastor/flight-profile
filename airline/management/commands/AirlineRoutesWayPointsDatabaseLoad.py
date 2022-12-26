@@ -24,6 +24,7 @@ class Command(BaseCommand):
             
             if ret:
                 airlineRoutesWayPointsDatabaseXlsx.insertWayPointsDatabase(wayPointsDatabase)
+                wayPointsDatabase.dropDuplicates()
             
         #airlineRoutesWayPointsDatabase = AirlineRoutesWayPointsDatabase()
         #if airlineRoutesWayPointsDatabase.exists():

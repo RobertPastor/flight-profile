@@ -1,10 +1,11 @@
-from django.urls import re_path, path
+from django.urls import  path
 
 from trajectory.views.viewsAirports import getAirports
 from trajectory.views.viewsWayPoints import getWayPoints
 
 from trajectory.views.viewsFlightProfile import launchFlightProfile, computeFlightProfile
 from trajectory.views.computeCosts import computeCosts
+from trajectory.views.downLoadVerticalProfile import createExcelVerticalProfile
 
 app_name = "trajectory"
 
@@ -17,4 +18,9 @@ urlpatterns = [
 
     path('computeCosts/<slug:airlineName>' , computeCosts , name='computeCosts'),
 
+]
+
+''' view to create an EXCEL file '''
+urlpatterns += [
+    path('excel/<slug:airlineName>', createExcelVerticalProfile , name='createExcel'),
 ]

@@ -83,6 +83,12 @@ class AirlineRoutesDataBaseXlsx(object):
                         )
                     print ( str(airlineRoute) )
                     airlineRoute.save()
+                else:
+                    return False
+                
+            return True
+        else:
+            return False
                 
                 
     def dump(self):

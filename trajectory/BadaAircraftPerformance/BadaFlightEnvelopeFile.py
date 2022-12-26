@@ -108,6 +108,7 @@ class FlightEnvelope(AeroDynamics):
         self.approachWayPoint = None
         self.arrivalRunWayTouchDownWayPoint = None
 
+
     def setTargetCruiseFlightLevel(self, 
                                    RequestedFlightLevel, 
                                    departureAirportAltitudeMSLmeters):

@@ -34,7 +34,7 @@ class FlighProfileControl extends og.Control {
 		div_1.classList.add("aircraftSelectionClass");
 		
 		let label_1_1 = document.createElement("label");
-		label_1_1.innerHTML = "Select an aircraft ->" ;
+		label_1_1.innerHTML = "Aircraft ->" ;
 		div_1.appendChild(label_1_1);
 		
 		let select_1 = document.createElement("select");
@@ -42,13 +42,29 @@ class FlighProfileControl extends og.Control {
 		select_1.name = "airlineAircraftName";
 		div_1.appendChild(select_1);
 		
+		// ---------- label take off weight
+		
 		let label_1_2 = document.createElement("label");
-		label_1_2.innerHTML = " Enter TakeOff Weight (kg) ->" ;
+		label_1_2.innerHTML = " TakeOff Weight (kg) ->" ;
 		div_1.appendChild(label_1_2);
 		
 		let input_1 = document.createElement("input");
 		input_1.id = "maxTakeOffMassKgId" ;
+		input_1.maxlength = "6";
+		input_1.size = "6";
 		div_1.appendChild(input_1);
+		
+		// ------------- Requested Flight Level
+		
+		let label_1_3 = document.createElement("label");
+		label_1_3.innerHTML = " Flight Level (100*feet) ->" ;
+		div_1.appendChild(label_1_3);
+		
+		let input_2 = document.createElement("input");
+		input_2.id = "requestedFlightLevelId" ;
+		input_2.maxlength = "3";
+		input_2.size = "3";
+		div_1.appendChild(input_2);
 		
 		td.appendChild(div_1);
 		
@@ -59,7 +75,7 @@ class FlighProfileControl extends og.Control {
 		div_2.classList.add("routesSelectionClass");
 		
 		let label_2 = document.createElement("label");
-		label_2.innerHTML = "Select an route ->" ;
+		label_2.innerHTML = "Route ->" ;
 		div_2.appendChild(label_2);
 		
 		let select_2 = document.createElement("select");
@@ -77,7 +93,7 @@ class FlighProfileControl extends og.Control {
 		div_3.classList.add("runWaysSelectionFlightProfileClass");
 		
 		let label_3 = document.createElement("label");
-		label_3.innerHTML = "Select a Departure RunWay -> " ;
+		label_3.innerHTML = "Departure RunWay -> " ;
 		div_3.appendChild(label_3);
 		
 		let select_3 = document.createElement("select");
@@ -95,7 +111,7 @@ class FlighProfileControl extends og.Control {
 		div_4.classList.add("runWaysSelectionFlightProfileClass");
 		
 		let label_4 = document.createElement("label");
-		label_4.innerHTML = "Select an Arrival RunWay -> " ;
+		label_4.innerHTML = "Arrival RunWay -> " ;
 		div_4.appendChild(label_4);
 		
 		let select_4 = document.createElement("select");
@@ -112,33 +128,50 @@ class FlighProfileControl extends og.Control {
 		div_5.id = "launchComputeProfileId";
 		div_5.classList.add("launchComputeProfileClass");
 
-		let label_5 = document.createElement("label");
-		label_5.innerHTML = "Click to -> " ;
-		div_5.appendChild(label_5);
+		//let label_5 = document.createElement("label");
+		//label_5.innerHTML = "Click to -> " ;
+		//div_5.appendChild(label_5);
 		
 		let button_5 = document.createElement("button");
 		button_5.id = "btnComputeFlightProfileId";
 		button_5.innerHTML = "Compute Flight Profile";
 		div_5.appendChild(button_5);
 
-		td.appendChild(div_5);
+		//td.appendChild(div_5);
 
 		// --------------------
 
-		let div_6 = document.createElement('div');
-		div_6.id = "launchComputeCostsId";
-		div_6.classList.add("launchComputeCostsClass");
+		//let div_6 = document.createElement('div');
+		//div_6.id = "launchComputeCostsId";
+		//div_6.classList.add("launchComputeCostsClass");
 
-		let label_6 = document.createElement("label");
-		label_6.innerHTML = "Click to -> " ;
-		div_6.appendChild(label_6);
+		//let label_6 = document.createElement("label");
+		//label_6.innerHTML = "Click to -> " ;
+		//div_6.appendChild(label_6);
 		
 		let button_6 = document.createElement("button");
 		button_6.id = "btnComputeCostsId";
 		button_6.innerHTML = "Compute Costs";
-		div_6.appendChild(button_6);
+		div_5.appendChild(button_6);
 
-		td.appendChild(div_6);
+		//td.appendChild(div_6);
+		
+		// --------------------
+
+		//let div_7 = document.createElement('div');
+		//div_7.id = "launchDownLoadVerticalProfileId";
+		//div_7.classList.add("launchDownLoadVerticalProfileClass");
+
+		//let label_7 = document.createElement("label");
+		//label_7.innerHTML = "Click to -> " ;
+		//div_7.appendChild(label_7);
+		
+		let button_7 = document.createElement("button");
+		button_7.id = "btnDownLoadVerticalProfileId";
+		button_7.innerHTML = "Download Vertical Profile";
+		div_5.appendChild(button_7);
+
+		td.appendChild(div_5);
 		
 		// --------------------
 		
