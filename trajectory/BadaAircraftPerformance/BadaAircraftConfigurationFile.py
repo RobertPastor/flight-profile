@@ -820,11 +820,18 @@ class AircraftConfiguration(FlightEnvelope):
                                               altitudeMeanSeaLevelMeters,
                                               trueAirSpeedMetersSecond,
                                               latitudeDegrees )
+        ''' 26th December 2022 '''
+        liftNewtons = self.computeLiftNewtons(aircraftMassKilograms,
+                           altitudeMeanSeaLevelMeters, 
+                           trueAirSpeedMetersSecond, 
+                           latitudeDegrees)
+        
         #logger.info self.className + ': elapsed time= {0} seconds ... thrust= {1} newtons ... drag= {2} newtons'.format(elapsedTimeSeconds, thrustNewtons, dragNewtons)
         gravityCenter = self.earth.gravity(self.earth.getRadiusMeters()+altitudeMeanSeaLevelMeters,
                                            math.radians(latitudeDegrees))[0]
-        liftNewtons = 0.0
+        
         if self.isDepartureGroundRun():
+            #liftNewtons = 0.0
             ''' 
             Rate of climb is null => all energy is used to increase True Air Speed
             leave ground-run as soon as Take-Off stall speed is reached
@@ -834,10 +841,7 @@ class AircraftConfiguration(FlightEnvelope):
                         temp='std', speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots
             
             #logger.info self.className + ': elapsed time= {0} seconds ... true airspeed= {1} meters/seconds ... CAS= {2} knots'.format(elapsedTimeSeconds, trueAirSpeedMetersSecond, casKnots)
-            liftNewtons = self.computeLiftNewtons(aircraftMassKilograms,
-                           altitudeMeanSeaLevelMeters, 
-                           trueAirSpeedMetersSecond, 
-                           latitudeDegrees)
+            
             aircraftAcceleration = thrustNewtons - dragNewtons - self.rollingFrictionCoefficient * ( aircraftMassKilograms * gravityCenter - liftNewtons)
             aircraftAcceleration = aircraftAcceleration / aircraftMassKilograms
             trueAirSpeedMetersSecond += aircraftAcceleration * deltaTimeSeconds
