@@ -42,8 +42,32 @@ def writeReadMe(workbook, request, airlineName):
     wsReadMe.write(row, 1 , airlineName, styleEntete)
     
     row = row + 1
-    wsReadMe.write(row, 0 , "Aircraft", styleLavender)
+    wsReadMe.write(row, 0 , "Aircraft ICAO code", styleLavender)
     wsReadMe.write(row, 1 , request.GET['ac'], styleEntete)
+    
+    aircraft = AirlineAircraft.objects.all().filter(aircraftICAOcode=request.GET['ac']).first()
+    if ( aircraft ):
+        row = row + 1
+        wsReadMe.write(row, 0 , "Aircraft", styleLavender)
+        wsReadMe.write(row, 1 , aircraft.getAircraftFullName(), styleEntete)
+    
+    row = row + 1
+    wsReadMe.write(row, 0 , "Departure ICAO code", styleLavender)
+    Adep = str(request.GET['route']).split("-")[0]
+    wsReadMe.write(row, 1 , Adep, styleEntete)
+
+    row = row + 1
+    wsReadMe.write(row, 0 , "Destination ICAO code", styleLavender)
+    Ades = str(request.GET['route']).split("-")[1]
+    wsReadMe.write(row, 1 , Ades, styleEntete)
+
+    row = row + 1
+    wsReadMe.write(row, 0 , "Departure Runway", styleLavender)
+    wsReadMe.write(row, 1 , request.GET['adepRwy'], styleEntete)
+    
+    row = row + 1
+    wsReadMe.write(row, 0 , "Destination Runway", styleLavender)
+    wsReadMe.write(row, 1 , request.GET['adesRwy'], styleEntete)
     
     ''' set width of each column '''
     wsReadMe.set_column(0 , 1 , len("Vertical Flight Profile"))
