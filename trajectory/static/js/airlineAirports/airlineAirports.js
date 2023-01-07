@@ -201,7 +201,7 @@ class AirlineAirports {
 		let airlineName = $("#airlineSelectId option:selected").val();
 		airlineName = encodeURIComponent(airlineName);
 
-		if ( showHide == true ) {
+		//if ( showHide == true ) {
 
 			// use ajax to get the data 
 			$.ajax( {
@@ -209,12 +209,13 @@ class AirlineAirports {
 				url :  "trajectory/airports/" + airlineName,
 				async : true,
 				success: function(data, status) {
-												
+					stopBusyAnimation();
 					//alert("Data: " + data + "\nStatus: " + status);
 					let dataJson = eval(data);
 					SingletonAirlineAirports.getInstance().loadAirports( globus, dataJson , showHide );	
 				},
 				error: function(data, status) {
+					stopBusyAnimation();
 					console.log("Error - show Airports : " + status + " Please contact your admin");
 					showMessage ( "Error - show Airports" , data );
 				},
@@ -223,7 +224,7 @@ class AirlineAirports {
 					document.getElementById("btnAirports").disabled = false
 				}
 			} );
-		}
+		//}
 	
 	}
 
