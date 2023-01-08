@@ -48,11 +48,11 @@ class AirlineRoute(models.Model):
         for airlineRoute in airlineRoutes:
             adep = airlineRoute.DepartureAirportICAOCode
             if ( adep in airportsICAOcodeList ) == False :
-                logging.info ( adep )
+                #logging.info ( adep )
                 airportsICAOcodeList.append(adep)
             ades = airlineRoute.ArrivalAirportICAOCode
             if ( ades in airportsICAOcodeList ) == False :
-                logging.info ( ades )
+                #logging.info ( ades )
                 airportsICAOcodeList.append(ades)
             
         return airportsICAOcodeList

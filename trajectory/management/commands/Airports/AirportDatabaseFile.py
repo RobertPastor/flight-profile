@@ -99,17 +99,17 @@ class AirportsDatabase(object):
         try:
             dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), delimiter = ";", fieldnames=fieldNames)
             for row in dictReader:
-                print ( row )
+                #print ( row )
                 airportDict = {}
                 for field in fieldNames:
-                    print (field , row[field])
+                    #print (field , row[field])
                     airportDict[field] = row[field]
                     if 'Country' in field:
                         country = row[field]
                         if not(country in self.countriesDb):
                             self.countriesDb.append(country)
                 self.airportsDb[row["ICAO Code"]] = airportDict
-                logging.info ( row["ICAO Code"] )
+                #logging.info ( row["ICAO Code"] )
                 try:
                     ''' read and load only airports that are defined in the airline routes '''
                     if ( row["ICAO Code"] in airlineRoutesAirportsList ):
