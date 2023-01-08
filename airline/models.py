@@ -70,10 +70,15 @@ class AirlineRoute(models.Model):
                     strRoute += "/" + AdepRunway.Name
             
         strRoute += "-"
-        airlineRouteWayPoints = AirlineRouteWayPoints.objects.all().filter(Route=self).distinct("Order").order_by("Order")
+        ''' 8th January 2023 - MySQL does not allow DISTINCT with field name '''
+        airlineRouteWayPoints = AirlineRouteWayPoints.objects.all().filter(Route=self).distinct().order_by("Order")
+        ''' 8th January 2023 - work around as DISTINCT with Order not allowed in MySQL - need to use an intermediate list '''
+        wayPointsList = []
         for airlineRouteWayPoint in airlineRouteWayPoints:
-            strRoute += airlineRouteWayPoint.WayPoint
-            strRoute += "-"
+            if airlineRouteWayPoint.WayPoint not in wayPointsList:
+                wayPointsList.append(airlineRouteWayPoint.WayPoint)
+                strRoute += airlineRouteWayPoint.WayPoint
+                strRoute += "-"
         
         strRoute += "ADES/" + self.ArrivalAirportICAOCode
         Ades = AirlineAirport.objects.all().filter(AirportICAOcode=self.ArrivalAirportICAOCode).first()
