@@ -49,7 +49,7 @@
 				row_1.appendChild(row_1_data_1);
 				
 				let row_1_data_2 = document.createElement('td');
-				row_1_data_2.colSpan = "5";
+				row_1_data_2.colSpan = "6";
 				row_1_data_2.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
 				row_1.appendChild(row_1_data_2);
 				
@@ -84,10 +84,16 @@
 				row_2_data_6.innerHTML = '<div><button id="btnLaunchFlightProfile" >Show Profile / Costs</button></div>';
 				row_2.appendChild(row_2_data_6);
 				
-				// 3ed November 2022 - flight profile and costs merged 
+				// 3rd November 2022 - flight profile and costs merged 
 				//let row_2_data_7 = document.createElement('td');
 				//row_2_data_7.innerHTML = '<div><button id="btnLaunchCosts" >Show Compute Costs</button></div>';
 				//row_2.appendChild(row_2_data_7);
+				
+				// 27th January 2023 - Fleet Assignment based upon costs controls
+				let row_2_data_7 = document.createElement('td');
+				row_2_data_7.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Show Costs Optimization</button></div>';
+				row_2.appendChild(row_2_data_7);
+				
 				
 				let row_2_data_8 = document.createElement('td');
 				row_2_data_8.classList.add('question_mark_bg')

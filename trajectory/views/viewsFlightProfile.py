@@ -8,9 +8,9 @@ from django.template import loader
 from django.core import serializers
 from django.http import HttpResponse , JsonResponse
 
-from airline.models import Airline, AirlineRoute, AirlineAircraft
+from airline.models import Airline, AirlineRoute
 from airline.views.viewsAirlineRoutes import getAirlineRoutesFromDB
-from trajectory.models import  AirlineAirport, AirlineRunWay
+from trajectory.models import  AirlineAirport
 
 from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB
 

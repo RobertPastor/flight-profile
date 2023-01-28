@@ -251,7 +251,6 @@ class VerticalProfile {
 		$("#d3vizId").show();
 		//$("#globusDivId").hide()	
 		
-		
 	}
 	
 }
@@ -260,6 +259,23 @@ class AirlineProfileCosts {
 	
 	constructor() {
 		//console.log("Airline Profile Costs constructor") 
+	}
+	
+	populateAircraftPerformance ( aircraftPerformanceData ) {
+		
+		let elemTOMassKg = document.getElementById('TakeOffMassKgId');
+		let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
+		let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
+		
+		elemTOMassKg.value    = aircraftPerformanceData["acMaxTakeOffWeightKg"]
+		elemMinTOMassKg.value = aircraftPerformanceData["acMinTakeOffWeightKg"]
+		elemMaxTOMassKg.value = aircraftPerformanceData["acMaxTakeOffWeightKg"]
+		
+		let elemFL = document.getElementById('requestedFlightLevelId');
+		elemFL.value = aircraftPerformanceData["acMaxOpAltitudeFeet"]
+		
+		let elemMaxFL = document.getElementById('maxFlightLevelId');
+		elemMaxFL.value = aircraftPerformanceData["acMaxOpAltitudeFeet"]
 	}
 
 	populateAircraftFlightProfileSelector( airlineAircraftsArray ) {
@@ -275,6 +291,33 @@ class AirlineProfileCosts {
 		for (let index = 0; index < airlineAircraftsArray.length; index++) {
 		  $('#airlineAircraftId').append('<option value="' + airlineAircraftsArray[index]["airlineAircraftICAOcode"] + '">' + airlineAircraftsArray[index]["airlineAircraftFullName"] + '</option>');
 		}
+		
+		// set takeoff Mass
+		let elemTOMassKg = document.getElementById('TakeOffMassKgId');
+		let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
+		let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
+		
+		let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
+		console.log(aircraftICAOcode)
+		for (let index = 0; index < airlineAircraftsArray.length; index++) {
+			if ( airlineAircraftsArray[index]["airlineAircraftICAOcode"] == aircraftICAOcode ) {
+				elemTOMassKg.value = airlineAircraftsArray[index]["acMaxTakeOffWeightKg"]
+				elemMinTOMassKg.value = airlineAircraftsArray[index]["acMinTakeOffWeightKg"]
+				elemMaxTOMassKg.value = airlineAircraftsArray[index]["acMaxTakeOffWeightKg"]
+			}
+		}
+		
+		let elemMaxFL = document.getElementById('maxFlightLevelId');
+		
+		// set Max Flight Level
+		let elemFL = document.getElementById('requestedFlightLevelId');
+		for (let index = 0; index < airlineAircraftsArray.length; index++) {
+			if ( airlineAircraftsArray[index]["airlineAircraftICAOcode"] == aircraftICAOcode ) {
+				elemFL.value = airlineAircraftsArray[index]["acMaxOpAltitudeFeet"]
+				elemMaxFL.value = airlineAircraftsArray[index]["acMaxOpAltitudeFeet"]
+			}
+		}
+		
 	}
 
 	populateAirlineRoutesFlightProfileSelector( airlineRoutesArray ) {
@@ -538,6 +581,45 @@ class AirlineProfileCosts {
 				});
 		layerFlightProfileWayPoints.addTo(globus.planet);
 		*/
+		
+		// listen to change to aircraft Mass
+		document.getElementById("TakeOffMassKgId").addEventListener('change', function (evt) {
+			let elemTOMassKg = document.getElementById('TakeOffMassKgId');
+			//console.log(elemTOMassKg.value);
+			
+				if ( ! Number.isInteger(+(elemTOMassKg.value)) ) {
+					alert("Take Off Mass KG must be an integer")
+				} else {
+					let massValue = elemTOMassKg.value;
+					let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
+					let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
+					if ( massValue > parseInt( elemMaxTOMassKg.value ) ) {
+						alert ("Take Off Mass KG must be lower than " + elemMaxTOMassKg.value )
+					} else {
+						if ( massValue < parseInt ( elemMinTOMassKg.value ) ) {
+							alert ("Take Off Mass KG must be greater than " + elemMinTOMassKg.value )
+						}
+					}
+				}
+		});
+		
+		// listen to change to requested flight level
+		document.getElementById("requestedFlightLevelId").addEventListener('change', function (evt) {
+			let elemFL = document.getElementById('requestedFlightLevelId');
+			//console.log(elemFL.value);
+			
+				if ( ! Number.isInteger(+(elemFL.value)) ) {
+					alert("Take Off Mass KG must be an integer")
+				} else {
+					let FLvalue = elemFL.value;
+					let elemMaxFL = document.getElementById('maxFlightLevelId');
+					
+					if ( FLvalue > parseInt( elemMaxFL.value ) ) {
+						alert ("Flight Level must be lower than " + elemMaxFL.value )
+					} 
+				}
+		});
+		
 				
 		// listen to select route change
 		$( "#airlineRouteId" ).change(function() {
@@ -634,6 +716,55 @@ class AirlineProfileCosts {
 				$('#flightProfileMainDivId').hide();
 			}
 		} 
+		
+		/**
+		* Monitor the change of Aircraft
+		**/
+		document.getElementById("airlineAircraftId").onchange = function () {
+			
+			console.log ("select aircraft changed");
+			let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
+			console.log(aircraftICAOcode)
+			
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
+			
+			// init progress bar.
+			initProgressBar();
+			initWorker();
+			
+			$.ajax({
+						method: 'get',
+						url :  "trajectory/getAircraft/" + airlineName,
+						async : true,
+						data: 'aircraft=' + aircraftICAOcode,
+						success: function(data, status) {
+							
+							let dataJson = eval(data);
+							if ( dataJson.hasOwnProperty("errors") ) {
+								stopBusyAnimation();
+								showMessage( "Error" , dataJson["errors"] );
+								
+							} else {
+								
+								//alert("Data: " + data + "\nStatus: " + status);
+								let dataJson = eval(data);
+								// airlineAircrafts
+								SingletonProfileCosts.getInstance().populateAircraftPerformance( dataJson );
+								
+							}
+						},
+						error: function(data, status) {
+							alert("Error - compute Flight Profile: " + status + " Please contact your admin");
+							showMessage( "Error" , eval(data) );
+						},
+						complete : function() {
+							stopBusyAnimation();
+							document.getElementById("btnComputeFlightProfileId").disabled = false;
+						}
+			});
+		}
 		 
 		/**
 		* monitor the button used to launch the profile computation

@@ -49,15 +49,33 @@ class FlighProfileControl extends og.Control {
 		div_1.appendChild(label_1_2);
 		
 		let input_1 = document.createElement("input");
-		input_1.id = "maxTakeOffMassKgId" ;
-		input_1.maxlength = "6";
-		input_1.size = "6";
+		input_1.id = "TakeOffMassKgId" ;
+		input_1.maxlength = "3";
+		input_1.size = "3";
 		div_1.appendChild(input_1);
+		
+		// hidden input with min take off weight KG
+		let input_1_1 = document.createElement("input");
+		input_1_1.id = "minTakeOffMassKgId" ;
+		input_1_1.hidden = true;
+		input_1_1.maxlength = "6";
+		input_1_1.size = "6";
+		input_1_1.title = "minTakeOffMassKgId" ;
+		div_1.appendChild(input_1_1);
+		
+		// hidden input with min take off weight KG
+		let input_1_2 = document.createElement("input");
+		input_1_2.id = "maxTakeOffMassKgId" ;
+		input_1_2.hidden = true;
+		input_1_2.maxlength = "6";
+		input_1_2.size = "6";
+		input_1_2.title = "maxTakeOffMassKgId" ;
+		div_1.appendChild(input_1_2);
 		
 		// ------------- Requested Flight Level
 		
 		let label_1_3 = document.createElement("label");
-		label_1_3.innerHTML = " Flight Level (100*feet) ->" ;
+		label_1_3.innerHTML = " Flight Level (feet) ->" ;
 		div_1.appendChild(label_1_3);
 		
 		let input_2 = document.createElement("input");
@@ -65,6 +83,13 @@ class FlighProfileControl extends og.Control {
 		input_2.maxlength = "3";
 		input_2.size = "3";
 		div_1.appendChild(input_2);
+		
+		let input_2_1 = document.createElement("input");
+		input_2_1.id = "maxFlightLevelId" ;
+		input_2_1.hidden = true;
+		input_2_1.maxlength = "3";
+		input_2_1.size = "3";
+		div_1.appendChild(input_2_1);
 		
 		td.appendChild(div_1);
 		

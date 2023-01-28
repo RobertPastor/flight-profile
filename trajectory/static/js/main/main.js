@@ -161,7 +161,9 @@ function switchAirlines(globus) {
 }
 
 function loadAirlines() {
-	
+	/*
+	* fill the selector with the names of the airlines
+	*/
 	if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 		airlines.forEach ( function ( airline ) {
 			let option = document.createElement("option");
@@ -222,11 +224,17 @@ function initTools(globus, viewExtent) {
 	globus.planet.addControl(new AirlineCostsResultsControl());
 	initCostsComputation();
 	
+	// airline costs optimization
+	globus.planet.addControl(new AirlineCostsOptimizationControl());
+	let airlineCostsOptimization = SingletonAirlineCostsOptimization.getInstance();
+	airlineCostsOptimization.initCostsOptimization();
+	
 	// init download EXCEL Vertical Flight Profile
 	initDownloadVerticalProfile();
 	
 	// now finish by loading the different airlines
 	loadAirlines();
+	
 	// prepare to switch from one airline to the other
 	switchAirlines(globus);
 }

@@ -27,6 +27,7 @@ because it will be hidden at the end of the images loading process */
     width : 100%;
 }
 
+
 table, th, td {
 	background-color: white;
 	opacity: 1.0;
@@ -135,4 +136,24 @@ th {
 	position: absolute;
 	top: 230px;
 	left: 10px;
+}
+
+.airlineOptimizationMainDiv {
+	position: absolute;
+	top : 90px;
+	left : 10px;
+}
+
+.airlineOptimizationResultsTable thead  tr {
+	display : block;
+}
+
+.airlineOptimizationResultsTable tbody {
+	display : block;
+	height : 400px;
+    overflow: auto;
+}
+
+.airlineOptimizationResultsTable th , .airlineOptimizationResultsTable td {
+	width : 150px;
 }

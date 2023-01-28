@@ -2,6 +2,7 @@ from django.urls import  path
 
 from trajectory.views.viewsAirports import getAirports
 from trajectory.views.viewsWayPoints import getWayPoints
+from trajectory.views.viewsAircraft import getAircraft
 
 from trajectory.views.viewsFlightProfile import launchFlightProfile, computeFlightProfile
 from trajectory.views.computeCosts import computeCosts
@@ -17,6 +18,7 @@ urlpatterns = [
     path('computeFlightProfile/<slug:airlineName>' , computeFlightProfile , name='computeFlightProfile'),
 
     path('computeCosts/<slug:airlineName>' , computeCosts , name='computeCosts'),
+    path('getAircraft/<slug:airlineName>' , getAircraft , name="getAircraft")
 
 ]
 
