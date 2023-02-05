@@ -138,22 +138,40 @@ th {
 	left: 10px;
 }
 
-.airlineOptimizationMainDiv {
+.airlineCostsMainDiv {
 	position: absolute;
 	top : 90px;
 	left : 10px;
 }
 
-.airlineOptimizationResultsTable thead  tr {
+.airlineAirportsRoutesMainDiv {
+	position: absolute;
+	top: 230px;
+	left: 10px;
+}
+
+.airlineFlightLegCostsMainDiv {
+	position: absolute;
+	top : 90px;
+	left : 10px;
+}
+
+.airlineCostsOptimizationMainDiv {
+	position: absolute;
+	top : 90px;
+	left : 10px;
+}
+
+.airlineCostsTable thead  tr {
 	display : block;
 }
 
-.airlineOptimizationResultsTable tbody {
+.airlineCostsTable tbody {
 	display : block;
 	height : 400px;
     overflow: auto;
 }
 
-.airlineOptimizationResultsTable th , .airlineOptimizationResultsTable td {
+.airlineCostsTable th , .airlineCostsTable td {
 	width : 150px;
 }

@@ -1,17 +1,18 @@
 
+
 //Define custom control class
-		class AirlineCostsResultsControl extends og.Control {
+		class AirlineCostsControl extends og.Control {
             constructor(options) {
                 super(options);
             }
 
             onadd() {
-				//console.log("airline Costs Results Control - onadd");
+				//console.log("airline Optimization Results Control - onadd");
 				
 				let mainDiv = document.createElement('div');
-				mainDiv.id = "airlineCostsResultsMainDivId";
+				mainDiv.id = "airlineCostsMainDivId";
 				mainDiv.style="display: none;";
-				mainDiv.classList.add('airlineCostsResultsMainDiv');
+				mainDiv.classList.add('airlineCostsMainDiv');
 				
 				let draggableMainDiv = document.createElement('div');
 				draggableMainDiv.id = mainDiv.id  + "Header";
@@ -20,13 +21,14 @@
 				mainDiv.appendChild(draggableMainDiv);
 				
 				let table = document.createElement('table');
-				table.id = "airlineCostsResultsTableId";
+				table.id = "airlineCostsTableId";
+				table.classList.add ('airlineCostsTable');
 				
 				let thead = document.createElement('thead');
 				let row_1 = document.createElement('tr');
 
-				let th_list = [ 'Airline' , 'Aircraft' , 'Seats', 'Adep', 'RunWay', 'Ades', 'RunWay', 'Is Aborted', 'Initial Mass Kg' ,
-								'Final Mass Kg', 'Lost Mass Kg', 'Fuel Costs US$', 'Flight Duration Hours', 'Flying Costs US$', 'Crew Costs US$', 'Total Costs US$' ];
+				let th_list = [ 'Airline' , 'Aircraft' , 'Departure', 'Arrival', 'Is Aborted', 'takeOff Mass Kg' ,
+								'Final Mass Kg', 'Flight Duration Hours' ];
 				let th = undefined;
 				th_list.forEach ( function ( element ) {
 					th = document.createElement('th');
@@ -45,10 +47,10 @@
 				this.renderer.div.appendChild(mainDiv);
 				
 				// Make the Main Div element draggable:
-				dragElement(document.getElementById("airlineCostsResultsMainDivId"));
+				dragElement(document.getElementById("airlineCostsMainDivId"));
             }
 
             oninit() {
-                //console.log("airline Costs Results Control - oninit");
+                //console.log("airline Optimization Results Control - oninit");
             }
         };

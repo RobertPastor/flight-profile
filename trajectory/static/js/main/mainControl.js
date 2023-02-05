@@ -49,7 +49,7 @@
 				row_1.appendChild(row_1_data_1);
 				
 				let row_1_data_2 = document.createElement('td');
-				row_1_data_2.colSpan = "6";
+				row_1_data_2.colSpan = "7";
 				row_1_data_2.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
 				row_1.appendChild(row_1_data_2);
 				
@@ -89,16 +89,21 @@
 				//row_2_data_7.innerHTML = '<div><button id="btnLaunchCosts" >Show Compute Costs</button></div>';
 				//row_2.appendChild(row_2_data_7);
 				
-				// 27th January 2023 - Fleet Assignment based upon costs controls
+				// 27th January 2023 - Airline costs controls
 				let row_2_data_7 = document.createElement('td');
-				row_2_data_7.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Show Costs Optimization</button></div>';
+				row_2_data_7.innerHTML = '<div><button id="btnLaunchAirlineCosts" >Show Airline Costs</button></div>';
 				row_2.appendChild(row_2_data_7);
 				
-				
+				// 27th January 2023 - Fleet Assignment based upon costs optimization
 				let row_2_data_8 = document.createElement('td');
-				row_2_data_8.classList.add('question_mark_bg')
-				row_2_data_8.innerHTML = '<div class="question_mark" onclick="showHelp()" title="click to obtain some help"></div>';
+				row_2_data_8.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Compute Costs Optimization</button></div>';
 				row_2.appendChild(row_2_data_8);
+				
+				
+				let row_2_data_9 = document.createElement('td');
+				row_2_data_9.classList.add('question_mark_bg')
+				row_2_data_9.innerHTML = '<div class="question_mark" onclick="showHelp()" title="click to obtain some help"></div>';
+				row_2.appendChild(row_2_data_9);
 				
 				tbody.appendChild(row_2);
 				

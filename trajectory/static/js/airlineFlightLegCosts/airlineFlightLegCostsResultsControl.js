@@ -1,19 +1,17 @@
 
-
-
 //Define custom control class
-		class AirlineCostsOptimizationControl extends og.Control {
+		class AirlineFlightLegCostsResultsControl extends og.Control {
             constructor(options) {
                 super(options);
             }
 
             onadd() {
-				//console.log("airline Costs Optimization Control - onadd");
+				//console.log("airline Costs Results Control - onadd");
 				
 				let mainDiv = document.createElement('div');
-				mainDiv.id = "airlineCostsOptimizationMainDivId";
+				mainDiv.id = "airlineFlightLegCostsMainDivId";
 				mainDiv.style="display: none;";
-				mainDiv.classList.add('airlineCostsOptimizationMainDiv');
+				mainDiv.classList.add('airlineFlightLegCostsMainDiv');
 				
 				let draggableMainDiv = document.createElement('div');
 				draggableMainDiv.id = mainDiv.id  + "Header";
@@ -22,19 +20,19 @@
 				mainDiv.appendChild(draggableMainDiv);
 				
 				let table = document.createElement('table');
-				table.id = "airlineCostsOptimizationTableId";
+				table.id = "airlineFlightLegCostsTableId";
 				
 				let thead = document.createElement('thead');
 				let row_1 = document.createElement('tr');
 
-				let th_list = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned', 'Adep', 'Ades' ];
+				let th_list = [ 'Airline' , 'Aircraft' , 'Seats', 'Adep', 'RunWay', 'Ades', 'RunWay', 'Is Aborted', 'Initial Mass Kg' ,
+								'Final Mass Kg', 'Lost Mass Kg', 'Fuel Costs US$', 'Flight Duration Hours', 'Flying Costs US$', 'Crew Costs US$', 'Total Costs US$' ];
 				let th = undefined;
 				th_list.forEach ( function ( element ) {
 					th = document.createElement('th');
 					th.innerHTML = element;
 					row_1.appendChild(th);
 				});
-				
 
 				thead.appendChild(row_1);
 				table.appendChild(thead);
@@ -47,10 +45,10 @@
 				this.renderer.div.appendChild(mainDiv);
 				
 				// Make the Main Div element draggable:
-				dragElement(document.getElementById("airlineCostsOptimizationMainDivId"));
+				dragElement(document.getElementById("airlineFlightLegCostsMainDivId"));
             }
 
             oninit() {
-                //console.log("airline Costs Optimization Control - oninit");
+                //console.log("airline Costs Results Control - oninit");
             }
         };

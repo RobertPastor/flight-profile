@@ -1,132 +1,158 @@
 
-document.addEventListener('DOMContentLoaded', (event) => { 
-       
-	//console.log("Airline Costs is loaded");
+
+const SingletonAirlineCosts = (function () {
 	
-}); 
+	let instance;
+
+    function createInstance() {
+        var object = new AirlineCosts();
+        return object;
+    }
+
+    return {
+        getInstance: function () {
+            if (!instance) {
+                instance = createInstance();
+            }
+            return instance;
+        }
+    };
+})();
 
 
-function showCostsResults( dataJson ) {
+class AirlineCosts {
 
-    let aircraftName = $("#airlineAircraftId option:selected").val();
-	let route = $("#airlineRouteId option:selected").val();
+	constructor() {
+		//console.log("Airline Costs constructor");
+	}
+
+	hideAirlineCostsDiv() {
 	
-	let departureRunWay = $("#airlineDepartureRunWayFlightProfileId option:selected").val()
-	let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val()
-	
-	// get the name of the airline
-	let airlineName = $("#airlineSelectId option:selected").val();
-	airlineName = encodeURIComponent(airlineName);
-
-	//console.log("before tableCostsResultsId tbody tr append")
-	
-	$("#airlineCostsResultsTableId")
-		.find('tbody')
-		.append($('<tr>')
-
-			.append('<td>'+ airlineName +'</td>')
-			.append('<td>'+ aircraftName +'</td>')
-			.append('<td>'+ dataJson["seats"] +'</td>')
-			.append('<td>'+ route.split("-")[0] +'</td>')
-			.append('<td>'+ departureRunWay +'</td>')
-			.append('<td>'+ route.split("-")[1] +'</td>')
-			.append('<td>'+ arrivalRunWay +'</td>')
-
-			.append('<td>'+ dataJson["isAborted"] +'</td>')
-			.append('<td>'+ dataJson["initialMassKilograms"] +'</td>')
-			.append('<td>'+ dataJson["finalMassKilograms"] +'</td>')
-			.append('<td>'+ dataJson["massLossFilograms"] +'</td>')
+		// html elements are defined in AirlineCostsControls.js 
+		if ( $('#airlineCostsMainDivId').is(":visible") ) {
 			
-			.append('<td>'+ dataJson["fuelCostsDollars"] +'</td>')
-			.append('<td>'+ dataJson["flightDurationHours"] +'</td>')
-			.append('<td>'+ dataJson["operationalFlyingCostsDollars"] +'</td>')
-			.append('<td>'+ dataJson["crewFlyingCostsDollars"] +'</td>')
+			$('#airlineCostsMainDivId').hide();
 
-			.append('<td>'+ dataJson["totalCostsDollars"] +'</td>')
-		);
-	//console.log("after tableCostsResultsId tbody tr append")
-
-}
-
-function hideAirlineCostsDiv() {
-	
-	// html elements are defined in AirlineCostsControls.js 
-	if ( $('#airlineCostsMainDivId').is(":visible") ) {
-		
-		$('#airlineCostsMainDivId').hide();
-		$("#airlineCostsResultsMainDivId").hide();
-
-		// change name on the button
-		document.getElementById("btnLaunchCosts").innerText = "Show Profile / Costs";
-		document.getElementById("btnLaunchCosts").style.backgroundColor = "yellow";
-	}
-}
-
-function initCostsComputation() {
-	
-	$('#airlineCostsMainDivId').hide();
-	
-	// btnComputeCostsId
-	// listen to the button
-	document.getElementById("btnComputeCostsId").onclick = function () {
-		
-		document.getElementById("btnComputeCostsId").disabled = true;
-		
-		let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
-		let route =  $("#airlineRouteId option:selected").val();
-		
-		// use the selector of the Flight Profile computation
-		let departureRunWay = $("#airlineDepartureRunWayFlightProfileId option:selected").val();
-		let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val();
-		
-		// get the name of the airline
-		let airlineName = $("#airlineSelectId option:selected").val();
-		airlineName = encodeURIComponent(airlineName);
-
-		// init progress bar.
-		initProgressBar();
-		initWorker();
-		
-		let data = {
-			aircraft : aircraftICAOcode,
-			route    : route,
-			AdepRwy  : departureRunWay,
-			AdesRwy  : arrivalRunWay
+			// change name on the button
+			document.getElementById("btnLaunchAirlineCosts").innerText = "Show Airline Costs";
+			document.getElementById("btnLaunchAirlineCosts").style.backgroundColor = "yellow";
 		}
-		
-		$.ajax( {
-					method: 'get',
-					url :  "trajectory/computeCosts/" + airlineName,
-					async : true,
-					data :  data,
-					success: function(data, status) {
-						
-						let dataJson = eval(data);
-						if ( dataJson.hasOwnProperty("errors") ) {
-							stopBusyAnimation();
-							showMessage( "Error" , dataJson["errors"] );
-							
-						} else {
-							
-							$("#airlineCostsResultsMainDivId").show();
-									
-							//alert("Data: " + data + "\nStatus: " + status);
-							//showMessage( "End of Costs computations" , dataJson )
-							showCostsResults( dataJson )
-						}
-						
-						document.getElementById("btnComputeCostsId").disabled = false
-												
-					},
-					error: function(data, status) {
-						stopBusyAnimation();
-						console.log("Error - compute Costs : " + status + " Please contact your admin");
-						showMessage( "Error" , data );
-					},
-					complete : function() {
-						stopBusyAnimation();
-						document.getElementById("btnLaunchFlightProfile").disabled = false
-					},
-			});
 	}
+	
+	showOneAirlineCostsResult( airlineOneCostOptimization ) {
+		
+		$("#airlineCostsTableId").find('tbody')
+				.append($('<tr>')
+					.append($('<td>')
+						.append( airlineOneCostOptimization["airline"] )
+					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["airlineAircraft"] )
+					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["departureAirport"] )
+					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["arrivalAirport"] )
+					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["isAborted"] )
+					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["takeOffMassKg"] )
+					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["finalMassKg"] )
+					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["flightDurationHours"] )
+					)
+				);
+	}
+
+	showAirlineCostsResults( airlineCostsArray ) {
+		
+		console.log( " show airline costs");
+		$('#airlineCostsTableId tbody').empty();
+		
+		for (let airlineCostId = 0; airlineCostId < airlineCostsArray.length; airlineCostId++ ) {
+			
+			let oneAirlineCostOptimization = airlineCostsArray[airlineCostId];
+			SingletonAirlineCosts.getInstance().showOneAirlineCostsResult(oneAirlineCostOptimization);
+		}
+	}
+
+
+	initAirlineCosts() {
+	
+		console.log( "init Costs Optimization");
+	
+		$('#airlineCostsMainDivId').hide();
+		
+		// btnComputeCostsId
+		// listen to the button
+		document.getElementById("btnLaunchAirlineCosts").onclick = function () {
+			
+			if ( ! $('#airlineCostsMainDivId').is(":visible") ) {
+			
+				document.getElementById("btnLaunchAirlineCosts").disabled = true;
+				
+				document.getElementById("btnLaunchAirlineCosts").innerText = "Hide Airline Costs";
+				document.getElementById("btnLaunchAirlineCosts").style.backgroundColor = "green";
+				
+				// get the name of the airline
+				let airlineName = $("#airlineSelectId option:selected").val();
+				airlineName = encodeURIComponent(airlineName);
+
+				// init progress bar.
+				initProgressBar();
+				initWorker();
+				
+				$.ajax( {
+							method: 'get',
+							url :  "airline/getAirlineCosts/" + airlineName,
+							async : true,
+							success: function(data, status) {
+								
+								let dataJson = eval(data);
+								if ( dataJson.hasOwnProperty("errors") ) {
+									stopBusyAnimation();
+									showMessage( "Error" , dataJson["errors"] );
+								
+								} else {
+								
+									$("#airlineCostsMainDivId").show();
+									
+									let airlineCostsArray = dataJson["airlineCostsList"]
+											
+									//alert("Data: " + data + "\nStatus: " + status);
+									//showMessage( "End of Costs computations" , dataJson )
+									SingletonAirlineCosts.getInstance().showAirlineCostsResults( airlineCostsArray )
+								}
+							
+								document.getElementById("btnLaunchAirlineCosts").disabled = false
+													
+							},
+							error: function(data, status) {
+								stopBusyAnimation();
+								console.log("Error - compute Costs : " + status + " Please contact your admin");
+								showMessage( "Error" , data );
+							},
+							complete : function() {
+								stopBusyAnimation();
+								document.getElementById("btnLaunchAirlineCosts").disabled = false
+							}
+				});
+			} else {
+				
+					//document.getElementById("btnLaunchFlightProfile").disabled = true
+					document.getElementById("btnLaunchAirlineCosts").innerText = "Show Airline Costs";
+					document.getElementById("btnLaunchAirlineCosts").style.backgroundColor = "yellow";
+
+					$('#airlineCostsMainDivId').hide();
+				
+			}
+	    }
+	}
+	
 }

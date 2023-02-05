@@ -23,81 +23,63 @@ const SingletonAirlineCostsOptimization = (function () {
 class AirlineCostsOptimization {
 
 	constructor() {
-		//console.log("Airline Routes constructor");
+		console.log("Airline Costs Optimization constructor");
 	}
-
-	hideAirlineOptimizationCostsDiv() {
 	
-		// html elements are defined in AirlineCostsControls.js 
-		if ( $('#airlineOptimizationMainDivId').is(":visible") ) {
+	hideAirlineCostsOptimizationDiv() {
+		
+		console.log("Hide Airline Costs Optimization Main Div");
+	
+		// html elements are defined in AirlineFlightLegCostsControls.js 
+		if ( $('#airlineCostsOptimizationMainDivId').is(":visible") ) {
 			
-			$('#airlineOptimizationMainDivId').hide();
+			$('#airlineCostsOptimizationMainDivId').hide();
 
 			// change name on the button
-			document.getElementById("btnLaunchCostsOptimization").innerText = "Show Costs Optimization";
+			document.getElementById("btnLaunchCostsOptimization").innerText = "Show Airline Costs Optimization";
 			document.getElementById("btnLaunchCostsOptimization").style.backgroundColor = "yellow";
 		}
 	}
 	
-	showOneCostOptimizationResult( airlineOneCostOptimization ) {
+	showOneResult( dataJson ) {
 		
-		$("#airlineOptimizationResultsTableId").find('tbody')
-				.append($('<tr>')
-					.append($('<td>')
-						.append( airlineOneCostOptimization["airline"] )
-					)
-					.append($('<td>')
-						.append( airlineOneCostOptimization["airlineAircraft"] )
-					)
-					.append($('<td>')
-						.append( airlineOneCostOptimization["departureAirport"] )
-					)
-					.append($('<td>')
-						.append( airlineOneCostOptimization["arrivalAirport"] )
-					)
-					.append($('<td>')
-						.append( airlineOneCostOptimization["isAborted"] )
-					)
-					.append($('<td>')
-						.append( airlineOneCostOptimization["takeOffMassKg"] )
-					)
-					.append($('<td>')
-						.append( airlineOneCostOptimization["finalMassKg"] )
-					)
-					.append($('<td>')
-						.append( airlineOneCostOptimization["flightDurationHours"] )
-					)
+		$("#airlineCostsOptimizationTableId")
+			.find('tbody')
+			.append($('<tr>')
 
-				);
+				.append('<td>'+ dataJson["airline"] +'</td>')
+				.append('<td>'+ dataJson["status"] +'</td>')
+				.append('<td>'+ dataJson["aircraft"] +'</td>')
+				.append('<td>'+ dataJson["assigned"] +'</td>')
+				
+				.append('<td>'+ dataJson["Adep"] +'</td>')
+				.append('<td>'+ dataJson["Ades"] +'</td>')
+
+			);
 		
 	}
-
-
-	showCostsOptimizationResults( airlineCostsArray ) {
+	
+	showCostsResults( optimizationResultsArray ) {
 		
-		console.log( " show airline costs");
-		$('#airlineOptimizationResultsTableId tbody').empty();
+		console.log( " show optimization results");
+		$('#airlineCostsOptimizationTableId tbody').empty();
 		
-		for (let airlineCostId = 0; airlineCostId < airlineCostsArray.length; airlineCostId++ ) {
+		for (let resultId = 0; resultId < optimizationResultsArray.length; resultId++ ) {
 			
-			let oneAirlineCostOptimization = airlineCostsArray[airlineCostId];
-			SingletonAirlineCostsOptimization.getInstance().showOneCostOptimizationResult(oneAirlineCostOptimization);
+			let oneResult = optimizationResultsArray[resultId];
+			SingletonAirlineCostsOptimization.getInstance().showOneResult(oneResult);
 		}
-		
 	}
-
-
-	initCostsOptimization() {
+	
+	initAirlineCostsOptimization() {
 	
 		console.log( "init Costs Optimization");
 	
 		$('#airlineCostsMainDivId').hide();
 		
-		// btnComputeCostsId
-		// listen to the button
-		document.getElementById("btnLaunchCostsOptimization").onclick = function () {
+		document.getElementById("btnLaunchCostsOptimization").onclick  = function () {
 			
-			document.getElementById("btnLaunchCostsOptimization").disabled = true;
+			console.log("click on Launch Costs Optimization");
 			
 			// get the name of the airline
 			let airlineName = $("#airlineSelectId option:selected").val();
@@ -109,40 +91,40 @@ class AirlineCostsOptimization {
 			
 			$.ajax( {
 					method: 'get',
-						url :  "airline/getAirlineCosts/" + airlineName,
+						url :  "airline/getCostsOptimization/" + airlineName,
 						async : true,
 						success: function(data, status) {
-							
+														
 							let dataJson = eval(data);
 							if ( dataJson.hasOwnProperty("errors") ) {
 								stopBusyAnimation();
-							showMessage( "Error" , dataJson["errors"] );
+								showMessage( "Error" , dataJson["errors"] );
+								
+							} else {
+								
+								$("#airlineCostsOptimizationMainDivId").show();
+										
+								//alert("Data: " + data + "\nStatus: " + status);
+								//showMessage( "End of Costs computations" , dataJson )
+								let resultsArray = dataJson["results"]
+								SingletonAirlineCostsOptimization.getInstance().showCostsResults( resultsArray )
+							}
 							
-						} else {
+							document.getElementById("btnComputeCostsId").disabled = false
 							
-							$("#airlineOptimizationMainDivId").show();
-							
-							let airlineCostsArray = dataJson["airlineCostsList"]
-									
-							//alert("Data: " + data + "\nStatus: " + status);
-							//showMessage( "End of Costs computations" , dataJson )
-							SingletonAirlineCostsOptimization.getInstance().showCostsOptimizationResults( airlineCostsArray )
+						},
+						error: function(data, status) {
+							stopBusyAnimation();
+							console.log("Error - compute Costs : " + status + " Please contact your admin");
+							showMessage( "Error" , data );
+						},
+						complete : function() {
+							stopBusyAnimation();
+							document.getElementById("btnLaunchFlightProfile").disabled = false
 						}
-						
-						document.getElementById("btnLaunchCostsOptimization").disabled = false
-												
-					},
-					error: function(data, status) {
-						stopBusyAnimation();
-						console.log("Error - compute Costs : " + status + " Please contact your admin");
-						showMessage( "Error" , data );
-					},
-					complete : function() {
-						stopBusyAnimation();
-						document.getElementById("btnLaunchFlightProfile").disabled = false
-					},
 			});
 		}
+		
 	}
 	
 }

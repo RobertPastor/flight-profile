@@ -124,7 +124,12 @@ function hideAllDiv(globus) {
 	
 	let airlineProfileCosts = SingletonProfileCosts.getInstance();
 	airlineProfileCosts.hideFlightProfileDiv();
-	//hideAirlineCostsDiv();
+	
+	let airlineFlightLegCosts = SingletonAirlineFlightLegCosts.getInstance();
+	airlineFlightLegCosts.hideAirlineFlightLegCostsDiv();
+	
+	let airlineCostsOptimization = SingletonAirlineCostsOptimization.getInstance();
+	airlineCostsOptimization.hideAirlineCostsOptimizationDiv();
 }
 
 function switchAirlines(globus) {
@@ -219,15 +224,20 @@ function initTools(globus, viewExtent) {
 	airlineProfileCosts.launchFlightProfile(globus);
 	
 	// compute costs
-	// flight profile inputs are shared with cost controls inputs
-	//globus.planet.addControl(new AirlineCostsControl());
-	globus.planet.addControl(new AirlineCostsResultsControl());
-	initCostsComputation();
+	// flight profile inputs are shared with flight leg cost controls inputs
+	globus.planet.addControl(new AirlineFlightLegCostsResultsControl());
+	let airlineFlightLegCosts = SingletonAirlineFlightLegCosts.getInstance()
+	airlineFlightLegCosts.initFlightLegCosts();
+	
+	// airline costs optimization
+	globus.planet.addControl(new AirlineCostsControl());
+	let airlineCosts = SingletonAirlineCosts.getInstance();
+	airlineCosts.initAirlineCosts();
 	
 	// airline costs optimization
 	globus.planet.addControl(new AirlineCostsOptimizationControl());
 	let airlineCostsOptimization = SingletonAirlineCostsOptimization.getInstance();
-	airlineCostsOptimization.initCostsOptimization();
+	airlineCostsOptimization.initAirlineCostsOptimization();
 	
 	// init download EXCEL Vertical Flight Profile
 	initDownloadVerticalProfile();
