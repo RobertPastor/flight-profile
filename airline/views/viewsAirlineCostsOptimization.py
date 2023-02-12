@@ -5,16 +5,15 @@ Created on 29 janv. 2023
 '''
 
 #from ortools.linear_solver import pywraplp
-from pulp import LpProblem , LpMinimize , listSolvers, LpVariable, LpInteger, lpSum, LpStatus , value, PULP_CBC_CMD
+from pulp import LpProblem , LpMinimize ,  LpVariable, LpInteger, lpSum, LpStatus ,  PULP_CBC_CMD, value
 from django.http import  JsonResponse
 
 import logging
 logger = logging.getLogger(__name__)
 from airline.models import Airline, AirlineCosts, AirlineAircraft, AirlineRoute
 
-kerosene_kilo_to_US_gallons = 0.33
-US_gallon_to_US_dollars = 3.25
-
+from airline.views.utils import compute_total_costs
+from airline.models import AirlineAircraftInstances
 
 def getCostsOptimization(request, airlineName):
     logger.debug ("get Airline Fleet for airline = {0}".format(airlineName))
@@ -30,10 +29,21 @@ def getCostsOptimization(request, airlineName):
         airline = Airline.objects.all().filter(Name=airlineName).first()
         if airline:
             
+            nbFligthtLegs = AirlineRoute.objects.filter(airline=airline).count()
+            aircraftInstances = AirlineAircraftInstances()
+            aircraftInstancesList = aircraftInstances.computeAirlineAircraftInstances(airlineName , nbFligthtLegs)
+            print ( aircraftInstancesList )
+            
+            print ( "length of flight legs = {0}".format( AirlineRoute.objects.filter(airline=airline).count() ) )
+            
             airlineCostsArray = []
             airlineAircraftICAOcodeList = []
             airlineAircraftFullNameList = []
-            for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
+            #for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
+            for aircraftInstance in aircraftInstancesList:
+                
+                acICAOcode = aircraftInstances.getAircraftInstanceICAOcode(aircraftInstance)
+                airlineAircraft = AirlineAircraft.objects.filter(airline=airline , aircraftICAOcode=acICAOcode).first()
                 
                 #print ( airlineAircraft.aircraftFullName )
                 airlineAircraftICAOcodeList.append(airlineAircraft.aircraftICAOcode)
@@ -50,13 +60,7 @@ def getCostsOptimization(request, airlineName):
                     airlineCosts = AirlineCosts.objects.all().filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
                     if airlineCosts:
                         
-                        massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
-                        fuelCostsUSdollars = massLossKg * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
-                            
-                        operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
-                            
-                        crewCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
-                        totalCostsUSdollars = fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars
+                        totalCostsUSdollars = compute_total_costs( airlineCosts, airlineAircraft )
                         
                         #print ( "{0} - {1} - {2}".format(airlineAircraft.aircraftICAOcode, airlineRoute.getFlightLegAsString() , type(totalCostsUSdollars) ))
                             
@@ -64,23 +68,24 @@ def getCostsOptimization(request, airlineName):
                         
                 airlineCostsArray.append(aircraftCostsArray)
                 
-            #print ( airlineCostsArray )
+            print ( airlineCostsArray )
             #print ( "number of aircrafts = {0}".format( len( AirlineAircraft.objects.filter(airline=airline) ) ) )
             #print ( "number of routes = {0}".format( len( AirlineRoute.objects.filter(airline=airline) ) ) )
             
             '''  x[i, j] is an array of 0-1 variables, which will be 1 '''
             '''  if worker i is assigned to task j. '''
-            num_aircrafts = len( AirlineAircraft.objects.filter(airline=airline) )
+            #num_aircrafts = len( AirlineAircraft.objects.filter(airline=airline) )
             num_flight_legs = len( AirlineRoute.objects.filter(airline=airline) )
             
-            num_aircrafts = len(airlineCostsArray)
-            #print ( num_aircrafts )
+            #num_aircrafts = len(airlineCostsArray)
+            num_aircraft_instances = len(aircraftInstancesList)
+            print ( "number of aircraft instances = {0}".format( num_aircraft_instances ))
             num_flight_legs = len(airlineCostsArray[0])
             #print ( num_flight_legs )
             
             x_vars = {}
             #print ( range(num_aircrafts) )
-            for i in range(num_aircrafts):
+            for i in range(num_aircraft_instances):
                 #print ( "---> {0} - {1}".format( i , airlineAircraftICAOcodeList[i] ) )
                 for j in range(num_flight_legs):
                     #print ( "------> {0} - {1}".format ( j , airlineFlightLegsList[j] ) )
@@ -88,25 +93,25 @@ def getCostsOptimization(request, airlineName):
                     #x[i, j] = solver.IntVar(0, 1, '{0}-{1}'.format("A320", airlineFlightLegsList[j]))
                     pass
                     #x_vars = LpVariable("x_vars", lowBound=0, upBound=1, cat='Integer', e=None)
-                    x_vars[i,j] = LpVariable(name="{0}-{1}".format(airlineAircraftICAOcodeList[i], airlineFlightLegsList[j]), lowBound=0, upBound=1, cat=LpInteger)
+                    x_vars[i,j] = LpVariable(name="{0}-{1}".format(aircraftInstancesList[i], airlineFlightLegsList[j]), lowBound=0, upBound=1, cat=LpInteger)
                     
             
             ''' --------- objective function --------------'''
-            for i in range(num_aircrafts):
+            for i in range(num_aircraft_instances):
                 for j in range(num_flight_legs):
                     #objective_terms.append(float(airlineCostsArray[i][j]) * x[i, j])
                     prob += lpSum(airlineCostsArray[i][j] * x_vars[i,j])
                     
             '''  Each aircraft is assigned to at most 1 flight leg. '''
-            for i in range(num_aircrafts):
+            for i in range(num_aircraft_instances):
                 pass
                 #solver.Add(solver.Sum([x[i, j] for j in range(num_flight_legs)]) <= 1)
-                #prob += lpSum(x_vars[i][j] for j in range(num_flight_legs)) <= 1, ""
+                prob += lpSum(x_vars[i,j] for j in range(num_flight_legs)) <= 1, ""
                 
             ''' Each flight leg is assigned to exactly one aircraft '''
             for j in range(num_flight_legs):
                 pass
-                prob += lpSum(x_vars[i,j] for i in range(num_aircrafts)) == 1, ""
+                prob += lpSum(x_vars[i,j] for i in range(num_aircraft_instances)) == 1, ""
 
                 #solver.Add(solver.Sum([x[i, j] for i in range(num_aircrafts)]) <= 1)
                 
@@ -120,10 +125,29 @@ def getCostsOptimization(request, airlineName):
                 result = {}
                 result["airline"] = airlineName
                 result["status"] = str(LpStatus[prob.status])
-                result["aircraft"] = str(v.name).split("_")[0]
                 
-                result["Adep"] = str(v.name).split("_")[1]
-                result["Ades"] = str(v.name).split("_")[2]
+                acICAOcode = str(v.name).split("_")[0]
+                result["aircraft"] = acICAOcode
+                ''' between index 0 which is the aircraft ICAO code and the flight leg there is the aircraft instance '''
+                Adep = str(v.name).split("_")[2]
+                result["AdepICAO"] = Adep
+                
+                Ades = str(v.name).split("_")[3]
+                result["AdesICAO"] = Ades
+                
+                airlineRoute = AirlineRoute.objects.filter(airline=airline , DepartureAirportICAOCode=Adep  , ArrivalAirportICAOCode=Ades).first()
+                if ( airlineRoute ):
+                    result["Adep"] = airlineRoute.DepartureAirport
+                    result["Ades"] = airlineRoute.ArrivalAirport
+                    
+                    airlineAircraft = AirlineAircraft.objects.filter(airline=airline, aircraftICAOcode=acICAOcode).first()
+                    if airlineAircraft:
+                        airlineCosts = AirlineCosts.objects.filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
+                        if airlineCosts:
+                            
+                            totalCostsUSdollars = compute_total_costs(airlineCosts, airlineAircraft )
+                            result["costs"] = round ( totalCostsUSdollars , 2 )
+
                 print ( v.name, "=", v.varValue )
                 if ( v.varValue > 0.0 ):
                     result["assigned"] = "yes"
@@ -133,7 +157,7 @@ def getCostsOptimization(request, airlineName):
                 
 
             # The optimized objective function value is printed to the screen
-            #print ( "Total Cost  = ", value(prob.objective))
+            print ( "Total Cost  = ", value(prob.objective))
             
             return JsonResponse({'results': results})
 

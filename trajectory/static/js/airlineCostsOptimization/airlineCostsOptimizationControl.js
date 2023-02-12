@@ -27,7 +27,7 @@
 				let thead = document.createElement('thead');
 				let row_1 = document.createElement('tr');
 
-				let th_list = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned', 'Adep', 'Ades' ];
+				let th_list = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned', 'Adep', 'Ades' , 'Costs'];
 				let th = undefined;
 				th_list.forEach ( function ( element ) {
 					th = document.createElement('th');

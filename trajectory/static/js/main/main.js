@@ -128,6 +128,9 @@ function hideAllDiv(globus) {
 	let airlineFlightLegCosts = SingletonAirlineFlightLegCosts.getInstance();
 	airlineFlightLegCosts.hideAirlineFlightLegCostsDiv();
 	
+	let airlineCosts = SingletonAirlineCosts.getInstance();
+	airlineCosts.hideAirlineCostsDiv();
+	
 	let airlineCostsOptimization = SingletonAirlineCostsOptimization.getInstance();
 	airlineCostsOptimization.hideAirlineCostsOptimizationDiv();
 }
@@ -271,7 +274,7 @@ function initMain(viewExtent) {
 	
 	setTimeout( function() {
 		initTools (globus, viewExtent);
-	} , 500 );
+	} , 100 );
 }
 
 

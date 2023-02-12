@@ -2,6 +2,7 @@ from django.db import models
 import logging
 # Create your models here.
 from trajectory.models import AirlineAirport, AirlineRunWay
+from builtins import object
 
 class Airline(models.Model):
     Name = models.CharField( max_length = 250 , unique=True)
@@ -114,6 +115,45 @@ class AirlineRouteWayPoints(models.Model):
         return routeAsString
         
 
+class AirlineAircraftInstances(object):
+    pass
+
+    ''' compute a list of aircraft instances to reach the same number as flight legs '''
+    def computeAirlineAircraftInstances(self, airlineName, nbFlightLegs):
+        pass
+        aircraftInstanceList = []
+        airline = Airline.objects.all().filter(Name=airlineName).first()
+        if airline:
+            
+            nbAircrafts = AirlineAircraft.objects.filter(airline=airline).count()
+            if ( nbAircrafts >= nbFlightLegs ):
+                index = 0
+                for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
+                    print (str(index).zfill(3))
+                    aircraftInstanceList.append(airlineAircraft.aircraftICAOcode + "-" + str(index).zfill(3))
+                    index = index + 1
+                return aircraftInstanceList
+            
+            else:
+                pass
+                index = 0
+                while index < nbFlightLegs:
+                    for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
+                        pass
+                        aircraftInstanceList.append(airlineAircraft.aircraftICAOcode + "-" + str(index).zfill(3))
+                        index = index + 1
+                        if ( index >= nbFlightLegs ):
+                            break
+                        
+                return aircraftInstanceList
+                    
+        else:
+            return []
+        
+    def getAircraftInstanceICAOcode(self, acInstance):
+        return str(acInstance).split("-")[0]
+    
+    
 
 class AirlineAircraft(models.Model):
     aircraftICAOcode = models.CharField(max_length = 50)

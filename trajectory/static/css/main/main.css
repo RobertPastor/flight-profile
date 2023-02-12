@@ -101,11 +101,6 @@ th {
 	left : 10px;
 }
 
-.airlineCostsMainDiv {
-	position: absolute;
-	top : 90px;
-	left : 10px;
-}
 
 .airlineCostsResultsMainDiv {
 	position: absolute;
@@ -168,7 +163,7 @@ th {
 
 .airlineCostsTable tbody {
 	display : block;
-	height : 400px;
+	height : 200px;
     overflow: auto;
 }
 

@@ -67,6 +67,18 @@ class AirlineCosts {
 					.append($('<td>')
 						.append( airlineOneCostOptimization["flightDurationHours"] )
 					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["fuelCostsUSdollars"] )
+					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["operationalCostsUSdollars"] )
+					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["crewCostsUSdollars"] )
+					)
+					.append($('<td>')
+						.append( airlineOneCostOptimization["totalCostsUSdollars"] )
+					)
 				);
 	}
 
@@ -80,6 +92,9 @@ class AirlineCosts {
 			let oneAirlineCostOptimization = airlineCostsArray[airlineCostId];
 			SingletonAirlineCosts.getInstance().showOneAirlineCostsResult(oneAirlineCostOptimization);
 		}
+		// set height
+		document.getElementById("airlineCostsTableId").style.height = (airlineCostsArray.length * 1)  + "px";
+
 	}
 
 

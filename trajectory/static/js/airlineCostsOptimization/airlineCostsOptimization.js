@@ -54,6 +54,7 @@ class AirlineCostsOptimization {
 				
 				.append('<td>'+ dataJson["Adep"] +'</td>')
 				.append('<td>'+ dataJson["Ades"] +'</td>')
+				.append('<td>'+ dataJson["costs"] +'</td>')
 
 			);
 		

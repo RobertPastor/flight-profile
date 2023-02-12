@@ -925,4 +925,29 @@ VOBL/09R
 read runways database result = True
 (airlineservices) 20:28 ~/flight-profile (master)$ 
 
+## pip install pulp
+
+(airlineservices) 19:30 ~/flight-profile (master)$ pip install pulp
+Looking in links: /usr/share/pip-wheels
+Collecting pulp
+  Downloading PuLP-2.7.0-py3-none-any.whl (14.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.3/14.3 MB 21.8 MB/s eta 0:00:00
+Installing collected packages: pulp
+Successfully installed pulp-2.7.0
+(airlineservices) 19:34 ~/flight-profile (master)$ 
+
+## makemigrations migrate
+
+(airlineservices) 19:34 ~/flight-profile (master)$ python manage.py makemigrations
+No changes detected
+(airlineservices) 19:35 ~/flight-profile (master)$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, airline, auth, contenttypes, sessions, trajectory
+Running migrations:
+  Applying airline.0005_airlinecosts... OK
+(airlineservices) 19:35 ~/flight-profile (master)$ 
+
+## launch cost controls
+
+
 
