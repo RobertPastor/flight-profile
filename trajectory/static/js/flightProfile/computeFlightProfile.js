@@ -588,16 +588,18 @@ class AirlineProfileCosts {
 			//console.log(elemTOMassKg.value);
 			
 				if ( ! Number.isInteger(+(elemTOMassKg.value)) ) {
-					alert("Take Off Mass KG must be an integer")
+					showMessage("Take Off Mass Error" , "Take Off Mass KG must be an integer")
 				} else {
 					let massValue = elemTOMassKg.value;
 					let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
 					let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
 					if ( massValue > parseInt( elemMaxTOMassKg.value ) ) {
-						alert ("Take Off Mass KG must be lower than " + elemMaxTOMassKg.value )
+						showMessage ("Take Off Mass Error" , "Take Off Mass KG must be lower than " + elemMaxTOMassKg.value )
+						elemTOMassKg.value = elemMaxTOMassKg.value;
 					} else {
 						if ( massValue < parseInt ( elemMinTOMassKg.value ) ) {
-							alert ("Take Off Mass KG must be greater than " + elemMinTOMassKg.value )
+							showMessage ("Take Off Mass Error", "Take Off Mass KG must be greater than " + elemMinTOMassKg.value )
+							elemTOMassKg.value = elemMinTOMassKg.value;
 						}
 					}
 				}
@@ -609,13 +611,18 @@ class AirlineProfileCosts {
 			//console.log(elemFL.value);
 			
 				if ( ! Number.isInteger(+(elemFL.value)) ) {
-					alert("Take Off Mass KG must be an integer")
+					showMessage("Flight Level Error" , "Flight Level must be an integer");
 				} else {
 					let FLvalue = elemFL.value;
 					let elemMaxFL = document.getElementById('maxFlightLevelId');
 					
 					if ( FLvalue > parseInt( elemMaxFL.value ) ) {
-						alert ("Flight Level must be lower than " + elemMaxFL.value )
+						showMessage ("Flight Level Error" ,  "Flight Level must be lower than " + elemMaxFL.value );
+						elemFL.value = elemMaxFL.value;
+					} 
+					if ( FLvalue < parseInt( "0" ) ) {
+						showMessage ("Flight Level Error" ,  "Flight Level must be greater than 0" );
+						elemFL.value = elemMaxFL.value;
 					} 
 				}
 		});

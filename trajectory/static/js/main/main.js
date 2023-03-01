@@ -110,6 +110,13 @@ function initWorker() {
     }
 }
 
+function clickToHide() {
+	// span in div and div in div -> hence twice parentNode
+	let elem = this.parentNode.parentNode;
+	elem.style = "display: none;";
+	return false;
+}
+
 function hideAllDiv(globus) {
 	
 	let airlineFleet = SingletonAirlineFleet.getInstance()

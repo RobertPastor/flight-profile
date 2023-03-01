@@ -18,6 +18,14 @@
 				draggableMainDiv.id = mainDiv.id  + "Header";
 				draggableMainDiv.innerHTML = "Click here to move";
 				draggableMainDiv.classList.add("draggableDivHeader");
+				
+				let span = document.createElement('span');
+				span.id = "hideId";
+				span.innerHTML = "Click to hide";
+				// call a function
+				span.onclick = clickToHide;
+				draggableMainDiv.appendChild(span);
+		
 				mainDiv.appendChild(draggableMainDiv);
 				
 				let table = document.createElement('table');

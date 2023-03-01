@@ -39,7 +39,7 @@ class AirlineFlightLegCosts {
 
 		//console.log("before tableCostsResultsId tbody tr append")
 		
-		$("#airlineCostsResultsTableId")
+		$("#airlineFlightLegCostsTableId")
 			.find('tbody')
 			.append($('<tr>')
 
@@ -82,7 +82,7 @@ class AirlineFlightLegCosts {
 
 	initFlightLegCosts() {
 	
-		$('#airlineCostsMainDivId').hide();
+		$('#airlineFlightLegCostsMainDivId').hide();
 		
 		// btnComputeCostsId
 		// listen to the button
@@ -126,7 +126,7 @@ class AirlineFlightLegCosts {
 								
 							} else {
 								
-								$("#airlineCostsResultsMainDivId").show();
+								$("#airlineFlightLegCostsMainDivId").show();
 										
 								//alert("Data: " + data + "\nStatus: " + status);
 								//showMessage( "End of Costs computations" , dataJson )

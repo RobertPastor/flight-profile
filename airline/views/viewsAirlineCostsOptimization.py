@@ -9,20 +9,30 @@ from pulp import LpProblem , LpMinimize ,  LpVariable, LpInteger, lpSum, LpStatu
 from django.http import  JsonResponse
 
 import logging
+from pulp.constants import LpBinary
 logger = logging.getLogger(__name__)
 from airline.models import Airline, AirlineCosts, AirlineAircraft, AirlineRoute
 
 from airline.views.utils import compute_total_costs
 from airline.models import AirlineAircraftInstances
 
+def check_constraints(prob, c_list):
+    if prob.objective:
+        for c in c_list:
+            if '=' not in str(c):
+                print ('no operator found in constraint')
+                break
+            else:
+                prob.addConstraint(c)
+    else:
+        print ('Please define an objective before you define constraints')
+
 def getCostsOptimization(request, airlineName):
     logger.debug ("get Airline Fleet for airline = {0}".format(airlineName))
     
     if (request.method == 'GET'):
         
-        ''' Create the MIP solver with the SCIP back-end '''
-        #solver = pywraplp.Solver.CreateSolver('SCIP')
-        prob = LpProblem("AssignmentProblem", LpMinimize)
+        
         #solver_list = listSolvers(onlyAvailable=True)
         #print (solver_list)
         
@@ -83,6 +93,10 @@ def getCostsOptimization(request, airlineName):
             num_flight_legs = len(airlineCostsArray[0])
             #print ( num_flight_legs )
             
+            ''' Create the MIP solver with the SCIP back-end '''
+            #solver = pywraplp.Solver.CreateSolver('SCIP')
+            prob = LpProblem("AssignmentProblem", LpMinimize)
+            
             x_vars = {}
             #print ( range(num_aircrafts) )
             for i in range(num_aircraft_instances):
@@ -93,25 +107,30 @@ def getCostsOptimization(request, airlineName):
                     #x[i, j] = solver.IntVar(0, 1, '{0}-{1}'.format("A320", airlineFlightLegsList[j]))
                     pass
                     #x_vars = LpVariable("x_vars", lowBound=0, upBound=1, cat='Integer', e=None)
-                    x_vars[i,j] = LpVariable(name="{0}-{1}".format(aircraftInstancesList[i], airlineFlightLegsList[j]), lowBound=0, upBound=1, cat=LpInteger)
+                    x_vars[i,j] = LpVariable(name="{0}-{1}".format(aircraftInstancesList[i], airlineFlightLegsList[j]), lowBound=0, upBound=1, cat=LpBinary)
                     
             
             ''' --------- objective function --------------'''
             for i in range(num_aircraft_instances):
                 for j in range(num_flight_legs):
+                    pass
                     #objective_terms.append(float(airlineCostsArray[i][j]) * x[i, j])
-                    prob += lpSum(airlineCostsArray[i][j] * x_vars[i,j])
+            prob += lpSum( [ airlineCostsArray[i][j] * x_vars[i,j] for i in range(num_aircraft_instances) for j in range(num_flight_legs) ])
                     
+            print ("--- add constraints ----")
             '''  Each aircraft is assigned to at most 1 flight leg. '''
             for i in range(num_aircraft_instances):
                 pass
                 #solver.Add(solver.Sum([x[i, j] for j in range(num_flight_legs)]) <= 1)
-                prob += lpSum(x_vars[i,j] for j in range(num_flight_legs)) <= 1, ""
+                prob += lpSum( [ x_vars[i,j] for j in range(num_flight_legs) ] ) <= 1
+                #c_list = lpSum ( [x_vars[i,j] for j in range(num_flight_legs)] ) <= 1
+                #check_constraints(prob, c_list)
                 
             ''' Each flight leg is assigned to exactly one aircraft '''
             for j in range(num_flight_legs):
                 pass
-                prob += lpSum(x_vars[i,j] for i in range(num_aircraft_instances)) == 1, ""
+                prob += lpSum ( [ x_vars[i,j] for i in range(num_aircraft_instances) ] ) == 1
+                #check_constraints(prob, c_list)
 
                 #solver.Add(solver.Sum([x[i, j] for i in range(num_aircrafts)]) <= 1)
                 
@@ -119,6 +138,11 @@ def getCostsOptimization(request, airlineName):
             #solver.Minimize(solver.Sum(objective_terms))
             prob.solve(PULP_CBC_CMD(msg=0))
             print ("Status:", LpStatus[prob.status])
+            
+            #for name, c in list(prob.constraints.items()):
+            #    print(name, ":", c, "\t", c.pi, "\t\t", c.slack)
+            
+            prob.writeLP("pulp_problem.lp", writeSOS=1, mip=1 )
             
             results = []
             for v in prob.variables():
@@ -148,8 +172,9 @@ def getCostsOptimization(request, airlineName):
                             totalCostsUSdollars = compute_total_costs(airlineCosts, airlineAircraft )
                             result["costs"] = round ( totalCostsUSdollars , 2 )
 
-                print ( v.name, "=", v.varValue )
+                
                 if ( v.varValue > 0.0 ):
+                    print ( v.name, "=", v.varValue )
                     result["assigned"] = "yes"
                     results.append(result)
                 else:

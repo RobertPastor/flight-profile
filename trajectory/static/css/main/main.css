@@ -170,3 +170,11 @@ th {
 .airlineCostsTable th , .airlineCostsTable td {
 	width : 150px;
 }
+
+#hideId {
+    float:right;
+    background:#ccc;
+    cursor: pointer;
+}
+
+

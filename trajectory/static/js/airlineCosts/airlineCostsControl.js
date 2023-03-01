@@ -3,9 +3,10 @@ $(document).ready( function () {
 		if ( document.getElementById("airlineCostsTableId") ) {
 			console.log("element table with id " + airlineCostsTableId + " is existing");
 		}
-		
 	}, 500 );
 } );
+
+
 
 //Define custom control class
 class AirlineCostsControl extends og.Control {
@@ -18,13 +19,21 @@ class AirlineCostsControl extends og.Control {
 		
 		let mainDiv = document.createElement('div');
 		mainDiv.id = "airlineCostsMainDivId";
-		mainDiv.style="display: none;";
+		mainDiv.style = "display: none;";
 		mainDiv.classList.add('airlineCostsMainDiv');
 		
 		let draggableMainDiv = document.createElement('div');
 		draggableMainDiv.id = mainDiv.id  + "Header";
 		draggableMainDiv.innerHTML = "Click here to move";
 		draggableMainDiv.classList.add("draggableDivHeader");
+		
+		let span = document.createElement('span');
+		span.id = "hideId";
+		span.innerHTML = "Click to hide";
+		// call a function
+		span.onclick = clickToHide;
+		draggableMainDiv.appendChild(span);
+		
 		mainDiv.appendChild(draggableMainDiv);
 		
 		let table = document.createElement('table');
