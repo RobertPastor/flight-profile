@@ -117,9 +117,9 @@ class FlightPath(FlightPlan):
             logging.info ( self.className +': performance file= {0}'.format(acBd.getAircraftPerformanceFile(self.aircraftICAOcode)) )
             self.aircraft = BadaAircraft(ICAOcode = self.aircraftICAOcode, 
                                          aircraftFullName = acBd.getAircraftFullName(self.aircraftICAOcode),
-                                  badaPerformanceFilePath = acBd.getAircraftPerformanceFile(self.aircraftICAOcode),
-                                  atmosphere = atmosphere,
-                                  earth = earth)
+                                          badaPerformanceFilePath = acBd.getAircraftPerformanceFile(self.aircraftICAOcode),
+                                          atmosphere = atmosphere,
+                                          earth = earth)
             self.aircraft.dump()
         else:
             raise ValueError(self.className + ': aircraft not found= ' + self.aircraftICAOcode)

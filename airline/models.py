@@ -211,11 +211,12 @@ class AirlineAircraft(models.Model):
     
 
 class AirlineCosts(models.Model):
-    airline = models.ForeignKey(Airline, on_delete=models.CASCADE , default=None )
-    airlineAircraft = models.ForeignKey(AirlineAircraft, on_delete=models.CASCADE , default=None )
-    airlineRoute = models.ForeignKey(AirlineRoute, on_delete=models.CASCADE , default=None )
-    isAborted = models.BooleanField()
+    airline               = models.ForeignKey(Airline, on_delete=models.CASCADE , default=None )
+    airlineAircraft       = models.ForeignKey(AirlineAircraft, on_delete=models.CASCADE , default=None )
+    airlineRoute          = models.ForeignKey(AirlineRoute, on_delete=models.CASCADE , default=None )
+    isAborted             = models.BooleanField()
     flightDurationSeconds = models.FloatField()
-    initialTakeOffMassKg = models.FloatField() 
-    finalMassKg = models.FloatField()
+    initialTakeOffMassKg  = models.FloatField() 
+    finalMassKg           = models.FloatField()
+    finalLengthMeters     = models.FloatField(default=0)
     

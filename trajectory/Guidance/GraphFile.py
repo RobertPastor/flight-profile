@@ -362,7 +362,7 @@ class Graph(object):
             
     def getLengthMeters(self):
         return self.lengthMeters
-            
+    
             
     def computeLengthMeters(self):
         self.lengthMeters = 0.0

@@ -59,13 +59,15 @@ function Help () {
 		this.helpArray.push("   2) fuel costs based upon aircraft mass loss - translated into liters of fuel TIMES cost of one liter of fuel.<br>");
 		this.helpArray.push("   3) crew costs based upon flight duration TIMES hourly crew costs.<br>");
 		
-		this.helpArray.push("<h4>Fuel Costs</h4>");
+		this.helpArray.push("<h3>Fuel Costs</h3>");
 		this.helpArray.push("Fuel costs are based upon aircraft mass difference between initial mass and final mass.<br>");
 		this.helpArray.push("This Mass difference expressed in Kilograms is converted into US gallons -> Mass Kg * 0.33 <br>");
 		this.helpArray.push("Finally the value in US gallons is timed by a US Gallon to US Dollar constant -> US gallons *  3.25.<br>");
 
-		this.helpArray.push("<h3>Future Improvements</h3>");
-		this.helpArray.push("For each route, define a seat demand hypothesis per Hour from 7AM to 10PM.<br>");
+		this.helpArray.push("<h3>Cost per Available Seat Mile</h3>");
+		this.helpArray.push("For each route, compute number of available seats TIMES flight leg length in miles.<br>");
+		this.helpArray.push("Compute CASM as the total costs divided by (nb Seats * leg length miles).<br>");
+		this.helpArray.push("The lower is this cost (in tenth of US dollars), the better efficiency has the airline on this leg.<br>");
 		
 		//this.helpArray.push("<h4>About Trajectory Prediction</h4>");
 		//this.helpArray.push('<a href="https://trajectoire-predict.monsite-orange.fr/page-557223c123784.html" target="_blank">Aircraft Trajectory Prediction</a>');
@@ -85,11 +87,12 @@ function show(help) {
 	var title = 'help';
 	$("#helpDiv").dialog (
 			{
-				dialogClass : 'small',
+				dialogClass : 'helpDiv',
 				resizable	: true,
 				modal		: true,
 				title		: title,
 				width 		: 'auto',
+				overflow    : 'scroll',
 				position	: 'top',
 				open: function() {
 					var htmlContent = "";

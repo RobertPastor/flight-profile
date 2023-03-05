@@ -62,6 +62,7 @@ class Command(BaseCommand):
                                     flightDurationSeconds = flightPath.getFlightDurationSeconds(),
                                     initialTakeOffMassKg = flightPath.aircraft.getAircraftInitialMassKilograms(),
                                     finalMassKg =  flightPath.aircraft.getAircraftCurrentMassKilograms() ,
+                                    finalLengthMeters = flightPath.finalRoute.getLengthMeters()
                                     )
                         airlineCosts.save()
         

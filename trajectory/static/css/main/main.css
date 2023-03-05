@@ -177,4 +177,8 @@ th {
     cursor: pointer;
 }
 
-
+.helpDiv{
+    height: 300px;
+    overflow: scroll; /* Or scroll, depending on your needs*/
+    width: 300px;
+}
