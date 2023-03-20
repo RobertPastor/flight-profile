@@ -1,0 +1,345 @@
+
+.fold-1 {
+	background: -webkit-linear-gradient(top, #e5e5e5, #ccc);
+	padding: 10px;
+	color: #999;
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+.fold-2 {
+	background: -webkit-linear-gradient(top, #e5e5e5, #ccc);
+	padding: 10px;
+	color: #999;
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+.fold-3 {
+	background: -webkit-linear-gradient(top, #e5e5e5, #ccc);
+	padding: 10px;
+	color: #999;
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+.fold-4 {
+	background: -webkit-linear-gradient(top, #e5e5e5, #ccc);
+	padding: 10px;
+	color: #999;
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+.fold-5 {
+	background: -webkit-linear-gradient(top, #e5e5e5, #ccc);
+	padding: 10px;
+	color: #999;
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+.fold-6 {
+	background: -webkit-linear-gradient(top, #e5e5e5, #ccc);
+	padding: 10px;
+	color: #999;
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+.fold-7 {
+	background: -webkit-linear-gradient(top, #e5e5e5, #ccc);
+	padding: 10px;
+	color: #999;
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+.fold-8 {
+	background: -webkit-linear-gradient(top, #e5e5e5, #ccc);
+	padding: 10px;
+	color: #999;
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+.fold-9 {
+	background: -webkit-linear-gradient(top, #e5e5e5, #ccc);
+	padding: 10px;
+	color: #999;
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+.fold-10 {
+	background: -webkit-linear-gradient(top, #e5e5e5, #ccc);
+	padding: 10px;
+	color: #999;
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+
+/*----------------------*/
+
+.unfolder-1 { display: none; }
+.unfolder-2 { display: none; }
+.unfolder-3 { display: none; }
+.unfolder-4 { display: none; }
+.unfolder-5 { display: none; }
+.unfolder-6 { display: none; }
+.unfolder-7 { display: none; }
+.unfolder-8 { display: none; }
+.unfolder-9 { display: none; }
+.unfolder-10 { display: none; }
+
+/*----------------------*/
+
+.unfolder-1 ~ .fold-1 {
+  display: none;
+}
+.unfolder-2 ~ .fold-2 {
+  display: none;
+}
+.unfolder-3 ~ .fold-3 {
+  display: none;
+}
+.unfolder-4 ~ .fold-4 {
+  display: none;
+}
+.unfolder-5 ~ .fold-5 {
+  display: none;
+}
+.unfolder-6 ~ .fold-6 {
+  display: none;
+}
+.unfolder-7 ~ .fold-7 {
+  display: none;
+}
+.unfolder-8 ~ .fold-8 {
+  display: none;
+}
+.unfolder-9 ~ .fold-9 {
+  display: none;
+}
+.unfolder-10 ~ .fold-10 {
+  display: none;
+}
+
+/*----------------------*/
+
+.unfolder-1 ~ label .fold-icon {
+  display: none;
+}
+.unfolder-2 ~ label .fold-icon {
+  display: none;
+}
+.unfolder-3 ~ label .fold-icon {
+  display: none;
+}
+.unfolder-4 ~ label .fold-icon {
+  display: none;
+}
+.unfolder-5 ~ label .fold-icon {
+  display: none;
+}
+.unfolder-6 ~ label .fold-icon {
+  display: none;
+}
+.unfolder-7 ~ label .fold-icon {
+  display: none;
+}
+.unfolder-8 ~ label .fold-icon {
+  display: none;
+}
+.unfolder-9 ~ label .fold-icon {
+  display: none;
+}
+.unfolder-10 ~ label .fold-icon {
+  display: none;
+}
+
+/*----------------------*/
+
+.unfolder-1:checked ~ .fold-1 {
+  display: block;
+}
+.unfolder-2:checked ~ .fold-2 {
+  display: block;
+}
+.unfolder-3:checked ~ .fold-3 {
+  display: block;
+}
+.unfolder-4:checked ~ .fold-4 {
+  display: block;
+}
+.unfolder-5:checked ~ .fold-5 {
+  display: block;
+}
+.unfolder-6:checked ~ .fold-6 {
+  display: block;
+}
+.unfolder-7:checked ~ .fold-7 {
+  display: block;
+}
+.unfolder-8:checked ~ .fold-8 {
+  display: block;
+}
+.unfolder-9:checked ~ .fold-9 {
+  display: block;
+}
+.unfolder-10:checked ~ .fold-10 {
+  display: block;
+}
+
+/*----------------------*/
+
+.unfolder-1:checked ~ label .fold-icon {
+  display: inline-block;
+}
+.unfolder-2:checked ~ label .fold-icon {
+  display: inline-block;
+}
+.unfolder-3:checked ~ label .fold-icon {
+  display: inline-block;
+}
+.unfolder-4:checked ~ label .fold-icon {
+  display: inline-block;
+}
+.unfolder-5:checked ~ label .fold-icon {
+  display: inline-block;
+}
+.unfolder-6:checked ~ label .fold-icon {
+  display: inline-block;
+}
+.unfolder-7:checked ~ label .fold-icon {
+  display: inline-block;
+}
+.unfolder-8:checked ~ label .fold-icon {
+  display: inline-block;
+}
+.unfolder-9:checked ~ label .fold-icon {
+  display: inline-block;
+}
+.unfolder-10:checked ~ label .fold-icon {
+  display: inline-block;
+}
+
+/*----------------------*/
+
+
+.unfolder-1:checked ~ label .unfold-icon {
+  display: none;
+}
+.unfolder-2:checked ~ label .unfold-icon {
+  display: none;
+}
+.unfolder-3:checked ~ label .unfold-icon {
+  display: none;
+}
+.unfolder-4:checked ~ label .unfold-icon {
+  display: none;
+}
+.unfolder-5:checked ~ label .unfold-icon {
+  display: none;
+}
+.unfolder-6:checked ~ label .unfold-icon {
+  display: none;
+}
+.unfolder-7:checked ~ label .unfold-icon {
+  display: none;
+}
+.unfolder-8:checked ~ label .unfold-icon {
+  display: none;
+}
+.unfolder-9:checked ~ label .unfold-icon {
+  display: none;
+}
+.unfolder-10:checked ~ label .unfold-icon {
+  display: none;
+}
+
+/*----------------------*/
+
+.toggle-label-1 {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+	border-radius: 5px;
+	padding: 5px;
+}
+.toggle-label-2 {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+	border-radius: 5px;
+	padding: 5px;
+}
+.toggle-label-3 {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+	border-radius: 5px;
+	padding: 5px;
+}
+.toggle-label-4 {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+	border-radius: 5px;
+	padding: 5px;
+}
+.toggle-label-5 {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+	border-radius: 5px;
+	padding: 5px;
+}
+.toggle-label-6 {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+	border-radius: 5px;
+	padding: 5px;
+}
+.toggle-label-7 {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+	border-radius: 5px;
+	padding: 5px;
+}
+.toggle-label-8 {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+	border-radius: 5px;
+	padding: 5px;
+}
+.toggle-label-9 {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+	border-radius: 5px;
+	padding: 5px;
+}
+.toggle-label-10 {
+	display: inline-block;
+	cursor: pointer;
+	font-size: 11px;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+/*----------------------*/
+
+/* fixed width to stop the icon from wiggling */
+.unfold-icon, .fold-icon {
+  color: #999;
+  width: 10px;
+  display: inline-block;
+}
+
+
+

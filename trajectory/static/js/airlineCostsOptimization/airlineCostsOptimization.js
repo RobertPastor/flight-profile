@@ -92,7 +92,7 @@ class AirlineCostsOptimization {
 			
 			$.ajax( {
 					method: 'get',
-						url :  "airline/getCostsOptimization/" + airlineName,
+						url :  "airline/getAirlineCostsOptimization/" + airlineName,
 						async : true,
 						success: function(data, status) {
 														
@@ -107,8 +107,8 @@ class AirlineCostsOptimization {
 										
 								//alert("Data: " + data + "\nStatus: " + status);
 								//showMessage( "End of Costs computations" , dataJson )
-								let resultsArray = dataJson["results"]
-								SingletonAirlineCostsOptimization.getInstance().showCostsResults( resultsArray )
+								let resultsArray = dataJson["results"];
+								SingletonAirlineCostsOptimization.getInstance().showCostsResults( resultsArray );
 							}
 							
 							document.getElementById("btnComputeCostsId").disabled = false

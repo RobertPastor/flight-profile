@@ -143,6 +143,9 @@ function hideAllDiv(globus) {
 	
 	let airlineCASM = SingletonAirlineCASM.getInstance();
 	airlineCASM.hideAirlineCasmDiv();
+	
+	let airlineCasmOptimization = SingletonAirlineCasmOptimization.getInstance();
+	airlineCasmOptimization.hideAirlineCasmOptimizationDiv();
 }
 
 function switchAirlines(globus) {
@@ -256,6 +259,11 @@ function initTools(globus, viewExtent) {
 	globus.planet.addControl(new AirlineCasmControl());
 	let airlineCASM = SingletonAirlineCASM.getInstance();
 	airlineCASM.initAirlineCASM();
+	
+	// airline CASM Optimization
+	globus.planet.addControl(new AirlineCasmOptimizationControl());
+	let airlineCasmOptimization = SingletonAirlineCasmOptimization.getInstance();
+	airlineCasmOptimization.initAirlineCasmOptimization();
 	
 	// init download EXCEL Vertical Flight Profile
 	initDownloadVerticalProfile();

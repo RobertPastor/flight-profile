@@ -38,7 +38,7 @@ class MainControl extends og.Control {
 		row_1.appendChild(row_1_data_1);
 		
 		let row_1_data_2 = document.createElement('td');
-		row_1_data_2.colSpan = "8";
+		row_1_data_2.colSpan = "9";
 		row_1_data_2.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
 		row_1.appendChild(row_1_data_2);
 		
@@ -84,14 +84,19 @@ class MainControl extends og.Control {
 		row_2.appendChild(row_2_data_8);
 		
 		// Costs per Average Seat Miles
+		let row_2_data_9 = document.createElement('td');
+		row_2_data_9.innerHTML = '<div><button id="btnLaunchCASM" >Costs Available Seat Miles</button></div>';
+		row_2.appendChild(row_2_data_9);
+		
+		// Costs per Average Seat Miles Optimization
 		let row_2_data_10 = document.createElement('td');
-		row_2_data_10.innerHTML = '<div><button id="btnLaunchCASM" >Costs Available Seat Miles</button></div>';
+		row_2_data_10.innerHTML = '<div><button id="btnLaunchCasmOptimization" >CASM Optimization</button></div>';
 		row_2.appendChild(row_2_data_10);
 		
-		let row_2_data_9 = document.createElement('td');
-		row_2_data_9.classList.add('question_mark_bg')
-		row_2_data_9.innerHTML = '<div class="question_mark" onclick="showHelp()" title="click to obtain some help"></div>';
-		row_2.appendChild(row_2_data_9);
+		let row_2_data_11 = document.createElement('td');
+		row_2_data_11.classList.add('question_mark_bg')
+		row_2_data_11.innerHTML = '<div class="question_mark" onclick="showHelp()" title="click to obtain some help"></div>';
+		row_2.appendChild(row_2_data_11);
 		
 		tbody.appendChild(row_2);
 		
