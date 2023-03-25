@@ -137,11 +137,12 @@ dmypy.json
 
 #exception for configuration file with xlsx extension
 !airline/management/commands/AirlineRoutes/AirlineRoutesAirportsDepartureArrival.xlsx
-!airline/management/commands/AirlineRoutesWayPoints/*.xlsx
+!airline/management/commands/AirlineRoutesWayPoints/WayPoints.xlsx
 !trajectory/management/commands/WayPoints/WayPoints.xlsx
 
 #static files
 staticfiles/
 staticfiles/*
 
+# old xls files
 airline/management/commands/AirlineRoutesWayPoints/*.xls
