@@ -18,6 +18,8 @@ you should obtain the following column content
 
 {'Name':'YNKEE','Latitude':'N40°29\'00.90"','Longitude':'W073°50\'57.17"'},
 
+Suppress the first line corresponding to the departure airport and the last line corresponding to the arrival airport
+
 
 extract from http://rfinder.asalink.net/free/  with flight ceiling of FL390
 
