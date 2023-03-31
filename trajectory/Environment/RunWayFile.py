@@ -27,7 +27,7 @@ class RunWay(GeographicalPoint):
 
     Lat-long are the position of the end of the runway
     1) end - if takeoff runway -  is the location the aircraft starts its ground run
-    2) end - if landing runway - is the location where after the touch down and deceleration, the ac reaches the taxi speed
+    2) end - if landing runway - is the location where after the touch down and deceleration, the aircraft reaches the taxi speed
      
     '''
     className = ''

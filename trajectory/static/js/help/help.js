@@ -39,6 +39,11 @@ function Help () {
 		let contents = [];
 		contents.push("The solution allows to manage a set of airlines, their fleet, the airways , the routes, the wayPoints , etc...<br>");
 		contents.push("With the aim to assess costs and resource availability.<br>");
+		contents.push("<br>");
+		contents.push("The tool main step is to compute for each leg a 4 Dimensional flight profile.<br>");
+		contents.push("This flight profile provides duration, distance, mass loss, etc. allowing to compute costs.<br>");
+		contents.push("Using a solver, it is possible to select the best aircraft to minimize for instance Costs per Available Seat Miles.<br>");
+
 		this.pushSection("Goals" , contents , "1");
 		
 		contents = [];
@@ -90,7 +95,7 @@ function Help () {
 		
 		contents = [];
 		contents.push("This tab allows to minimize the Sum of the costs for all flight legs");
-		contents.push(" while finding the best aircraft for each flight leg.");
+		contents.push("while finding the best aircraft for each flight leg.");
 		
 		this.pushSection("Costs Optimization" , contents , "8");
 		

@@ -187,3 +187,7 @@ th {
     overflow: scroll; /* Or scroll, depending on your needs*/
     width: 300px;
 }
+
+.alignRight {
+	text-align: right;
+}

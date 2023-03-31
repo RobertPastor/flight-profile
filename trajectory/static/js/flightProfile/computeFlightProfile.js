@@ -550,7 +550,7 @@ class AirlineProfileCosts {
 			$("#flightProfileMainDivId").hide();
 			
 			//document.getElementById("btnLaunchFlightProfile").disabled = true
-			document.getElementById("btnLaunchFlightProfile").innerText = "Show Profile / Costs";
+			document.getElementById("btnLaunchFlightProfile").innerText = "Compute Profile / Costs";
 			document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
 			
 		}
@@ -681,7 +681,7 @@ class AirlineProfileCosts {
 				$('#flightProfileMainDivId').show();
 				
 				// change name on the button
-				document.getElementById("btnLaunchFlightProfile").innerText = "Hide Profile / Costs";
+				document.getElementById("btnLaunchFlightProfile").innerText = "Compute Profile / Costs";
 				document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "green";
 				
 				// get the name of the airline
@@ -717,7 +717,7 @@ class AirlineProfileCosts {
 			} else {
 
 				//document.getElementById("btnLaunchFlightProfile").disabled = true
-				document.getElementById("btnLaunchFlightProfile").innerText = "Show Profile / Costs";
+				document.getElementById("btnLaunchFlightProfile").innerText = "Compute Profile / Costs";
 				document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
 
 				$('#flightProfileMainDivId').hide();

@@ -39,7 +39,8 @@ class MainControl extends og.Control {
 		
 		let row_1_data_2 = document.createElement('td');
 		row_1_data_2.colSpan = "9";
-		row_1_data_2.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
+		//row_1_data_2.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
+		row_1_data_2.innerHTML = '<div class="alignRight"><span>Welcome to the Airline Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
 		row_1.appendChild(row_1_data_2);
 		
 		tbody.appendChild(row_1);
@@ -47,7 +48,8 @@ class MainControl extends og.Control {
 		let row_2 = document.createElement('tr');
 		
 		let row_2_data_1 = document.createElement('td');
-		row_2_data_1.innerHTML = '<div ><span>Welcome to the Airline Fleet Management tool</span></div>';
+		//row_2_data_1.innerHTML = '<div ><span>Welcome to the Airline Fleet Management Tool</span></div>';
+		row_2_data_1.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
 		row_2.appendChild(row_2_data_1);
 		
 		let row_2_data_2 = document.createElement('td');

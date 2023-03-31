@@ -28,6 +28,39 @@ ls -al .virtualenvs/airlineservices
 17:44 ~ $ source .virtualenvs/airlineservices/bin/activate
 (airlineservices) 17:44 ~ $ 
 
-## move to the git folder
+## move to the git folder -> check the branch master in the prompt
 
-cd 
+(airlineservices) 17:46 ~ $ cd flight-profile/
+(airlineservices) 17:46 ~/flight-profile (master)$ 
+
+## perform a git pull
+
+## sometimes , when local changes (on pythonanywhere) are seeing... -> git reset --hard
+
+(airlineservices) 18:31 ~/flight-profile (master)$ git pull
+Updating 0f733d3..3d2be0c
+Fast-forward
+ .gitignore                                                                           |   3 +-
+ ReadMe-Extend-Routes.md                                                              | 301 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ReadMe-Push-Pull.md                                                                  |  33 ++++++++++
+ README.md => ReadMe.md                                                               |   0
+ airline/management/commands/AirlineRoutes/AirlineRoutesAirportsDepartureArrival.xlsx | Bin 10617 -> 10718 bytes
+ airline/management/commands/AirlineRoutes/AirlineRoutesAirportsReader.py             | 155 -----------------------------------------------
+ airline/management/commands/AirlineRoutesWayPoints/AirlineRoute-KJFK-LFPG.xlsx       | Bin 5954 -> 9684 bytes
+ airline/management/commands/AirlineRoutesWayPoints/AirlineRoute-VABB-VECC.xlsx       | Bin 0 -> 10455 bytes
+ airline/management/commands/AirlineRoutesWayPoints/AirlineRoute-VOMM-VIJP.xlsx       | Bin 0 -> 10329 bytes
+ airline/management/commands/AirlineRoutesWayPoints/ReadMe.txt                        |   2 +
+ airline/management/commands/AirlineRoutesWayPoints/WayPoints.xlsx                    | Bin 18925 -> 26034 bytes
+ trajectory/management/commands/WayPoints/WayPoints-old.xls                           | Bin 63488 -> 0 bytes
+ trajectory/management/commands/WayPoints/WayPoints.xlsx                              | Bin 18925 -> 19777 bytes
+ 13 files changed, 338 insertions(+), 156 deletions(-)
+ create mode 100644 ReadMe-Extend-Routes.md
+ create mode 100644 ReadMe-Push-Pull.md
+ rename README.md => ReadMe.md (100%)
+ delete mode 100644 airline/management/commands/AirlineRoutes/AirlineRoutesAirportsReader.py
+ create mode 100644 airline/management/commands/AirlineRoutesWayPoints/AirlineRoute-VABB-VECC.xlsx
+ create mode 100644 airline/management/commands/AirlineRoutesWayPoints/AirlineRoute-VOMM-VIJP.xlsx
+ delete mode 100644 trajectory/management/commands/WayPoints/WayPoints-old.xls
+(airlineservices) 18:31 ~/flight-profile (master)$ 
+
+
