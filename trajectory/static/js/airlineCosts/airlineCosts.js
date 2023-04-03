@@ -34,7 +34,7 @@ class AirlineCosts {
 			$('#airlineCostsMainDivId').hide();
 
 			// change name on the button
-			document.getElementById("btnLaunchAirlineCosts").innerText = "Show Airline Costs";
+			document.getElementById("btnLaunchAirlineCosts").innerText = "Costs";
 			document.getElementById("btnLaunchAirlineCosts").style.backgroundColor = "yellow";
 		}
 	}
@@ -112,7 +112,7 @@ class AirlineCosts {
 			
 				document.getElementById("btnLaunchAirlineCosts").disabled = true;
 				
-				document.getElementById("btnLaunchAirlineCosts").innerText = "Hide Airline Costs";
+				document.getElementById("btnLaunchAirlineCosts").innerText = "Costs";
 				document.getElementById("btnLaunchAirlineCosts").style.backgroundColor = "green";
 				
 				// get the name of the airline
@@ -160,14 +160,9 @@ class AirlineCosts {
 				});
 			} else {
 				
-					//document.getElementById("btnLaunchFlightProfile").disabled = true
-					document.getElementById("btnLaunchAirlineCosts").innerText = "Show Airline Costs";
-					document.getElementById("btnLaunchAirlineCosts").style.backgroundColor = "yellow";
-
-					$('#airlineCostsMainDivId').hide();
+				SingletonAirlineCosts.getInstance().hideAirlineCostsDiv();
 				
 			}
 	    }
 	}
-	
 }

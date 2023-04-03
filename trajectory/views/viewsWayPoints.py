@@ -67,6 +67,10 @@ def getWayPointsFromDB(viewExtent, airlineName):
     airline = Airline.objects.filter(Name=airlineName).first()
     if (airline):
         for airlineRoute in AirlineRoute.objects.filter(airline=airline):
+            
+            #print ( "best departure runway = {0}".format( airlineRoute.computeBestDepartureRunWay() ) )
+            #print ( "best arrival runway = {0}".format( airlineRoute.computeBestArrivalRunWay() ) )
+            
             for airlineRouteWayPoints in AirlineRouteWayPoints.objects.filter(Route = airlineRoute):
                 wayPointName = airlineRouteWayPoints.WayPoint
                 #print ( wayPointName )

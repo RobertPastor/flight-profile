@@ -72,8 +72,8 @@ def launchFlightProfile(request , airlineName):
         if (airline):
             
             airlineAircraftsList = getAirlineAircraftsFromDB(airline)     
-            airlineRoutesList = getAirlineRoutesFromDB(airline)
-            airlineRunWaysList = getAirlineRunWaysFromDB()
+            airlineRoutesList    = getAirlineRoutesFromDB(airline)
+            airlineRunWaysList   = getAirlineRunWaysFromDB()
             response_data = {
                 'airlineAircrafts': airlineAircraftsList,
                 'airlineRoutes'   : airlineRoutesList,

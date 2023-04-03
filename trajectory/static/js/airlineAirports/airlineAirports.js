@@ -240,7 +240,7 @@ class AirlineAirports {
 			if (show) {
 				
 				show = false;
-				document.getElementById("btnAirports").innerText = "Hide Airline Airports";
+				document.getElementById("btnAirports").innerText = "Airports";
 				document.getElementById("btnAirports").style.backgroundColor = "green";
 					
 				SingletonAirlineAirports.getInstance().showHideAllAirports( globus, true );
@@ -248,7 +248,7 @@ class AirlineAirports {
 			} else {
 				
 				show = true;
-				document.getElementById("btnAirports").innerText = "Show Airline Airports";
+				document.getElementById("btnAirports").innerText = "Airports";
 				document.getElementById("btnAirports").style.backgroundColor = "yellow";
 
 				SingletonAirlineAirports.getInstance().showHideAllAirports( globus, false );

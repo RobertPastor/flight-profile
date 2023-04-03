@@ -27,9 +27,9 @@ def getWayPointsOfRoute(routeWayPoints):
                     waypoint.Longitude <= viewExtent["maxlongitude"] :
                 '''
                 wayPointsList.append({
-                        "name" : waypoint.WayPointName ,
-                        "Longitude": waypoint.Longitude,
-                        "Latitude": waypoint.Latitude
+                        "name"      : waypoint.WayPointName ,
+                        "Longitude" : waypoint.Longitude,
+                        "Latitude"  : waypoint.Latitude
                         } )
     #print ( "length of waypoints list = {0}".format(len(wayPointsList)))
     return wayPointsList
@@ -41,11 +41,21 @@ def getRouteWayPoints(request, Adep, Ades):
         logger.debug( "Received Get for Route WayPoints")
         logger.debug ( Adep )
         logger.debug  ( Ades )
-        route = AirlineRoute.objects.filter(DepartureAirportICAOCode=Adep, ArrivalAirportICAOCode=Ades).first()
-        if route :
-            logging.info ( str(route) )
-            routeWayPoints = AirlineRouteWayPoints.objects.filter(Route=route)
-            response_data = {'airlineRouteWayPoints': getWayPointsOfRoute(routeWayPoints)}
+        airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode=Adep, ArrivalAirportICAOCode=Ades).first()
+        if airlineRoute :
+            logging.info ( str(airlineRoute) )
+            
+            AdepRunWay = airlineRoute.computeBestDepartureRunWay()
+            #print ( "best departure runway = {0}".format( AdepRunWay ) )
+            AdesRunWay = airlineRoute.computeBestArrivalRunWay()
+            #print ( "best arrival runway = {0}".format( AdesRunWay ) )
+
+            routeWayPoints = AirlineRouteWayPoints.objects.filter(Route=airlineRoute)
+            response_data = {
+                'airlineRouteWayPoints' : getWayPointsOfRoute(routeWayPoints),
+                'bestAdepRunway'        : AdepRunWay,
+                'bestAdesRunway'        : AdesRunWay
+                }
             return JsonResponse(response_data)
              
         else:

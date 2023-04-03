@@ -74,7 +74,7 @@ class AirlineFleet {
 			
 			$('#divAirlineFleetId').hide();
 			
-			document.getElementById("btnAirlineFleet").innerText = "Show Airline Fleet";
+			document.getElementById("btnAirlineFleet").innerText = "Fleet";
 			document.getElementById("btnAirlineFleet").style.backgroundColor = "yellow";
 		}
 	}
@@ -96,7 +96,7 @@ class AirlineFleet {
 				$('#divAirlineFleetId').show();
 							
 				// change name on the button
-				document.getElementById("btnAirlineFleet").innerText = "Hide Airline Fleet";
+				document.getElementById("btnAirlineFleet").innerText = "Fleet";
 				document.getElementById("btnAirlineFleet").style.backgroundColor = "green";
 
 				// disable the button 
@@ -131,10 +131,7 @@ class AirlineFleet {
 
 			} else {
 
-				document.getElementById("btnAirlineFleet").innerText = "Show Airline Fleet";
-				document.getElementById("btnAirlineFleet").style.backgroundColor = "yellow";
-
-				$('#divAirlineFleetId').hide();
+				SingletonAirlineFleet.getInstance().hideAirlineFleetDiv();
 			}
 		}
 	}

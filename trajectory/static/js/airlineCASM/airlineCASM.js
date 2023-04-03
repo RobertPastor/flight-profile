@@ -32,7 +32,7 @@ class AirlineCASM {
 			$('#airlineCasmMainDivId').hide();
 
 			// change name on the button
-			document.getElementById("btnLaunchCASM").innerText = "Show Airline CASM";
+			document.getElementById("btnLaunchCASM").innerText = "CASM";
 			document.getElementById("btnLaunchCASM").style.backgroundColor = "yellow";
 		}
 	}
@@ -101,7 +101,7 @@ class AirlineCASM {
 			
 				document.getElementById("btnLaunchCASM").disabled = true;
 				
-				document.getElementById("btnLaunchCASM").innerText = "Hide Airline CASM";
+				document.getElementById("btnLaunchCASM").innerText = "CASM";
 				document.getElementById("btnLaunchCASM").style.backgroundColor = "green";
 				
 				// get the name of the airline
@@ -148,14 +148,9 @@ class AirlineCASM {
 				
 			} else {
 				
-				//document.getElementById("btnLaunchCASM").disabled = true
-				document.getElementById("btnLaunchCASM").innerText = "Show Airline CASM";
-				document.getElementById("btnLaunchCASM").style.backgroundColor = "yellow";
-
-				$('#airlineCasmMainDivId').hide();
+				SingletonAirlineCASM.getInstance().hideAirlineCasmDiv();
 				
 			}
 		}
-		
 	}
 }

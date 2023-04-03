@@ -63,4 +63,10 @@ Fast-forward
  delete mode 100644 trajectory/management/commands/WayPoints/WayPoints-old.xls
 (airlineservices) 18:31 ~/flight-profile (master)$ 
 
+## move to the web tab 
+https://eu.pythonanywhere.com/user/airlineservices/webapps/#tab_id_airlineservices_eu_pythonanywhere_com
+
+## perform reload
+
+
 

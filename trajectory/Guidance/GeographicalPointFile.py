@@ -36,6 +36,9 @@ class GeographicalPoint(object):
         
         self.AltitudeMeanSeaLevelMeters = AltitudeMeanSeaLevelMeters
         
+    def __str__(self):
+        return "latitude = {0:.2f} - longitude = {1:.2f}".format(self.LatitudeDegrees , self.LongitudeDegrees)
+        
     def convert2Cartesian(self):
         pass
         x = ( EarthRadiusMeters+self.AltitudeMeanSeaLevelMeters ) * math.cos(math.radians(self.LatitudeDegrees)) * math.cos(math.radians(self.LongitudeDegrees))
@@ -43,12 +46,14 @@ class GeographicalPoint(object):
         z = ( EarthRadiusMeters+self.AltitudeMeanSeaLevelMeters ) * math.sin(math.radians(self.LatitudeDegrees))
         return x , y , z
 
+
     def projectionMillerCylindrical(self):
         ''' x = longitude in degrees '''
         x = math.radians(self.LongitudeDegrees)
         y = math.tan( ( math.pi/4.0) +  (2.0/5.0) * math.radians(self.LatitudeDegrees) )
         y = ( (5.0/4.0)* math.log( y ))
         return x , y
+        
         
     def new_y_coord(self):
         """Converts a lat, longitude location to a new transformed longitude

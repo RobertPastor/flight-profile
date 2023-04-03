@@ -103,6 +103,7 @@ class KmlOutput():
         self.FilesFolder =  os.path.join( self.FilesFolder , '..' , 'static' , 'kml')
         for f in os.listdir(self.FilesFolder):
             os.remove(os.path.join(self.FilesFolder, f))
+            
         
     def close(self):
         ''' always write in the static kml folder '''
@@ -116,6 +117,7 @@ class KmlOutput():
         
         kmlXmlDocument = self.kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8')
         return kmlXmlDocument
+        
         
     def getFilePath(self):
         return self.filePath

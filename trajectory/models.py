@@ -53,8 +53,8 @@ class AirlineWayPoint(models.Model):
         return 0.0
     '''
     
-    def __str(self):
-        print ( self.WayPointName , str(self.Latitude) , str(self.Longitude) )
+    def __str__(self):
+        return "wayPoint name = {0} - Latitude {1:.2f} - Longitude = {2:.2f}".format(self.WayPointName , self.Latitude , self.Longitude ) 
 
 
 ''' an airport is not related to an airline '''

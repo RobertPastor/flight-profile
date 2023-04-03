@@ -49,6 +49,7 @@ function Help () {
 		contents = [];
 		contents.push("There are 3 defined airlines, each with its fleet, airports, routes, and unitary costs.<br>");
 		contents.push("All these informations are some kind of parameters, they are configurable.<br>");
+		contents.push("An airline is also defined by a South-West and a North-East geograpical points to display an earth map.<br>");
 		
 		this.pushSection("Airlines" , contents , "2");
 
@@ -70,6 +71,7 @@ function Help () {
 		
 		contents = [];
 		contents.push("The airline routes are defined by a set of WayPoints that are linking a departure to an arrival airport.<br>");
+		contents.push("When the route wayPoints are displayed on the map, the best departure and arrival runways are computed and inserted in the routes table.<br>");
 		contents.push("<u><b>Warning:</b></u> for the time being, these routes are not dependent upon the departure and arrival runways.<br>");
 		contents.push("Future improvements : SID and STAR have to be implemented.<br>");
 		

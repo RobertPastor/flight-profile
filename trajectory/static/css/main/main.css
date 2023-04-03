@@ -85,25 +85,25 @@ th {
 
 .airlineFleetTableDiv {
 	position: absolute;
-	top : 90px;
+	top : 100px;
 	left : 10px;
 }
 
 .airlineRoutesTableDiv {
 	position: absolute;
-	top : 90px;
+	top : 100px;
 	left : 10px;
 }
 
 .flightProfileTableDiv {
 	position: absolute;
-	top : 90px;
+	top : 100px;
 	left : 10px;
 }
 
 .airlineCostsResultsMainDiv {
 	position: absolute;
-	top: 230px;
+	top: 240px;
 	left: 10px;
 }
 
@@ -128,37 +128,37 @@ th {
 
 .airlineAirportsRoutesMainDiv {
 	position: absolute;
-	top: 230px;
+	top: 240px;
 	left: 10px;
 }
 
 .airlineCostsMainDiv {
 	position: absolute;
-	top : 90px;
+	top : 100px;
 	left : 10px;
 }
 
 .airlineAirportsRoutesMainDiv {
 	position: absolute;
-	top: 230px;
+	top: 240px;
 	left: 10px;
 }
 
 .airlineFlightLegCostsMainDiv {
 	position: absolute;
-	top : 90px;
+	top : 100px;
 	left : 10px;
 }
 
 .airlineCostsOptimizationMainDiv {
 	position: absolute;
-	top : 90px;
+	top : 100px;
 	left : 10px;
 }
 
 .airlineCasmOptimizationMainDiv {
 	position: absolute;
-	top : 90px;
+	top : 100px;
 	left : 10px;
 }
 

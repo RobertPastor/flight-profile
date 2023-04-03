@@ -22,10 +22,23 @@ class MainControl extends og.Control {
 		let table = document.createElement('table');
 		let tbody = document.createElement('tbody');
 		
+		// ------- 1st row --- progress bar
+		let row_0 = document.createElement('tr');
+		
+		let row_0_data_1 = document.createElement('td');
+		row_0_data_1.colSpan = "9";
+		
+		row_0_data_1.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
+		row_0.appendChild(row_0_data_1);
+		
+		tbody.appendChild(row_0);
+		
+		// ------- 2nd row --------------
+		
 		let row_1 = document.createElement('tr');
 		
 		let row_1_data_1 = document.createElement('td');
-		row_1_data_1.colSpan = "1";
+		row_1_data_1.colSpan = "2";
 		
 		let div_1 = document.createElement('div');
 		
@@ -38,30 +51,27 @@ class MainControl extends og.Control {
 		row_1.appendChild(row_1_data_1);
 		
 		let row_1_data_2 = document.createElement('td');
-		row_1_data_2.colSpan = "9";
-		//row_1_data_2.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
+		row_1_data_2.colSpan = "7";
+		
 		row_1_data_2.innerHTML = '<div class="alignRight"><span>Welcome to the Airline Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
 		row_1.appendChild(row_1_data_2);
 		
 		tbody.appendChild(row_1);
 		
+		// --------- 3rd row
+		
 		let row_2 = document.createElement('tr');
 		
-		let row_2_data_1 = document.createElement('td');
-		//row_2_data_1.innerHTML = '<div ><span>Welcome to the Airline Fleet Management Tool</span></div>';
-		row_2_data_1.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
-		row_2.appendChild(row_2_data_1);
-		
 		let row_2_data_2 = document.createElement('td');
-		row_2_data_2.innerHTML = '<div><button id="btnAirlineFleet" >Airline Fleet</button></div>';
+		row_2_data_2.innerHTML = '<div><button id="btnAirlineFleet" >Fleet</button></div>';
 		row_2.appendChild(row_2_data_2);
 		
 		let row_2_data_3 = document.createElement('td');
-		row_2_data_3.innerHTML = '<div><button id="btnAirports" >Airline Airports</button></div>';
+		row_2_data_3.innerHTML = '<div><button id="btnAirports" >Airports</button></div>';
 		row_2.appendChild(row_2_data_3);
 		
 		let row_2_data_4 = document.createElement('td');
-		row_2_data_4.innerHTML = '<div><button id="btnAirlineRoutes" >Airline Routes</button></div>';
+		row_2_data_4.innerHTML = '<div><button id="btnAirlineRoutes" >Routes</button></div>';
 		row_2.appendChild(row_2_data_4);
 		
 		/**
@@ -72,12 +82,12 @@ class MainControl extends og.Control {
 		**/
 		
 		let row_2_data_6 = document.createElement('td');
-		row_2_data_6.innerHTML = '<div><button id="btnLaunchFlightProfile" >Show Profile / Costs</button></div>';
+		row_2_data_6.innerHTML = '<div><button id="btnLaunchFlightProfile" >Flight Profile</button></div>';
 		row_2.appendChild(row_2_data_6);
 		
 		// 27th January 2023 - Airline costs controls
 		let row_2_data_7 = document.createElement('td');
-		row_2_data_7.innerHTML = '<div><button id="btnLaunchAirlineCosts" >Airline Costs</button></div>';
+		row_2_data_7.innerHTML = '<div><button id="btnLaunchAirlineCosts" >Costs</button></div>';
 		row_2.appendChild(row_2_data_7);
 		
 		// 27th January 2023 - Fleet Assignment based upon costs optimization

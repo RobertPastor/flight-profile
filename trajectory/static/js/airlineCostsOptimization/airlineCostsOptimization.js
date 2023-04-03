@@ -36,8 +36,8 @@ class AirlineCostsOptimization {
 			$('#airlineCostsOptimizationMainDivId').hide();
 
 			// change name on the button
-			document.getElementById("btnLaunchCostsOptimization").innerText = "Show Airline Costs Optimization";
-			document.getElementById("btnLaunchCostsOptimization").style.backgroundColor = "yellow";
+			document.getElementById("btnLaunchCostsOptimization").innerText = "Costs Optimization";
+			//document.getElementById("btnLaunchCostsOptimization").style.backgroundColor = "yellow";
 		}
 	}
 	
@@ -76,56 +76,61 @@ class AirlineCostsOptimization {
 	
 		console.log( "init Costs Optimization");
 	
-		$('#airlineCostsMainDivId').hide();
+		$('#airlineCostsOptimizationMainDivId').hide();
 		
 		document.getElementById("btnLaunchCostsOptimization").onclick  = function () {
 			
-			console.log("click on Launch Costs Optimization");
+			//console.log("click on Launch Costs Optimization");
 			
-			// get the name of the airline
-			let airlineName = $("#airlineSelectId option:selected").val();
-			airlineName = encodeURIComponent(airlineName);
+			if ( ! $('#airlineCostsOptimizationMainDivId').is(":visible") ) {
+			
+				// get the name of the airline
+				let airlineName = $("#airlineSelectId option:selected").val();
+				airlineName = encodeURIComponent(airlineName);
 
-			// init progress bar.
-			initProgressBar();
-			initWorker();
-			
-			$.ajax( {
-					method: 'get',
-						url :  "airline/getAirlineCostsOptimization/" + airlineName,
-						async : true,
-						success: function(data, status) {
-														
-							let dataJson = eval(data);
-							if ( dataJson.hasOwnProperty("errors") ) {
+				// init progress bar.
+				initProgressBar();
+				initWorker();
+				
+				$.ajax( {
+						method: 'get',
+							url :  "airline/getAirlineCostsOptimization/" + airlineName,
+							async : true,
+							success: function(data, status) {
+															
+								let dataJson = eval(data);
+								if ( dataJson.hasOwnProperty("errors") ) {
+									stopBusyAnimation();
+									showMessage( "Error" , dataJson["errors"] );
+									
+								} else {
+									
+									$("#airlineCostsOptimizationMainDivId").show();
+											
+									//alert("Data: " + data + "\nStatus: " + status);
+									//showMessage( "End of Costs computations" , dataJson )
+									let resultsArray = dataJson["results"];
+									SingletonAirlineCostsOptimization.getInstance().showCostsResults( resultsArray );
+								}
+								
+								document.getElementById("btnComputeCostsId").disabled = false
+								
+							},
+							error: function(data, status) {
 								stopBusyAnimation();
-								showMessage( "Error" , dataJson["errors"] );
-								
-							} else {
-								
-								$("#airlineCostsOptimizationMainDivId").show();
-										
-								//alert("Data: " + data + "\nStatus: " + status);
-								//showMessage( "End of Costs computations" , dataJson )
-								let resultsArray = dataJson["results"];
-								SingletonAirlineCostsOptimization.getInstance().showCostsResults( resultsArray );
+								console.log("Error - compute Costs : " + status + " Please contact your admin");
+								showMessage( "Error" , data );
+							},
+							complete : function() {
+								stopBusyAnimation();
+								document.getElementById("btnLaunchFlightProfile").disabled = false
 							}
-							
-							document.getElementById("btnComputeCostsId").disabled = false
-							
-						},
-						error: function(data, status) {
-							stopBusyAnimation();
-							console.log("Error - compute Costs : " + status + " Please contact your admin");
-							showMessage( "Error" , data );
-						},
-						complete : function() {
-							stopBusyAnimation();
-							document.getElementById("btnLaunchFlightProfile").disabled = false
-						}
-			});
+				});
+			} else {
+				
+				SingletonAirlineCostsOptimization.getInstance().hideAirlineCostsOptimizationDiv();
+				
+			}
 		}
-		
 	}
-	
 }

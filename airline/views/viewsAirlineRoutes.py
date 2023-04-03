@@ -17,11 +17,11 @@ def getAirlineRoutesFromDB(airline):
     for airlineRoute in AirlineRoute.objects.filter(airline = airline):
         #logger.debug ( str ( airlineRoute ) )
         airlineRoutesList.append({
-                "Airline": airlineRoute.airline.Name,
-                "DepartureAirport" : airlineRoute.DepartureAirport ,
-                "DepartureAirportICAOCode": airlineRoute.DepartureAirportICAOCode,
-                "ArrivalAirport": airlineRoute.ArrivalAirport,
-                "ArrivalAirportICAOCode": airlineRoute.ArrivalAirportICAOCode
+                "Airline"                  : airlineRoute.airline.Name,
+                "DepartureAirport"         : airlineRoute.DepartureAirport ,
+                "DepartureAirportICAOCode" : airlineRoute.DepartureAirportICAOCode,
+                "ArrivalAirport"           : airlineRoute.ArrivalAirport,
+                "ArrivalAirportICAOCode"   : airlineRoute.ArrivalAirportICAOCode
                 } )
     return airlineRoutesList
 

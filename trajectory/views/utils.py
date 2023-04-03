@@ -1,11 +1,12 @@
 '''
 Created on 26 déc. 2022
 
-@author: robert
+@author: robert PASTOR
 '''
 from airline.models import  AirlineAircraft
 from trajectory.models import  AirlineRunWay , BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+
 
 def getAirlineRunWaysFromDB():
     airlineRunWaysList = []
@@ -31,7 +32,7 @@ def getAirlineAircraftsFromDB(airline):
             if acPerformance:
                 acMaxTakeOffWeightKg = acPerformance.getMaximumMassKilograms()
                 acMinTakeOffWeightKg = acPerformance.getMinimumMassKilograms()
-                acMaxOpAltitudeFeet = acPerformance.getMaxOpAltitudeFeet()
+                acMaxOpAltitudeFeet  = acPerformance.getMaxOpAltitudeFeet()
         airlineAircraftsList.append({
             "airlineAircraftICAOcode" : airlineAircraft.aircraftICAOcode,
             "airlineAircraftFullName" : airlineAircraft.aircraftFullName,

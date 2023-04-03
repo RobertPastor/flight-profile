@@ -79,9 +79,20 @@ class AirlineRoutes {
 		});
 
 		// add the waypoints
-		for (var wayPointId = 0; wayPointId < airlineRoutesWaypointsArray.length; wayPointId++ ) {
+		for (let wayPointId = 0; wayPointId < airlineRoutesWaypointsArray.length; wayPointId++ ) {
 			// insert one waypoint
 			SingletonAirlineRoutes.getInstance().loadOneRouteWayPoint( layerRouteWayPoints, airlineRoutesWaypointsArray[wayPointId] );
+		}
+	}
+	
+	loadBestRunway( Adep, Ades, isAdep, AdepAdesRunWay ) {
+		
+		if (isAdep) {
+			let elemTdAdepRwy = document.getElementById('tdAdepRwyId-'+Adep+'-'+Ades);
+			elemTdAdepRwy.innerHTML = AdepAdesRunWay;
+		} else {
+			let elemTdAdesRwy = document.getElementById('tdAdesRwyId-'+Adep+'-'+Ades);
+			elemTdAdesRwy.innerHTML = AdepAdesRunWay;
 		}
 	}
 
@@ -100,11 +111,17 @@ class AirlineRoutes {
 				success: function(data, status) {
 											
 						//alert("Data: " + data + "\nStatus: " + status);
-						var dataJson = eval(data);		
-						var airlineRoutesWaypointsArray = dataJson["airlineRouteWayPoints"]
-						var layerName =  LayerNamePrefix + Adep + "-" + Ades;
-						SingletonAirlineRoutes.getInstance().loadRouteWayPoints(globus, airlineRoutesWaypointsArray , layerName )
+						let dataJson = eval(data);		
+						let airlineRoutesWaypointsArray = dataJson["airlineRouteWayPoints"];
+						let layerName =  LayerNamePrefix + Adep + "-" + Ades;
+						SingletonAirlineRoutes.getInstance().loadRouteWayPoints(globus, airlineRoutesWaypointsArray , layerName );
 								
+						// 3rd April 2023 - add best runways
+						let AdepRunWay = dataJson["bestAdepRunway"];
+						SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , true, AdepRunWay);
+						let AdesRunWay = dataJson["bestAdesRunway"];
+						SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , false, AdesRunWay);
+
 				},
 				error: function(data, status) {
 					console.log("Error - show Airline Routes : " + status + " Please contact your admin");
@@ -159,12 +176,14 @@ class AirlineRoutes {
 			.append($('<td>')
 				.append( oneAirlineRoute["DepartureAirportICAOCode"] )
 			)
+			.append($('<td id="tdAdepRwyId" >'))
 			.append($('<td>')
 				.append( oneAirlineRoute["ArrivalAirport"] )
 			)
 			.append($('<td>')
 				.append( oneAirlineRoute["ArrivalAirportICAOCode"] )
 			)
+			.append($('<td id="tdAdesRwyId" >'))
 			//.append($('<td id="tdButtonId" >')
 			//	.append ( " <input type='button' id='buttonRouteId' style='width:100%; height:100%;' value='Show' onclick='showHideWayPoints(this)' /> " )
 			//)
@@ -172,6 +191,12 @@ class AirlineRoutes {
 				.append ( " <input type='button' id='buttonRouteId' style='width:100%; height:100%;' value='Show'  /> " )
 			)
 		);
+		
+		var elemTdAdepRwy = document.getElementById('tdAdepRwyId');
+		elemTdAdepRwy.id = "tdAdepRwyId-"+oneAirlineRoute["DepartureAirportICAOCode"]+"-"+oneAirlineRoute["ArrivalAirportICAOCode"];
+		
+		var elemTdAdesRwy = document.getElementById('tdAdesRwyId');
+		elemTdAdesRwy.id = "tdAdesRwyId-"+oneAirlineRoute["DepartureAirportICAOCode"]+"-"+oneAirlineRoute["ArrivalAirportICAOCode"];
 	
 		var elemTd = document.getElementById('tdButtonId');
 		elemTd.id = "tdButtonId-"+oneAirlineRoute["DepartureAirportICAOCode"]+"-"+oneAirlineRoute["ArrivalAirportICAOCode"];
@@ -237,7 +262,7 @@ class AirlineRoutes {
 			
 			$("#airlineRoutesDivId").hide();
 			
-			document.getElementById("btnAirlineRoutes").innerText = "Show Airline Routes";
+			document.getElementById("btnAirlineRoutes").innerText = "Routes";
 			document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
 
 		}
@@ -260,7 +285,7 @@ class AirlineRoutes {
 				$("#airlineRoutesDivId").show();
 
 				// change name on the button
-				document.getElementById("btnAirlineRoutes").innerText = "Hide Airline Routes";
+				document.getElementById("btnAirlineRoutes").innerText = "Routes";
 				document.getElementById("btnAirlineRoutes").style.backgroundColor = "green";
 				
 				// disable the button 
@@ -295,7 +320,7 @@ class AirlineRoutes {
 
 			} else {
 
-				document.getElementById("btnAirlineRoutes").innerText = "Show Airline Routes";
+				document.getElementById("btnAirlineRoutes").innerText = "Routes";
 				document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
 				
 				// get the name of the airline
