@@ -183,9 +183,11 @@ th {
 }
 
 .helpDiv{
-    height: 300px;
+	top : 100px;
+	left : 10px;
+    height: auto;
     overflow: scroll; /* Or scroll, depending on your needs*/
-    width: 300px;
+    width: auto;
 }
 
 .alignRight {

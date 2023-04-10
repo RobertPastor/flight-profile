@@ -13,13 +13,12 @@ logger = logging.getLogger(__name__)
 
 French_Locale = ""
 from datetime import datetime , timedelta, date
+
 from xlsxwriter import Workbook
 from django.shortcuts import HttpResponse
 from django.views.decorators.csrf import csrf_protect
 
 from airline.models import Airline, AirlineRoute, AirlineAircraft
-from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB
-from airline.views.viewsAirlineRoutes import getAirlineRoutesFromDB
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 

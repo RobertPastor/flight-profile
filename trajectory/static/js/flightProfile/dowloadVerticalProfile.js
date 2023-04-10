@@ -43,7 +43,9 @@ function initDownloadVerticalProfile() {
 		req.responseType = "blob";
 
 		req.onload = function (event) {
+			
 			stopBusyAnimation();
+			
 			let blob = req.response;
 			let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
 			fileName = fileName.split("=")[1]

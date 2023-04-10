@@ -106,7 +106,43 @@ class AirlineCosts {
 		
 		// btnComputeCostsId
 		// listen to the button
-		document.getElementById("btnLaunchAirlineCosts").onclick = function () {
+		document.getElementById("btnLaunchAirlineCosts").onclick  = function () {
+			
+			// get the name of the airline
+			let airlineName = $("#airlineSelectId option:selected").val();
+			airlineName = encodeURIComponent(airlineName);
+
+			// init progress bar.
+			initProgressBar();
+			initWorker();
+			
+			let urlToSend =  "airline/getAirlineCostsXlsx/" + airlineName;
+			let req = new XMLHttpRequest();
+			req.open("GET", urlToSend, true);
+			req.responseType = "blob";
+
+			req.onload = function (event) {
+				
+				stopBusyAnimation();
+				
+				let blob = req.response;
+				let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
+				fileName = fileName.split("=")[1]
+				let link = document.createElement('a');
+				link.href = window.URL.createObjectURL(blob);
+				link.download = fileName;
+				link.click();
+				
+			 };
+			 req.onerror = function (event) {
+				console.log("Error in Download EXCEL Costs");
+			 }
+			// send the request
+			req.send();
+			
+		}
+		
+		document.getElementById("btnLaunchAirlineCosts").ondblclick = function () {
 			
 			if ( ! $('#airlineCostsMainDivId').is(":visible") ) {
 			

@@ -53,6 +53,9 @@
 				
 				// Make the Main Div element draggable:
 				dragElement(document.getElementById("divAirlineFleetId"));
+				
+				// use jquery datatable
+				//let fleetTable = new DataTable('#tableAirlineFleetId');
             }
 
             oninit() {

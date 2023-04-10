@@ -43,6 +43,8 @@ function Help () {
 		contents.push("The tool main step is to compute for each leg a 4 Dimensional flight profile.<br>");
 		contents.push("This flight profile provides duration, distance, mass loss, etc. allowing to compute costs.<br>");
 		contents.push("Using a solver, it is possible to select the best aircraft to minimize for instance Costs per Available Seat Miles.<br>");
+		contents.push("<br>");
+		contents.push("Due to the size of some results table, usability of this tool is optimal on a desktop, laptop computer or a tablet.<br>");
 
 		this.pushSection("Goals" , contents , "1");
 		
@@ -55,7 +57,7 @@ function Help () {
 
 		contents = [];
 		contents.push("The fleet is composed of types of aircrafts, number of available aircrafts, number of seats, and operational costs per flight hour.<br>");
-		contents.push("Using a flight leg duration, it allows to compute costs based upon flight duration Added to fuel costs.<br>");
+		contents.push("Using a flight leg duration, it allows to compute costs based upon flight duration added to fuel costs.<br>");
 
 		this.pushSection("Airline Fleet" , contents , "3");
 
@@ -96,7 +98,7 @@ function Help () {
 		this.pushSection("Airline Costs" , contents , "7");
 		
 		contents = [];
-		contents.push("This tab allows to minimize the Sum of the costs for all flight legs");
+		contents.push("This tab allows to minimize the sum of the costs for all flight legs ");
 		contents.push("while finding the best aircraft for each flight leg.");
 		
 		this.pushSection("Costs Optimization" , contents , "8");
