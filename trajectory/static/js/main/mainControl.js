@@ -82,7 +82,7 @@ class MainControl extends og.Control {
 		**/
 		
 		let row_2_data_6 = document.createElement('td');
-		row_2_data_6.innerHTML = '<div><button id="btnLaunchFlightProfile" >Flight Profile</button></div>';
+		row_2_data_6.innerHTML = '<div><button id="btnLaunchFlightProfile" >Profile</button></div>';
 		row_2.appendChild(row_2_data_6);
 		
 		// 27th January 2023 - Airline costs controls
@@ -92,7 +92,7 @@ class MainControl extends og.Control {
 		
 		// 27th January 2023 - Fleet Assignment based upon costs optimization
 		let row_2_data_8 = document.createElement('td');
-		row_2_data_8.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Costs Optimiz</button></div>';
+		row_2_data_8.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Costs Optim</button></div>';
 		row_2.appendChild(row_2_data_8);
 		
 		// Costs per Average Seat Miles
@@ -102,7 +102,7 @@ class MainControl extends og.Control {
 		
 		// Costs per Average Seat Miles Optimization
 		let row_2_data_10 = document.createElement('td');
-		row_2_data_10.innerHTML = '<div><button id="btnLaunchCasmOptimization" >CASM Optimiz</button></div>';
+		row_2_data_10.innerHTML = '<div><button id="btnLaunchCasmOptimization" >CASM Optim</button></div>';
 		row_2.appendChild(row_2_data_10);
 		
 		let row_2_data_11 = document.createElement('td');

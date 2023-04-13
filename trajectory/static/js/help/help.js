@@ -37,14 +37,18 @@ function Help () {
 		this.helpArray.push(htmlContent);
 
 		let contents = [];
-		contents.push("The solution allows to manage a set of airlines, their fleet, the airways , the routes, the wayPoints , etc...<br>");
-		contents.push("With the aim to assess costs and resource availability.<br>");
+		contents.push("This highly configurable tool allows to build a fleet of aircrafts with departure and arrival airports and their routes.<br>");
+		contents.push("For each flight leg, the tool computes a detailed 4 dimensions lateral and vertical profile. <br>");
+		contents.push("For each leg, it is possible to select a departure and an arrival runway.<br>");
+		contents.push("It is possible also to select a takekoff mass and a cruise level.<br>");
 		contents.push("<br>");
-		contents.push("The tool main step is to compute for each leg a 4 Dimensional flight profile.<br>");
-		contents.push("This flight profile provides duration, distance, mass loss, etc. allowing to compute costs.<br>");
-		contents.push("Using a solver, it is possible to select the best aircraft to minimize for instance Costs per Available Seat Miles.<br>");
+		contents.push("For each aircraft, configuration includes hourly operational costs, crew costs.<br>");
+		contents.push("Fuel costs are based upon aircraft mass losses as computed at the end of each simulation.<br>");
+		contents.push("The flight profile provides duration, distance flown and with mass loss, it is allowing to compute overall costs.<br>");
+		contents.push("Current optimizations are focused upon minimizing costs or Cost per Available Seat Mile.<br>");
+		contents.push("Optimizations allow the selection of the best aircraft for each flight leg in order to minimize for instance Costs per Available Seat Miles.<br>");
 		contents.push("<br>");
-		contents.push("Due to the size of some results table, usability of this tool is optimal on a desktop, laptop computer or a tablet.<br>");
+		contents.push("Note: Due to the size of some results table, usability of this tool is optimal on a desktop, laptop computer or a tablet.<br>");
 
 		this.pushSection("Goals" , contents , "1");
 		
