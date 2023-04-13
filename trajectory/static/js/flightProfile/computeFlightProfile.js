@@ -298,12 +298,14 @@ class AirlineProfileCosts {
 		let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
 		
 		let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
-		console.log(aircraftICAOcode)
+		console.log(aircraftICAOcode);
+		
+		// set Max TakeOff Mass
 		for (let index = 0; index < airlineAircraftsArray.length; index++) {
 			if ( airlineAircraftsArray[index]["airlineAircraftICAOcode"] == aircraftICAOcode ) {
-				elemTOMassKg.value = airlineAircraftsArray[index]["acMaxTakeOffWeightKg"]
-				elemMinTOMassKg.value = airlineAircraftsArray[index]["acMinTakeOffWeightKg"]
-				elemMaxTOMassKg.value = airlineAircraftsArray[index]["acMaxTakeOffWeightKg"]
+				elemTOMassKg.value = airlineAircraftsArray[index]["acMaxTakeOffWeightKg"];
+				elemMinTOMassKg.value = airlineAircraftsArray[index]["acMinTakeOffWeightKg"];
+				elemMaxTOMassKg.value = airlineAircraftsArray[index]["acMaxTakeOffWeightKg"];
 			}
 		}
 		
@@ -313,8 +315,8 @@ class AirlineProfileCosts {
 		let elemFL = document.getElementById('requestedFlightLevelId');
 		for (let index = 0; index < airlineAircraftsArray.length; index++) {
 			if ( airlineAircraftsArray[index]["airlineAircraftICAOcode"] == aircraftICAOcode ) {
-				elemFL.value = airlineAircraftsArray[index]["acMaxOpAltitudeFeet"]
-				elemMaxFL.value = airlineAircraftsArray[index]["acMaxOpAltitudeFeet"]
+				elemFL.value = airlineAircraftsArray[index]["acMaxOpAltitudeFeet"];
+				elemMaxFL.value = airlineAircraftsArray[index]["acMaxOpAltitudeFeet"];
 			}
 		}
 		
@@ -587,22 +589,22 @@ class AirlineProfileCosts {
 			let elemTOMassKg = document.getElementById('TakeOffMassKgId');
 			//console.log(elemTOMassKg.value);
 			
-				if ( ! Number.isInteger(+(elemTOMassKg.value)) ) {
-					showMessage("Take Off Mass Error" , "Take Off Mass KG must be an integer")
+			if ( ! Number.isInteger(+(elemTOMassKg.value)) ) {
+				showMessage("Take Off Mass Error" , "Take Off Mass KG must be an integer")
+			} else {
+				let massValue = elemTOMassKg.value;
+				let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
+				let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
+				if ( massValue > parseInt( elemMaxTOMassKg.value ) ) {
+					showMessage ("Take Off Mass Error" , "Take Off Mass KG must be lower than " + elemMaxTOMassKg.value )
+					elemTOMassKg.value = elemMaxTOMassKg.value;
 				} else {
-					let massValue = elemTOMassKg.value;
-					let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
-					let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
-					if ( massValue > parseInt( elemMaxTOMassKg.value ) ) {
-						showMessage ("Take Off Mass Error" , "Take Off Mass KG must be lower than " + elemMaxTOMassKg.value )
-						elemTOMassKg.value = elemMaxTOMassKg.value;
-					} else {
-						if ( massValue < parseInt ( elemMinTOMassKg.value ) ) {
-							showMessage ("Take Off Mass Error", "Take Off Mass KG must be greater than " + elemMinTOMassKg.value )
-							elemTOMassKg.value = elemMinTOMassKg.value;
-						}
+					if ( massValue < parseInt ( elemMinTOMassKg.value ) ) {
+						showMessage ("Take Off Mass Error", "Take Off Mass KG must be greater than " + elemMinTOMassKg.value )
+						elemTOMassKg.value = elemMinTOMassKg.value;
 					}
 				}
+			}
 		});
 		
 		// listen to change to requested flight level

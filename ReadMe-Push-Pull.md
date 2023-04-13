@@ -68,5 +68,22 @@ https://eu.pythonanywhere.com/user/airlineservices/webapps/#tab_id_airlineservic
 
 ## perform reload
 
+## upgrade xlsxwriter
+
+(airlineservices) 20:49 ~/flight-profile (master)$ pip install xlsxwriter --upgrade
+Looking in links: /usr/share/pip-wheels
+Requirement already satisfied: xlsxwriter in /home/airlineservices/.virtualenvs/airlineservices/lib/python3.7/site-packages (3.0.3)
+Collecting xlsxwriter
+  Downloading XlsxWriter-3.0.9-py3-none-any.whl (152 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152.8/152.8 kB 4.0 MB/s eta 0:00:00
+Installing collected packages: xlsxwriter
+  Attempting uninstall: xlsxwriter
+    Found existing installation: XlsxWriter 3.0.3
+    Uninstalling XlsxWriter-3.0.3:
+      Successfully uninstalled XlsxWriter-3.0.3
+Successfully installed xlsxwriter-3.0.9
+(airlineservices) 20:52 ~/flight-profile (master)$ 
+
+
 
 

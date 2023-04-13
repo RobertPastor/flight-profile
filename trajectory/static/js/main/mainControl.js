@@ -38,7 +38,7 @@ class MainControl extends og.Control {
 		let row_1 = document.createElement('tr');
 		
 		let row_1_data_1 = document.createElement('td');
-		row_1_data_1.colSpan = "2";
+		row_1_data_1.colSpan = "3";
 		
 		let div_1 = document.createElement('div');
 		
@@ -51,9 +51,9 @@ class MainControl extends og.Control {
 		row_1.appendChild(row_1_data_1);
 		
 		let row_1_data_2 = document.createElement('td');
-		row_1_data_2.colSpan = "7";
+		row_1_data_2.colSpan = "6";
 		
-		row_1_data_2.innerHTML = '<div class="alignRight"><span>Welcome to the Airline Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
+		row_1_data_2.innerHTML = '<div class="alignRight"><span>Airline Fleet Management Tool by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
 		row_1.appendChild(row_1_data_2);
 		
 		tbody.appendChild(row_1);
@@ -92,17 +92,17 @@ class MainControl extends og.Control {
 		
 		// 27th January 2023 - Fleet Assignment based upon costs optimization
 		let row_2_data_8 = document.createElement('td');
-		row_2_data_8.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Costs Optimization</button></div>';
+		row_2_data_8.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Costs Optimiz</button></div>';
 		row_2.appendChild(row_2_data_8);
 		
 		// Costs per Average Seat Miles
 		let row_2_data_9 = document.createElement('td');
-		row_2_data_9.innerHTML = '<div><button id="btnLaunchCASM" >Costs Available Seat Miles</button></div>';
+		row_2_data_9.innerHTML = '<div><button id="btnLaunchCASM" >CASM</button></div>';
 		row_2.appendChild(row_2_data_9);
 		
 		// Costs per Average Seat Miles Optimization
 		let row_2_data_10 = document.createElement('td');
-		row_2_data_10.innerHTML = '<div><button id="btnLaunchCasmOptimization" >CASM Optimization</button></div>';
+		row_2_data_10.innerHTML = '<div><button id="btnLaunchCasmOptimization" >CASM Optimiz</button></div>';
 		row_2.appendChild(row_2_data_10);
 		
 		let row_2_data_11 = document.createElement('td');
