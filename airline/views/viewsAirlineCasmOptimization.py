@@ -123,7 +123,7 @@ def getAirlineCasmOptimization(request, airlineName):
             ''' minimize the costs '''
             #solver.Minimize(solver.Sum(objective_terms))
             prob.solve(PULP_CBC_CMD(msg=0))
-            logger.info ( "Status:", str( LpStatus[prob.status] ) )
+            logger.info ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
             
             results = []
             for v in prob.variables():

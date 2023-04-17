@@ -138,7 +138,7 @@ def getAirlineCostsOptimization(request, airlineName):
             ''' minimize the costs '''
             #solver.Minimize(solver.Sum(objective_terms))
             prob.solve(PULP_CBC_CMD(msg=0))
-            logger.info ("Status:", str(LpStatus[prob.status]) )
+            logger.info ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
             
             #for name, c in list(prob.constraints.items()):
             #    print(name, ":", c, "\t", c.pi, "\t\t", c.slack)
