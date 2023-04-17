@@ -29,10 +29,9 @@ def check_constraints(prob, c_list):
         
 
 def getAirlineCostsOptimization(request, airlineName):
-    logger.debug ("get Airline Costs Optimization for airline = {0}".format(airlineName))
+    logger.info ("get Airline Costs Optimization for airline = {0}".format(airlineName))
     
     if (request.method == 'GET'):
-        
         
         #solver_list = listSolvers(onlyAvailable=True)
         #print (solver_list)
@@ -45,7 +44,7 @@ def getAirlineCostsOptimization(request, airlineName):
             aircraftInstancesList = aircraftInstances.computeAirlineAircraftInstances(airlineName , nbFligthtLegs)
             print ( aircraftInstancesList )
             
-            print ( "length of flight legs = {0}".format( AirlineRoute.objects.filter(airline=airline).count() ) )
+            logger.info ( "length of flight legs = {0}".format( AirlineRoute.objects.filter(airline=airline).count() ) )
             
             airlineCostsArray = []
             airlineAircraftICAOcodeList = []
@@ -80,7 +79,7 @@ def getAirlineCostsOptimization(request, airlineName):
                         
                 airlineCostsArray.append(aircraftCostsArray)
                 
-            print ( airlineCostsArray )
+            logger.info ( airlineCostsArray )
             #print ( "number of aircrafts = {0}".format( len( AirlineAircraft.objects.filter(airline=airline) ) ) )
             #print ( "number of routes = {0}".format( len( AirlineRoute.objects.filter(airline=airline) ) ) )
             
@@ -91,7 +90,7 @@ def getAirlineCostsOptimization(request, airlineName):
             
             #num_aircrafts = len(airlineCostsArray)
             num_aircraft_instances = len(aircraftInstancesList)
-            print ( "number of aircraft instances = {0}".format( num_aircraft_instances ))
+            logger.info ( "number of aircraft instances = {0}".format( num_aircraft_instances ))
             num_flight_legs = len(airlineCostsArray[0])
             #print ( num_flight_legs )
             
@@ -119,7 +118,7 @@ def getAirlineCostsOptimization(request, airlineName):
                     #objective_terms.append(float(airlineCostsArray[i][j]) * x[i, j])
             prob += lpSum( [ airlineCostsArray[i][j] * x_vars[i,j] for i in range(num_aircraft_instances) for j in range(num_flight_legs) ])
                     
-            print ("--- add constraints ----")
+            logger.info ("--- add constraints ----")
             '''  Each aircraft is assigned to at most 1 flight leg. '''
             for i in range(num_aircraft_instances):
                 pass
@@ -139,7 +138,7 @@ def getAirlineCostsOptimization(request, airlineName):
             ''' minimize the costs '''
             #solver.Minimize(solver.Sum(objective_terms))
             prob.solve(PULP_CBC_CMD(msg=0))
-            print ("Status:", LpStatus[prob.status])
+            logger.info ("Status:", str(LpStatus[prob.status]) )
             
             #for name, c in list(prob.constraints.items()):
             #    print(name, ":", c, "\t", c.pi, "\t\t", c.slack)
@@ -176,7 +175,7 @@ def getAirlineCostsOptimization(request, airlineName):
 
                 
                 if ( v.varValue > 0.0 ):
-                    print ( v.name, "=", v.varValue )
+                    logger.info ( v.name, "=", v.varValue )
                     result["assigned"] = "yes"
                     results.append(result)
                 else:
@@ -184,10 +183,8 @@ def getAirlineCostsOptimization(request, airlineName):
                 
 
             # The optimized objective function value is printed to the screen
-            print ( "Total Cost  = ", value(prob.objective))
-            
+            logger.info ( "Total Cost  = ", value(prob.objective))
             return JsonResponse({'results': results})
-
 
         else:
             return JsonResponse({'errors': "unknown airline = {0}".format(airlineName)})
