@@ -33,7 +33,7 @@ class AirlineCasmOptimization {
 
 			// change name on the button
 			document.getElementById("btnLaunchCasmOptimization").innerText = "CASM Optimization";
-			document.getElementById("btnLaunchCasmOptimization").style.backgroundColor = "yellow";
+			//document.getElementById("btnLaunchCasmOptimization").style.backgroundColor = "yellow";
 		}
 	}
 	
@@ -52,6 +52,7 @@ class AirlineCasmOptimization {
 				.append('<td>'+ dataJson["Ades"] +'</td>')
 				.append('<td>'+ dataJson["Seats"] +'</td>')
 				.append('<td>'+ dataJson["Miles"] +'</td>')
+				.append('<td>'+ dataJson["Costs"] +'</td>')
 				.append('<td>'+ dataJson["CASM"] +'</td>')
 
 			);
@@ -80,7 +81,7 @@ class AirlineCasmOptimization {
 				document.getElementById("btnLaunchCasmOptimization").disabled = true;
 				
 				document.getElementById("btnLaunchCasmOptimization").innerText = "CASM Optimization";
-				document.getElementById("btnLaunchCasmOptimization").style.backgroundColor = "green";
+				//document.getElementById("btnLaunchCasmOptimization").style.backgroundColor = "green";
 				
 				// get the name of the airline
 				let airlineName = $("#airlineSelectId option:selected").val();

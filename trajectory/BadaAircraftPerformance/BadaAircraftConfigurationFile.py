@@ -31,7 +31,8 @@ import math
 import logging 
 
 
-from trajectory.Environment.Constants  import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes
+from trajectory.Environment.Constants  import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes,\
+    Meter2Feet
 logger = logging.getLogger(__name__)
 
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
@@ -179,7 +180,7 @@ class AircraftConfiguration(FlightEnvelope):
         self.aircraftCurrentConfiguration = 'departure-ground-run'
         self.flightPathAngleDegrees = 0.0
         logger.info ( self.className + ': default configuration= ' + self.aircraftCurrentConfiguration )
-        logger.info ( self.className  + ': ===================================================' )
+        logger.info ( self.className + ': ===================================================' )
 
         
         self.TakeOffMaxAltitudeThresholdReached = False
@@ -239,7 +240,7 @@ class AircraftConfiguration(FlightEnvelope):
                                 speed_units='m/s',)
         logger.debug ( self.className + ' ====================================' )
         logger.debug ( self.className + ': entering {0} configuration - distance flown {1:.2f} meters - distance flown {2:.2f} nautics'.format(newConfiguration, currentDistanceFlownMeters, currentDistanceFlownMeters*Meter2NauticalMiles) )
-        logger.debug  ( self.className + ': alt= {0:.2f} meters alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, (altitudeMeanSeaLevelMeters*Meter2Feet)) ) 
+        logger.debug ( self.className + ': alt= {0:.2f} meters alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, (altitudeMeanSeaLevelMeters*Meter2Feet)) ) 
         logger.debug ( self.className + ': tas= {0:.2f} m/s - tas= {1:.2f} knots - cas= {2:.2f} m/s - cas= {3:.2f} knots - mach= {4:.2f}'.format(tas, (tas*MeterSecond2Knots), cas, (cas*MeterSecond2Knots), mach) )
         if elapsedTimeSeconds >= 60.0 and elapsedTimeSeconds < 3600.0:
             minutes, seconds = divmod(elapsedTimeSeconds, 60)
@@ -786,6 +787,7 @@ class AircraftConfiguration(FlightEnvelope):
     def isCruiseSpeedReached(self):
         return self.cruiseSpeedReached
     
+    ''' ROCD is expressed in meters per seconds '''
     def computeROCD(self, deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenter, ESF):
         ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenter ) ) * ESF 
         if ( ROCD > 0.0 ):
@@ -900,7 +902,7 @@ class AircraftConfiguration(FlightEnvelope):
                 self.setInitialClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
                 
             ''' distance flown '''
-            deltaDistanceMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees))* deltaTimeSeconds
+            deltaDistanceMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees)) * deltaTimeSeconds
             
  
         elif self.isInitialClimb():
@@ -959,6 +961,20 @@ class AircraftConfiguration(FlightEnvelope):
             ''' compute Altitude change '''
             #ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenter ) ) * ESF 
             ROCD = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenter, ESF)
+            
+            ''' last 5 five minutes before reaching target cruise level '''
+            if ( altitudeMeanSeaLevelMeters < self.getTargetCruiseFlightLevelMeters() ):
+                ''' compute feet difference in one minute '''
+                deltaMetersToCruiseLevel  =  ( self.getTargetCruiseFlightLevelMeters() - altitudeMeanSeaLevelMeters ) 
+                ''' ROCD is expressed in meters per seconds '''
+                #if ( ROCD / deltaMetersToCruiseLevel ) < ( 1 * 60 ):
+                ''' 1000 meters before cruise level '''
+                LevelMetersThreshold = 1000.0
+                if ( ( deltaMetersToCruiseLevel * Meter2Feet ) > 100. ) and ( altitudeMeanSeaLevelMeters + LevelMetersThreshold > self.getTargetCruiseFlightLevelMeters() ):
+                    pass
+                    #print ( "Aircraft is near = {0} - to Cruise Level = {1} - ROCD before = {2}".format( altitudeMeanSeaLevelMeters , self.getTargetCruiseFlightLevelMeters() , ROCD))
+                    #ROCD = ROCD - ( ( ( LevelMetersThreshold - deltaMetersToCruiseLevel ) / LevelMetersThreshold ) * ROCD )
+                    #print ( "Aircraft is near = {0} - to Cruise Level = {1} - ROCD after = {2}".format( altitudeMeanSeaLevelMeters , self.getTargetCruiseFlightLevelMeters() , ROCD))
 
             deltaAltitudeMeters = ROCD * deltaTimeSeconds
             altitudeMeanSeaLevelMeters += deltaAltitudeMeters

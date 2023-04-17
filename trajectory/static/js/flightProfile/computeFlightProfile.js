@@ -482,8 +482,8 @@ class AirlineProfileCosts {
 
 	deleteCreateRayLayer(globus , layerName ) {
 	
-		let finalLayerName = "Rays-" + layerName
-		removeLayer( globus , finalLayerName )
+		let finalLayerName = "Rays-" + layerName;
+		removeLayer( globus , finalLayerName );
 
 		//polygonOffsetUnits is needed to hide rays behind globe
 		let rayLayer = new og.layer.Vector( finalLayerName , { polygonOffsetUnits: 0 });
@@ -552,8 +552,8 @@ class AirlineProfileCosts {
 			$("#flightProfileMainDivId").hide();
 			
 			//document.getElementById("btnLaunchFlightProfile").disabled = true
-			document.getElementById("btnLaunchFlightProfile").innerText = "Flight Profile";
-			document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
+			document.getElementById("btnLaunchFlightProfile").innerText = "Profile";
+			//document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
 			
 		}
 	}
@@ -588,20 +588,22 @@ class AirlineProfileCosts {
 		document.getElementById("TakeOffMassKgId").addEventListener('change', function (evt) {
 			let elemTOMassKg = document.getElementById('TakeOffMassKgId');
 			//console.log(elemTOMassKg.value);
+			let massValue = elemTOMassKg.value;
+			let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
+			let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
 			
 			if ( ! Number.isInteger(+(elemTOMassKg.value)) ) {
-				showMessage("Take Off Mass Error" , "Take Off Mass KG must be an integer")
+				showMessage("Take Off Mass Error" , "Take Off Mass KG must be an integer");
+				elemTOMassKg.value = elemMaxTOMassKg.value;
 			} else {
-				let massValue = elemTOMassKg.value;
-				let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
-				let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
+				
 				if ( massValue > parseInt( elemMaxTOMassKg.value ) ) {
-					showMessage ("Take Off Mass Error" , "Take Off Mass KG must be lower than " + elemMaxTOMassKg.value )
+					showMessage ("Take Off Mass Error" , "Take Off Mass Kg must be lower or equal to " + elemMaxTOMassKg.value )
 					elemTOMassKg.value = elemMaxTOMassKg.value;
 				} else {
 					if ( massValue < parseInt ( elemMinTOMassKg.value ) ) {
-						showMessage ("Take Off Mass Error", "Take Off Mass KG must be greater than " + elemMinTOMassKg.value )
-						elemTOMassKg.value = elemMinTOMassKg.value;
+						showMessage ("Take Off Mass Error", "Take Off Mass Kg must be greater or equal to " + elemMinTOMassKg.value )
+						elemTOMassKg.value = elemMaxTOMassKg.value;
 					}
 				}
 			}
@@ -610,13 +612,15 @@ class AirlineProfileCosts {
 		// listen to change to requested flight level
 		document.getElementById("requestedFlightLevelId").addEventListener('change', function (evt) {
 			let elemFL = document.getElementById('requestedFlightLevelId');
+			let FLvalue = elemFL.value;
 			//console.log(elemFL.value);
+			let elemMaxFL = document.getElementById('maxFlightLevelId');
 			
-				if ( ! Number.isInteger(+(elemFL.value)) ) {
+				if ( ! Number.isInteger(+(FLvalue)) ) {
 					showMessage("Flight Level Error" , "Flight Level must be an integer");
+					elemFL.value = elemMaxFL.value;
 				} else {
-					let FLvalue = elemFL.value;
-					let elemMaxFL = document.getElementById('maxFlightLevelId');
+					
 					
 					if ( FLvalue > parseInt( elemMaxFL.value ) ) {
 						showMessage ("Flight Level Error" ,  "Flight Level must be lower than " + elemMaxFL.value );
@@ -683,8 +687,8 @@ class AirlineProfileCosts {
 				$('#flightProfileMainDivId').show();
 				
 				// change name on the button
-				document.getElementById("btnLaunchFlightProfile").innerText = "Flight Profile";
-				document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "green";
+				document.getElementById("btnLaunchFlightProfile").innerText = "Profile";
+				//document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "green";
 				
 				// get the name of the airline
 				let airlineName = $("#airlineSelectId option:selected").val();
@@ -719,8 +723,8 @@ class AirlineProfileCosts {
 			} else {
 
 				//document.getElementById("btnLaunchFlightProfile").disabled = true
-				document.getElementById("btnLaunchFlightProfile").innerText = "Flight Profile";
-				document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
+				document.getElementById("btnLaunchFlightProfile").innerText = "Profile";
+				//document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
 
 				$('#flightProfileMainDivId').hide();
 			}
@@ -761,7 +765,6 @@ class AirlineProfileCosts {
 								let dataJson = eval(data);
 								// airlineAircrafts
 								SingletonProfileCosts.getInstance().populateAircraftPerformance( dataJson );
-								
 							}
 						},
 						error: function(data, status) {
@@ -789,22 +792,31 @@ class AirlineProfileCosts {
 			let aircraft = $("#airlineAircraftId option:selected").val();
 			let route =  $("#airlineRouteId option:selected").val();
 			
-			let departureRunWay = $("#airlineDepartureRunWayFlightProfileId option:selected").val()
-			let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val()
+			let departureRunWay = $("#airlineDepartureRunWayFlightProfileId option:selected").val();
+			let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val();
+			
+			let elemTOMassKg = document.getElementById('TakeOffMassKgId');
+			let elemFL = document.getElementById('requestedFlightLevelId');
 			
 			// get the name of the airline
 			let airlineName = $("#airlineSelectId option:selected").val();
 			airlineName = encodeURIComponent(airlineName);
 			
+			let data = 'aircraft=' + aircraft
+			data += '&route=' + route
+			data += '&AdepRwy=' + departureRunWay
+			data += '&AdesRwy=' + arrivalRunWay
+			data += '&mass=' + elemTOMassKg.value;
+			data += '&fl=' + elemFL.value;
 			// init progress bar.
 			initProgressBar();
 			initWorker();
 			
 			$.ajax({
-						method: 'get',
-						url :  "trajectory/computeFlightProfile/" + airlineName,
-						async : true,
-						data: 'aircraft=' + aircraft + '&route=' + route + '&AdepRwy=' + departureRunWay + '&AdesRwy=' + arrivalRunWay,
+						method:  'get',
+						url   :  "trajectory/computeFlightProfile/" + airlineName,
+						async :  true,
+						data  :  data ,
 						success: function(data, status) {
 							
 							let dataJson = eval(data);

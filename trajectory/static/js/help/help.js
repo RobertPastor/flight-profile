@@ -32,8 +32,8 @@ function Help () {
 	this.init = function() {
 
 		var htmlContent = "This help is displayed each time the user clicks on the question mark ";
-		htmlContent += '<img src="/static/images/question-mark.png" style="width:24px;height:24px;border:0">';
-		htmlContent += "available in the upper right corner of the page.<br>";
+		htmlContent += '<img src="/static/images/question.png" style="width:16px;height:16px;border:0">';
+		htmlContent += " available in the upper right corner of the navigation bar.<br>";
 		this.helpArray.push(htmlContent);
 
 		let contents = [];

@@ -173,7 +173,7 @@ class AirlineAirports {
 			
 		} else {
 			// no need to create the layer
-			layer.setVisibility(showHide)
+			layer.setVisibility(showHide);
 		}
 	}
 
@@ -241,7 +241,7 @@ class AirlineAirports {
 				
 				show = false;
 				document.getElementById("btnAirports").innerText = "Airports";
-				document.getElementById("btnAirports").style.backgroundColor = "green";
+				//document.getElementById("btnAirports").style.backgroundColor = "green";
 					
 				SingletonAirlineAirports.getInstance().showHideAllAirports( globus, true );
 				
@@ -249,7 +249,7 @@ class AirlineAirports {
 				
 				show = true;
 				document.getElementById("btnAirports").innerText = "Airports";
-				document.getElementById("btnAirports").style.backgroundColor = "yellow";
+				//document.getElementById("btnAirports").style.backgroundColor = "yellow";
 
 				SingletonAirlineAirports.getInstance().showHideAllAirports( globus, false );
 				

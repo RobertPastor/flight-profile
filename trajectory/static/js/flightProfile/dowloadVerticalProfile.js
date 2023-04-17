@@ -18,6 +18,9 @@ function initDownloadVerticalProfile() {
 		let departureRunWay = $("#airlineDepartureRunWayFlightProfileId option:selected").val();
 		let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val();
 		
+		let elemTOMassKg = document.getElementById('TakeOffMassKgId');
+		let elemFL = document.getElementById('requestedFlightLevelId');
+		
 		// get the name of the airline
 		let airlineName = $("#airlineSelectId option:selected").val();
 		airlineName = encodeURIComponent(airlineName);
@@ -30,13 +33,17 @@ function initDownloadVerticalProfile() {
 			aircraft : aircraftICAOcode,
 			route    : route,
 			AdepRwy  : departureRunWay,
-			AdesRwy  : arrivalRunWay
+			AdesRwy  : arrivalRunWay,
+			mass     : elemTOMassKg.value,
+			fl       : elemFL.value
 		}
 		
 		let urlToSend =  "trajectory/excel/" + airlineName + "?ac=" + aircraftICAOcode;
 		urlToSend += "&route=" + route;
 		urlToSend += "&adepRwy=" + departureRunWay;
 		urlToSend += "&adesRwy=" + arrivalRunWay;
+		urlToSend += "&mass=" + elemTOMassKg.value;
+		urlToSend += "&fl=" + elemFL.value;
 		
 		let req = new XMLHttpRequest();
 		req.open("GET", urlToSend, true);

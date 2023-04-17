@@ -350,7 +350,7 @@ class Graph(object):
                     "y"  : round ( wayPoint.getAltitudeMeanSeaLevelMeters() , 1 )
                     }
                 #outputWayPoint = [wayPoint.getElapsedTimeSeconds(), wayPoint.getAltitudeMeanSeaLevelMeters()]
-                if ( counter % 10 ) == 0:
+                if ( ( counter % 10 ) == 0 ) or abortedFlight:
                     groundTrack.append(outputWayPoint)
                 counter = counter + 1
                 

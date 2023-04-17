@@ -122,12 +122,17 @@ def computeFlightProfile(request, airlineName):
             arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
             arrivalAirportRunWayName = request.GET['AdesRwy']
             
+            takeOffMassKg = request.GET['mass']
+            logger.info( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
+            cruiseFLfeet = request.GET['fl'] 
+            logger.info( "cruise FL feet = {0}".format( cruiseFLfeet ) )
+            
             airline = Airline.objects.filter(Name=airlineName).first()
             if (airline):
 
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 if (airlineRoute):
-                    print ( airlineRoute )
+                    logger.info( airlineRoute )
                     '''  use run-ways defined in the web page '''
                     routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                     logger.info ( routeAsString )
@@ -138,9 +143,9 @@ def computeFlightProfile(request, airlineName):
                     flightPath = FlightPath(
                                     route = routeAsString, 
                                     aircraftICAOcode = aircraftICAOcode,
-                                    RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
+                                    RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
                                     cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                    takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
+                                    takeOffMassKilograms = float(takeOffMassKg)  )
     
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
         

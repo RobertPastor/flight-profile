@@ -141,7 +141,7 @@ class GreatCircleRoute(Graph):
             
             if self.aircraft.isCruiseSpeedReached():
                 ''' speed up the computation => step = 10 seconds '''
-                deltaTimeSeconds = 10.0
+                #deltaTimeSeconds = 10.0
                 deltaTimeSeconds = initialDeltaTimeSeconds
             else:
                 deltaTimeSeconds = initialDeltaTimeSeconds

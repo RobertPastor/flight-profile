@@ -44,6 +44,7 @@ class MainControl extends og.Control {
 		
 		let select = document.createElement("select");
 		select.id = "airlineSelectId";
+		select.title = "click to select an airline";
 		select.classList.add('airlineSelect');
 
 		div_1.appendChild(select);
@@ -64,14 +65,17 @@ class MainControl extends og.Control {
 		
 		let row_2_data_2 = document.createElement('td');
 		row_2_data_2.innerHTML = '<div><button id="btnAirlineFleet" >Fleet</button></div>';
+		row_2_data_2.title = "click to see the airline fleet, aircraft, number of seats, hourly costs";
 		row_2.appendChild(row_2_data_2);
 		
 		let row_2_data_3 = document.createElement('td');
 		row_2_data_3.innerHTML = '<div><button id="btnAirports" >Airports</button></div>';
+		row_2_data_3.title = "click to see the airline airports";
 		row_2.appendChild(row_2_data_3);
 		
 		let row_2_data_4 = document.createElement('td');
 		row_2_data_4.innerHTML = '<div><button id="btnAirlineRoutes" >Routes</button></div>';
+		row_2_data_4.title = "click to see the routes, way-points, best runway";
 		row_2.appendChild(row_2_data_4);
 		
 		/**
@@ -83,26 +87,32 @@ class MainControl extends og.Control {
 		
 		let row_2_data_6 = document.createElement('td');
 		row_2_data_6.innerHTML = '<div><button id="btnLaunchFlightProfile" >Profile</button></div>';
+		row_2_data_6.title = "click to compute a profile, a cost or download an EXCEL profile";
 		row_2.appendChild(row_2_data_6);
 		
 		// 27th January 2023 - Airline costs controls
 		let row_2_data_7 = document.createElement('td');
 		row_2_data_7.innerHTML = '<div><button id="btnLaunchAirlineCosts" >Costs</button></div>';
+		row_2_data_7.title = "click to download an EXCEL costs file";
+
 		row_2.appendChild(row_2_data_7);
 		
 		// 27th January 2023 - Fleet Assignment based upon costs optimization
 		let row_2_data_8 = document.createElement('td');
-		row_2_data_8.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Costs Optim</button></div>';
+		row_2_data_8.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Costs Optimization</button></div>';
+		row_2_data_8.title = "click to see the best aircraft selection to minimize costs";
 		row_2.appendChild(row_2_data_8);
 		
 		// Costs per Average Seat Miles
 		let row_2_data_9 = document.createElement('td');
 		row_2_data_9.innerHTML = '<div><button id="btnLaunchCASM" >CASM</button></div>';
+		row_2_data_9.title = "click to download an EXCEL Cost per Available Seat Miles file";
 		row_2.appendChild(row_2_data_9);
 		
 		// Costs per Average Seat Miles Optimization
 		let row_2_data_10 = document.createElement('td');
-		row_2_data_10.innerHTML = '<div><button id="btnLaunchCasmOptimization" >CASM Optim</button></div>';
+		row_2_data_10.innerHTML = '<div><button id="btnLaunchCasmOptimization" >CASM Optimization</button></div>';
+		row_2_data_10.title = "click to see the best aircraft selection to minimize Costs per Available Seat Miles"; 
 		row_2.appendChild(row_2_data_10);
 		
 		let row_2_data_11 = document.createElement('td');

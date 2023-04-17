@@ -163,6 +163,7 @@ class AirlineRoutes {
 		}
 	}
 
+	// add best runway
 	addOneAirlineRoute( globus, oneAirlineRoute ) {
 	
 		$("#airlineRoutesTableId").find('tbody')
@@ -209,7 +210,7 @@ class AirlineRoutes {
 		if (layer) {
 			// layer is existing -> hide -> show button as hidden
 			document.getElementById(elemButton.id).value = "Hide"
-			document.getElementById(elemButton.id).style.backgroundColor = "green";
+			//document.getElementById(elemButton.id).style.backgroundColor = "green";
 		}
 	
 		/**
@@ -263,7 +264,7 @@ class AirlineRoutes {
 			$("#airlineRoutesDivId").hide();
 			
 			document.getElementById("btnAirlineRoutes").innerText = "Routes";
-			document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
+			//document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
 
 		}
 	}
@@ -286,7 +287,7 @@ class AirlineRoutes {
 
 				// change name on the button
 				document.getElementById("btnAirlineRoutes").innerText = "Routes";
-				document.getElementById("btnAirlineRoutes").style.backgroundColor = "green";
+				//document.getElementById("btnAirlineRoutes").style.backgroundColor = "green";
 				
 				// disable the button 
 				document.getElementById("btnAirlineRoutes").disabled = true
@@ -321,7 +322,7 @@ class AirlineRoutes {
 			} else {
 
 				document.getElementById("btnAirlineRoutes").innerText = "Routes";
-				document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
+				//document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
 				
 				// get the name of the airline
 				let airlineName = $("#airlineSelectId option:selected").val();

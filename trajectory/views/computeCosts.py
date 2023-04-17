@@ -56,6 +56,11 @@ def computeCosts(request, airlineName):
             arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
             arrivalAirportRunWayName = request.GET['AdesRwy']
             
+            takeOffMassKg = request.GET['mass']
+            logger.info( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
+            cruiseFLfeet = request.GET['fl'] 
+            logger.info( "cruise FL feet = {0}".format( cruiseFLfeet ) )
+            
             airline = Airline.objects.filter(Name=airlineName).first()
             if (airline):
 
@@ -74,9 +79,9 @@ def computeCosts(request, airlineName):
                     flightPath = FlightPath(
                                     route = routeAsString, 
                                     aircraftICAOcode = aircraftICAOcode,
-                                    RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
+                                    RequestedFlightLevel = float ( cruiseFLfeet )  / 100., 
                                     cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                    takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
+                                    takeOffMassKilograms =  float(takeOffMassKg) )
     
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
         

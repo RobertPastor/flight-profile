@@ -30,7 +30,7 @@ def getAirlineCasmOptimization(request, airlineName):
             nbFligthtLegs = AirlineRoute.objects.filter(airline=airline).count()
             aircraftInstances = AirlineAircraftInstances()
             aircraftInstancesList = aircraftInstances.computeAirlineAircraftInstances(airlineName , nbFligthtLegs)
-            print ( aircraftInstancesList )
+            logger.info ( aircraftInstancesList )
         
             airlineCasmArray = []
             airlineAircraftICAOcodeList = []
@@ -79,12 +79,12 @@ def getAirlineCasmOptimization(request, airlineName):
             print ( airlineCasmArray )
             
             num_flight_legs = len( AirlineRoute.objects.filter(airline=airline) )
-            print ("num flight legs = {0}".format(num_flight_legs))
+            logger.info ( "num flight legs = {0}".format(num_flight_legs) )
             num_aircraft_instances = len(aircraftInstancesList)
             
-            print ( "number of aircraft instances = {0}".format( num_aircraft_instances ))
+            logger.info ( "number of aircraft instances = {0}".format( num_aircraft_instances ) )
             num_flight_legs = len(airlineCasmArray[0])
-            print ("num flight legs = {0}".format(num_flight_legs))
+            logger.info ( "num flight legs = {0}".format(num_flight_legs) )
 
             prob = LpProblem("CASM-Problem", LpMinimize)
             
@@ -105,7 +105,7 @@ def getAirlineCasmOptimization(request, airlineName):
             ''' define the objective function '''
             prob += lpSum( [ airlineCasmArray[i][j] * x_vars[i,j] for i in range(num_aircraft_instances) for j in range(num_flight_legs) ])
 
-            print ("--- add constraints ----")
+            logger.info ( "--- add constraints ----")
             '''  Each aircraft is assigned to at most 1 flight leg. '''
             for i in range(num_aircraft_instances):
                 pass
@@ -123,7 +123,7 @@ def getAirlineCasmOptimization(request, airlineName):
             ''' minimize the costs '''
             #solver.Minimize(solver.Sum(objective_terms))
             prob.solve(PULP_CBC_CMD(msg=0))
-            print ("Status:", LpStatus[prob.status])
+            logger.info ( "Status:", LpStatus[prob.status])
             
             results = []
             for v in prob.variables():
@@ -169,17 +169,18 @@ def getAirlineCasmOptimization(request, airlineName):
                             
                             result["Seats"] =  nbSeats 
                             result["Miles"] =  round ( miles , 2 )
+                            result["Costs"] =  round ( totalCostsUSdollars , 2 )
                             result["CASM"] = round ( casmUSdollars , 4 )
                             
                 if ( v.varValue > 0.0 ):
-                    print ( v.name, "=", v.varValue )
+                    logger.info ( v.name, "=", v.varValue )
                     result["assigned"] = "yes"
                     results.append(result)
                 else:
                     result["assigned"] = "no"
 
             # The optimized objective function value is printed to the screen
-            print ( "Total CASM objective  = ", value(prob.objective))
+            logger.info ( "Total CASM objective  = ", value(prob.objective))
             
             return JsonResponse({'results': results})
             
