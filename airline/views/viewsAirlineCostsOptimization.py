@@ -175,7 +175,7 @@ def getAirlineCostsOptimization(request, airlineName):
 
                 
                 if ( v.varValue > 0.0 ):
-                    logger.info ( v.name, "=", v.varValue )
+                    logger.info ( "var name = {0} - var value = {1}".format( v.name, v.varValue ) )
                     result["assigned"] = "yes"
                     results.append(result)
                 else:
@@ -183,7 +183,7 @@ def getAirlineCostsOptimization(request, airlineName):
                 
 
             # The optimized objective function value is printed to the screen
-            logger.info ( "Total Cost  = ", value(prob.objective))
+            logger.info ( "Total Cost  = {0}".format( value(prob.objective) ) )
             return JsonResponse({'results': results})
 
         else:

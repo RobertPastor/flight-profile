@@ -173,14 +173,14 @@ def getAirlineCasmOptimization(request, airlineName):
                             result["CASM"] = round ( casmUSdollars , 4 )
                             
                 if ( v.varValue > 0.0 ):
-                    logger.info ( v.name, "=", v.varValue )
+                    logger.info ( "var name = {0} - var value = {1}".format( v.name, v.varValue ) )
                     result["assigned"] = "yes"
                     results.append(result)
                 else:
                     result["assigned"] = "no"
 
             # The optimized objective function value is printed to the screen
-            logger.info ( "Total CASM objective  = ", value(prob.objective))
+            logger.info ( "Total CASM Objective  = {0}".format( value(prob.objective) ) )
             
             return JsonResponse({'results': results})
             
