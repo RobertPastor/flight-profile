@@ -41,10 +41,10 @@ function removeLayer( globus , layerName ) {
 	try {
 		let layerOne = globus.planet.getLayerByName( layerName );
 		if (layerOne) {
-			
-			let entities = layerOne.getEntities();
-			layerOne.removeEntities(entities);
-			layerOne.remove();
+			console.log("layerOne is probably existing ...");
+			//let entities = layerOne.getEntities();
+			//layerOne.removeEntities(entities);
+			//layerOne.remove();
 		}
 	} catch (err) {
 		console.log(JSON.stringify(err));
@@ -53,7 +53,7 @@ function removeLayer( globus , layerName ) {
 	try {
 		let layerTwo = globus.planet.getLayerByName( layerName );
 		if (layerTwo) {
-			
+			console.log("layerTwo is probably existing ...");
 			layerTwo._entityCollectionsTree.entityCollection.clear();
 		}
 	} catch (err) {

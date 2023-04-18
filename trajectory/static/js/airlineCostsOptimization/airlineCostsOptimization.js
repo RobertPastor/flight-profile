@@ -83,6 +83,8 @@ class AirlineCostsOptimization {
 			//console.log("click on Launch Costs Optimization");
 			
 			if ( ! $('#airlineCostsOptimizationMainDivId').is(":visible") ) {
+				
+				document.getElementById("btnLaunchCostsOptimization").disabled = true;
 			
 				// get the name of the airline
 				let airlineName = $("#airlineSelectId option:selected").val();
@@ -113,7 +115,7 @@ class AirlineCostsOptimization {
 									SingletonAirlineCostsOptimization.getInstance().showCostsResults( resultsArray );
 								}
 								
-								document.getElementById("btnComputeCostsId").disabled = false
+								document.getElementById("btnLaunchCostsOptimization").disabled = false
 								
 							},
 							error: function(data, status) {
@@ -123,7 +125,7 @@ class AirlineCostsOptimization {
 							},
 							complete : function() {
 								stopBusyAnimation();
-								document.getElementById("btnLaunchFlightProfile").disabled = false
+								document.getElementById("btnLaunchCostsOptimization").disabled = false
 							}
 				});
 			} else {
