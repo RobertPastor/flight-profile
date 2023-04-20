@@ -12,19 +12,19 @@ import logging
 logger = logging.getLogger(__name__)
 
 French_Locale = ""
-from datetime import datetime , timedelta, date
+from datetime import datetime 
 
 from xlsxwriter import Workbook
 from django.shortcuts import HttpResponse
 from django.views.decorators.csrf import csrf_protect
+from django.http import  JsonResponse
+
 
 from airline.models import Airline, AirlineRoute, AirlineAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
 from trajectory.models import BadaSynonymAircraft
-
-
 
 def writeReadMe(workbook, request, airlineName):
     pass
@@ -86,7 +86,7 @@ def createExcelVerticalProfile(request, airlineName):
     ''' this is the main view entry '''
     locale.setlocale(locale.LC_TIME, French_Locale)
     
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     logging.info ("compute Flight Profile - for airline = {0}".format(airlineName))
     
     if request.method == 'GET':
@@ -123,13 +123,13 @@ def createExcelVerticalProfile(request, airlineName):
 
                     airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                     if (airlineRoute):
-                        print ( airlineRoute )
+                        logger.info ( airlineRoute )
                         '''  use run-ways defined in the web page '''
                         routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                         logger.info ( routeAsString )
                         acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-                        logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                        logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
+                        #logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                        #logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
         
                         flightPath = FlightPath(
                                         route = routeAsString, 
@@ -163,7 +163,17 @@ def createExcelVerticalProfile(request, airlineName):
                             response['Set-Cookie'] = 'fileDownload=true; path=/'
                             response['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=filename)
                             response['Content-Length'] = memoryFile.tell()
-                            return response                                                                         
+                            return response      
+                        
+                    else:
+                        logger.info ('airline route not found = {0}'.format(airlineRoute))
+                        response_data = {
+                            'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
+                        return JsonResponse(response_data)                                                                   
 
-
+                else:
+                    logger.info ('airline  not found = {0}'.format(airlineName))
+                    response_data = {
+                        'errors' : 'Airline not found = {0}'.format(airlineName)}
+                return JsonResponse(response_data)
 

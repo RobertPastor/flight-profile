@@ -71,6 +71,9 @@ class FlightPath(FlightPlan):
                  cruiseMach = 0.8, 
                  takeOffMassKilograms = 62000.0):
         
+        ''' The root logger always defaults to WARNING level. '''
+        logging.getLogger().setLevel(logging.INFO)
+        
         self.className = self.__class__.__name__
         self.abortedFlight = False
         
@@ -217,10 +220,10 @@ class FlightPath(FlightPlan):
             
             distanceToLastFixMeters = self.computeDistanceToLastFixMeters(currentPosition = endOfTurnLegWayPoint,
                                                                           fixListIndex = headWayPointIndex)
-            logging.info ( self.className + ': distance to last fix= {0} nautics'.format(distanceToLastFixMeters * Meter2NauticalMiles) )
+            logging.info ( self.className + ': distance to last fix= {0:.2f} nautics'.format(distanceToLastFixMeters * Meter2NauticalMiles) )
             
             distanceStillToFlyMeters = self.flightLengthMeters - self.finalRoute.getLengthMeters()
-            logging.info ( self.className + ': still to fly= {0} nautics'.format(distanceStillToFlyMeters * Meter2NauticalMiles) )
+            logging.info ( self.className + ': still to fly= {0:.2f} nautics'.format(distanceStillToFlyMeters * Meter2NauticalMiles) )
     
     
             self.endOfSimulation = greatCircle.computeGreatCircle(deltaTimeSeconds = self.deltaTimeSeconds,

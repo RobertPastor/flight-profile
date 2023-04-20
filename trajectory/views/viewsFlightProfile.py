@@ -98,7 +98,7 @@ def getAirport(airportICAOcode):
     
 def computeFlightProfile(request, airlineName):
     
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     logging.info ("compute Flight Profile - for airline = {0}".format(airlineName))
     
     #routeWayPointsList = []
@@ -137,8 +137,8 @@ def computeFlightProfile(request, airlineName):
                     routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                     logger.info ( routeAsString )
                     acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-                    logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                    logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
+                    #logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                    #logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
     
                     flightPath = FlightPath(
                                     route = routeAsString, 
@@ -164,8 +164,7 @@ def computeFlightProfile(request, airlineName):
                         return JsonResponse(response_data)
                     else:
                         logger.info ('Error while retrieving the KML document')
-                        response_data = {
-                        'errors' : 'Error while retrieving the KML document'}
+                        response_data = {'errors' : 'Error while retrieving the KML document'}
                         return JsonResponse(response_data)
     
                 else:

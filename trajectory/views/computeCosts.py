@@ -31,7 +31,8 @@ def computeDurationHours( durationSeconds ):
         
 
 def computeCosts(request, airlineName):
-    logger.setLevel(logging.INFO)
+    
+    logger.setLevel(logging.DEBUG)
     logger.info ("compute Flight Profile")
     
     #routeWayPointsList = []
@@ -73,8 +74,8 @@ def computeCosts(request, airlineName):
                     logger.info ( routeAsString )
                     
                     acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-                    logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                    logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
+                    #logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                    #logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
     
                     flightPath = FlightPath(
                                     route = routeAsString, 

@@ -222,19 +222,6 @@ class FlightEnvelope(AeroDynamics):
         
         ''' 12th September 2021 - Robert - need to know real time spent during flying '''
         self.elapsedTimeSeconds = elapsedTimeSeconds
-
-        self.StateVector.updateAircraftStateVector(elapsedTimeSeconds           , 
-                                                   trueAirSpeedMetersPerSecond  , 
-                                                   altitudeMeanSeaLevelMeters   , 
-                                                   currentDistanceFlownMeters   , 
-                                                   distanceStillToFlyMeters     , 
-                                                   aircraftMassKilograms        , 
-                                                   flightPathAngleDegrees       ,
-                                                   thrustNewtons                 ,
-                                                   dragNewtons                   ,
-                                                   liftNewtons                   ,
-                                                   endOfSimulation)
-        
         
         calibratedAirSpeedKnots = self.atmosphere.tas2cas(tas = trueAirSpeedMetersPerSecond ,
                                                   altitude = altitudeMeanSeaLevelMeters,
@@ -243,8 +230,9 @@ class FlightEnvelope(AeroDynamics):
                                                   alt_units='m'
                                                   ) * MeterSecond2Knots
         if (calibratedAirSpeedKnots > self.MaxOpSpeedCasKnots):
+            
             logging.info ( self.className + ': CAS= {0:.2f} knots >> higher than Max Op CAS= {1:.2f} knots'.format(calibratedAirSpeedKnots, self.MaxOpSpeedCasKnots) )
-            endOfSimulation = True
+            endOfSimulation = False
             
         if (altitudeMeanSeaLevelMeters * Meter2Feet) > self.MaxOpAltitudeFeet:
             logging.info ( self.className + ': current altitude= {0:.2f} feet >> higher than Max Operational Altitude= {1:.2f} feet'.format((altitudeMeanSeaLevelMeters * Meter2Feet), self.MaxOpAltitudeFeet) )
@@ -257,6 +245,18 @@ class FlightEnvelope(AeroDynamics):
         if trueAirSpeedMetersPerSecond < 0.0:
             logging.info ( self.className + ': tas= {0:.2f} m/s is negative => end of simulation'.format(trueAirSpeedMetersPerSecond) )
             endOfSimulation = True
+            
+        self.StateVector.updateAircraftStateVector(elapsedTimeSeconds           , 
+                                                   trueAirSpeedMetersPerSecond  , 
+                                                   altitudeMeanSeaLevelMeters   , 
+                                                   currentDistanceFlownMeters   , 
+                                                   distanceStillToFlyMeters     , 
+                                                   aircraftMassKilograms        , 
+                                                   flightPathAngleDegrees       ,
+                                                   thrustNewtons                 ,
+                                                   dragNewtons                   ,
+                                                   liftNewtons                   ,
+                                                   endOfSimulation)
 
         return endOfSimulation
     

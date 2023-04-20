@@ -31,8 +31,7 @@ import math
 import logging 
 
 
-from trajectory.Environment.Constants  import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes,\
-    Meter2Feet
+from trajectory.Environment.Constants  import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes
 logger = logging.getLogger(__name__)
 
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
@@ -147,6 +146,9 @@ class AircraftConfiguration(FlightEnvelope):
     ''' vertical phase from airlines procedure '''
     verticalPhase = None
     transitionAltitude = None # this is an object class
+    
+    ROCDsmoothingStarted = False
+    ROCDbeforeSmootingtarted = 0.0
     
     
     def __init__(self, 
@@ -962,16 +964,28 @@ class AircraftConfiguration(FlightEnvelope):
             #ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenter ) ) * ESF 
             ROCD = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenter, ESF)
             
-            ''' last 5 five minutes before reaching target cruise level '''
-            if ( altitudeMeanSeaLevelMeters < self.getTargetCruiseFlightLevelMeters() ):
+            ''' last 1000 feet before reaching target cruise level '''
+            LevelMetersThreshold = 300.0
+            if ( altitudeMeanSeaLevelMeters < self.getTargetCruiseFlightLevelMeters() ) and ( altitudeMeanSeaLevelMeters > ( self.getTargetCruiseFlightLevelMeters() - LevelMetersThreshold ) ) :
                 ''' compute feet difference in one minute '''
                 deltaMetersToCruiseLevel  =  ( self.getTargetCruiseFlightLevelMeters() - altitudeMeanSeaLevelMeters ) 
                 ''' ROCD is expressed in meters per seconds '''
                 #if ( ROCD / deltaMetersToCruiseLevel ) < ( 1 * 60 ):
-                ''' 1000 meters before cruise level '''
-                LevelMetersThreshold = 1000.0
-                if ( ( deltaMetersToCruiseLevel * Meter2Feet ) > 100. ) and ( altitudeMeanSeaLevelMeters + LevelMetersThreshold > self.getTargetCruiseFlightLevelMeters() ):
-                    pass
+                ''' 1000 feet before cruise level '''
+                
+                #if ( ( deltaMetersToCruiseLevel * Meter2Feet ) > 100. )   :
+                pass
+                if self.ROCDsmoothingStarted == False:
+                    self.ROCDsmoothingStarted = True
+                    self.ROCDbeforeSmootingtarted = ROCD
+                else:
+                    self.ROCDbeforeSmootingtarted = self.ROCDbeforeSmootingtarted - 0.10
+                    #ROCD = self.ROCDbeforeSmootingtarted
+                    
+            else:
+                if self.ROCDsmoothingStarted:
+                    self.ROCDbeforeSmootingtarted = self.ROCDbeforeSmootingtarted - 0.10
+                    #ROCD = self.ROCDbeforeSmootingtarted
                     #print ( "Aircraft is near = {0} - to Cruise Level = {1} - ROCD before = {2}".format( altitudeMeanSeaLevelMeters , self.getTargetCruiseFlightLevelMeters() , ROCD))
                     #ROCD = ROCD - ( ( ( LevelMetersThreshold - deltaMetersToCruiseLevel ) / LevelMetersThreshold ) * ROCD )
                     #print ( "Aircraft is near = {0} - to Cruise Level = {1} - ROCD after = {2}".format( altitudeMeanSeaLevelMeters , self.getTargetCruiseFlightLevelMeters() , ROCD))

@@ -98,7 +98,9 @@ function Help () {
 		contents.push("   1) operational costs based upon flight duration TIMES hourly flight costs.<br>");
 		contents.push("   2) fuel costs based upon aircraft mass loss - translated into liters of fuel TIMES cost of one liter of fuel.<br>");
 		contents.push("   3) crew costs based upon flight duration TIMES hourly crew costs.<br>");
-		
+		contents.push("<br>");
+		contents.push("Future improvement : show the runways used for the costs computations.<br>");
+
 		this.pushSection("Airline Costs" , contents , "7");
 		
 		contents = [];
