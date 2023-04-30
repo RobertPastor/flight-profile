@@ -38,9 +38,13 @@ class Command(BaseCommand):
                     logger.info ("selected aircraft = {0}".format( aircraftICAOcode ) )
                 
                     for airlineRoute in AirlineRoute.objects.filter(airline=airline):
+                        
+                        adepRunway = airlineRoute.computeBestDepartureRunWay()
+                        adesRunway = airlineRoute.computeBestArrivalRunWay()
                         logger.info ( airlineRoute )
                         
-                        routeAsString = airlineRoute.getRouteAsString()
+                        ''' 30th April 2023 - compute route with best runways '''
+                        routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=adepRunway, AdesRunWayName=adesRunway)
                         logger.info ( routeAsString )
                         acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
                         #print ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
@@ -61,6 +65,9 @@ class Command(BaseCommand):
                                     isAborted = flightPath.abortedFlight,
                                     flightDurationSeconds = flightPath.getFlightDurationSeconds(),
                                     initialTakeOffMassKg = flightPath.aircraft.getAircraftInitialMassKilograms(),
+                                    targetCruiseLevelFeet = acPerformance.getMaxOpAltitudeFeet(),
+                                    adepRunway = adepRunway,
+                                    adesRunway = adesRunway,
                                     finalMassKg =  flightPath.aircraft.getAircraftCurrentMassKilograms() ,
                                     finalLengthMeters = flightPath.finalRoute.getLengthMeters()
                                     )

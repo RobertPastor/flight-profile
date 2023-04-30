@@ -52,10 +52,17 @@ class MainControl extends og.Control {
 		row_1.appendChild(row_1_data_1);
 		
 		let row_1_data_2 = document.createElement('td');
-		row_1_data_2.colSpan = "6";
+		row_1_data_2.colSpan = "5";
 		
-		row_1_data_2.innerHTML = '<div class="alignRight"><span>Airline Fleet Management Tool by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
+		row_1_data_2.innerHTML = '<div class="alignRight"><span>Airline Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
 		row_1.appendChild(row_1_data_2);
+		
+		let row_1_data_3 = document.createElement('td');
+		row_1_data_3.colSpan = "1";
+		
+		row_1_data_3.classList.add('question_mark_bg')
+		row_1_data_3.innerHTML = '<div id="helpId" class="exclamation_mark" title="click to obtain some configuration information" onclick="showConfiguration()" ></div>';
+		row_1.appendChild(row_1_data_3);
 		
 		tbody.appendChild(row_1);
 		
@@ -117,7 +124,7 @@ class MainControl extends og.Control {
 		
 		let row_2_data_11 = document.createElement('td');
 		row_2_data_11.classList.add('question_mark_bg')
-		row_2_data_11.innerHTML = '<div class="question_mark" onclick="showHelp()" title="click to obtain some help"></div>';
+		row_2_data_11.innerHTML = '<div id="helpId" class="question_mark" title="click to obtain some help" onclick="showHelp()" ></div>';
 		row_2.appendChild(row_2_data_11);
 		
 		tbody.appendChild(row_2);

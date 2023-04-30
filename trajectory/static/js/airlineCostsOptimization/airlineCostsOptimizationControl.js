@@ -17,7 +17,7 @@ class AirlineCostsOptimizationControl extends og.Control {
 		
 		let draggableMainDiv = document.createElement('div');
 		draggableMainDiv.id = mainDiv.id  + "Header";
-		draggableMainDiv.innerHTML = "Click here to move";
+		draggableMainDiv.innerHTML = "Click here to move - Costs Optimizations";
 		draggableMainDiv.classList.add("draggableDivHeader");
 		
 		let span = document.createElement('span');
@@ -35,7 +35,7 @@ class AirlineCostsOptimizationControl extends og.Control {
 		let thead = document.createElement('thead');
 		let row_1 = document.createElement('tr');
 
-		let th_list = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned', 'Adep', 'Ades' , 'Costs US$'];
+		let th_list = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned', 'Adep', 'Runway', 'Ades' , 'Runway' , 'Costs US$'];
 		let th = undefined;
 		th_list.forEach ( function ( element ) {
 			th = document.createElement('th');

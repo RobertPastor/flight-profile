@@ -17,7 +17,8 @@ from airline.models import Airline, AirlineCosts, AirlineAircraft, AirlineRoute
 
 from trajectory.Environment.Constants import kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
 
-headers = ['airline' , 'aircraft'  , 'departureAirport' , 'arrivalAirport' , 'isAborted' , 'takeOffMassKg'  , 'finalMassKg' \
+''' 29th April 2023 add cruise level and adep . Ades runways '''
+headers = ['airline' , 'aircraft'  , 'departureAirport' , 'arrivalAirport' , 'isAborted' , 'takeOffMassKg'  , 'cruiseLevelFeet' , 'adepRunway' , 'adesRunway' , 'finalMassKg' \
               , 'flightDurationHours' , 'fuelCostsUSdollars' , 'operationalCostsUSdollars' , 'crewCostsUSdollars' , 'totalCostsUSdollars' ]       
 
 def writeReadMe(workbook, request, airlineName):
@@ -89,6 +90,15 @@ def writeAirlineCostsResults(workbook , airlineName):
                     worksheet.write(row, ColumnIndex, str(airlineCosts.isAborted) )
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, airlineCosts.initialTakeOffMassKg )
+                    
+                    ''' 29th April 2023 add cruise level and adep . Ades runways '''
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, airlineCosts.targetCruiseLevelFeet )
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, airlineCosts.adepRunway )
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, airlineCosts.adesRunway )
+                    
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, airlineCosts.finalMassKg )
                     ColumnIndex += 1

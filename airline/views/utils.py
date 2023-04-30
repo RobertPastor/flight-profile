@@ -5,7 +5,7 @@ Created on 11 févr. 2023
 
 '''
 
-from airline.models import Airline, AirlineCosts, AirlineAircraft, AirlineRoute
+from airline.models import Airline, AirlineCosts, AirlineAircraft
 from trajectory.Environment.Constants import kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
 
 

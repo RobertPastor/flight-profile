@@ -112,11 +112,11 @@ class ClimbRamp(Graph):
                 
             ''' aircraft fly '''
             endOfSimulation, deltaDistanceMeters , altitudeMeanSeaLevelMeters = self.aircraft.fly(
-                                                                    elapsedTimeSeconds = elapsedTimeSeconds,
-                                                                    deltaTimeSeconds = deltaTimeSeconds , 
+                                                                    elapsedTimeSeconds       = elapsedTimeSeconds,
+                                                                    deltaTimeSeconds         = deltaTimeSeconds , 
                                                                     distanceStillToFlyMeters = distanceStillToFlyMeters,
-                                                                    currentPosition =  intermediateWayPoint,
-                                                                    distanceToLastFixMeters = distanceToLastFixMeters)
+                                                                    currentPosition          =  intermediateWayPoint,
+                                                                    distanceToLastFixMeters  = distanceToLastFixMeters)
             ''' distance flown '''
             cumulatedLegDistanceMeters += deltaDistanceMeters
             distanceStillToFlyMeters -= deltaDistanceMeters
@@ -127,7 +127,7 @@ class ClimbRamp(Graph):
             ''' name the next way-point '''
             Name = ''
             if index == 0:
-                Name = 'climbRamp-{0:.2f}-meters'.format( cumulatedLegDistanceMeters)
+                Name = 'climbRamp-{0}'.format( self.runway.getName() )
             #bearingDegrees = math.fmod ( runWayOrientationDegrees + 180.0 , 360.0 ) + 180.0
             bearingDegrees = runWayOrientationDegrees
             newIntermediateWayPoint = intermediateWayPoint.getWayPointAtDistanceBearing(Name = Name, 

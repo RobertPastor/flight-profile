@@ -42,7 +42,7 @@ class AirlineCostsOptimization {
 	}
 	
 	showOneResult( dataJson ) {
-		
+		// 29th April 2023 - add Adep and Ades runways 
 		$("#airlineCostsOptimizationTableId")
 			.find('tbody')
 			.append($('<tr>')
@@ -53,7 +53,11 @@ class AirlineCostsOptimization {
 				.append('<td>'+ dataJson["assigned"] +'</td>')
 				
 				.append('<td>'+ dataJson["Adep"] +'</td>')
+				.append('<td>'+ dataJson["AdepRunway"] +'</td>')
+				
 				.append('<td>'+ dataJson["Ades"] +'</td>')
+				.append('<td>'+ dataJson["AdesRunway"] +'</td>')
+				
 				.append('<td>'+ dataJson["costs"] +'</td>')
 
 			);

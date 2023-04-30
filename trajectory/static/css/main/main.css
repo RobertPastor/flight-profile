@@ -70,6 +70,17 @@ th {
     display:			block;
 }
 
+.exclamation_mark {
+	background:         url('/static/images/exclamation-mark.png');
+    background-color:	#60D6A7;
+    background-repeat:  no-repeat;
+    cursor:             pointer;
+    height:             16px;
+    width:              16px;
+    margin:             0 auto 0 auto;
+    display:			block;
+}
+
 .divOverlayClass {
 	position: fixed; /* Sit on top of the page content */
 	display: none; /* displayed by default */

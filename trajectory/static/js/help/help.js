@@ -3,17 +3,18 @@
  * this help is displayed in a modal dialog box
  * 8 May 2016 - Robert Pastor
  */
-
-
-function Help () {
-
-	this.helpArray = [];
-
-	this.getSize = function() {
-		return this.helpArray.length;
-	};
+ 
+ class baseHelpConfiguration {
+	 
+	constructor() {
+		this.helpArray = [];
+	}
 	
-	this.pushSection = function(title , contents , id) {
+	getSize() {
+		return this.helpArray.length;
+	}
+	
+	pushSection (title , contents , id) {
 		this.helpArray.push("<div>");
 		this.helpArray.push('<input type="checkbox" id="toggle-' + id + '" class="unfolder-' + id + '"/>');
 		
@@ -22,14 +23,93 @@ function Help () {
 		this.helpArray.push('</label>');
 		
 		this.helpArray.push('<div class="fold-' + id + '">');
-		for (i = 0; i < contents.length ; i++) {
+		for (let i = 0; i < contents.length ; i++) {
 			this.helpArray.push( contents[i] );
 		} 
 		this.helpArray.push("</div>");
 		this.helpArray.push("</div>");
 	}
+	 
+ }
+ 
+ class Configuration extends baseHelpConfiguration {
+	 
+	init() {
+		
+		let htmlContent = "This help is displayed each time the user clicks on the exclamation mark ";
+		htmlContent += '<img src="/static/images/exclamation-mark.png" style="width:16px;height:16px;border:0">';
+		htmlContent += " available in the upper right corner of the navigation bar.<br>";
+		this.helpArray.push(htmlContent);
+		
+		let contents = [];
+		
+		contents.push("Airline fleet configuration defines the aircraft types, the typical number of seats, operational hourly costs rates, and the crew costs rates.<br>");
+		contents.push("These values are specific to each aircraft and each airline.");
+		
+		this.pushSection("Fleet Configuration" , contents , "1");
+		
+		contents = [];
+		contents.push("Airline Routes are defined first by a pair of departure and arrival airports.<br>");
+		contents.push("For the airports, we have adopted the ICAO code with 4 letters to identify in a unique way any airport on all continents.<br>");
+		
+		this.pushSection("Airports & Routes Configuration" , contents , "2");
+		
+		contents = [];
+		contents.push("Waypoints are provided for each oriented route from departure to arrival airport.<br>");
+		contents.push("Waypoints are defined by a unique name, a longitude and a latitude.<br>");
+		
+		contents.push("waypoints names are unique for all routes whatever configured airline is available in the database.<br>");
+		
+		this.pushSection("WayPoints Configuration" , contents , "3");
+		
+		contents = [];
+		contents.push("Note: all costs are computed in the same currency unit : the US dollars.<br>");
+		contents.push("Total flight costs are summed up from hourly operational costs and hourly crew costs based upon the computed flight duration.<br>");
+		contents.push("Fuel costs are added to the ^previous total.<br>");
+		contents.push("In order to compute fuel costs, we start from the aircraft mass loss,<br>");
+		contents.push("The lost fuel mass is converted into liters and a coefficient is applied to convert liters to costs.<br>");
+		
+		this.pushSection("Costs" , contents , "4");
 
-	this.init = function() {
+		contents = [];
+		contents.push("There is a unique airport configuration for all airports.<br>");
+		contents.push('Data is obtained from <a href="https://www.openflights.org" target="_blank">openflights.org</a> <br>');
+		
+		contents.push("Only airports defined as departure or arrival airports - for all airlines - are extracted from this dataset and loaded into the database.<br>");
+		contents.push("There is one unique database of airports locations and of runways for these airports.<br>");
+		contents.push("Only runways related to these above airports are loaded into the database.<br>");
+
+		this.pushSection("Airports & Runways Configuration" , contents , "5");
+		
+		contents = [];
+		contents.push("There is one unique aircraft performance database.<br>");
+		contents.push("The key is based upon the ICAO code of the aircraft.<br>");
+		contents.push("Aircraft configuration defines the minimum and the maximum takeoff weight.<br>");
+		contents.push("It defines the operational cruise level and the operation mach at this level.<br>");
+		contents.push("For each flight configuration, speeds ae defined to transition from one flight configuration to the next.<br>");
+		contents.push("The main flight configurations are ground-run, initial climb slope, climb, cruise, descent, glide-slope and ground-run until taxi speed is reached.<br>");
+		
+		this.pushSection("Aircraft Configuration" , contents , "6");
+		
+		contents = [];
+		contents.push("There are two implemented optimizations : Costs and Costs per Available Seat Miles CASM.<br>");
+		contents.push("Optimization consists to compute the minimum sum of a set of costs.<br>");
+		contents.push("In order to find this minimum, a squared table of aircraft instances versus flight legs is built.<br>");
+		contents.push("For each aircraft type, flight legs are run to compute costs for each pair of aircraft type & flight leg.<br>");
+		contents.push("For CASM, on top of the costs based upon flight leg duration, the flown distance is made available.<br>");
+
+		contents.push("Future improvement: flight legs departing and arriving in the symetrical airports must be related as they will be flown by the same aircraft.<br>");
+		
+		this.pushSection("Optimizations" , contents , "7");
+	}
+	 
+ }
+
+
+class Help extends baseHelpConfiguration {
+
+
+	init() {
 
 		var htmlContent = "This help is displayed each time the user clicks on the question mark ";
 		htmlContent += '<img src="/static/images/question.png" style="width:16px;height:16px;border:0">';
@@ -131,14 +211,16 @@ function Help () {
 	};
 }
 
-function show(help) {
+function show(help, title) {
 	
 	var divHelp = document.getElementById('helpDiv');
 	if (divHelp == undefined) {
-		console.log (' cannot display help - div not found!!! ');
+		console.error (' cannot display help - div not found!!! ');
 		return;
 	}
-	var title = 'help';
+	// remove child elements
+	$("#helpDiv").empty();
+	
 	$("#helpDiv").dialog (
 			{
 				dialogClass : 'helpDiv',
@@ -158,12 +240,19 @@ function show(help) {
 			}
 	);
 }
-	
 
 function showHelp() {
 	//console.log ( ' show help !!! ');
 	var help = new Help();
 	help.init();
-	show(help);
-	
+	show(help, "Help");
 };
+
+function showConfiguration() {
+	let configuration = new Configuration();
+	configuration.init();
+	show(configuration, "Configuration");
+}
+
+
+

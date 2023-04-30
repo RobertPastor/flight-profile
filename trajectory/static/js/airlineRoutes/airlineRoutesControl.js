@@ -15,7 +15,7 @@ class AirlineRoutesControl extends og.Control {
 		
 		let draggableMainDiv = document.createElement('div');
 		draggableMainDiv.id = mainDiv.id  + "Header";
-		draggableMainDiv.innerHTML = "Click here to move";
+		draggableMainDiv.innerHTML = "Click here to move Airline Routes Configuration";
 		draggableMainDiv.classList.add("draggableDivHeader");
 		
 		let span = document.createElement('span');

@@ -79,7 +79,7 @@ to the project static js folder : /flight-profile/trajectory/static/js/og
 #=========== avoid compressing ======================
 to avoid compressing minifying 
 
-in file rollup.config.js suppress terser in the 1st plugin befiore the json() plugin
+in file rollup.config.js suppress terser in the 1st plugin before the json() plugin
 
 export default [
     {

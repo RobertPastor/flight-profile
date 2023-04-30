@@ -149,7 +149,7 @@ def getAirlineCostsOptimization(request, airlineName):
             for v in prob.variables():
                 result = {}
                 result["airline"] = airlineName
-                result["status"] = str(LpStatus[prob.status])
+                result["status"]  = str(LpStatus[prob.status])
                 
                 acICAOcode = str(v.name).split("_")[0]
                 result["aircraft"] = acICAOcode
@@ -162,17 +162,20 @@ def getAirlineCostsOptimization(request, airlineName):
                 
                 airlineRoute = AirlineRoute.objects.filter(airline=airline , DepartureAirportICAOCode=Adep  , ArrivalAirportICAOCode=Ades).first()
                 if ( airlineRoute ):
-                    result["Adep"] = airlineRoute.DepartureAirport
-                    result["Ades"] = airlineRoute.ArrivalAirport
+                    
+                    result["Adep"]       = airlineRoute.DepartureAirport
+                    result["Ades"]       = airlineRoute.ArrivalAirport
                     
                     airlineAircraft = AirlineAircraft.objects.filter(airline=airline, aircraftICAOcode=acICAOcode).first()
                     if airlineAircraft:
                         airlineCosts = AirlineCosts.objects.filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
                         if airlineCosts:
                             
+                            result["AdepRunway"] = airlineCosts.adepRunway
+                            result["AdesRunway"] = airlineCosts.adesRunway
+                            
                             totalCostsUSdollars = compute_total_costs(airlineCosts, airlineAircraft )
                             result["costs"] = round ( totalCostsUSdollars , 2 )
-
                 
                 if ( v.varValue > 0.0 ):
                     logger.info ( "var name = {0} - var value = {1}".format( v.name, v.varValue ) )

@@ -146,7 +146,7 @@ class GroundRunLeg(Graph):
             ''' name of the next point '''
             Name = ''
             if index == 0:
-                Name = 'groundRun-{0:.1f}-meters'.format( deltaDistanceMeters)
+                Name = 'groundRun-{0}'.format( self.runway.getName() )
             #bearingDegrees = math.fmod ( runwayTrueHeadingDegrees + 180.0 , 360.0 )
             bearingDegrees = runwayTrueHeadingDegrees
             newIntermediateWayPoint = intermediateWayPoint.getWayPointAtDistanceBearing(Name = Name, 
@@ -243,7 +243,7 @@ class GroundRunLeg(Graph):
             
             Name = ''
             if index == 1:
-                Name = 'groundRun-{0:.1f}-meters'.format( totalLegDistanceMeters)
+                Name = 'groundRun-{0}'.format( self.runway.getName() )
             #bearingDegrees = math.fmod ( runwayTrueHeadingDegrees + 180.0 , 360.0 )
             bearingDegrees = runwayTrueHeadingDegrees
             newIntermediateWayPoint = intermediateWayPoint.getWayPointAtDistanceBearing(Name = Name, 

@@ -28,10 +28,10 @@ def get_default_airline():
 class AirlineRoute(models.Model):
     airline = models.ForeignKey(Airline, on_delete=models.CASCADE , default=None )
 
-    DepartureAirport = models.CharField(max_length = 500)
+    DepartureAirport         = models.CharField(max_length = 500)
     DepartureAirportICAOCode = models.CharField(max_length = 50)
-    ArrivalAirport = models.CharField(max_length = 500)
-    ArrivalAirportICAOCode = models.CharField(max_length = 50)
+    ArrivalAirport           = models.CharField(max_length = 500)
+    ArrivalAirportICAOCode   = models.CharField(max_length = 50)
     
     class Meta:
         unique_together = (('DepartureAirportICAOCode', 'ArrivalAirportICAOCode'),)
@@ -302,13 +302,17 @@ class AirlineAircraft(models.Model):
         return self.takeOffMTOWLengthMeters
     
 
+''' 29th April 2023 - add target cruise level - departure runway and arrival runway '''
 class AirlineCosts(models.Model):
-    airline               = models.ForeignKey(Airline, on_delete=models.CASCADE , default=None )
-    airlineAircraft       = models.ForeignKey(AirlineAircraft, on_delete=models.CASCADE , default=None )
-    airlineRoute          = models.ForeignKey(AirlineRoute, on_delete=models.CASCADE , default=None )
+    airline               = models.ForeignKey( Airline, on_delete=models.CASCADE , default=None )
+    airlineAircraft       = models.ForeignKey( AirlineAircraft, on_delete=models.CASCADE , default=None )
+    airlineRoute          = models.ForeignKey( AirlineRoute, on_delete=models.CASCADE , default=None )
     isAborted             = models.BooleanField()
     flightDurationSeconds = models.FloatField()
-    initialTakeOffMassKg  = models.FloatField() 
+    initialTakeOffMassKg  = models.FloatField()
+    targetCruiseLevelFeet = models.FloatField(  default = 0.0 )
+    adepRunway            = models.CharField( max_length = 50 , default=None )
+    adesRunway            = models.CharField( max_length = 50 , default=None )
     finalMassKg           = models.FloatField()
-    finalLengthMeters     = models.FloatField(default=0)
+    finalLengthMeters     = models.FloatField( default = 0.0)
     

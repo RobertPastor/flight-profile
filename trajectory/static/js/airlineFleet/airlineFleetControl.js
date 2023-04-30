@@ -16,7 +16,7 @@
 				
 				let draggableMainDiv = document.createElement('div');
 				draggableMainDiv.id = mainDiv.id  + "Header";
-				draggableMainDiv.innerHTML = "Click here to move";
+				draggableMainDiv.innerHTML = "Click here to move Airline Fleet Configuration";
 				draggableMainDiv.classList.add("draggableDivHeader");
 				
 				let span = document.createElement('span');
@@ -34,7 +34,7 @@
 				let thead = document.createElement('thead');
 				let row_1 = document.createElement('tr');
 				
-				let th_list = [ 'Airline' , 'Aircraft ICAO Code' , 'Aircraft Full Name', 'Number of Aircrafts', 'Max Number of Passengers', 'Flying Costs per Hour (US $)', 'Crew Costs per Hour (US $)']
+				let th_list = [ 'Airline' , 'Aircraft ICAO Code' , 'Aircraft Full Name', 'Number of Aircrafts', 'Number of Seats', 'Flying Costs per Hour (US$)', 'Crew Costs per Hour (US$)']
 				let th = undefined;
 				th_list.forEach ( function ( element ) {
 					th = document.createElement('th');
