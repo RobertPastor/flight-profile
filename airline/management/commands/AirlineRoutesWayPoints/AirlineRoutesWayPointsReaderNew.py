@@ -6,7 +6,7 @@ Created on 16 déc. 2022
 
 from airline.management.commands.AirlineRoutes.AirlineRoutesAirportsReaderNew import AirlineRoutesDataBaseXlsx
 from airline.management.commands.AirlineRoutesWayPoints.AirlineOneRouteReaderFile import AirlineOneRouteReaderXlsx
-from airline.management.commands.AirlineRoutesWayPoints.WayPointsDatabaseFile import WayPointsDatabase
+#from airline.management.commands.AirlineRoutesWayPoints.WayPointsDatabaseFile import WayPointsDatabase
 
 from airline.models import AirlineRoute, AirlineRouteWayPoints
 
@@ -35,15 +35,15 @@ class AirlineRoutesWayPointsDatabaseXlsx(object):
                 for route in airlineRoutes.getICAORoutes():
                     print ( route )
                     oneAirlineRoute = AirlineOneRouteReaderXlsx()
-                    oneAirlineRoute.read(route["Adep"] , route["Ades"] )
+                    oneAirlineRoute.read( route["Adep"] , route["Ades"] )
     
         return ret
     
     ''' loads the WayPoints xlsx database '''
     ''' loads the PostGres / MySQL airline routes WayPoints table '''
-    def insertWayPointsDatabase(self, wayPointsDatabase):
+    def insertWayPointsDatabase(self):
         pass
-        assert (isinstance(wayPointsDatabase, WayPointsDatabase))
+        #assert (isinstance(wayPointsDatabase, WayPointsDatabase))
         
         airlineRoutes = AirlineRoutesDataBaseXlsx()
         if (airlineRoutes.exists()):
@@ -62,7 +62,7 @@ class AirlineRoutesWayPointsDatabaseXlsx(object):
                         
                         index = 1
                         for index, row in df_route.iterrows():
-                            wayPointsDatabase.insertWayPoint(wayPointName = row["wayPoint"], Latitude = row["latitude"], Longitude = row["longitude"])
+                            #wayPointsDatabase.insertWayPoint(wayPointName = row["wayPoint"], Latitude = row["latitude"], Longitude = row["longitude"])
                             
                             airlineRouteWayPoints = AirlineRouteWayPoints(
                                 Route = airlineRoute,

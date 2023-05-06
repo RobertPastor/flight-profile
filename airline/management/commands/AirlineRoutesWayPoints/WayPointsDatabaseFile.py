@@ -7,6 +7,7 @@ Created on 13 sept. 2022
 import os
 import pandas as pd
 
+
 class WayPointsDatabase(object):
     WayPointsDict = {}
     ColumnNames = []
@@ -27,6 +28,24 @@ class WayPointsDatabase(object):
         self.ColumnNames = ["WayPoint", "Country", "Type", "Latitude", "Longitude" , "Name"]
         self.sheetName = "WayPoints"
 
+
+    def appendToDataFrame(self, df_source, wayPointName, Latitude, Longitude):
+        ''' latitude and longitude are string here '''
+        assert isinstance(wayPointName, (str)) and len(wayPointName)>0
+        assert isinstance(Latitude, (str)) and len(Latitude)>0
+        assert isinstance(Longitude, (str)) and len(Longitude)>0
+        
+        wayPoint = {}
+        wayPoint[self.ColumnNames[0]] = wayPointName
+        wayPoint[self.ColumnNames[1]] = "Unknown"
+        wayPoint[self.ColumnNames[2]] = "WayPoint"
+        wayPoint[self.ColumnNames[3]] = Latitude
+        wayPoint[self.ColumnNames[4]] = Longitude
+        wayPoint[self.ColumnNames[5]] = "Unknown Name"
+        df = pd.DataFrame(wayPoint, index=[0])
+        
+        return df_source.append(df)
+        
 
     def insertWayPoint(self, wayPointName, Latitude, Longitude):
         
@@ -54,6 +73,17 @@ class WayPointsDatabase(object):
 
     def exists(self):
         return os.path.exists(self.FilePath) and os.path.isfile(self.FilePath)
+    
+    
+    def getDataFrame(self):
+        df_source = None
+        if os.path.exists(self.FilePath):
+            df_source = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name=self.sheetName , engine="openpyxl"))
+        return df_source
+    
+    
+    def writeDataFrame(self, df_source):
+        df_source.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames, engine="openpyxl")
     
     
     def create(self):

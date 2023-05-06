@@ -2,7 +2,6 @@
 from django.core.management.base import BaseCommand
 from airline.management.commands.AirlineRoutesWayPoints.AirlineRoutesWayPointsReaderNew import AirlineRoutesWayPointsDatabaseXlsx
 from airline.models import AirlineRouteWayPoints
-from airline.management.commands.AirlineRoutesWayPoints.WayPointsDatabaseFile import WayPointsDatabase
 
 class Command(BaseCommand):
     help = 'Reads the WayPoints of the Routes '
@@ -11,20 +10,14 @@ class Command(BaseCommand):
         
         AirlineRouteWayPoints.objects.all().delete()
         
-        wayPointsDatabase = WayPointsDatabase()
-        if not wayPointsDatabase.exists():
-            print ("WayPoints EXCEL database is not existing")
-            wayPointsDatabase.create()
-            
-        
         airlineRoutesWayPointsDatabaseXlsx = AirlineRoutesWayPointsDatabaseXlsx()
         if (airlineRoutesWayPointsDatabaseXlsx.exists()):
             pass
             ret = airlineRoutesWayPointsDatabaseXlsx.read()
             
             if ret:
-                airlineRoutesWayPointsDatabaseXlsx.insertWayPointsDatabase(wayPointsDatabase)
-                wayPointsDatabase.dropDuplicates()
+                airlineRoutesWayPointsDatabaseXlsx.insertWayPointsDatabase()
+               
             
         #airlineRoutesWayPointsDatabase = AirlineRoutesWayPointsDatabase()
         #if airlineRoutesWayPointsDatabase.exists():

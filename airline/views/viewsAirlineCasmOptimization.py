@@ -118,7 +118,6 @@ def getAirlineCasmOptimization(request, airlineName):
                 prob += lpSum ( [ x_vars[i,j] for i in range(num_aircraft_instances) ] ) == 1
                 #check_constraints(prob, c_list)
 
-                #solver.Add(solver.Sum([x[i, j] for i in range(num_aircrafts)]) <= 1)
                 
             ''' minimize the costs '''
             #solver.Minimize(solver.Sum(objective_terms))
@@ -186,7 +185,6 @@ def getAirlineCasmOptimization(request, airlineName):
             
         else:
             return JsonResponse({'errors': "unknown airline = {0}".format(airlineName)})
-        
         
     else:
         return JsonResponse({'errors': "expecting GET method"})

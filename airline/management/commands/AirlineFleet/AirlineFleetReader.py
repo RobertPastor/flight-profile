@@ -12,7 +12,8 @@ from airline.models import AirlineAircraft, Airline
 
 ''' in service means number of available aircrafts '''
 HeaderNames = ['Airline', 'Aircraft' , 'In service', 'Orders' , 'Passengers Delta One', 'Passengers First Class', 'Passengers Premium Select' ,
-               'Passengers Delta Confort Plus' , 'Passengers Main Cabin' , 'Passengers Total' , 'Costs per flying hours dollars', 'Crew Costs per flying hours dollars', 'Refs', 'Notes']
+               'Passengers Delta Confort Plus' , 'Passengers Main Cabin' , 'Passengers Total' , 'Costs per flying hours dollars', 'Crew Costs per flying hours dollars', 
+               'TurnAround Time Minutes' , 'Refs', 'Notes']
 
 
 class AirlineFleetDataBase(object):
@@ -66,8 +67,10 @@ class AirlineFleetDataBase(object):
                 aircraftFullName = ""
                 nbAvailableAircrafts = 0
                 nbMaxPassengers = 0
-                costsFlyingDollars = 0
-                crewCostsFlyingDollars = 0
+                costsFlyingDollars = 0.0
+                crewCostsFlyingDollars = 0.0
+                turnAroundTimesMinutes = 0.0
+                
                 for cell in rowValues:
                     if index == 0:
                         if len(str(cell))>0:
@@ -102,6 +105,13 @@ class AirlineFleetDataBase(object):
                                 #logging.info ( cell )
                                 assert ( type (str(cell).strip() == float ))
                                 crewCostsFlyingDollars = float( str(cell).strip() )
+                                
+                        ''' 4th May 2023 - add turn around times in minutes '''
+                        if (HeaderNames[index] == "TurnAround Time Minutes"):
+                            if len (str(cell).strip()) > 0 :
+                                #logging.info ( cell )
+                                assert ( type (str(cell).strip() == float ))
+                                turnAroundTimesMinutes = float( str(cell).strip() )
 
                         index = index + 1
                         
@@ -113,6 +123,7 @@ class AirlineFleetDataBase(object):
                     logging.info ("aircraft ICAO code found = {0} for aircraft full name = {1}".format(aircraftICAOcode, aircraftFullName))
                     airline = Airline.objects.filter(Name=airlineName).first()
                     if (airline):
+                        ''' 4th May 2023 - add turn around time expressed in minutes '''
                         airlineAircraft = AirlineAircraft( 
                             airline = airline,
                             aircraftICAOcode = aircraftICAOcode, 
@@ -120,7 +131,8 @@ class AirlineFleetDataBase(object):
                             numberOfAircraftsInService = nbAvailableAircrafts, 
                             maximumOfPassengers = nbMaxPassengers, 
                             costsFlyingPerHoursDollars = costsFlyingDollars,
-                            crewCostsPerFlyingHoursDollars = crewCostsFlyingDollars)
+                            crewCostsPerFlyingHoursDollars = crewCostsFlyingDollars,
+                            turnAroundTimesMinutes = turnAroundTimesMinutes)
 
                         airlineAircraft.save()
                         print ( airline )

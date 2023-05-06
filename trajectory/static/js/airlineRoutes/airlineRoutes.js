@@ -85,6 +85,7 @@ class AirlineRoutes {
 		}
 	}
 	
+	// write in the table the best departure runway and the best arrival runway
 	loadBestRunway( Adep, Ades, isAdep, AdepAdesRunWay ) {
 		
 		if (isAdep) {
@@ -96,6 +97,7 @@ class AirlineRoutes {
 		}
 	}
 
+	// query the server to retrieve the waypoints of the route
 	loadOneAirlineRoute(globus, id) {
 	
 		let arr = id.split("-")
@@ -118,6 +120,7 @@ class AirlineRoutes {
 								
 						// 3rd April 2023 - add best runways
 						let AdepRunWay = dataJson["bestAdepRunway"];
+						// true means Adep and false means Ades
 						SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , true, AdepRunWay);
 						let AdesRunWay = dataJson["bestAdesRunway"];
 						SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , false, AdesRunWay);

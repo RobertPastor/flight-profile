@@ -99,6 +99,9 @@ class AirlineRunWay(models.Model):
     def __str__(self):
         return "{0}/{1}".format(self.Airport.AirportICAOcode, self.Name)
     
+    def getLatitudeDegrees(self):
+        return self.LatitudeDegrees
     
-
+    def getLongitudeDegrees(self):
+        return self.LongitudeDegrees
     

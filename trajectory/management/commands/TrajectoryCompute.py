@@ -9,7 +9,7 @@ from trajectory.Guidance.FlightPathFile import FlightPath
 
 
 class Command(BaseCommand):
-    help = 'Reads the Synonym file and load the Aircrafts table'
+    help = 'Coùputes one predefined trajectory for test purpose only'
 
     def handle(self, *args, **options):
         

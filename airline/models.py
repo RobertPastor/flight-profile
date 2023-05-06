@@ -210,7 +210,7 @@ class AirlineRouteWayPoints(models.Model):
 class AirlineAircraftInstances(object):
     pass
 
-    ''' compute a list of aircraft instances to reach the same number as flight legs '''
+    ''' compute a list of aircraft instances to reach the same number of aircraft instances as the number of flight legs '''
     def computeAirlineAircraftInstances(self, airlineName, nbFlightLegs):
         pass
         aircraftInstanceList = []
@@ -221,7 +221,7 @@ class AirlineAircraftInstances(object):
             if ( nbAircrafts >= nbFlightLegs ):
                 index = 0
                 for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
-                    print (str(index).zfill(3))
+                    #print (str(index).zfill(3))
                     aircraftInstanceList.append(airlineAircraft.aircraftICAOcode + "-" + str(index).zfill(3))
                     index = index + 1
                 return aircraftInstanceList
@@ -255,7 +255,11 @@ class AirlineAircraft(models.Model):
     costsFlyingPerHoursDollars = models.FloatField(default = 0)
     crewCostsPerFlyingHoursDollars = models.FloatField(default = 0)
     
+    ''' 3rd May 2023 - add turn around times '''
+    turnAroundTimesMinutes = models.FloatField(default = 0)
+    
     landingLengthMeters = models.FloatField(default = 0)
+    ''' Max TakeOff Weight '''
     takeOffMTOWLengthMeters = models.FloatField(default = 0)
     
     airline = models.ForeignKey(Airline, on_delete=models.CASCADE  )
@@ -300,6 +304,9 @@ class AirlineAircraft(models.Model):
     
     def getTakeOffMTOWLengthMeters(self):
         return self.takeOffMTOWLengthMeters
+    
+    def getTurnAroundTimesMinutes(self):
+        return self.turnAroundTimesMinutes
     
 
 ''' 29th April 2023 - add target cruise level - departure runway and arrival runway '''

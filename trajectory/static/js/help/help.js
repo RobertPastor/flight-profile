@@ -44,7 +44,12 @@
 		let contents = [];
 		
 		contents.push("Airline fleet configuration defines the aircraft types, the typical number of seats, operational hourly costs rates, and the crew costs rates.<br>");
-		contents.push("These values are specific to each aircraft and each airline.");
+		contents.push("These values are specific to each aircraft and each airline.<br>");
+		contents.push("Turn-around times are added to compute the number of rotations an aircraft can perform on a flight leg.<br>");
+		contents.push("Turn-around times are defined for each aircraft type of an airline.<br>");
+		contents.push("Turn-around times are corrected by a coefficient depending upon the size of the airport.<br>");
+		contents.push("For an airport, the more runways it has the higher is the average turn-around time (on top of the part depending upon the aircraft).<br>");
+		
 		
 		this.pushSection("Fleet Configuration" , contents , "1");
 		

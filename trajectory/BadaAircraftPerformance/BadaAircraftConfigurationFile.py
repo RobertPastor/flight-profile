@@ -982,17 +982,17 @@ class AircraftConfiguration(FlightEnvelope):
                     #print ( "Rate Of Climb smoothing started - altitude MSL meters = {0} - initial ROCD = {1} ".format(altitudeMeanSeaLevelMeters, ROCD) )
                 else:
                     self.ROCDbeforeSmoothingtarted = self.ROCDbeforeSmoothingtarted - ROCDsmoothing
-                    ROCD = self.ROCDbeforeSmoothingtarted
-                    if ( ROCD < ROCDsmoothing ):
-                        ROCD =  ROCDsmoothing
+                    #ROCD = self.ROCDbeforeSmoothingtarted
+                    #if ( ROCD < ROCDsmoothing ):
+                    #    ROCD =  ROCDsmoothing
                     #print ( "Rate Of Climb smoothing - altitude MSL meters = {0} - ROCD smoothed = {1}".format(altitudeMeanSeaLevelMeters, ROCD) )
 
             else:
                 if self.ROCDsmoothingStarted:
                     self.ROCDbeforeSmoothingtarted = self.ROCDbeforeSmoothingtarted - ROCDsmoothing
-                    ROCD = self.ROCDbeforeSmoothingtarted
-                    if ( ROCD < ROCDsmoothing ):
-                        ROCD =  ROCDsmoothing
+                    #ROCD = self.ROCDbeforeSmoothingtarted
+                    #if ( ROCD < ROCDsmoothing ):
+                    #    ROCD =  ROCDsmoothing
                     #print ( "Aircraft is near = {0} - to Cruise Level = {1} - ROCD before = {2}".format( altitudeMeanSeaLevelMeters , self.getTargetCruiseFlightLevelMeters() , ROCD))
                     #ROCD = ROCD - ( ( ( LevelMetersThreshold - deltaMetersToCruiseLevel ) / LevelMetersThreshold ) * ROCD )
                     #print ( "Aircraft is near = {0} - to Cruise Level = {1} - ROCD after = {2}".format( altitudeMeanSeaLevelMeters , self.getTargetCruiseFlightLevelMeters() , ROCD))
