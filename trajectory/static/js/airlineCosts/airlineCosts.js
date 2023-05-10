@@ -100,7 +100,7 @@ class AirlineCosts {
 
 	initAirlineCosts() {
 	
-		console.log( "init Costs Optimization");
+		//console.log( "init Costs Optimization");
 	
 		$('#airlineCostsMainDivId').hide();
 		

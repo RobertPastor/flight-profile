@@ -22,13 +22,104 @@ const SingletonAirlineAirports = (function () {
     };
 })();
 
+
+
+function showRoute( elem ) {
+	
+	//console.log( elem.id );
+	let layerName = elem.id ;
+	let layer = SingletonAirlineAirports.getInstance().getGlobus().planet.getLayerByName( layerName );
+	if (layer) {
+		// layer is existing -> hide -> show button as hidden
+		//console.log( " layer " + layerName + " is existing");
+		//SingletonAirlineAirports.getInstance().removeLayer( SingletonAirlineAirports.getInstance().getGlobus() , elem.id  );
+		if ( layer.getVisibility() ) {
+			// layer is visible
+			layer.setVisibility(false);
+		} else {
+			// layer is not visible
+			layer.setVisibility(true);
+		}
+	} else {
+		// load a route
+		//console.log( " layer " + layerName + " is not existing");
+		SingletonAirlineAirports.getInstance().queryAirlineRouteWayPoints ( SingletonAirlineAirports.getInstance().getGlobus() , elem.id );
+	}
+	return false;
+}
+
+
 class AirlineAirports {
 	
 	constructor() {
-		//console.log("Airline Airports constructor") 
+		//console.log("Airline Airports constructor");
+		this.LayerNamePrefix = "Route-";
 	}
 	
-	writeRoutesFromStartingAirport( globus , departureAirportICAOcode , airlineRoutesArray , position ) {
+	getGlobus() {
+		return this.globus;
+	}
+	
+	removeLayer( globus, routeId ) {
+		
+		let arr = routeId.split("-")
+		let Adep = arr[1]
+		//console.log(Adep)
+		let Ades = arr[2]
+		//console.log(Ades)
+			
+		let layerName =  this.LayerNamePrefix + Adep + "-" + Ades;
+		// function defined in main.js
+		removeLayer( globus , layerName )
+	}
+	
+	loadOneRouteWayPoint( layerRouteWayPoints, waypoint ) {
+	
+		let longitude = parseFloat(waypoint.Longitude);
+		let latitude = parseFloat(waypoint.Latitude);
+		let name = waypoint.name;
+		
+		layerRouteWayPoints.add(new og.Entity({
+				lonlat: [longitude, latitude],
+				label: {
+						text: name,
+						outline: 0.77,
+						outlineColor: "rgba(255,255,255,.4)",
+						size: 12,
+						color: "black",
+						offset: [0, -2]
+						},
+				billboard: {
+						src: "/static/images/marker.png",
+						width: 16,
+						height: 16,
+						offset: [0, -2]
+						}
+		}));
+	}
+	
+	showRouteWayPoints( globus, airlineRoutesWaypointsArray , layerName) {
+	
+		//console.log("start loading route WayPoints");
+		let layerRouteWayPoints = new og.layer.Vector( layerName , {
+				billboard: { 
+					src: '/static/trajectory/images/marker.png', 
+					color: '#6689db' ,
+					width : 4,
+					height : 4
+					},
+				clampToGround: true,
+				});
+		layerRouteWayPoints.addTo(globus.planet);
+
+		// add the waypoints
+		for (let wayPointId = 0; wayPointId < airlineRoutesWaypointsArray.length; wayPointId++ ) {
+			// insert one waypoint
+			SingletonAirlineAirports.getInstance().loadOneRouteWayPoint( layerRouteWayPoints, airlineRoutesWaypointsArray[wayPointId] );
+		}
+	}
+	
+	writeRoutesTableFromStartingAirport( globus , departureAirportICAOcode , airlineRoutesArray , position ) {
 		
 		// modify the div position
 		// Update the position of `#div` dynamically
@@ -45,31 +136,72 @@ class AirlineAirports {
 			
 			let oneAirlineRoute = airlineRoutesArray[airlineRouteId];
 			if ( oneAirlineRoute["DepartureAirportICAOCode"] == departureAirportICAOcode ) {
+				
+				let id = oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"];
 			
 				$("#airlineAirportsRoutesMainDivId").find('tbody')
-				.append($('<tr>')
-					.append($('<td>')
-						.append( oneAirlineRoute["Airline"] )
-					)
-					.append($('<td>')
-						.append( oneAirlineRoute["DepartureAirport"] )
-					)
-					.append($('<td>')
-						.append( oneAirlineRoute["DepartureAirportICAOCode"] )
-					)
-					.append($('<td>')
-						.append( oneAirlineRoute["ArrivalAirport"] )
-					)
-					.append($('<td>')
-						.append( oneAirlineRoute["ArrivalAirportICAOCode"] )
-					)
-
-				);
+					.append($('<tr>')
+						.append($('<td>')
+							.append( oneAirlineRoute["Airline"] )
+						)
+						.append($('<td>')
+							.append( '<span> <a id="Route-' + id + '" href="#" onclick="showRoute(this);" >show / hide route</a> </span>'  )
+						)
+						.append($('<td>')
+							.append( oneAirlineRoute["DepartureAirport"] )
+						)
+						.append($('<td>')
+							.append( oneAirlineRoute["DepartureAirportICAOCode"] )
+						)
+						.append($('<td>')
+							.append( oneAirlineRoute["ArrivalAirport"] )
+						)
+						.append($('<td>')
+							.append( oneAirlineRoute["ArrivalAirportICAOCode"] )
+						)
+					);
 			}
 		}
 	}
 	
-	loadRoutesStartingFromAirport ( globus, departureAirportICAOcode , position ) {
+	// query the server to retrieve the waypoints of the route
+	queryAirlineRouteWayPoints( globus, id) {
+		
+		let LayerNamePrefix = this.LayerNamePrefix
+	
+		let arr = id.split("-")
+		let Adep = arr[1]
+		//console.log(Adep)
+		let Ades = arr[2]
+		//console.log(Ades)
+		// use ajax to get the data 
+		$.ajax( {
+				method: 'get',
+				url :  "airline/wayPointsRoute/" + Adep +"/" + Ades,
+				async : true,
+				success: function(data, status) {
+											
+						//alert("Data: " + data + "\nStatus: " + status);
+						let dataJson = eval(data);		
+						let airlineRoutesWaypointsArray = dataJson["airlineRouteWayPoints"];
+						let layerName =  LayerNamePrefix + Adep + "-" + Ades;
+						//console.log( layerName );
+						SingletonAirlineAirports.getInstance().showRouteWayPoints(globus, airlineRoutesWaypointsArray , layerName );
+								
+
+				},
+				error: function(data, status) {
+					console.log("Error - show Airline Routes : " + status + " Please contact your admin");
+					showMessage("Error - Airline Routes", data)
+				},
+				complete : function() {
+					stopBusyAnimation();
+					document.getElementById("btnAirlineRoutes").disabled = false
+				},
+		});
+	}
+	
+	queryRoutesStartingFromAirport ( globus, departureAirportICAOcode , position ) {
 		
 		// get the name of the airline
 		let airlineName = $("#airlineSelectId option:selected").val();
@@ -85,7 +217,7 @@ class AirlineAirports {
 					//alert("Data: " + data + "\nStatus: " + status);
 					let dataJson = eval(data);		
 					let airlineRoutesArray = dataJson["airlineRoutes"]
-					SingletonAirlineAirports.getInstance().writeRoutesFromStartingAirport(  globus, departureAirportICAOcode, airlineRoutesArray , position );
+					SingletonAirlineAirports.getInstance().writeRoutesTableFromStartingAirport(  globus, departureAirportICAOcode, airlineRoutesArray , position );
 					
 				},
 				error: function(data, status) {
@@ -141,8 +273,8 @@ class AirlineAirports {
 			}));
 			
 			layerAirport.events.on("rclick", function (e) {
-				console.log("right click - layer name = " + this.name);
-				console.log("right click - airport name = " + e.pickingObject.label._text);
+				//console.log("right click - layer name = " + this.name);
+				//console.log("right click - airport name = " + e.pickingObject.label._text);
 				
 				let position = {}
 				position["x"] = e.clientX;
@@ -152,7 +284,7 @@ class AirlineAirports {
 				$("#airlineAirportsRoutesMainDivId").show();
 				
 				let airportICAOcode = this.name.split("-")[1];
-				SingletonAirlineAirports.getInstance().loadRoutesStartingFromAirport(globus, airportICAOcode, position);
+				SingletonAirlineAirports.getInstance().queryRoutesStartingFromAirport(globus, airportICAOcode, position);
 
 			});
 			
@@ -177,8 +309,9 @@ class AirlineAirports {
 		}
 	}
 
-	loadAirports( globus, dataJson , showHide ) {
+	loadAirports( dataJson , showHide ) {
 	
+		let globus = this.globus;
 		// get all airports
 		let airports = eval(dataJson['airports']);
 
@@ -212,7 +345,8 @@ class AirlineAirports {
 					stopBusyAnimation();
 					//alert("Data: " + data + "\nStatus: " + status);
 					let dataJson = eval(data);
-					SingletonAirlineAirports.getInstance().loadAirports( globus, dataJson , showHide );	
+					
+					SingletonAirlineAirports.getInstance().loadAirports( dataJson , showHide );	
 				},
 				error: function(data, status) {
 					stopBusyAnimation();
@@ -230,6 +364,9 @@ class AirlineAirports {
 
 	initAirports(globus) {
 	
+		// 9th May 2023 - class attributes
+		this.globus = globus;
+		
 		let show = true;
 			
 		if ( !document.getElementById("btnAirports") ) {

@@ -1,4 +1,4 @@
-let LayerNamePrefix = "Route-WayPoints-"
+
 
 document.addEventListener('DOMContentLoaded', (event) => { 
        
@@ -28,8 +28,9 @@ const SingletonAirlineRoutes = (function () {
 
 class AirlineRoutes {
 	
-	constructor() {
+	constructor( ) {
 		//console.log("Airline Routes constructor");
+		this.LayerNamePrefix = "WayPoints-"
 	}
 
 	loadOneRouteWayPoint( layerRouteWayPoints, waypoint ) {
@@ -70,13 +71,6 @@ class AirlineRoutes {
 				clampToGround: true,
 				});
 		layerRouteWayPoints.addTo(globus.planet);
-		
-		layerRouteWayPoints.events.on("add", function (e) {
-			//console.log("event is add")
-			if (e.pickingObject instanceof og.Layer) {
-				console.log("picking object is instance of layer")
-			}
-		});
 
 		// add the waypoints
 		for (let wayPointId = 0; wayPointId < airlineRoutesWaypointsArray.length; wayPointId++ ) {
@@ -100,6 +94,8 @@ class AirlineRoutes {
 	// query the server to retrieve the waypoints of the route
 	loadOneAirlineRoute(globus, id) {
 	
+		let LayerNamePrefix = this.LayerNamePrefix;
+		
 		let arr = id.split("-")
 		let Adep = arr[1]
 		//console.log(Adep)
@@ -140,33 +136,39 @@ class AirlineRoutes {
 	showHideWayPoints(globus, domElement) {
 	
 		let id = domElement.id ;
-		let value = document.getElementById(id).value ;
-		
-		if (value == "Show") {
+		//console.log( id );
+		let arr = id.split("-")
+		let Adep = arr[1]
+		//console.log(Adep)
+		let Ades = arr[2]
+		//console.log(Ades)
 			
+		let layerName =  this.LayerNamePrefix + Adep + "-" + Ades;
+		let layer = globus.planet.getLayerByName( layerName );
+		if (layer) {
+			// layer is existing -> hide -> show button as hidden
+			//console.log( " layer " + layerName + " is existing");
+			if ( layer.getVisibility() ) {
+				// layer is visible
+				document.getElementById(id).value = "Show"
+				layer.setVisibility(false);
+			} else {
+				// layer is not visible
+				document.getElementById(id).value = "Hide"
+				//document.getElementById(id).style.backgroundColor = "green";
+				layer.setVisibility(true);
+			}
+		} else {
+			//console.log( " layer " + layerName + " is NOT existing");
 			document.getElementById(id).value = "Hide"
+			//document.getElementById(id).style.backgroundColor = "green";
+			
 			//console.log(id)
 			SingletonAirlineRoutes.getInstance().loadOneAirlineRoute(globus, id);
-			domElement.style.backgroundColor = "green";
-			
-		} else {
-			
-			document.getElementById(id).value = "Show"
-			let arr = id.split("-")
-			let Adep = arr[1]
-			//console.log(Adep)
-			let Ades = arr[2]
-			//console.log(Ades)
-			
-			let layerName =  LayerNamePrefix + Adep + "-" + Ades;
-			// function defined in main.js
-			removeLayer( globus , layerName )
-			domElement.style.backgroundColor = "yellow";
-
-		}
+		} 
 	}
 
-	// add best runway
+	// April 2023 - add best runway
 	addOneAirlineRoute( globus, oneAirlineRoute ) {
 	
 		$("#airlineRoutesTableId").find('tbody')
@@ -208,7 +210,7 @@ class AirlineRoutes {
 		var elemButton = document.getElementById('buttonRouteId');
 		elemButton.id = "buttonRouteId-"+oneAirlineRoute["DepartureAirportICAOCode"]+"-"+oneAirlineRoute["ArrivalAirportICAOCode"];
 		
-		let layerName = LayerNamePrefix + oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"] 
+		let layerName = this.LayerNamePrefix + oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"] 
 		let layer = globus.planet.getLayerByName( layerName );
 		if (layer) {
 			// layer is existing -> hide -> show button as hidden
@@ -243,7 +245,7 @@ class AirlineRoutes {
 		let Ades = oneAirlineRoute["ArrivalAirportICAOCode"];
 		try {
 			
-			let layerName = LayerNamePrefix + Adep + "-" + Ades;
+			let layerName = this.LayerNamePrefix + Adep + "-" + Ades;
 			// remove Layer is defined in main.js
 			removeLayer( globus , layerName )
 			
@@ -284,7 +286,7 @@ class AirlineRoutes {
 			if ( ! $('#airlineRoutesDivId').is(":visible") ) {
 				
 				// global function defined in main.js
-				hideAllDiv(globus);
+				//hideAllDiv(globus);
 				
 				$("#airlineRoutesDivId").show();
 

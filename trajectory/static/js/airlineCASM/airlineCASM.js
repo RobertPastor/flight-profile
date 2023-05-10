@@ -21,7 +21,7 @@ const SingletonAirlineCASM = (function () {
 class AirlineCASM {
 
 	constructor() {
-		console.log("Airline CASM constructor");
+		//console.log("Airline CASM constructor");
 	}
 	
 	hideAirlineCasmDiv() {
@@ -89,7 +89,7 @@ class AirlineCASM {
 	
 	initAirlineCASM() {
 	
-		console.log( "init Airline CASM ");
+		//console.log( "init Airline CASM ");
 		
 		$('#airlineCasmMainDivId').hide();
 		

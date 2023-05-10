@@ -21,7 +21,7 @@ const SingletonAirlineCasmOptimization = (function () {
 class AirlineCasmOptimization {
 	
 	constructor() {
-		console.log("Airline CASM optimization constructor");
+		//console.log("Airline CASM optimization constructor");
 	}
 	
 	hideAirlineCasmOptimizationDiv() {
@@ -60,7 +60,7 @@ class AirlineCasmOptimization {
 	
 	showCasmResults( optimizationResultsArray ) {
 		
-		console.log( " show optimization results");
+		//console.log( " show optimization results");
 		$('#airlineCasmOptimizationTableId tbody').empty();
 		
 		for (let resultId = 0; resultId < optimizationResultsArray.length; resultId++ ) {
@@ -72,7 +72,7 @@ class AirlineCasmOptimization {
 	
 	initAirlineCasmOptimization() {
 		
-		console.log( "init CASM Optimization");
+		//console.log( "init CASM Optimization");
 		// listen to the button
 		document.getElementById("btnLaunchCasmOptimization").onclick = function () {
 			

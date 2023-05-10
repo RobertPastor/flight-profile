@@ -23,12 +23,12 @@ const SingletonAirlineCostsOptimization = (function () {
 class AirlineCostsOptimization {
 
 	constructor() {
-		console.log("Airline Costs Optimization constructor");
+		//console.log("Airline Costs Optimization constructor");
 	}
 	
 	hideAirlineCostsOptimizationDiv() {
 		
-		console.log("Hide Airline Costs Optimization Main Div");
+		//console.log("Hide Airline Costs Optimization Main Div");
 	
 		// html elements are defined in AirlineFlightLegCostsControls.js 
 		if ( $('#airlineCostsOptimizationMainDivId').is(":visible") ) {
@@ -66,7 +66,7 @@ class AirlineCostsOptimization {
 	
 	showCostsResults( optimizationResultsArray ) {
 		
-		console.log( " show optimization results");
+		//console.log( " show optimization results");
 		$('#airlineCostsOptimizationTableId tbody').empty();
 		
 		for (let resultId = 0; resultId < optimizationResultsArray.length; resultId++ ) {
@@ -78,7 +78,7 @@ class AirlineCostsOptimization {
 	
 	initAirlineCostsOptimization() {
 	
-		console.log( "init Costs Optimization");
+		//console.log( "init Costs Optimization");
 	
 		$('#airlineCostsOptimizationMainDivId').hide();
 		

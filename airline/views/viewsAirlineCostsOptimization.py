@@ -5,7 +5,7 @@ Created on 29 janv. 2023
 '''
 
 #from ortools.linear_solver import pywraplp
-from pulp import LpProblem , LpMinimize ,  LpVariable, LpInteger, lpSum, LpStatus ,  PULP_CBC_CMD, value
+from pulp import LpProblem , LpMinimize ,  LpVariable, lpSum, LpStatus ,  PULP_CBC_CMD, value
 from django.http import  JsonResponse
 
 import logging
@@ -42,7 +42,7 @@ def getAirlineCostsOptimization(request, airlineName):
             nbFligthtLegs = AirlineRoute.objects.filter(airline=airline).count()
             aircraftInstances = AirlineAircraftInstances()
             aircraftInstancesList = aircraftInstances.computeAirlineAircraftInstances(airlineName , nbFligthtLegs)
-            print ( aircraftInstancesList )
+            #print ( aircraftInstancesList )
             
             logger.info ( "length of flight legs = {0}".format( AirlineRoute.objects.filter(airline=airline).count() ) )
             
@@ -143,7 +143,7 @@ def getAirlineCostsOptimization(request, airlineName):
             #for name, c in list(prob.constraints.items()):
             #    print(name, ":", c, "\t", c.pi, "\t\t", c.slack)
             
-            prob.writeLP("pulp_problem.lp", writeSOS=1, mip=1 )
+            #prob.writeLP("pulp_problem.lp", writeSOS=1, mip=1 )
             
             results = []
             for v in prob.variables():

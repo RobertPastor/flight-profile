@@ -20,12 +20,12 @@ const SingletonAirlineSeatMiles = (function () {
 class AirlineSeatsMilesMaximization {
 
 	constructor() {
-		console.log("Airline Seat Miles Maximization constructor");
+		//console.log("Airline Seat Miles Maximization constructor");
 	}
 	
 	initAirlineSeatsMilesMaximization() {
 	
-		console.log( "init Airline CASM ");
+		//console.log( "init Airline CASM ");
 		
 		$('#airlineCasmMainDivId').hide();
 		

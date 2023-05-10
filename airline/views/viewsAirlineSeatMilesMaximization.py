@@ -17,18 +17,42 @@ from xlsxwriter import Workbook
 from django.shortcuts import HttpResponse
 from django.http import  JsonResponse
 
-from pulp import LpProblem  ,  LpVariable, LpInteger, lpSum, LpStatus ,  PULP_CBC_CMD, value, LpBinary, LpMaximize
+from pulp import LpProblem  ,  LpVariable, lpSum, LpStatus ,  PULP_CBC_CMD, value, LpBinary, LpMaximize
 
 from airline.models import Airline, AirlineAircraft, AirlineRoute, AirlineCosts, AirlineAircraftInstances
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
+from airline.views.utils import computeAirportNumberOfRunways
+
+headersResults = [ 'Airline' , 'Aircraft ICAO' , 'Aircraft' , 'Is Aborted', 'Departure', 'Airport Turn Around Time Seconds', 'Arrival', 'Airport Turn Around Time Seconds' ,
+                   'nb Seats' , 'Aircraft Turn Around Time Seconds' ,'Leg Duration Seconds' , 
+                  'Leg Distance (miles)' , 'Nb Rotations in 20 hours', 'Seat Miles Flown 20 hours (miles)']
+
+headersMaximization = [ 'Airline' , 'Aircraft' , 'Solver Status', 'Assigned', 'Departure', 'Arrival',  'nb Seats' , 'Aircraft Turn Around Times Seconds' ,'Leg Duration Seconds' , 
+                  'Leg Distance (miles)' , 'Nb Rotations in 20 hours', 'Seat Miles Flown 20 hours (miles)']
+
 maxDailyHours= 20.0
 
-headersResults = [ 'Airline' , 'Aircraft ICAO' , 'Aircraft' , 'Departure', 'Arrival', 'Is Aborted', 'nb Seats' , 'Turn Around Times Seconds' ,'Leg Duration Seconds' , 
-                  'Leg Distance Nautics' , 'Nb Rotations', 'Seat Miles Flown 20Hours']
+def computeAirportTurnAroundTimeSeconds( airportICAOcode ):
+    return ( computeAirportNumberOfRunways ( airportICAOcode ) * 60 )
 
-headersMaximization = [ 'Airline' , 'Aircraft' , 'Solver Status', 'Assigned', 'Departure', 'Arrival',  'nb Seats' , 'Turn Around Times Seconds' ,'Leg Duration Seconds' , 
-                  'Leg Distance Nautics' , 'Nb Rotations in 20 hours', 'Seat Miles Flown 20 hours']
+def computeNumberOfRotations(flightDurationSeconds , turnAroundTimesSeconds , airlineRoute):
+    
+    assert ( isinstance(  airlineRoute , AirlineRoute)) and  not ( airlineRoute is None)
+    
+    departureAirportICAOcode = airlineRoute.getDepartureAirportICAOcode()
+    arrivalAirportICAOcode   = airlineRoute.getArrivalAirportICAOcode()
+    ''' the aircraft is ready after 
+    1) one flight level duration to the destination airport
+    2) plus 1 turn around time at the arrival airport 
+    3) one flight leg duration to the departure air^port 
+    4) plus 1 turn around time at the departure airport '''
+    totalRotationDurationSeconds =  ( flightDurationSeconds + turnAroundTimesSeconds ) * 2 
+    ''' coeff dependent upon the number of runways of each airport '''
+    totalRotationDurationSeconds = totalRotationDurationSeconds + computeAirportTurnAroundTimeSeconds  ( departureAirportICAOcode )
+    totalRotationDurationSeconds = totalRotationDurationSeconds + computeAirportTurnAroundTimeSeconds ( arrivalAirportICAOcode ) 
+    
+    return int ( ( maxDailyHours * 3600 ) / totalRotationDurationSeconds )
 
 
 def computeSeatMilesResults(airline, airlineName):
@@ -63,7 +87,7 @@ def computeSeatMilesResults(airline, airlineName):
                         
                         milesFlownPerLeg = airlineCosts.finalLengthMeters * Meter2NauticalMiles
                         #print ("aircraft = {0} - flight leg = {1} - flight duration (Seconds) = {2} - distance flown (nautics) = {3}".format(airlineAircraft, airlineRoute.getFlightLegAsString() , airlineCosts.flightDurationSeconds, milesFlownPerLeg))
-                        nbRotationsDay = ( maxDailyHours * 3600 ) / ( ( airlineCosts.flightDurationSeconds * 2) + turnAroundTimesSeconds )
+                        nbRotationsDay = computeNumberOfRotations ( airlineCosts.flightDurationSeconds ,  turnAroundTimesSeconds , airlineRoute )
                         #print ( "nb rotations = {0} - nb rotations = {1}".format( nbRotationsDay , int(nbRotationsDay) ) )
                         
                         totalSeatMilesFlownPerDay = nbSeats * int(nbRotationsDay) * 2 * milesFlownPerLeg
@@ -116,7 +140,7 @@ def writeHeaders(worksheet, style, headers):
     
 def writeAirlineSeatMilesResults(workbook, airlineName):
     
-    worksheet = workbook.add_worksheet("AirlineSeatMilesResults")
+    worksheet = workbook.add_worksheet("Airline Seat Miles Results")
     styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
     writeHeaders(worksheet, styleLavender , headersResults)
     
@@ -143,7 +167,7 @@ def writeAirlineSeatMilesResults(workbook, airlineName):
                         
                         milesFlownPerLeg = airlineCosts.finalLengthMeters * Meter2NauticalMiles
                         #print ("aircraft = {0} - flight leg = {1} - flight duration (Seconds) = {2} - distance flown (nautics) = {3}".format(airlineAircraft, airlineRoute.getFlightLegAsString() , airlineCosts.flightDurationSeconds, milesFlownPerLeg))
-                        nbRotationsDay = ( maxDailyHours * 3600 ) / ( ( airlineCosts.flightDurationSeconds * 2) + turnAroundTimesSeconds )
+                        nbRotationsDay = computeNumberOfRotations ( airlineCosts.flightDurationSeconds , turnAroundTimesSeconds , airlineRoute)
                         #print ( "nb rotations = {0} - nb rotations = {1}".format( nbRotationsDay , int(nbRotationsDay) ) )
                         
                         totalSeatMilesFlownPerDay = nbSeats * int(nbRotationsDay) * 2 * milesFlownPerLeg
@@ -159,14 +183,20 @@ def writeAirlineSeatMilesResults(workbook, airlineName):
                         worksheet.write(row, ColumnIndex, airlineAircraft.getAircraftFullName())   
                         
                         ColumnIndex += 1
+                        worksheet.write(row, ColumnIndex, str(airlineCosts.isAborted) )
+                        
+                        ColumnIndex += 1
                         worksheet.write(row, ColumnIndex, airlineRoute.getDepartureAirportICAOcode())
     
+                        ColumnIndex += 1
+                        worksheet.write(row, ColumnIndex, computeAirportTurnAroundTimeSeconds ( airlineRoute.getDepartureAirportICAOcode() ) )
+                        
                         ColumnIndex += 1
                         worksheet.write(row, ColumnIndex, airlineRoute.getArrivalAirportICAOcode())
                         
                         ColumnIndex += 1
-                        worksheet.write(row, ColumnIndex, str(airlineCosts.isAborted) )
-                
+                        worksheet.write(row, ColumnIndex, computeAirportTurnAroundTimeSeconds ( airlineRoute.getArrivalAirportICAOcode() ) )
+                        
                         ColumnIndex += 1
                         worksheet.write(row, ColumnIndex, (nbSeats) )
                         
@@ -291,7 +321,7 @@ def writeAirlineSeatMilesMaximization(workbook, airlineName):
                         
                         milesFlownPerLeg = airlineCosts.finalLengthMeters * Meter2NauticalMiles
                         #print ("aircraft = {0} - flight leg = {1} - flight duration (Seconds) = {2} - distance flown (nautics) = {3}".format(airlineAircraft, airlineRoute.getFlightLegAsString() , airlineCosts.flightDurationSeconds, milesFlownPerLeg))
-                        nbRotationsDay = ( maxDailyHours * 3600 ) / ( ( airlineCosts.flightDurationSeconds * 2) + turnAroundTimesSeconds )
+                        nbRotationsDay = computeNumberOfRotations ( airlineCosts.flightDurationSeconds , turnAroundTimesSeconds , airlineRoute )
                         #print ( "nb rotations = {0} - nb rotations = {1}".format( nbRotationsDay , int(nbRotationsDay) ) )
                         
                         ColumnIndex += 1
@@ -334,6 +364,7 @@ def createExcelWorkbook(memoryFile, request, airlineName):
     row = row + 1
     wsReadMe.write(row, 0 , "Objective function - max Sum Seat Miles")
     wsReadMe.write(row, 1 , maxSumSeatMiles)
+    wsReadMe.autofit()
     
     return wb
 

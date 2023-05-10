@@ -56,7 +56,7 @@
 		contents = [];
 		contents.push("Airline Routes are defined first by a pair of departure and arrival airports.<br>");
 		contents.push("For the airports, we have adopted the ICAO code with 4 letters to identify in a unique way any airport on all continents.<br>");
-		
+		contents.push('Between two airports, routes are obtained from <a href="http://rfinder.asalink.net/free/" target="_blank">route finder</a> <br>');
 		this.pushSection("Airports & Routes Configuration" , contents , "2");
 		
 		contents = [];
@@ -70,7 +70,7 @@
 		contents = [];
 		contents.push("Note: all costs are computed in the same currency unit : the US dollars.<br>");
 		contents.push("Total flight costs are summed up from hourly operational costs and hourly crew costs based upon the computed flight duration.<br>");
-		contents.push("Fuel costs are added to the ^previous total.<br>");
+		contents.push("Fuel costs are added to the previous total.<br>");
 		contents.push("In order to compute fuel costs, we start from the aircraft mass loss,<br>");
 		contents.push("The lost fuel mass is converted into liters and a coefficient is applied to convert liters to costs.<br>");
 		
@@ -97,13 +97,23 @@
 		this.pushSection("Aircraft Configuration" , contents , "6");
 		
 		contents = [];
-		contents.push("There are two implemented optimizations : Costs and Costs per Available Seat Miles CASM.<br>");
-		contents.push("Optimization consists to compute the minimum sum of a set of costs.<br>");
+		contents.push("There are three implemented optimizations : <br>");
+		contents.push("1) Costs Minimization<br>");
+		contents.push("2) Costs per Available Seat Miles (CASM) minimization.<br>");
+		contents.push("3) Seats Miles maximization.<br>");
+		contents.push("<br>");
+		contents.push("For the first two, the minimum of the sum of a set of costs is computed.<br>");
 		contents.push("In order to find this minimum, a squared table of aircraft instances versus flight legs is built.<br>");
-		contents.push("For each aircraft type, flight legs are run to compute costs for each pair of aircraft type & flight leg.<br>");
-		contents.push("For CASM, on top of the costs based upon flight leg duration, the flown distance is made available.<br>");
-
+		contents.push("For each aircraft type, flight legs are run to compute costs for each pair of aircraft type versus flight leg.<br>");
+		contents.push("For CASM, on top of the costs based upon flight leg duration, the aircraft number of seats and the flown distance are used.<br>");
+		contents.push("<br>");
+		contents.push("For Seat Miles, a number of rotations is computed based upon each flight leg duration and a turn-around time specific for each aircraft type.<br>");
+		contents.push("The number of rotations is topped by a maximum of 20 Hours flight plus turn-around time.<br>");
+		contents.push("Using this number of rotations, the total Seat Miles is computed based upon the distance flown in each leg.<br>");
+		contents.push("For Seat Miles, we build the same squared table of aircraft instances versus Seat Miles for each flight leg.<br>");
+		contents.push("<br>");
 		contents.push("Future improvement: flight legs departing and arriving in the symetrical airports must be related as they will be flown by the same aircraft.<br>");
+		contents.push("Future improvement: compute a turn-around time correction due to the size of the airport (using the airport number of runways).<br>");
 		
 		this.pushSection("Optimizations" , contents , "7");
 	}
@@ -157,6 +167,8 @@ class Help extends baseHelpConfiguration {
 		contents.push("<u><b>Warning:</b></u> you will have to dezoom in order to see an airport in Alaska or in France.<br>");
 		contents.push("<br>");
 		contents.push("<u><b>Note:</b></u> Right click on an airport to see the routes starting from this airport.<br>");
+		contents.push("While using a Right click on an airport, it is possible to see / hide waypoints for all routes starting from this airport.<br>");
+		contents.push("When the waypoints are displayed on the map, in each airport the Best Runway is also displayed.<br>");
 		
 		this.pushSection("Airline Airports" , contents , "4");
 		

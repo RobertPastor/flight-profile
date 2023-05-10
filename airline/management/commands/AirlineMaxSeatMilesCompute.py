@@ -19,7 +19,13 @@ logger = logging.getLogger(__name__)
 from airline.models import Airline, AirlineAircraft, AirlineRoute, AirlineCosts, AirlineAircraftInstances
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
-from pulp import LpProblem  ,  LpVariable, LpInteger, lpSum, LpStatus ,  PULP_CBC_CMD, value, LpBinary
+from pulp import LpProblem  ,  LpVariable,  lpSum, LpStatus ,  PULP_CBC_CMD,  LpBinary
+
+maxDailyHours= 20.0
+
+def computeNumberOfRotations(flightDurationSeconds , turnAroundTimesSeconds):
+    ''' the aircraft is ready after one flight level duration + 1 turn around time at the arrival airport + 1 flight leg duration + 1 turn around time at the departure airport '''
+    return ( maxDailyHours * 3600 ) / ( ( flightDurationSeconds + turnAroundTimesSeconds ) * 2 ) 
 
 class Command(BaseCommand):
 
@@ -28,7 +34,6 @@ class Command(BaseCommand):
         logger.setLevel(logging.INFO)
         
         help = 'Compute the maximum of seats per miles'
-        maxDailyHours= 20.0
         
         for airline in Airline.objects.all():
             print ( airline )
@@ -64,7 +69,7 @@ class Command(BaseCommand):
                         
                         milesFlownPerLeg = airlineCosts.finalLengthMeters * Meter2NauticalMiles
                         #print ("aircraft = {0} - flight leg = {1} - flight duration (Seconds) = {2} - distance flown (nautics) = {3}".format(airlineAircraft, airlineRoute.getFlightLegAsString() , airlineCosts.flightDurationSeconds, milesFlownPerLeg))
-                        nbRotationsDay = ( maxDailyHours * 3600 ) / ( ( airlineCosts.flightDurationSeconds * 2) + turnAroundTimesSeconds )
+                        nbRotationsDay = computeNumberOfRotations( airlineCosts.flightDurationSeconds , turnAroundTimesSeconds)
                         #print ( "nb rotations = {0} - nb rotations = {1}".format( nbRotationsDay , int(nbRotationsDay) ) )
                         
                         totalSeatMilesFlownPerDay = nbSeats * int(nbRotationsDay) * 2 * milesFlownPerLeg

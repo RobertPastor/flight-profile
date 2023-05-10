@@ -236,14 +236,16 @@ class FlightEnvelope(AeroDynamics):
             
         if (altitudeMeanSeaLevelMeters * Meter2Feet) > self.MaxOpAltitudeFeet:
             logging.info ( self.className + ': current altitude= {0:.2f} feet >> higher than Max Operational Altitude= {1:.2f} feet'.format((altitudeMeanSeaLevelMeters * Meter2Feet), self.MaxOpAltitudeFeet) )
-            endOfSimulation = True
+            endOfSimulation = False
             
         if altitudeMeanSeaLevelMeters < 0.0:
             logging.info ( self.className + ': altitude MSL= {0:.2f} meters is negative => end of simulation'.format(altitudeMeanSeaLevelMeters) )
             endOfSimulation = True
+            raise Exception( self.className + ': altitude MSL= {0:.2f} meters is negative => end of simulation'.format(altitudeMeanSeaLevelMeters) )
             
         if trueAirSpeedMetersPerSecond < 0.0:
             logging.info ( self.className + ': tas= {0:.2f} m/s is negative => end of simulation'.format(trueAirSpeedMetersPerSecond) )
+            raise Exception( self.className + ': tas= {0:.2f} m/s is negative => end of simulation'.format(trueAirSpeedMetersPerSecond) )
             endOfSimulation = True
             
         self.StateVector.updateAircraftStateVector(elapsedTimeSeconds           , 
