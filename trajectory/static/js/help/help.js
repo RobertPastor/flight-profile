@@ -220,9 +220,9 @@ class Help extends baseHelpConfiguration {
 		
 		contents = [];
 		contents.push("It is possible to query programmatically the service and retrieve a result in Json format.<br>");
-		contents.push('Use the following URL : <a href="http://localhost:8000/airline/airlineFleet/AmericanWings" target="_blank">Fleet Definition</a> to retrieve the fleet definition.<br>');
-		contents.push('Use the following URL : <a href="http://localhost:8000/airline/airlineRoutes/AmericanWings" target="_blank">Routes Definition</a> to retrieve the routes.<br>');
-		contents.push('Use the following URL : <a href="http://localhost:8000/airline/airlineCosts/AmericanWings" target="_blank">Costs</a> to retrieve the costs.<br>');
+		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/airlineFleet/AmericanWings" target="_blank">Fleet Definition</a> to retrieve the fleet definition.<br>');
+		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/airlineRoutes/AmericanWings" target="_blank">Routes Definition</a> to retrieve the routes.<br>');
+		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/airlineCosts/AmericanWings" target="_blank">Costs</a> to retrieve the costs.<br>');
 		this.pushSection("API - Application Programming Interface" , contents , "10");
 
 		//this.helpArray.push("<h4>About Trajectory Prediction</h4>");
