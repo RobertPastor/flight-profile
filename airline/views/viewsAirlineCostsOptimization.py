@@ -25,7 +25,7 @@ def check_constraints(prob, c_list):
             else:
                 prob.addConstraint(c)
     else:
-        print ('Please define an objective before you define constraints')
+        print ('Please define an objective function before you define constraints')
         
 
 def getAirlineCostsOptimization(request, airlineName):
@@ -90,6 +90,7 @@ def getAirlineCostsOptimization(request, airlineName):
             
             #num_aircrafts = len(airlineCostsArray)
             num_aircraft_instances = len(aircraftInstancesList)
+            
             logger.info ( "number of aircraft instances = {0}".format( num_aircraft_instances ))
             num_flight_legs = len(airlineCostsArray[0])
             #print ( num_flight_legs )
@@ -153,6 +154,7 @@ def getAirlineCostsOptimization(request, airlineName):
                 
                 acICAOcode = str(v.name).split("_")[0]
                 result["aircraft"] = acICAOcode
+                
                 ''' between index 0 which is the aircraft ICAO code and the flight leg there is the aircraft instance '''
                 Adep = str(v.name).split("_")[2]
                 result["AdepICAO"] = Adep

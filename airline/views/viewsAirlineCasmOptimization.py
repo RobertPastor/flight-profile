@@ -18,6 +18,7 @@ from airline.models import AirlineAircraftInstances
 from trajectory.Environment.Constants import kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
+
 def getAirlineCasmOptimization(request, airlineName):
     
     logger.debug ("get Airline Fleet for airline = {0}".format(airlineName))
