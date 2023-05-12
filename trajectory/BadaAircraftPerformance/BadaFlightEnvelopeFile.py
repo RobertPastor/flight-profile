@@ -107,6 +107,8 @@ class FlightEnvelope(AeroDynamics):
         
         self.approachWayPoint = None
         self.arrivalRunWayTouchDownWayPoint = None
+        
+        self.speedErrorRaised = False
 
 
     def setTargetCruiseFlightLevel(self, 
@@ -231,7 +233,9 @@ class FlightEnvelope(AeroDynamics):
                                                   ) * MeterSecond2Knots
         if (calibratedAirSpeedKnots > self.MaxOpSpeedCasKnots):
             
-            logging.info ( self.className + ': CAS= {0:.2f} knots >> higher than Max Op CAS= {1:.2f} knots'.format(calibratedAirSpeedKnots, self.MaxOpSpeedCasKnots) )
+            if self.speedErrorRaised == False:
+                self.speedErrorRaised = True
+                logging.info ( self.className + ': CAS= {0:.2f} knots >> higher than Max Op CAS= {1:.2f} knots'.format(calibratedAirSpeedKnots, self.MaxOpSpeedCasKnots) )
             endOfSimulation = False
             
         if (altitudeMeanSeaLevelMeters * Meter2Feet) > self.MaxOpAltitudeFeet:

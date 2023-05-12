@@ -30,7 +30,8 @@ class AirlineRoutes {
 	
 	constructor( ) {
 		//console.log("Airline Routes constructor");
-		this.LayerNamePrefix = "WayPoints-"
+		// this is the same prefix as in the AirlineAirports constructor
+		this.LayerNamePrefix = "WayPoints-";
 	}
 
 	loadOneRouteWayPoint( layerRouteWayPoints, waypoint ) {

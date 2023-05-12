@@ -31,7 +31,7 @@ function showRoute( elem ) {
 	let layer = SingletonAirlineAirports.getInstance().getGlobus().planet.getLayerByName( layerName );
 	if (layer) {
 		// layer is existing -> hide -> show button as hidden
-		//console.log( " layer " + layerName + " is existing");
+		console.log( " layer " + layerName + " is existing");
 		//SingletonAirlineAirports.getInstance().removeLayer( SingletonAirlineAirports.getInstance().getGlobus() , elem.id  );
 		if ( layer.getVisibility() ) {
 			// layer is visible
@@ -53,7 +53,7 @@ class AirlineAirports {
 	
 	constructor() {
 		//console.log("Airline Airports constructor");
-		this.LayerNamePrefix = "Route-";
+		this.LayerNamePrefix = "WayPoints-";
 	}
 	
 	getGlobus() {
@@ -138,14 +138,15 @@ class AirlineAirports {
 			if ( oneAirlineRoute["DepartureAirportICAOCode"] == departureAirportICAOcode ) {
 				
 				let id = oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"];
-			
+				
+				// Warning - in the hyperlink TD, the id must start with the name of the layer prefix
 				$("#airlineAirportsRoutesMainDivId").find('tbody')
 					.append($('<tr>')
 						.append($('<td>')
 							.append( oneAirlineRoute["Airline"] )
 						)
 						.append($('<td>')
-							.append( '<span> <a id="Route-' + id + '" href="#" onclick="showRoute(this);" >show / hide route</a> </span>'  )
+							.append( '<span> <a id="' + this.LayerNamePrefix + id + '" href="#" onclick="showRoute(this);" >show / hide route</a> </span>'  )
 						)
 						.append($('<td>')
 							.append( oneAirlineRoute["DepartureAirport"] )
@@ -167,12 +168,12 @@ class AirlineAirports {
 	// query the server to retrieve the waypoints of the route
 	queryAirlineRouteWayPoints( globus, id) {
 		
-		let LayerNamePrefix = this.LayerNamePrefix
+		let LayerNamePrefix = this.LayerNamePrefix;
 	
-		let arr = id.split("-")
-		let Adep = arr[1]
+		let arr = id.split("-");
+		let Adep = arr[1];
 		//console.log(Adep)
-		let Ades = arr[2]
+		let Ades = arr[2];
 		//console.log(Ades)
 		// use ajax to get the data 
 		$.ajax( {

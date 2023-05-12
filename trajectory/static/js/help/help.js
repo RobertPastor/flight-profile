@@ -55,7 +55,7 @@
 		
 		contents = [];
 		contents.push("Airline Routes are defined first by a pair of departure and arrival airports.<br>");
-		contents.push("For the airports, we have adopted the ICAO code with 4 letters to identify in a unique way any airport on all continents.<br>");
+		contents.push("For the airports, the ICAO code with 4 letters is used to identify in a unique way any airport on all continents.<br>");
 		contents.push('Between two airports, routes are obtained from <a href="http://rfinder.asalink.net/free/" target="_blank">route finder</a> <br>');
 		this.pushSection("Airports & Routes Configuration" , contents , "2");
 		
@@ -71,8 +71,8 @@
 		contents.push("Note: all costs are computed in the same currency unit : the US dollars.<br>");
 		contents.push("Total flight costs are summed up from hourly operational costs and hourly crew costs based upon the computed flight duration.<br>");
 		contents.push("Fuel costs are added to the previous total.<br>");
-		contents.push("In order to compute fuel costs, we start from the aircraft mass loss,<br>");
-		contents.push("The lost fuel mass is converted into liters and a coefficient is applied to convert liters to costs.<br>");
+		contents.push("In order to compute fuel costs, the aircraft mass loss is computed first.<br>");
+		contents.push("The lost fuel mass is converted into liters and a coefficient is applied to convert liters to costs (US$).<br>");
 		
 		this.pushSection("Costs" , contents , "4");
 
@@ -110,10 +110,10 @@
 		contents.push("For Seat Miles, a number of rotations is computed based upon each flight leg duration and a turn-around time specific for each aircraft type.<br>");
 		contents.push("The number of rotations is topped by a maximum of 20 Hours flight plus turn-around time.<br>");
 		contents.push("Using this number of rotations, the total Seat Miles is computed based upon the distance flown in each leg.<br>");
-		contents.push("For Seat Miles, we build the same squared table of aircraft instances versus Seat Miles for each flight leg.<br>");
+		contents.push("For Seat Miles, a squared table of aircraft instances versus Seat Miles for each flight leg is built.<br>");
 		contents.push("<br>");
 		contents.push("Future improvement: flight legs departing and arriving in the symetrical airports must be related as they will be flown by the same aircraft.<br>");
-		contents.push("Future improvement: compute a turn-around time correction due to the size of the airport (using the airport number of runways).<br>");
+		contents.push("Note: A turn-around time correction is computed based upon the airport number of runways.<br>");
 		
 		this.pushSection("Optimizations" , contents , "7");
 	}

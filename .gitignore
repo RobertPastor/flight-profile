@@ -146,3 +146,6 @@ staticfiles/*
 
 # old xls files
 airline/management/commands/AirlineRoutesWayPoints/*.xls
+
+#pulp results
+pulp_problem.lp

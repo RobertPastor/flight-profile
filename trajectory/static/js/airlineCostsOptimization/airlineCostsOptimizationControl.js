@@ -17,7 +17,7 @@ class AirlineCostsOptimizationControl extends og.Control {
 		
 		let draggableMainDiv = document.createElement('div');
 		draggableMainDiv.id = mainDiv.id  + "Header";
-		draggableMainDiv.innerHTML = "Click here to move - Costs Optimizations";
+		draggableMainDiv.innerHTML = "Click here to move -> Costs Minimizations";
 		draggableMainDiv.classList.add("draggableDivHeader");
 		
 		let span = document.createElement('span');

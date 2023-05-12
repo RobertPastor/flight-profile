@@ -15,7 +15,7 @@
 				
 				let draggableMainDiv = document.createElement('div');
 				draggableMainDiv.id = mainDiv.id  + "Header";
-				draggableMainDiv.innerHTML = "Click here to move";
+				draggableMainDiv.innerHTML = "Click here to move -> Flight Leg Costs Computation";
 				draggableMainDiv.classList.add("draggableDivHeader");
 				
 				let span = document.createElement('span');

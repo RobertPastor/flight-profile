@@ -1215,13 +1215,14 @@ class AircraftConfiguration(FlightEnvelope):
             
         ''' aircraft mass decreases according to fuel flow '''
         fuelFlowKilograms = self.engine.computeNominalFuelFlowKilograms(trueAirSpeedMetersSecond, 
-                                                                    thrustNewtons, 
+                                                                        thrustNewtons, 
                                                                         deltaTimeSeconds)
         
         try:
             aircraftMassKilograms = self.aircraftMass.updateAircraftMassKilograms(fuelFlowKilograms)
         except:
             logger.info ( self.className + ': no more fuel !!!!' )
+            endOfSimulation = True
             raise ValueError ( self.className + ': no more fuel !!!! ' )
 
         ''' store updated speed '''

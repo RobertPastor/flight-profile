@@ -55,6 +55,12 @@ class AirlineFleet {
 				.append($('<td>')
 					.append( oneAirlineAircraft["CrewCostsFlyingHoursDollars"] )
 				)
+				.append($('<td>')
+					.append( oneAirlineAircraft["MinimumTakeOffMassKg"] )
+				)
+				.append($('<td>')
+					.append( oneAirlineAircraft["MaximumTakeOffMassKg"] )
+				)
 			);
 	}
 
@@ -92,7 +98,7 @@ class AirlineFleet {
 			
 			if ( ! $('#divAirlineFleetId').is(":visible") ) {
 				
-				hideAllDiv();
+				//hideAllDiv();
 				$('#divAirlineFleetId').show();
 							
 				// change name on the button

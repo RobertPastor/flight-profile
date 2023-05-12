@@ -8,22 +8,37 @@ from django.http import  JsonResponse
 
 # Create your views here.
 from airline.models import Airline, AirlineAircraft
+from trajectory.models import BadaSynonymAircraft
+from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 
 import logging
 logger = logging.getLogger(__name__)
 
+
 def getAirlineFleetFromDB(airline):
     airlineFleetList = []
     for airlineAircraft in AirlineAircraft.objects.filter(airline = airline):
-        #logger.debug ( str ( airlineAircraft ) )
-        airlineFleetList.append({
-            "Airline": airline.Name,
-            "AircraftICAOcode" : airlineAircraft.aircraftICAOcode,
-            "AircraftFullName" : airlineAircraft.aircraftFullName,
-            "NumberOfAircrafts" : airlineAircraft.numberOfAircraftsInService,
-            "MaxNumberOfPassengers" : airlineAircraft.maximumOfPassengers,
-            "CostsFlyingHoursDollars": airlineAircraft.costsFlyingPerHoursDollars,
-            "CrewCostsFlyingHoursDollars" : airlineAircraft.crewCostsPerFlyingHoursDollars})
+        
+        badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=airlineAircraft.aircraftICAOcode).first()
+        if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
+            #print ( badaAircraft )
+            
+            aircraftPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+            if ( aircraftPerformance ):
+            
+                #logger.debug ( str ( airlineAircraft ) )
+                airlineFleetList.append({
+                    "Airline"                     : airline.Name,
+                    "AircraftICAOcode"            : airlineAircraft.aircraftICAOcode,
+                    "AircraftFullName"            : airlineAircraft.aircraftFullName,
+                    "NumberOfAircrafts"           : airlineAircraft.numberOfAircraftsInService,
+                    "MaxNumberOfPassengers"       : airlineAircraft.maximumOfPassengers,
+                    "CostsFlyingHoursDollars"     : airlineAircraft.costsFlyingPerHoursDollars,
+                    "CrewCostsFlyingHoursDollars" : airlineAircraft.crewCostsPerFlyingHoursDollars,
+                    "MinimumTakeOffMassKg"        : aircraftPerformance.getMinimumMassTons() * 1000.0,
+                    "MaximumTakeOffMassKg"        : aircraftPerformance.getMaximumMassTons() * 1000.0
+                    })
+            
     return airlineFleetList
     
     
