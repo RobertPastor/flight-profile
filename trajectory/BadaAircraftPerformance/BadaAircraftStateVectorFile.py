@@ -321,7 +321,7 @@ class StateVector(object):
     def createStateVectorHistorySheet(self, workbook):
         
         ws = workbook.add_worksheet("StateVector")
-        styleEntete = workbook.add_format({'bold': False, 'border':True})
+        #styleEntete = workbook.add_format({'bold': False, 'border':True})
         styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
 
         self.writeHeaders(ws, styleLavender, ['elapsed-time-seconds', 

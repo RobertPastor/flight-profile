@@ -184,7 +184,7 @@ class Help extends baseHelpConfiguration {
 		contents.push("A vertical profile is drawn on top of the horizontal route.<br>");
 		contents.push("If you move the cursor above the screen, you will follow the vertical profile.<br>");
 		contents.push("On its X axis, the vertical profile shows a time line expressed in seconds.<br>");
-		contents.push("On its Y axis, the vertical profile shows a flight level expressed as a Mean Sea Level in meters.<br>");
+		contents.push("On its Y axis, the vertical profile shows a flight level expressed as an altitude above Mean Sea Level in meters.<br>");
 		contents.push("To escape the vertical profile view, double click on the screen. <br>");
 		contents.push("Warning: case where a A330 takes off from Atlanta 08L after 2915 meters of ground run (more than the length of the runway). <br>");
 
@@ -196,29 +196,34 @@ class Help extends baseHelpConfiguration {
 		contents.push("   2) fuel costs based upon aircraft mass loss - translated into liters of fuel TIMES cost of one liter of fuel.<br>");
 		contents.push("   3) crew costs based upon flight duration TIMES hourly crew costs.<br>");
 		contents.push("<br>");
+		contents.push("Fuel costs are based upon aircraft mass difference between initial mass and final mass.<br>");
+		contents.push("This Mass difference expressed in Kilograms is converted into US gallons -> Mass Kg * 0.33 <br>");
+		contents.push("Finally the value in US gallons is timed by a US Gallon to US Dollar constant -> US gallons *  3.25.<br>");
+		contents.push("<br>");
 		contents.push("Future improvement : show the runways used for the costs computations.<br>");
+		contents.push('Use the fuel planner to compare fuel costs : <a href="http://fuelplanner.com/index.php" target="_blank">Fuel Planner</a>');
 
 		this.pushSection("Airline Costs" , contents , "7");
 		
 		contents = [];
-		contents.push("This tab allows to minimize the sum of the costs for all flight legs ");
-		contents.push("while finding the best aircraft for each flight leg.");
+		contents.push("The Costs Minimization allows to find the minimum of the sum of the costs for all flight legs ");
+		contents.push("A solver is used to find the best set of aircrafts for each flight leg.");
 		
-		this.pushSection("Costs Optimization" , contents , "8");
-		
-		contents = [];
-		contents.push("Fuel costs are based upon aircraft mass difference between initial mass and final mass.<br>");
-		contents.push("This Mass difference expressed in Kilograms is converted into US gallons -> Mass Kg * 0.33 <br>");
-		contents.push("Finally the value in US gallons is timed by a US Gallon to US Dollar constant -> US gallons *  3.25.<br>");
-
-		this.pushSection("Fuel Costs" , contents , "9");
+		this.pushSection("Optimizations" , contents , "8");
 
 		contents = [];
 		contents.push("For each flight leg, compute number of available seats TIMES flight leg length in miles.<br>");
 		contents.push("Compute CASM as the total costs divided by (nb Seats * flight leg length miles).<br>");
 		contents.push("The lower is this cost (in tenth of US dollars), the better efficiency of the aircraft on this flight leg.<br>");
 		
-		this.pushSection("Cost per Available Seat Miles" , contents , "10");
+		this.pushSection("Cost per Available Seat Miles" , contents , "9");
+		
+		contents = [];
+		contents.push("It is possible to query programmatically the service and retrieve a result in Json format.<br>");
+		contents.push('Use the following URL : <a href="http://localhost:8000/airline/airlineFleet/AmericanWings" target="_blank">Fleet Definition</a> to retrieve the fleet definition.<br>');
+		contents.push('Use the following URL : <a href="http://localhost:8000/airline/airlineRoutes/AmericanWings" target="_blank">Routes Definition</a> to retrieve the routes.<br>');
+		contents.push('Use the following URL : <a href="http://localhost:8000/airline/airlineCosts/AmericanWings" target="_blank">Costs</a> to retrieve the costs.<br>');
+		this.pushSection("API - Application Programming Interface" , contents , "10");
 
 		//this.helpArray.push("<h4>About Trajectory Prediction</h4>");
 		//this.helpArray.push('<a href="https://trajectoire-predict.monsite-orange.fr/page-557223c123784.html" target="_blank">Aircraft Trajectory Prediction</a>');
