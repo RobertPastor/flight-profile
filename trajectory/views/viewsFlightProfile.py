@@ -1,5 +1,6 @@
 
 from xml.dom import minidom
+
 import logging
 logger = logging.getLogger(__name__)
 import xmltodict
@@ -9,10 +10,9 @@ from django.core import serializers
 from django.http import HttpResponse , JsonResponse
 
 from airline.models import Airline, AirlineRoute
-from airline.views.viewsAirlineRoutes import getAirlineRoutesFromDB
 from trajectory.models import  AirlineAirport
 
-from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB
+from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB, getAirlineRoutesFromDB
 
 from trajectory.models import BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance

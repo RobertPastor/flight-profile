@@ -7,10 +7,12 @@ from trajectory.views.viewsAircraft import getAircraft
 from trajectory.views.viewsFlightProfile import launchFlightProfile, computeFlightProfile
 from trajectory.views.computeCosts import computeCosts
 from trajectory.views.downLoadVerticalProfile import createExcelVerticalProfile
+from trajectory.views.viewsFuelPlanner import launchFuelPlanner
 
 app_name = "trajectory"
 
 urlpatterns = [
+    
     path('airports/<slug:airlineName>' , getAirports , name='getAirports'),
     path('waypoints/<slug:airlineName>' , getWayPoints , name='getWayPoints'),
 
@@ -18,7 +20,9 @@ urlpatterns = [
     path('computeFlightProfile/<slug:airlineName>' , computeFlightProfile , name='computeFlightProfile'),
 
     path('computeCosts/<slug:airlineName>' , computeCosts , name='computeCosts'),
-    path('getAircraft/<slug:airlineName>' , getAircraft , name="getAircraft")
+    path('getAircraft/<slug:airlineName>' , getAircraft , name="getAircraft"),
+    
+    path('launchFuelPlanner/<slug:airlineName>' , launchFuelPlanner , name='launchFuelPlanner')
 
 ]
 

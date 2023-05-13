@@ -125,7 +125,7 @@ class AirlineRoute(models.Model):
                             LongitudeDegrees   = rwy.LongitudeDegrees)
             rwyEnd = runWay.getEndOfRunWay()
             ''' 5 nautical miles after end of runway '''
-            latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading(5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
+            latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading( 5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
             pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
             #print ( "end of runway extended path = {0}".format(pathEnd) )
 

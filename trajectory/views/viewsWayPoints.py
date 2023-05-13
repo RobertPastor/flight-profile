@@ -9,11 +9,13 @@ from django.core import serializers
 from django.http import HttpResponse , JsonResponse
 
 from airline.models import AirlineRoute, AirlineAircraft, Airline,    AirlineRouteWayPoints
-from airline.views.viewsAirlineRoutes import getAirlineRoutesFromDB
 from trajectory.models import AirlineWayPoint, AirlineAirport
 from trajectory.models import BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
+
+from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB, getAirlineRoutesFromDB
+
 
 # Create your views here.
 def indexTrajectory(request):

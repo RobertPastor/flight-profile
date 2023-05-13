@@ -222,7 +222,7 @@ def writeAirlineSeatMilesResults(workbook, airlineName):
         
 def writeAirlineSeatMilesMaximization(workbook, airlineName):
     
-    worksheet = workbook.add_worksheet("AirlineSeatMilesMaximization")
+    worksheet = workbook.add_worksheet("Airline Seat Miles Maximization")
     styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
     
     writeHeaders(worksheet, styleLavender , headersMaximization)

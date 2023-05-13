@@ -71,6 +71,12 @@ class AirlineAirport(models.Model):
     
     def getICAOcode(self):
         return self.AirportICAOcode
+    
+    def getLatitudeDegrees(self):
+        return self.Latitude
+    
+    def getLongitudeDegrees(self):
+        return self.Longitude
 '''
     The Charles De Gaulle airport has 2 configurations, depending on the wind directions.
     However, in both configurations Eastward and Westward of Charles de Gaulle:

@@ -1,0 +1,167 @@
+
+
+const SingletonFuelPlanner = (function () {
+	
+	let instance;
+
+    function createInstance() {
+        let object = new FuelPlanner();
+        return object;
+    }
+
+    return {
+        getInstance: function () {
+            if (!instance) {
+                instance = createInstance();
+            }
+            return instance;
+        }
+    };
+})();
+
+class FuelPlanner {
+	
+	constructor() {
+		//console.log("Fuel Planner constructor");
+	}
+	
+	getGlobus() {
+		return this.globus;
+	}
+	
+	populateAircraftFlightProfileSelector( airlineAircraftsArray ) {
+	
+		// aircraftSelectionId
+		$("#fuelPlannerAircraftSelectionId").show();
+		
+		// empty the selector
+		$('#fuelPlannerAirlineAircraftSelectId').empty()
+
+		for (let index = 0; index < airlineAircraftsArray.length; index++) {
+		  $('#fuelPlannerAirlineAircraftSelectId').append('<option value="' + airlineAircraftsArray[index]["airlineAircraftICAOcode"] + '">' + airlineAircraftsArray[index]["airlineAircraftFullName"] + '</option>');
+		
+		}
+		SingletonFuelPlanner.getInstance().setAircraftICAOcodeInput();
+	}
+	
+	setAircraftICAOcodeInput(  ) {
+		
+		let aircraftSelectorICAOcode = $("#fuelPlannerAirlineAircraftSelectId option:selected").val();
+		
+		// set aircraft ICAO code in the read only input
+		let acICAOcode = document.getElementById('fuelPlannerAirlineAircraftICAOcodeId');
+		acICAOcode.value = aircraftSelectorICAOcode;
+	}
+	
+	populateAirlineRoutesFlightProfileSelector( airlineRoutesArray ) {
+		
+		this.airlineRoutesArray = airlineRoutesArray;
+	
+		// empty the selector
+		$('#fuelPlannerAirlineRouteSelectId').empty()
+
+		for (let index = 0; index < airlineRoutesArray.length; index++) {
+			let airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
+			let airlineRouteKey = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
+			$('#fuelPlannerAirlineRouteSelectId').append('<option value="' + airlineRouteKey + '">' + airlineRouteName + '</option>');
+		}
+		
+		SingletonFuelPlanner.getInstance().setRouteAirportsICAOcode();
+		SingletonFuelPlanner.getInstance().setRouteLengthMiles();
+		
+	}
+	
+	setRouteLengthMiles() {
+		
+		let airlineRoutesArray = this.airlineRoutesArray;
+
+		let routeSelector = $("#fuelPlannerAirlineRouteSelectId option:selected").val();
+		for (let index = 0; index < airlineRoutesArray.length; index++) {
+			
+			let airlineRouteKey = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
+			if ( routeSelector == airlineRouteKey) {
+				
+				let routeLength = document.getElementById('fuelPlannerRouteLengthId');
+				routeLength.value = airlineRoutesArray[index]["RouteLengthMiles"];
+			}
+		}
+	}
+	
+	setRouteAirportsICAOcode() {
+		
+		let routeSelector = $("#fuelPlannerAirlineRouteSelectId option:selected").val();
+		
+		// set aircraft ICAO code in the read only input
+		let adepICAOcode = document.getElementById('fuelPlannerAirlineAdepICAOcodeId');
+		adepICAOcode.value = routeSelector.split("-")[0];
+		
+		let adesICAOcode = document.getElementById('fuelPlannerAirlineAdesICAOcodeId');
+		adesICAOcode.value = routeSelector.split("-")[1];
+		
+	}
+
+	
+	initFuelPlanner( globus ) {
+		
+		this.globus = globus;
+		// listen to the button define in MainControl.js
+		document.getElementById("btnLaunchFuelPlanner").onclick = function () {
+
+			if ( ! $('#mainFuelPlannerDivId').is(":visible") ) {
+			
+				$('#mainFuelPlannerDivId').show();
+				
+				// get the name of the airline
+				let airlineName = $("#airlineSelectId option:selected").val();
+				airlineName = encodeURIComponent(airlineName);
+
+				// use ajax to get the data 
+				$.ajax( {
+						method: 'get',
+						url :  "trajectory/launchFuelPlanner/" + airlineName,
+						async : true,
+						success: function(data, status) {
+										
+							//alert("Data: " + data + "\nStatus: " + status);
+							let dataJson = eval(data);
+							// airlineAircrafts
+							SingletonFuelPlanner.getInstance().populateAircraftFlightProfileSelector( dataJson["airlineAircrafts"] );
+							SingletonFuelPlanner.getInstance().populateAirlineRoutesFlightProfileSelector( dataJson["airlineRoutes"] );
+
+						},
+						error: function(data, status) {
+							console.log("Error - Fuel Planner: " + status + " Please contact your admin");
+							showMessage("Error - Fuel Planner", eval(data) );
+						},
+						complete : function() {
+							stopBusyAnimation();
+							document.getElementById("btnLaunchFuelPlanner").disabled = false;
+						},
+				});
+				
+			} else {
+				$('#mainFuelPlannerDivId').hide();
+			}
+		}
+		
+		/**
+		* Monitor the change of Aircraft
+		**/
+		document.getElementById("fuelPlannerAirlineAircraftSelectId").onchange = function () {
+			
+			//console.log ("selected aircraft changed");
+			let aircraftICAOcode = $("#fuelPlannerAirlineAircraftSelectId option:selected").val();
+			console.log(aircraftICAOcode)
+			
+			SingletonFuelPlanner.getInstance().setAircraftICAOcodeInput();
+			
+		}
+		
+		// Listen to the change to the routeEvents
+		document.getElementById("fuelPlannerAirlineRouteSelectId").onchange = function () {
+
+			SingletonFuelPlanner.getInstance().setRouteAirportsICAOcode();
+			SingletonFuelPlanner.getInstance().setRouteLengthMiles();
+		}
+	}
+}

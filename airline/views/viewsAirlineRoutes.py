@@ -11,19 +11,7 @@ from airline.models import Airline, AirlineRoute
 import logging
 logger = logging.getLogger(__name__)
 
-
-def getAirlineRoutesFromDB(airline):
-    airlineRoutesList = []
-    for airlineRoute in AirlineRoute.objects.filter(airline = airline):
-        #logger.debug ( str ( airlineRoute ) )
-        airlineRoutesList.append({
-                "Airline"                  : airlineRoute.airline.Name,
-                "DepartureAirport"         : airlineRoute.DepartureAirport ,
-                "DepartureAirportICAOCode" : airlineRoute.DepartureAirportICAOCode,
-                "ArrivalAirport"           : airlineRoute.ArrivalAirport,
-                "ArrivalAirportICAOCode"   : airlineRoute.ArrivalAirportICAOCode
-                } )
-    return airlineRoutesList
+from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB, getAirlineRoutesFromDB
 
 
 def getAirlineRoutes(request , airlineName):

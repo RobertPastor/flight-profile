@@ -25,23 +25,27 @@ def getWayPointsOfRoute(routeWayPoints , adepRunWayObject, adesRunWayObject):
     wayPointsList = []
     ''' 4th May 2023 - insert best departure runway '''
     runwayObj = { "name"      : adepRunWayObject.Name ,
-                    "Longitude" : adepRunWayObject.getLongitudeDegrees(),
-                    "Latitude"  : adepRunWayObject.getLatitudeDegrees()
+                  "Longitude" : adepRunWayObject.getLongitudeDegrees(),
+                  "Latitude"  : adepRunWayObject.getLatitudeDegrees()
                 }
     #print ( runwayObj )
     wayPointsList.append( runwayObj )
+    # list to avoid duplicates
+    wayPointNames = []
     
     for waypoint in AirlineWayPoint.objects.all():
         for routeWayPoint in routeWayPoints:
             if ( waypoint.WayPointName == routeWayPoint.WayPoint):
-                logger.debug (waypoint.WayPointName)
+                #print (waypoint.WayPointName)
                 '''
                 if waypoint.Latitude >= viewExtent["minlatitude"] and \
                     waypoint.Latitude <= viewExtent["maxlatitude"] and \
                     waypoint.Longitude >= viewExtent["minlongitude"] and \
                     waypoint.Longitude <= viewExtent["maxlongitude"] :
                 '''
-                wayPointsList.append({
+                if ( waypoint.WayPointName not in wayPointNames):
+                    wayPointNames.append(waypoint.WayPointName)
+                    wayPointsList.append({
                         "name"      : waypoint.WayPointName ,
                         "Longitude" : waypoint.Longitude,
                         "Latitude"  : waypoint.Latitude
@@ -84,6 +88,8 @@ def getRouteWayPoints(request, Adep, Ades):
 
             routeWayPoints = AirlineRouteWayPoints.objects.filter(Route=airlineRoute)
             response_data = {
+                'departureAirport'      : Adep,
+                'arrivalAirport'        : Ades,
                 'airlineRouteWayPoints' : getWayPointsOfRoute(routeWayPoints , adepRunWayObject , adesRunWayObject),
                 'bestAdepRunway'        : adepRunWayStr,
                 'bestAdesRunway'        : adesRunWayStr

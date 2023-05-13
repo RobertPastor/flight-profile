@@ -201,6 +201,12 @@ th {
     width: auto;
 }
 
+.mainFuelPlannerDiv {
+	position: absolute;
+	top : 100px;
+	left : 10px;
+}
+
 .alignRight {
 	text-align: right;
 }

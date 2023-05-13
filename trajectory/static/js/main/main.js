@@ -265,9 +265,14 @@ function initTools(globus, viewExtent) {
 	let airlineCasmOptimization = SingletonAirlineCasmOptimization.getInstance();
 	airlineCasmOptimization.initAirlineCasmOptimization();
 	
-	// 6th May 2023
+	// 6th May 2023 Seat Miles Maximization
 	let airlineSeatMilesMaximization = SingletonAirlineSeatMiles.getInstance();
 	airlineSeatMilesMaximization.initAirlineSeatsMilesMaximization();
+	
+	// 13th May 2023 - Fuel Planner
+	globus.planet.addControl(new FuelPlannerControl());
+	let fuelPlanner = SingletonFuelPlanner.getInstance();
+	fuelPlanner.initFuelPlanner(globus);
 	
 	// init download EXCEL Vertical Flight Profile
 	initDownloadVerticalProfile();

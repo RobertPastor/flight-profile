@@ -26,7 +26,7 @@ class MainControl extends og.Control {
 		let row_0 = document.createElement('tr');
 		
 		let row_0_data_1 = document.createElement('td');
-		row_0_data_1.colSpan = "10";
+		row_0_data_1.colSpan = "11";
 		
 		row_0_data_1.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
 		row_0.appendChild(row_0_data_1);
@@ -52,7 +52,7 @@ class MainControl extends og.Control {
 		row_1.appendChild(row_1_data_1);
 		
 		let row_1_data_2 = document.createElement('td');
-		row_1_data_2.colSpan = "6";
+		row_1_data_2.colSpan = "7";
 		
 		row_1_data_2.innerHTML = '<div class="alignRight"><span>Airline Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
 		row_1.appendChild(row_1_data_2);
@@ -127,13 +127,18 @@ class MainControl extends og.Control {
 		row_2_data_11.title = "click to see the best aircraft selection to minimize Costs per Available Seat Miles"; 
 		row_2.appendChild(row_2_data_11);
 		
-		
 		let row_2_data_12 = document.createElement('td');
-		
-		row_2_data_12.classList.add('question_mark_bg')
-		row_2_data_12.innerHTML = '<div id="helpId" class="exclamation_mark" title="click to obtain some configuration information" onclick="showConfiguration()" ></div>';
+		row_2_data_12.innerHTML = '<div><button id="btnLaunchFuelPlanner" >Fuel Planner</button></div>';
+		row_2_data_12.title = "click to support computing aircraft takeoff weight while estimating the needed fuel"; 
 		row_2.appendChild(row_2_data_12);
 		
+		// 13th May 2023 - add fuel planner
+		let row_2_data_13 = document.createElement('td');
+		row_2_data_13.classList.add('question_mark_bg')
+		row_2_data_13.innerHTML = '<div id="helpId" class="exclamation_mark" title="click to obtain some configuration information" onclick="showConfiguration()" ></div>';
+		row_2.appendChild(row_2_data_13);
+		
+		// ---------------
 		tbody.appendChild(row_2);
 		
 		table.appendChild(tbody);
