@@ -146,6 +146,10 @@ function hideAllDiv(globus) {
 	
 	let airlineCasmOptimization = SingletonAirlineCasmOptimization.getInstance();
 	airlineCasmOptimization.hideAirlineCasmOptimizationDiv();
+	
+	let fuelPlanner = SingletonFuelPlanner.getInstance();
+	fuelPlanner.hideFuelPlannerDiv();
+	
 }
 
 function switchAirlines(globus) {

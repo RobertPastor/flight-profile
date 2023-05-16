@@ -3,7 +3,9 @@ Created on 26 déc. 2022
 
 @author: robert PASTOR
 '''
-from airline.models import  AirlineAircraft, AirlineRoute
+
+from airline.models import Airline,  AirlineAircraft, AirlineRoute, AirlineCosts
+
 from trajectory.models import  AirlineRunWay , BadaSynonymAircraft, AirlineAirport
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 
@@ -39,6 +41,26 @@ def getAirlineRoutesFromDB(airline):
     return airlineRoutesList
 
 
+def getAirlineTripPerformanceFromDB( airline ):
+    
+    assert ( isinstance( airline , Airline ))
+    airlineTripPerformanceList = []
+    for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
+        pass
+        for airlineRoute in AirlineRoute.objects.filter(airline = airline):
+            pass
+            for airlineCosts in AirlineCosts.objects.filter( airline = airline, airlineAircraft = airlineAircraft, airlineRoute = airlineRoute):
+                airlineTripPerformanceList.append( {
+                    "Airline"               : airlineRoute.airline.Name,
+                    "Aircraft"              : airlineAircraft.getAircraftICAOcode(),
+                    "Route"                 : airlineRoute.getFlightLegAsString(),
+                    "TakeOffMassKg"         : airlineCosts.getTakeOffMassKg(),
+                    "LegDurationSec"        : round ( airlineCosts.getFlightLegDurationSeconds() , 2 ),
+                    "LegLengthMiles"        : round ( airlineCosts.getFlightLegLengthMiles() , 2),
+                    "TripFuelBurnKg"        : round ( airlineCosts.getFlightLegFuelBurnKg() , 2)
+                    })
+    return airlineTripPerformanceList
+
 
 def getAirlineRunWaysFromDB():
     airlineRunWaysList = []
@@ -66,12 +88,14 @@ def getAirlineAircraftsFromDB(airline):
                 acMaxTakeOffWeightKg = acPerformance.getMaximumMassKilograms()
                 acMinTakeOffWeightKg = acPerformance.getMinimumMassKilograms()
                 acMaxOpAltitudeFeet  = acPerformance.getMaxOpAltitudeFeet()
+                acMaxPayLoadKg       = acPerformance.getMaximumPayLoadMassKilograms()
         airlineAircraftsList.append({
             "airlineAircraftICAOcode" : airlineAircraft.aircraftICAOcode,
             "airlineAircraftFullName" : airlineAircraft.aircraftFullName,
             "acMaxTakeOffWeightKg"    : acMaxTakeOffWeightKg,
             "acMinTakeOffWeightKg"    : acMinTakeOffWeightKg,
-            "acMaxOpAltitudeFeet"     : acMaxOpAltitudeFeet
+            "acMaxOpAltitudeFeet"     : acMaxOpAltitudeFeet,
+            "acMaxPayLoadKg"          : acMaxPayLoadKg
             })
     #print ("length of airline aircrafts list = {0}".format(len(airlineAircraftsList)))
     return airlineAircraftsList

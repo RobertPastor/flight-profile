@@ -164,6 +164,7 @@ def distanceMeters(origin, destination):
 
     return d
 
+
 if __name__ == '__main__':
     # latitude longitude in degrees
     warsaw = [52.247142, 21.015244]

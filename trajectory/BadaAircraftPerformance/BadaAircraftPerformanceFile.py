@@ -175,7 +175,7 @@ class AircraftPerformance(object):
         try:
             if len(self.dataLines)>0:
                 # mass data is in lines index 1 - reference mass has split index 3 (after CD)
-                return fortran_float(str(self.dataLines[self.AircraftMassLine]).split()[4])
+                return fortran_float(str(self.dataLines[self.AircraftMassLine]).split()[4]) * 1000.0
         except:
             raise ValueError("BadaPerformanceFile: error while reading Max PayLoad mass in Tons")
         return 0.

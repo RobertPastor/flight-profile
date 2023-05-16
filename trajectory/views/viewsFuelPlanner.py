@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 from django.http import  JsonResponse
 
 from airline.models import Airline
-from trajectory.views.utils import  getAirlineAircraftsFromDB, getAirlineRoutesFromDB
+from trajectory.views.utils import  getAirlineAircraftsFromDB, getAirlineRoutesFromDB, getAirlineTripPerformanceFromDB
 
 
 def launchFuelPlanner(request , airlineName):
@@ -19,13 +19,16 @@ def launchFuelPlanner(request , airlineName):
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
             
-            airlineAircraftsList = getAirlineAircraftsFromDB(airline)     
-            airlineRoutesList    = getAirlineRoutesFromDB(airline)
+            airlineAircraftsList    = getAirlineAircraftsFromDB( airline )     
+            airlineRoutesList       = getAirlineRoutesFromDB( airline )
+            aircraftPerformanceList = getAirlineTripPerformanceFromDB( airline )
 
             response_data = {
-                'airlineAircrafts': airlineAircraftsList,
-                'airlineRoutes'   : airlineRoutesList
+                'airlineAircrafts'    : airlineAircraftsList,
+                'airlineRoutes'       : airlineRoutesList,
+                'aircraftPerformance' : aircraftPerformanceList
                 }
+            
             return JsonResponse(response_data)
         else:
             return JsonResponse({'errors': "airline with name {0} not found".format(airlineName)})

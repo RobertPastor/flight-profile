@@ -2,9 +2,10 @@ from django.db import models
 import logging
 # Create your models here.
 from trajectory.models import AirlineAirport, AirlineRunWay
-from builtins import object
+
 from trajectory.Environment.RunWayFile import RunWay
-from trajectory.Environment.Constants import NauticalMiles2Meter
+from trajectory.Environment.Constants import NauticalMiles2Meter , Meter2NauticalMiles
+
 from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
 from trajectory.Environment.Earth import EarthRadiusMeters
 from trajectory.models import AirlineWayPoint
@@ -322,4 +323,19 @@ class AirlineCosts(models.Model):
     adesRunway            = models.CharField( max_length = 50 , default=None )
     finalMassKg           = models.FloatField()
     finalLengthMeters     = models.FloatField( default = 0.0)
+    
+    def getTakeOffMassKg(self):
+        return self.initialTakeOffMassKg
+    
+    def getFlightLegDurationSeconds(self):
+        return self.flightDurationSeconds
+    
+    def getFlightLegLengthMeters(self):
+        return self.finalLengthMeters
+    
+    def getFlightLegLengthMiles(self):
+        return self.finalLengthMeters * Meter2NauticalMiles
+    
+    def getFlightLegFuelBurnKg(self):
+        return ( self.initialTakeOffMassKg - self.finalMassKg)
     

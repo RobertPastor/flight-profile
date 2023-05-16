@@ -58,7 +58,7 @@ def writeHeaders(worksheet, style):
     
 def writeAirlineCasmResults(workbook , airlineName):
     
-    worksheet = workbook.add_worksheet("AirlineCasmCosts")
+    worksheet = workbook.add_worksheet("Airline CASM Costs")
     styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
     writeHeaders(worksheet, styleLavender)
     
