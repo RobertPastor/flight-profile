@@ -27,6 +27,7 @@ def launchFuelPlanner(request , airlineName):
                 'airlineAircrafts'    : airlineAircraftsList,
                 'airlineRoutes'       : airlineRoutesList,
                 'aircraftPerformance' : aircraftPerformanceList
+                
                 }
             
             return JsonResponse(response_data)

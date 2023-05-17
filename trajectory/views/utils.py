@@ -47,19 +47,27 @@ def getAirlineTripPerformanceFromDB( airline ):
     airlineTripPerformanceList = []
     for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
         pass
-        for airlineRoute in AirlineRoute.objects.filter(airline = airline):
-            pass
-            for airlineCosts in AirlineCosts.objects.filter( airline = airline, airlineAircraft = airlineAircraft, airlineRoute = airlineRoute):
-                airlineTripPerformanceList.append( {
-                    "Airline"               : airlineRoute.airline.Name,
-                    "Aircraft"              : airlineAircraft.getAircraftICAOcode(),
-                    "Route"                 : airlineRoute.getFlightLegAsString(),
-                    "TakeOffMassKg"         : airlineCosts.getTakeOffMassKg(),
-                    "LegDurationSec"        : round ( airlineCosts.getFlightLegDurationSeconds() , 2 ),
-                    "LegLengthMiles"        : round ( airlineCosts.getFlightLegLengthMiles() , 2),
-                    "TripFuelBurnKg"        : round ( airlineCosts.getFlightLegFuelBurnKg() , 2)
-                    })
+        badaAircraft = BadaSynonymAircraft.objects.all().filter( AircraftICAOcode=airlineAircraft.aircraftICAOcode ).first()
+        if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
+            acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+            if acPerformance:
+                for airlineRoute in AirlineRoute.objects.filter(airline = airline):
+                    pass
+                    for airlineCosts in AirlineCosts.objects.filter( airline = airline, airlineAircraft = airlineAircraft, airlineRoute = airlineRoute):
+                        OneHourReserveFuelKg =  ( airlineCosts.getFlightLegFuelBurnKg() / airlineCosts.getFlightLegDurationSeconds() ) * 3600.0 
+                        airlineTripPerformanceList.append( {
+                            "Airline"               : airlineRoute.airline.Name,
+                            "Aircraft"              : airlineAircraft.getAircraftICAOcode(),
+                            "Route"                 : airlineRoute.getFlightLegAsString(),
+                            "TakeOffMassKg"         : airlineCosts.getTakeOffMassKg(),
+                            "LegDurationSec"        : round ( airlineCosts.getFlightLegDurationSeconds() , 1 ) ,
+                            "LegLengthMiles"        : round ( airlineCosts.getFlightLegLengthMiles() , 1 ) ,
+                            "TripFuelBurnKg"        : round ( airlineCosts.getFlightLegFuelBurnKg() , 1 ) ,
+                            "OneHourReserveFuelKg"      : round (  OneHourReserveFuelKg , 1 ), 
+                            "OptimalTakeOffMassKg"      : round ( acPerformance.getMinimumMassKilograms() + ( ( 80.0 * acPerformance.getMaximumPayLoadMassKilograms() ) / 100.0 ) + airlineCosts.getFlightLegFuelBurnKg() + OneHourReserveFuelKg , 1 )
+                            })
     return airlineTripPerformanceList
+
 
 
 def getAirlineRunWaysFromDB():

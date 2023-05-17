@@ -195,7 +195,7 @@ class FuelPlanner {
 		}
 	}
 	
-	setLegFuelBurn() {
+	setLegFuelBurnInput() {
 		
 		let airlineAircraftPerformanceArray = this.airlineAircraftPerformanceArray ;
 		
@@ -214,13 +214,53 @@ class FuelPlanner {
 		}
 	}
 	
+	setOneHourReserveFuelInput() {
+		
+		let airlineAircraftPerformanceArray = this.airlineAircraftPerformanceArray ;
+		
+		let routeSelector = $("#fuelPlannerAirlineRouteSelectId option:selected").val();
+		let aircraftSelectorICAOcode = $("#fuelPlannerAirlineAircraftSelectId option:selected").val();
+
+		for (let index = 0; index < airlineAircraftPerformanceArray.length; index++) {
+			
+			if ( ( aircraftSelectorICAOcode == airlineAircraftPerformanceArray[index]["Aircraft"] ) && 
+			     (  routeSelector           == airlineAircraftPerformanceArray[index]["Route"] ) ) {
+					 
+				let OneHourReserveFuelMass = document.getElementById('fuelPlannerFuelOneHourReserveFuelId');
+				OneHourReserveFuelMass.value = airlineAircraftPerformanceArray[index]["OneHourReserveFuelKg"];
+				
+			}
+		}
+	}
+	
+	setOptimalTakeOffMassInput() {
+		
+		let airlineAircraftPerformanceArray = this.airlineAircraftPerformanceArray ;
+		
+		let routeSelector = $("#fuelPlannerAirlineRouteSelectId option:selected").val();
+		let aircraftSelectorICAOcode = $("#fuelPlannerAirlineAircraftSelectId option:selected").val();
+
+		for (let index = 0; index < airlineAircraftPerformanceArray.length; index++) {
+			
+			if ( ( aircraftSelectorICAOcode == airlineAircraftPerformanceArray[index]["Aircraft"] ) && 
+			     (  routeSelector           == airlineAircraftPerformanceArray[index]["Route"] ) ) {
+					 
+				let OptimalTakeOffMass = document.getElementById('fuelPlannerOptimalTakeOffMassId');
+				OptimalTakeOffMass.value = airlineAircraftPerformanceArray[index]["OptimalTakeOffMassKg"];
+				
+			}
+		}
+	}
+	
 	populateAircraftLegPerformance( airlineAircraftPerformanceArray ) {
 		
 		this.airlineAircraftPerformanceArray = airlineAircraftPerformanceArray;
 		SingletonFuelPlanner.getInstance().setAircraftTakeOffMassInput();
 		SingletonFuelPlanner.getInstance().setFlightLegDurationInput();
 		SingletonFuelPlanner.getInstance().setFlightLegLengthInput();
-		SingletonFuelPlanner.getInstance().setLegFuelBurn();
+		SingletonFuelPlanner.getInstance().setLegFuelBurnInput();
+		SingletonFuelPlanner.getInstance().setOneHourReserveFuelInput();
+		SingletonFuelPlanner.getInstance().setOptimalTakeOffMassInput();
 	}
 	
 	initFuelPlanner( globus ) {
@@ -274,15 +314,16 @@ class FuelPlanner {
 			
 			//console.log ("selected aircraft changed");
 			let aircraftICAOcode = $("#fuelPlannerAirlineAircraftSelectId option:selected").val();
-			console.log(aircraftICAOcode)
+			//console.log(aircraftICAOcode)
 			
 			SingletonFuelPlanner.getInstance().setAircraftICAOcodeInput();
 			SingletonFuelPlanner.getInstance().setAircraftWeightsInput();
 			SingletonFuelPlanner.getInstance().setAircraftTakeOffMassInput();
 			SingletonFuelPlanner.getInstance().setFlightLegDurationInput();
 			SingletonFuelPlanner.getInstance().setFlightLegLengthInput();
-			SingletonFuelPlanner.getInstance().setLegFuelBurn();
-
+			SingletonFuelPlanner.getInstance().setLegFuelBurnInput();
+			SingletonFuelPlanner.getInstance().setOneHourReserveFuelInput();
+			SingletonFuelPlanner.getInstance().setOptimalTakeOffMassInput();
 		}
 		
 		// Listen to the change to the routeEvents
@@ -293,8 +334,9 @@ class FuelPlanner {
 			SingletonFuelPlanner.getInstance().setAircraftTakeOffMassInput();
 			SingletonFuelPlanner.getInstance().setFlightLegDurationInput();
 			SingletonFuelPlanner.getInstance().setFlightLegLengthInput();
-			SingletonFuelPlanner.getInstance().setLegFuelBurn();
-
+			SingletonFuelPlanner.getInstance().setLegFuelBurnInput();
+			SingletonFuelPlanner.getInstance().setOneHourReserveFuelInput();
+			SingletonFuelPlanner.getInstance().setOptimalTakeOffMassInput();
 		}
 	}
 }

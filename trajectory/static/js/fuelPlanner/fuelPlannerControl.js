@@ -215,7 +215,7 @@ class FuelPlannerControl extends og.Control {
 		div_3_0.appendChild(input_3_2);
 		
 		// ------------
-		// leg length
+		// trip fuel 
 		let label_3_3 = document.createElement("label");
 		label_3_3.innerHTML = " Trip Fuel (kg) ->" ;
 		div_3_0.appendChild(label_3_3);
@@ -226,6 +226,16 @@ class FuelPlannerControl extends og.Control {
 		input_3_3.size = "6";
 		div_3_0.appendChild(input_3_3);
 		
+		// one hour reserve
+		let label_3_4 = document.createElement("label");
+		label_3_4.innerHTML = " One Hour Reserve Fuel (kg) ->" ;
+		div_3_0.appendChild(label_3_4);
+
+		let input_3_4 = document.createElement("input");
+		input_3_4.id = "fuelPlannerFuelOneHourReserveFuelId" ;
+		input_3_4.maxlength = "6";
+		input_3_4.size = "6";
+		div_3_0.appendChild(input_3_4);
 		
 		// add div to td
 		td_3_0.appendChild(div_3_0);
@@ -233,6 +243,35 @@ class FuelPlannerControl extends og.Control {
 
 		// add  row to the table tbody
 		tbody.appendChild(row_3);
+		
+		// ================== next row
+		let row_4 = document.createElement('tr');
+		let td_4_0 = document.createElement('td');
+		
+		// create div
+		let div_4_0 = document.createElement('div');
+		div_4_0.id = "fuelPlannerOptimalTakeOffId";
+		
+		//---------------------------------
+		// takeoff mass
+		let label_4_0 = document.createElement("label");
+		label_4_0.innerHTML = " Optimal TakeOff Mass ===> Min Mass + 80% of PayLoad + Trip Fuel + Reserve Fuel (kg) --->" ;
+		div_4_0.appendChild(label_4_0);
+
+		let input_4_0 = document.createElement("input");
+		input_4_0.id = "fuelPlannerOptimalTakeOffMassId" ;
+		input_4_0.maxlength = "6";
+		input_4_0.size = "6";
+		div_4_0.appendChild(input_4_0);
+		
+		
+		// add div to td
+		td_4_0.appendChild(div_4_0);
+		row_4.appendChild(td_4_0);
+
+		// add  row to the table tbody
+		tbody.appendChild(row_4);
+		
 		
 		// =================
 		// --> table to tbody
@@ -262,6 +301,9 @@ class FuelPlannerControl extends og.Control {
 		document.getElementById('fuelPlannerLegDurationId').readOnly = true;
 		document.getElementById('fuelPlannerLegLengthId').readOnly = true;
 		document.getElementById('fuelPlannerFuelBurnId').readOnly = true;
+		document.getElementById('fuelPlannerFuelOneHourReserveFuelId').readOnly = true;
+		document.getElementById('fuelPlannerOptimalTakeOffMassId').readOnly = true;
+		
 
 	}
 
