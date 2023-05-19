@@ -172,6 +172,9 @@ class FuelPlanner {
 				let flightLegDurationSeconds = document.getElementById('fuelPlannerLegDurationId');
 				flightLegDurationSeconds.value = airlineAircraftPerformanceArray[index]["LegDurationSec"];
 				
+				let hoursMinutes = airlineAircraftPerformanceArray[index]["LegDurationSec"];
+				hoursMinutes = Math.floor( hoursMinutes / 3600.0 ) + " Hours " + Math.floor( ( (hoursMinutes / 3600.0) - Math.floor( hoursMinutes / 3600.0 ) ) * 60.0 ) + " Minutes" ;
+				flightLegDurationSeconds.title = hoursMinutes ;
 			}
 		}
 	}
@@ -190,6 +193,7 @@ class FuelPlanner {
 					 
 				let flightLegLength = document.getElementById('fuelPlannerLegLengthId');
 				flightLegLength.value = airlineAircraftPerformanceArray[index]["LegLengthMiles"];
+				
 				
 			}
 		}

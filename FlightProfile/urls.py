@@ -17,8 +17,7 @@ from django.contrib import admin
 from django.urls import re_path
 from django.urls import include
 
-
-from . import views
+from FlightProfile.views import index , doc
 
 urlpatterns = [
 
@@ -26,7 +25,11 @@ urlpatterns = [
     re_path(r'^airline/' , include('airline.urls')),
     re_path(r'admin/', admin.site.urls),
     #re_path(r'favicon.ico', RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")), ),
-    re_path('', views.index, name='index'),
+    
+    re_path(r'^doc/' , doc , name='doc'),
+
+    re_path('', index, name='index')
+    
 
 ]
 

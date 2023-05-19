@@ -264,6 +264,16 @@ class FuelPlannerControl extends og.Control {
 		input_4_0.size = "6";
 		div_4_0.appendChild(input_4_0);
 		
+		//---------------------------------
+		// takeoff mass
+		let label_4_1 = document.createElement("label");
+		label_4_1.innerHTML = " See Fuel Planner --->" ;
+		div_4_0.appendChild(label_4_1);
+		
+		// takeoff mass
+		let label_4_2 = document.createElement("span");
+		label_4_2.innerHTML = ' <a href="http://fuelplanner.com/" target="_blank">Fuel Planner</a> ' ;
+		div_4_0.appendChild(label_4_2);
 		
 		// add div to td
 		td_4_0.appendChild(div_4_0);
