@@ -25,7 +25,7 @@ from airline.views.utils import compute_total_costs
 
 ''' 29th April 2023 add cruise level and adep . Ades runways '''
 costsHeaders = ['airline' , 'aircraft'  , 'departureAirport' , 'adepRunway' , 'arrivalAirport' ,  'adesRunway' ,  'isAborted' , 'takeOffMassKg'  ,  'finalMassKg' , 'cruiseLevelFeet'  \
-              , 'flightDurationHours' , 'fuelCostsUSdollars' , 'operationalCostsUSdollars' , 'crewCostsUSdollars' , 'totalCostsUSdollars' ]       
+              , 'leg length NM' , 'Specific Range NM/kg' , 'flightDurationHours' , 'fuelCosts US$' , 'operationalCosts US$' , 'crewCosts US$' , 'totalCosts US$' ]       
 
 costsMinimizationHeaders = [ 'airline' , 'Solver Status', 'aircraft' , 'departureAirport' , 'adepRunway' , 'arrivalAirport' , 'adesRunway' , 'totalCostsUSdollars' ]
 
@@ -47,7 +47,6 @@ def writeReadMe(workbook, request, airlineName):
     row = row + 1
     wsReadMe.write(row, 0 , "Date", styleLavender)
     wsReadMe.write(row, 1 , datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") , styleEntete)
-    
     
     ''' Autofit the worksheet - adjust column width '''
     wsReadMe.autofit()
@@ -115,6 +114,13 @@ def writeAirlineCostsResults(workbook , airlineName):
                     
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, airlineCosts.targetCruiseLevelFeet )
+                    
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, airlineCosts.getFlightLegLengthMiles() )
+                    
+                    ''' 23rd May 2023 - specific range Nautical miles per Kg '''
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, airlineCosts.getFlightLegLengthMiles() / ( airlineCosts.getTakeOffMassKg() - airlineCosts.getFinalMassKg() ) )
                    
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, airlineCosts.flightDurationSeconds / 3600.0 )

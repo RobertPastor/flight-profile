@@ -20,8 +20,7 @@ from airline.models import AirlineCosts, AirlineAircraft, AirlineRoute
 from trajectory.Environment.Constants import kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
-
-headers = [ 'Airline' , 'Aircraft' , 'Departure', 'Arrival', 'Is Aborted', 'nb Seats' , 'leg length miles' , 'totalCostsUS$' , 'Costs per Available Seat Mile US$' ]
+headers = [ 'Airline' , 'Aircraft' , 'Departure', 'Arrival', 'Is Aborted', 'nb Seats' , 'leg length NM' , 'totalCostsUS$' , 'Costs per Available Seat Mile US$' ]
 
 def writeReadMe(workbook, request, airlineName):
 

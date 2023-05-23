@@ -17,123 +17,161 @@
 
 <h1>Purpose</h1>
 
-The trajectory prediction allows, from initial data (position, speed ) , flight instructions (fix list, cruise level, cruise speed, etc.) and parameters such as aircraft performance and weather conditions to calculate a trajectory over time.<br>
+The trajectory prediction allows, from an initial state (position, speed, takeoff mass, etc. ) , flight instructions (fix list, cruise level, cruise speed, etc.) <br>
+and parameters such as aircraft performance and weather conditions to calculate a trajectory over time.<br>
 
-Applied to an aircraft (jet), this type of simulation can : 
+Applied to an aircraft (jet), this type of simulation allows to : <ul>
 
-1) experiment trajectory amendments in order to avoid conflicts between aircrafts
+<li> experiment trajectory amendments in order to avoid conflicts between aircrafts</li>
 
-2) manage the arrival flow on a portion of airway or an airport runway 
+<li> manage the arrival flow on a portion of airway or an airport runway </li>
 
-Used at a large scale on a set of localized trajectories and combined with a verification tool capable of separations verifications (between aircraft), this type of simulation may estimate the capacity of the airspace. 
+</ul>
 
-The models used depend on the desired accuracy and calculation resources available. They include several sub- models including a model of the plane movement, an atmosphere model and a model of the Earth.
+Used at a large scale on a set of localized trajectories and combined with a verification tool capable of separations verifications (between aircraft), <br>
+this type of simulation may estimate the capacity of the airspace. <br>
 
-Warning : the computation implemented herein applied mainly to jets.
+The models used depend on the desired accuracy and calculation resources available. <br>
+They include several sub- models including a model of the plane movement, an atmosphere model and a model of the Earth Atmospher.<br>
+
+Warning : the computation implemented herein applied mainly to commercial jet aircrafts.
+
+<h2>What is a trajectory ?</h2>
+
+Skybrary defines a 4 dimensions trajectory as the set of positions of the aircraft in the 3 spatial dimensions with for each position a time reference.
+<br>
+<a href="https://skybrary.aero/articles/4d-trajectory-concept" target="_blank">4D trajectory</a>
+
+To define a position at the surface of the globe (an earth approximation) we use longitude and latitudes. For the vertical dimensions, in aeronautics, we use the Flight Level.
+
+<h2>Motion of an aircraft</h2>
+
+In physics, motion of an object of mass M is the result of a set of forces applied to this object.
+
+Thrust of the motors is the force that moves the aircraft.<br>
+Lift is the force that allows it to climb in the air.<br>
+Drag is the force resulting from the air density that opposes to the movement.
+In science and engineering, the weight of an object is the force acting on the object due to the gravity.
 
 
-========================================================
 <h1>Characteristics and performance of an aircraft</h1>
 
-Each aircraft has so-called technical characteristics such as its empty weight, the maximum fuel weight, the maximum useful weight, 
-the thrust of its engines, the fineness of the cell, among others, and performance data such as the stall seeds (in the different configurations), cruising speed, flight ceiling, etc. that it is necessary to take into account to perform the calculation of the trajectory.
+Each aircraft has so-called technical characteristics such as its empty mass, the maximum fuel mass, the maximum pyload mass, <br>
+the thrust of its engines, the fineness of the cell, among others, <br>
+and performance data such as the stall seeds (in the different configurations), cruising speed, flight ceiling, etc. <br>
+that are necessary to take into account to perform the calculation of the trajectory.
 
-Certain types of aircraft are offered with different engines which significantly modify performance, including fuel consumption.
+Certain types of aircraft are ordered with different engines which significantly modified performance, including fuel consumption.<br>
 
-In addition, each company can choose to operate a type of aircraft according to procedures which influence the calculation of trajectories. Typically, a company can choose to operate a flight according to a strategy which will save its fuel, or conversely whose primary objective would be to reduce flight time, etc. Depending on the case, the trajectories will not be the same, even if the same aircraft follows the same flight plan.
+In addition, each company can choose to operate a type of aircraft according to procedures which influence the calculation of trajectories.<br>
+ Typically, a company can choose to operate a flight according to a strategy which will save its fuel, or conversely whose primary objective would be to reduce flight time, etc.<br>
+ Depending on the case, the trajectories will not be the same, even if the same aircraft follows the same route.<br>
 
 All of these variabilities present a challenge in obtaining a result that is the closest to reality.
 
 
-======================================================
-
-<h1>Flight operation strategies</h1>
+<h1>Flight Operation strategies</h1>
 
 
-It is important to understand how a company chooses to operate a flight.
+It is important to understand how a company chooses to operate a flight.<br>
 
-Different factors are taken into consideration, depending on whether:
+Different factors are taken into consideration, depending on whether:<ul>
 
-the aircraft is transporting freight or passengers, 
-the "slots" of arrival times are more or less constrained,
-the company is able to obtain fuel (at predefined conditions) at the destination,
-the operating costs are constrained
-Operating costs are more or less a function of flight hours, salaries or simply the overall intentions of exploiting the resources such as the aircraft itself, the crew, the ground resources, etc.
+<li>the aircraft is transporting freight or passengers, </li>
 
-It will therefore be necessary to define these strategies and translate them into behavior and therefore alternative trajectories.
+<li>the "slots" of arrival times are more or less constrained, </li>
 
-One of the major unknowns in the calculations is the total weight of the aircraft, including fuel and payload.
+<li>the company is able to obtain fuel (at better conditions) at the destination airport,</li>
 
-Ideally, it would be appropriate to have the real trajectories of a substantial number of flights to "learn" from these data and use this learning for the purpose of reducing the domain of uncertainties.
+<li>the operating costs are constrained</li>
 
+<li>it is the last light leg of the day and the destination airport is also a maintenance hub</li>
 
-========================================
+</ul>
+
+Operating costs are more or less a function of flight hours, salaries or simply the overall intentions of exploiting the resources such as the aircraft itself, <br>
+the crew, the ground resources, etc.<br>
+
+It will therefore be necessary to define these strategies and translate them into behavior and therefore alternative trajectories.<br>
+
+One of the major unknowns in the calculations is the total weight of the aircraft, including fuel and payload.<br>
+
+Ideally, it would be appropriate to have the real trajectories of a substantial number of flights to "learn" from these data <br>
+and use this learning for the purpose of reducing the domain of uncertainties.<br>
+<br>
+Typical strategies are<ul>
+<li>Minimize the flight time / duration to reduce all the costs linked to this factor</li>
+<li>Minimize the fuel burnt during the trip</li>
+</ul>
+
 
 <h1>Aircraft Motion Model (kinematics)</h1>
 
-To put it simply, there are at least two motion models depending on the use you want to make of the results of the calculations.
+To put it simply, there are at least two motion models depending on the use you want to make of the results of the calculations.<br>
 
-A more complex model with six degrees of freedom will make it possible to finely control the attitudes, ie the angles of the aircraft with respect to the various axes of roll, pitch and yaw.
+A more complex model with six degrees of freedom will make it possible to finely control the attitudes, ie the angles of the aircraft with respect to the various axes of roll, pitch and yaw.<br>
 
-This type of model is suitable for use in a flight simulator or for a detailed understanding of airframe attitudes.
+This type of model is suitable for use in a flight simulator or for a detailed understanding of airframe attitudes.<br>
 
-It allows at any time, depending on the actions performed on the control surfaces, to calculate the rotations of the cell on the roll, pitch and yaw axes.
+It allows at any time, depending on the actions performed on the control surfaces, to calculate the rotations of the cell on the roll, pitch and yaw axes.<br>
 
-Warning: this model with 6 degrees of freedom is still an approximation of reality since it assumes a rigid cell and a center of mass more or less linked to the center of the thrust, even to the point of action of the lift, the drag, etc.
+Warning: this model with 6 degrees of freedom is still an approximation of reality since it assumes a rigid cell and a center of mass more or less linked to the center of the thrust, even to the point of action of the lift, the drag, etc.<br>
 
-A simpler model with three degrees of freedom will only control the position of the aircraft relative to the center of the earth (for example).
+A simpler model with three degrees of freedom will only control the position of the aircraft relative to the center of the earth (for example).<br>
 
 In the latter case, we speak of a mass point type model.
 
-Point Mass
 
 It is quite possible to combine the two models.
 
-The 6 degrees model will be used in the turns, the initial phases of climb and descent, the 3 degrees model remaining sufficient for cruising or the intermediate phases where the aerodynamic forces induce "small" modifications of the attitudes around the three axes already cited.
+The 6 degrees model can be used in the turns, the initial phases of climb or the descent, each time the airframe moves around one of its axis, <br>
+the 3 degrees model remaining sufficient for cruising or the intermediate phases where the aerodynamic forces induce "small" modifications of the attitudes around the three axes already cited.
 
 
-Aircraft Model
+<h2>Aircraft Model</h2>
 
 The airplane model is called point-mass. The mass of the airplane is concentrated at a point whose displacements are calculated.
 
 The different forces that are gravity, thrust, drag, lift apply to this central point.
 
 
-===========================================
 
-Aircraft Dynamic Model (BADA)
+<h2>Aircraft Dynamic Model (BADA)</h2>
 
-The dynamic model of the aircraft is based on the BADA model proposed by Eurocontrol.
+The dynamic model of the aircraft is based on the BADA model proposed by Eurocontrol.<br>
 
-BADA is considered to date (July 2021) as a worldwide reference for modeling the performance of airliners.
+BADA is considered to date (July 2021) as a worldwide reference for modeling the performance of airliners.<br>
 
-This model is also called "kinetic" model or total energy model.
+This model is also called "kinetic" model or total energy model.<br>
 
-It is based on the simple principle of transferring a "kinetic" energy, therefore based on a mass and a speed, into a potential energy based on a mass and an altitude differential.
+It is based on the principle of transferring a "kinetic" energy, therefore based on a mass and a speed, into a potential energy based on a mass and an altitude differential.<br>
 
-During the climb, the plane transforms the energy of the thrust into speed and therefore increased lift allowing it to climb towards the less dense layers of the atmosphere.
+During the climb, the plane transforms the energy of the thrust into speed and therefore increased lift allowing it to climb towards the less dense layers of the atmosphere.<br>
 
-During cruise, the aircraft maintains its flight level by losing the mass of fuel used.
+During cruise, the aircraft maintains its flight level by losing the mass of fuel used.<br>
 
-During descent, the aircraft converts potential energy into excess speed to save fuel during descent while gradually reducing speed.
+During descent, the aircraft converts potential energy into excess speed to save fuel during descent while gradually reducing speed.<br>
 
-Please note: most of the major airlines have meteorological means allowing them to know the winds (streams) available at cruising levels. This information and its exploitation makes it possible to reduce the duration of a flight.
+Please note: most of the major airlines have meteorological means allowing them to know the winds (streams) available at cruising levels.<br>
 
-=======================
+This information and its exploitation makes it possible to reduce the duration of a flight.<br>
 
-Aircraft Mass Variation
 
-======================
 
-The weight of the aircraft and therefore its variation modifies the results of the calculations. Throughout the calculations, it is advisable, according to the thrust used, to calculate the loss of mass, and according to the real mass to calculate the stall speeds.
+<h2>Aircraft Mass Variation</h2>
+
+
+The weight of the aircraft and therefore its variation modifies the results of the calculations. 
+
+Throughout the calculations, it is advisable, according to the thrust used, to calculate the loss of mass, and according to the real mass to calculate the stall speeds.
 
 The Fuel Planner site provides for one type of aircraft and two airports the mass of fuel to carry.
 
+
 See: Mathematically Modeling Aircraft Fuel Consumption
 
-==============================================
 
-Atmosphere Model
+<h2>Atmosphere Model</h2>
 
 The natural environment in which an aircraft operates has measurable characteristics such as temperature, pressure and density in particular.
 
@@ -150,6 +188,8 @@ An atmosphere model makes it possible to overcome the location of the aircraft b
 https://fr.mgwiki.top/wiki/International_Standard_atmosphere 
 https://fr.mgwiki.top/wiki/International_Standard_atmosphere#ICAO_Standard_Atmosphere
 
+
+<h2>Atmosphere Model</h2>
 
 The atmosphere can be seen as a thin layer of air on the Earth's surface. For a radius of the earth of the order of 6000 kilometres, the thickness of the layer of air concerning the flight of airliners does not exceed fifteen kilometres.
 
@@ -171,11 +211,13 @@ The standard atmosphere is a benchmark against which manufacturers provide perfo
 
 see: The International Standard Atmosphere (ISA) or ICAO ISA
 
-Until the advent of GPS, the only way to locate oneself in the vertical plane was to use a barometric altimetre.
+Until the advent of GPS, the only way to locate an object in the vertical plane was to use a barometric altimetre.
 
-========================================
+<a> https://en.wikipedia.org/wiki/Altimeter </a>
 
-Gravitational Model
+
+<h2>Gravitational Model</h2>
+
 
 One of the forces that acts on any body and therefore on an airplane is the gravitational force which acts on the center of the masses and plunges "along" a radius of the spheric earth towards its center.
 
@@ -187,9 +229,8 @@ Beyond the chosen model of the earth, it is advisable to select a gravitational 
 
 3) or a more complex model that takes altitude and latitude into account.
 
-================================
 
-Trajectory Construction
+<h2>Trajectory Construction</h2>
 
 The trajectory has two components: 
 
@@ -201,10 +242,9 @@ The air route and the two horizontal and vertical components (at the very least 
 
 https://fr.m.wikipedia.org/wiki/Plan_de_vol
 
-========================
 
 
-<h1>Airway Route (fix list)</h1>
+<h2>Airway Route (fix list) - lateral profile</h2>
 
 An airliner follows a route defined as a sequence of points (waypoint) whose latitudes and longitudes are recorded in the FMS (Flight Management System).
 
@@ -216,24 +256,27 @@ Turn segments are added to allow transition from one "great circle" to the next.
 
 https://fr.m.wikipedia.org/wiki/Grand_circle
 
-The RouteFinder site (http://rfinder.asalink.net/ offers a way to discover points on a route by providing the ICAO codes of the departure and arrival airports.
+The RouteFinder site (http://rfinder.asalink.net/) offers a way to discover points on a route by providing the ICAO codes of the departure and arrival airports.
 
 Conditions apply to the sequence of segments formed by the points of the route. An airplane, depending on its wingspan, its speed, among other things, will not always be able to follow the changes of angle without its trajectory deviating too much from the ideal trajectory, that it misses a point without overflying it and continuing to the next segment.
 
 The ICAO document Procedures for Air Navigation Services specifies the rules applicable to the filing of a flight plan.
 
-==========================
 
-SIDs and STARs
-At some airports, specific procedures called SID (Standard Instrument Departure) for take-off and STAR (Standard Terminal Arrival Route) for landing apply for instrument flight (IFR). A SID procedure defines how from a given runway and a take-off direction the aircraft must reach the first point of the main route.
+<h2>SIDs and STARs</h2>
+
+At some airports, specific procedures called SID (Standard Instrument Departure) for take-off and STAR (Standard Terminal Arrival Route) for landing apply for instrument flight (IFR). 
+
+A SID procedure defines how from a given runway and a take-off direction the aircraft must reach the first point of the main route.
+
+A STAR procedure defines how from the last fix of an airway / fix list, the aircraft must follow a path to align with the runway.
 
 https://www.skybrary.aero/index.php/SIDs_and_STARs
 
-==============================
 
-Vertical Profile
+<h2>Vertical Profile</h2>
 
-The flight profile corresponds to the altitudes and speeds reached as a function of time and distance travelled.
+The flight profile corresponds to the altitudes and speeds reached as a function of time and distance flown.
 
 A profile connects a sequence during which the standard "configuration" of the aircraft will evolve. A typical sequence may be the following:
 
@@ -266,9 +309,9 @@ Note: The touchdown must be below a speed that preserves the safety and longevit
 
 For an airport at altitude, this "air" speed will be greater than for an airport located closer to the sea.
 
-========================================
 
-Ground Effect
+<h2>Ground Effect</h2>
+
 Close to the ground, the vortices generated by the wing create additional lift called "ground effect".
 
 This phenomenon is "misleading" for example, on take-off, in that the plane seems to float and climb easily. If the pilot reduces throttle and gaining altitude removes this effect, the aircraft will "fall back" as hard as it climbed.
@@ -280,7 +323,7 @@ https://www.lavionnaire.fr/AerodynEffetSol.php
 
 ==========================
 
-Terminology
+<h2>Terminology</h2>
 
 Altitude - distance measured along a radius of the Earth's sphere (as an extension of its center) with the origin at the mean sea level (Mean Sea Level).
 
@@ -300,18 +343,17 @@ If the plane encounters an air mass moving in the same direction as the flight, 
 
 ==============================
 
-Units
+<h2>Units</h2>
+
 The units used for the calculations are those of the International System.
 
 However, custom dictates that in the aeronautical field, speeds are expressed in knots, altitudes in feet and distances in Nautical Miles.
 
 System Of Units
-
 https://en.wikipedia.org/wiki/International_Civil_Aviation_Organization#Use_of_the_International_System_of_Units
 
-===========================
 
-Modeling and Approximation
+<h2>Modeling and Approximation</h2>
 
 A model is an approximation of reality. A model answers a predefined set of questions.
 
@@ -329,9 +371,8 @@ Finally a model with three degrees of freedom can be sufficient for the calculat
 
 This last assertion would require making both types of calculations and comparing them before concluding on the validity of the simplification.
 
-===========================
 
-Earth Model
+<h2>Earth Model</h2>
 
 There are at least three Earth models to consider for trajectory calculations.
 
@@ -351,9 +392,8 @@ In order to obtain results closest to reality, it is necessary to take into acco
 
 https://fr.m.wikipedia.org/wiki/Force_de_Coriolis
 
-==================================
 
-Frame of reference
+<h2>Frame of reference</h2>
 
 The theoretical basis of the calculations rests on the vectors (mathematical object), having a point of application, a module and a validity in a given reference.
 
@@ -365,10 +405,9 @@ https://fr.m.wikipedia.org/wiki/R%C3%A9f%C3%A9rentiel_galil%C3%A9en
 
 https://www.khanacademy.org/science/ms-physics/x1baed5db7c1bb50b:movement-and-forces/x1baed5db7c1bb50b:representing-motion/v/frames-of-reference
 
-=================================
 
 
-Movement Model - kinematics
+<h2>Movement Model - kinematics</h2>
 
 The motion model advocated by Eurocontrol in its BADA (Base of Aircraft Data) project is a total energy model.
 
@@ -387,42 +426,64 @@ https://en.wikipedia.org/wiki/Kinematics
 
 ====================
 
-Acceleration Analysis
+<h2>Acceleration Analysis</h2>
 
 Newton's second law makes it possible to pass from forces to accelerations. 
 For that, it is advisable to apply the law in an adequate frame of reference (Galilean) and to consider the mass as constant (during an adequate time interval).
 
-Speed Analysis
-The airspeed used to perform the calculations is the true airspeed relative to the air mass. The speed used to calculate the distance traveled is the "projected" speed on the ground.
+<h2>Speed Analysis</h2>
 
-True Airspeed
-True airspeed is the speed of the aircraft relative to the air mass. It is this speed which is obtained by integration from the acceleration. On the other hand, this speed does not make it possible to evaluate the distance traveled seen from the ground. It is therefore necessary to pass from true airspeed (in the air mass) to ground speed.
+The airspeed used to perform the calculations is the true airspeed relative to the air mass. 
 
-Ground Airspeed
-It is the projection of the true airspeed on the local horizon. The angle of the projection is called the slope. The slope is therefore the angle made by the true velocity vector with respect to the local horizon.
+The speed used to calculate the distance traveled is the "projected" speed on the ground.
 
-Caution: As shown in the following figure, the aircraft may have a positive angle of attack greater than the true speed vector. In this case, and if its speed is sufficient, the aircraft will tend to climb.
+<h2> True Airspeed</h2>
+
+True airspeed is the speed of the aircraft relative to the air mass. 
+
+It is this speed which is obtained by integration from the acceleration. 
+
+On the other hand, this speed does not make it possible to evaluate the distance traveled seen from the ground. 
+
+It is therefore necessary to pass from true airspeed (in the air mass) to ground speed.
+
+<h2>Ground Speed</h2>
+
+The Ground Speed is the speed used to compute the movement relatively to the earth surface.
+
+The Ground Speed is the projection of the true airspeed on the local horizon. 
+
+The angle of the projection is called the slope. 
+
+The slope is therefore the angle made by the true velocity vector with respect to the local horizon.
+
+Caution: As shown in the following figure, the aircraft may have a positive angle of attack greater than the true speed vector. 
+
+In this case, and if its speed is sufficient, the aircraft will tend to climb.
 
 read: Altitudes and speeds (aeronautics)
 
 In the following figure, the trajectory of the airplane represents the axis which carries the true speed vector.
 
-Calibrated Speed
-Calibrated Airspeed
+<h2>Calibrated Airspeed</h2>
 
 https://en.wikipedia.org/wiki/Calibrated_airspeed
 
 ==========================================
 
-Wind : Influence of Wind
+<h2>Wind : Influence of Wind</h2>
 
 The strength of the wind as well as its orientation in relation to the route to be followed will modify the passage times at the characteristic points.
 
 Airspeed = True Airspeed * cosine(Slope Angle)
 
-Note: The slope is the angle that the true speed vector makes with the plane local to the aircraft. This local plane is perpendicular to the terrestrial radius. For normal flight conditions, the slope angle fluctuates between +8 degrees during climb and -3 degrees during descent.
+Note: The slope is the angle that the true speed vector makes with the plane local to the aircraft. 
 
-The direction of the wind is shown relative to True North. If the direction of the wind is equal for example to 60 degrees, the aircraft sees the wind coming from the South-West from an angle of 60+180 or 240 degrees.
+This local plane is perpendicular to the terrestrial radius. For normal flight conditions, the slope angle fluctuates between +8 degrees during climb and -3 degrees during descent.
+
+The direction of the wind is shown relative to True North. 
+
+If the direction of the wind is equal for example to 60 degrees, the aircraft sees the wind coming from the South-West from an angle of 60+180 or 240 degrees.
 
 Assuming that the aircraft follows the defined route (projected on the ground), the heading of the aircraft results from a calculation made from the direction of the route and the direction of the wind (AngleWind). The ground speed vector results from a calculation made from the angles and vectors: proper speed and wind speed.
 
@@ -430,9 +491,8 @@ tan(RouteAngle) = ((Selfspeed * sine(CapeAngle) + (Windspeed * cosine(Pi/2-WindA
 
 The following figure shows a projected view of velocities on the local plane.
 
-=======================================
 
-Ground Speed
+<h2>Ground Speed</h2>
 
 The ground speed modulus is obtained by applying the Pythagorean theorem:
 
@@ -441,11 +501,13 @@ GroundSpeed ² = ( (SelfSpeed * cosine(CapeAngle)) + (WindSpeed * sine(Pi/2-Wind
 ((SelfVelocity * sine(AngleCap)) + (VeloceVent * cosine(Pi/2-AngleVent))) ²
 
 
-===================================
 
-Order of calculations
+<h2>Order of calculations</h2>
 
-The angle of the route and therefore of the ground speed is provided by the sequence of characteristic points (hypothesis: the aircraft follows the fixed route and the wind does not deviate it). The true speed (and therefore the proper speed - projection of the true speed on the local horizon) is obtained as a function of the acceleration. Consequently, the modulus of the airspeed is known, only its angle depends on the speed of the wind and its orientation, versus the angle of the ground speed.
+
+The angle of the route and therefore of the ground speed is provided by the sequence of characteristic points (hypothesis: the aircraft follows the fixed route and the wind does not deviate it). 
+
+The true speed (and therefore the proper speed - projection of the true speed on the local horizon) is obtained as a function of the acceleration. Consequently, the modulus of the airspeed is known, only its angle depends on the speed of the wind and its orientation, versus the angle of the ground speed.
 
 The angle of the airspeed is therefore calculated as being that which makes it possible to obtain the final angle of the ground speed by knowing the angle of the wind, the modulus of the wind speed and the modulus of the airspeed.
 
@@ -453,17 +515,16 @@ From the moment when we know the modulus of the ground speed, it is possible to 
 
 The order of the calculations is therefore as follows:
 
-Calculation of the airspeed modulus = f(true airspeed modulus, slope angle)
+1) Calculation of the airspeed modulus = f(true airspeed modulus, slope angle)
 
-Calculation of the airspeed angle = f(ground speed angle, wind angle and modulus, airspeed modulus)
+2) Calculation of the airspeed angle = f(ground speed angle, wind angle and modulus, airspeed modulus)
 
-Calculation of ground speed modulus = f(ground speed angle, wind angle and modulus, airspeed angle and modulus)
+3) Calculation of ground speed modulus = f(ground speed angle, wind angle and modulus, airspeed angle and modulus)
 
-Calculation of distance traveled = f(module of ground speed, time interval)
+4) Calculation of distance traveled = f(module of ground speed, time interval)
 
-==================================<
 
-Kinematics
+<h2>Kinematics</h2>
 
 The kinematics equations make it possible to calculate the coordinates of the aircraft at time T+delta t according to its coordinates at time T and the Speed vector (true speed at time T).
 
@@ -495,7 +556,7 @@ Warning: these equations are true if and only if the wind is zero.
 
 ============================
 
-Initial Conditions
+<h2>Initial Conditions</h2>
 
 The initial weight of the aircraft is one of the parameters that most influences trajectories and travel times (cf. Coppenbarger)
 
@@ -505,9 +566,9 @@ The aircraft's initial position, runway altitude, and common atmospheric measure
 
 ==============================
 
-The Constraints
+<h2>The Constraints</h2>
 
-Flight Level
+<h3>Flight Level</h3>
 
 The flight level depends on the atmospheric conditions. Expressed in hundreds of feet, a flight level corresponds to a variation of atmospheric pressure with altitude. This altitude is calculated as a pressure differential between the pressure measured around the departure airport and the ISA pressure at sea level.
 
@@ -515,7 +576,7 @@ Example: if the QNH at the airport is equal to 1000 hecto Pascals, in a standard
 
 If the flight level to be reached is equal to FL280, either 28000 feet or 28000 * 0.3048 = 8534.4 meters from which we subtract the 112.63 found previously and therefore the FL280 level will correspond to 8534.4 – 112.63 = 8421.77 meters.
 
-Cruising speed
+<h3>Cruising speed</h3>
 
 The cruising speed is a parameter of the trajectory. It is expressed as a Mach number. Cruise Mach is converted to true airspeed using the following formula:
 
@@ -525,14 +586,20 @@ The speed of sound is that provided by the atmospheric model at cruising altitud
 
 =======================================
 
-Ground-Run and First Turn
+<h2>Ground-Run and Climb Ramp</h2>
 
 
-The ground-run phase brings the aircraft up to sufficient speed to take off. This speed is a function of the performance of the aircraft, its mass, the temperature and the density of the air at the threshold of the runway.
+The ground-run phase brings the aircraft up to sufficient speed to take off. 
 
-During the acceleration phase, the aircraft is in the "smooth" configuration. The acceleration phase must enable it to exceed the stall speed in the "take-off" configuration.
+This speed is a function of the performance of the aircraft, its mass, the temperature and the density of the air at the threshold of the runway.
 
-The stall speed (calibrated speed) in "take-off" configuration is given by the manufacturer for a reference mass. It is up to the pilot to calculate the calibrated speed according to the actual weight and the atmospheric conditions applicable at the threshold of the runway.
+During the acceleration phase, the aircraft is in the "smooth" configuration. 
+
+The acceleration phase must enable it to exceed the stall speed in the "take-off" configuration.
+
+The stall speed (calibrated speed) in "take-off" configuration is given by the manufacturer for a reference mass.
+
+It is up to the pilot to calculate the calibrated speed according to the actual weight and the atmospheric conditions applicable at the threshold of the runway.
 
 For the calculations, only the true airspeed (speed relative to the air mass) is involved.
 
@@ -542,9 +609,8 @@ the latitude and longitude of the starting point (position at the end of the run
 
 the orientation or True-Heading in degrees of the runway - i.e. the angle between true north and the take-off axis.
 
-============================================
 
-Great Circle
+<h2>Great Circle</h2>
 
 
 A great circle or great circle route is the shortest distance between two points on the surface of a sphere. A great circle is formed by the set of points at the intersection of the surface of a sphere and a plane passing through the center of this sphere.
@@ -558,9 +624,8 @@ Note: When progressing along a great circle, the angle of travel (true heading) 
 Great Circle
 https://en.wikipedia.org/wiki/Great_circle# 
 
-==========================================</a>
 
-Turn Leg
+<h2>Turn Leg</h2>
 
 
 A turn makes it possible to pass from the course defined by the direction of flight of the first great circle to the course of the following great circle. The factors that influence a portion of turn are the (true) airspeed of the aircraft, its "roll" angle and the load factor.
@@ -579,9 +644,8 @@ The calculation of the points in the turn must take into account the crossing of
 
 All this to say the importance of the Modulo function to control a turn angle.
 
-========================================
 
-Vertical profile
+<h2>Vertical profile</h2>
 
 
 The vertical route is a function of atmospheric conditions, engine performance (thrust) and the aerodynamic characteristics of the airframe.
@@ -598,13 +662,17 @@ See the definitions of the phases of flight as defined by the ICAO.
 
 As a first approximation, the profile breaks down into three phases:
 
-ascending phase
-cruising phase
-descending phase.
+1) ascending phase
 
-==========================
+2) cruising phase
 
-Stall Speeds
+3) descending phase.
+
+See ICAO phases of flight
+
+
+<h2>Stall Speeds</h2>
+
 
 BADA defines five typical configurations with each time a stall speed (calibrated) and an altitude threshold. <br>
 
@@ -617,12 +685,13 @@ Stall Wikipedia
 
 https://en.wikipedia.org/wiki/Stall_(fluid_dynamics)
 
-==========================
 
-Modeling and Approximation
+<h2>Modeling and Approximation</h2>
 
 
-A model is an approximation of reality. A model is created to answer a predefined set of questions.
+A model is an approximation of reality. 
+
+A model is created to answer a predefined set of questions.
 
 Modeling means reducing the field of parameters (of the real world) while ensuring that the difference between the results provided by the model and the observed reality remains contained and acceptable, for the use that one wishes to make of the results of the calculations .
 
@@ -638,9 +707,8 @@ Finally a model with three degrees of freedom can be sufficient for the calculat
 
 This last assertion would require making both types of calculations and comparing them before concluding on the validity of the simplification.
 
-====================
 
-Earth Model
+<h2>Earth Model</h2>
 
 There are at least three Earth models to consider for trajectory calculations.
 
@@ -660,9 +728,9 @@ In order to obtain results closest to reality, it is necessary to take into acco
 
 https://fr.m.wikipedia.org/wiki/Force_de_Coriolis
 
-===========================
 
-Frame of reference
+<h2>Frame of reference</h2>
+
 
 The theoretical basis of the calculations relies upon vectors (a mathematical object), having a point of application, a module and a validity in a given reference.
 
@@ -672,18 +740,18 @@ Nevertheless, it is advisable to take into consideration the limitations of Newt
 
 https://fr.m.wikipedia.org/wiki/Référentiel_galiléen 
 
-=============================
 
-Aircraft Model
+
+<h2>Aircraft Model</h2>
 
 
 The airplane model is called point-mass. The mass of the airplane is concentrated at a point whose displacements are calculated.
 
 The different forces that are gravity, thrust, drag, lift apply to this central point.
 
-============================
 
-Movement Model
+
+<h2>Movement Model</h2>
 
 
 The motion model advocated by Eurocontrol in its BADA (Base of Aircraft Data) project is a total energy model.
@@ -699,33 +767,40 @@ see: Integrating the Base of Aircraft Data (BADA) in CTAS Trajectory Synthesizer
 Integrating BADA in the CTAS Trajectory Sunthesizer
 https://ntrs.nasa.gov/citations/20140007270 
 
-=====================
 
-Total Energy Model
+<h2>Total Energy Model</h2>
 
-Cinetic Energy
-==============
+<h3>Cinetic Energy</h3>
+
 https://fr.khanacademy.org/science/physique-a-l-ecole/x6e8a541a302cdab5:physique-a-l-ecole-4e-annee-secondaire-1h/x6e8a541a302cdab5:physique-a-l-ecole-4e-1h-travail-energie/a/what-is-kinetic-energy
 
 This model relies on the translation of a speed to an energy =>   Energy = Mass * Speed * Speed
 
 During the climb phase the aircraft transform a cinetic energy into a Potential Energy and vice versa during the Descent Phase.
 
-Potential Energy
-================
+<h3>Potential Energy</h3>
 
 It relies also on the fact that a mass at a certain altitude can be converted in a Potential Energy
 
 https://www.khanacademy.org/science/ms-physics/x1baed5db7c1bb50b:energy/x1baed5db7c1bb50b:potential-energy/v/potential-energy-ms 
 
-Coriolis
 
-========
+<h3>Coriolis</h3>
+
+It is important to understand the consequence of the pseudo Coriolis force particularly when the aircraft is following a long transatlantic path.
+
+As an example, if a bullet follows a ballistic path without wind and the ground part of the trajectory extends approximatively 120 km, 
+the bullet stays in the air more than 3 minutes, 
+the bullet will reach its initial objective with a deviation of approximately 1600 meters.
+
+This is true for any observer attached to the rotating earth, not for an observer in an Galilean frame of reference.
+
+https://fr.wikipedia.org/wiki/Force_de_Coriolis
 
 
 =====================
 
-Acceleration Analysis
+<h2>Acceleration Analysis</h2>
 
 Newton's second law makes it possible to pass from forces to accelerations.
 
@@ -734,13 +809,16 @@ For that, it is advisable to apply the law in an adequate frame of reference (Ga
 
 =====================
 
-Centripetal force
+<h2>Centripetal force</h2>
+
+This section is useful to understand what is happening whilst the aircraft follows a turn section.
 
 https://www.khanacademy.org/science/physics/centripetal-force-and-gravitation/centripetal-acceleration-tutoria/v/centripetal-force-and-acceleration-intuition
 
 
-==============<a></a>
-Speed Analysis
+
+<h2>Speed Analysis</h2>
+
 
 https://en.wikipedia.org/wiki/Flight_envelope
 
@@ -748,7 +826,7 @@ The airspeed used to perform the calculations is the true airspeed relative to t
 
 The speed used to calculate the distance traveled is the "projected" speed on the ground.
 
-True Airspeed
+<h2>True Airspeed</h2>
 
 True airspeed is the speed of the aircraft relative to the air mass.
 

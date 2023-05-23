@@ -327,6 +327,9 @@ class AirlineCosts(models.Model):
     def getTakeOffMassKg(self):
         return self.initialTakeOffMassKg
     
+    def getFinalMassKg(self):
+        return self.finalMassKg
+    
     def getFlightLegDurationSeconds(self):
         return self.flightDurationSeconds
     

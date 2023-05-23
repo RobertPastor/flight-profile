@@ -106,7 +106,7 @@ class MainControl extends og.Control {
 		
 		// 27th January 2023 - Fleet Assignment based upon costs optimization
 		let row_2_data_8 = document.createElement('td');
-		row_2_data_8.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Costs Minimization</button></div>';
+		row_2_data_8.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Costs Min</button></div>';
 		row_2_data_8.title = "click to see the best aircraft selection to minimize costs";
 		row_2.appendChild(row_2_data_8);
 		
@@ -118,12 +118,12 @@ class MainControl extends og.Control {
 		
 		// Costs per Average Seat Miles Optimization
 		let row_2_data_10 = document.createElement('td');
-		row_2_data_10.innerHTML = '<div><button id="btnLaunchCasmOptimization" >CASM Minimization</button></div>';
+		row_2_data_10.innerHTML = '<div><button id="btnLaunchCasmOptimization" >CASM Min</button></div>';
 		row_2_data_10.title = "click to see the best aircraft selection to minimize Costs per Available Seat Miles"; 
 		row_2.appendChild(row_2_data_10);
 		
 		let row_2_data_11 = document.createElement('td');
-		row_2_data_11.innerHTML = '<div><button id="btnLaunchSeatMilesMaximization" >Seats Miles Maximization</button></div>';
+		row_2_data_11.innerHTML = '<div><button id="btnLaunchSeatMilesMaximization" >Seat Miles Max</button></div>';
 		row_2_data_11.title = "click to see the best aircraft selection to minimize Costs per Available Seat Miles"; 
 		row_2.appendChild(row_2_data_11);
 		
