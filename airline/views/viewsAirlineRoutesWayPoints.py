@@ -97,7 +97,7 @@ def getRouteWayPoints(request, Adep, Ades):
             return JsonResponse(response_data)
              
         else:
-            response_data = { "errors" : "route not found = Adep= {0] - Ades= {1}".format(Adep,Ades) }
+            response_data = { "errors" : "route not found = Adep= {0} - Ades= {1}".format(Adep,Ades) }
             return JsonResponse(response_data)
             
     else:

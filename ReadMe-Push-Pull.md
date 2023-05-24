@@ -18,7 +18,6 @@ password = same as usual
 ## open the bash console
 
 
-
 ## search the virtual environment
 
 ls -al .virtualenvs/airlineservices
