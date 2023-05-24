@@ -59,6 +59,9 @@ class AirlineFleet {
 					.append( oneAirlineAircraft["MinimumTakeOffMassKg"] )
 				)
 				.append($('<td>')
+					.append( oneAirlineAircraft["ReferenceMassKg"] )
+				)
+				.append($('<td>')
 					.append( oneAirlineAircraft["MaximumTakeOffMassKg"] )
 				)
 			);

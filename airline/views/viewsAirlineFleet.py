@@ -36,6 +36,7 @@ def getAirlineFleetFromDB(airline):
                     "CostsFlyingHoursDollars"     : airlineAircraft.costsFlyingPerHoursDollars,
                     "CrewCostsFlyingHoursDollars" : airlineAircraft.crewCostsPerFlyingHoursDollars,
                     "MinimumTakeOffMassKg"        : aircraftPerformance.getMinimumMassTons() * 1000.0,
+                    "ReferenceMassKg"             : aircraftPerformance.getReferenceMassKilograms(),
                     "MaximumTakeOffMassKg"        : aircraftPerformance.getMaximumMassTons() * 1000.0
                     })
             

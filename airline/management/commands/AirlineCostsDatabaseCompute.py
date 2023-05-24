@@ -55,9 +55,12 @@ class Command(BaseCommand):
                                 aircraftICAOcode = aircraftICAOcode,
                                 RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
                                 cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                takeOffMassKilograms = acPerformance.getMaximumMassKilograms())
+                                takeOffMassKilograms = acPerformance.getReferenceMassKilograms())
 
-                        flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                        abortedFlight = flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                        if ( abortedFlight == False ):
+                            raise ValueError( "flight did not go to a normal end")
+                        
                         airlineCosts = AirlineCosts(
                                     airline = airline ,
                                     airlineAircraft = airlineAircraft,

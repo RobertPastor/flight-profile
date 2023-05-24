@@ -147,6 +147,9 @@ class AircraftPerformance(object):
             raise ValueError("BadaPerformanceFile: error while reading reference mass in Tons")
         return 0.0
     
+    def getReferenceMassKilograms(self):
+        return self.getReferenceMassTons() * 1000.0
+    
     def getMinimumMassTons(self):
         try:
             if len(self.dataLines)>0:
