@@ -2,6 +2,8 @@ import os
 import logging
 from django.db import models
 
+from trajectory.Environment.RunWayFile import RunWay
+from trajectory.Guidance.WayPointFile import Airport
 
 BADA_381_DATA_FILES = 'Bada381DataFiles'
 OPFfileExtension = '.OPF'
@@ -77,6 +79,16 @@ class AirlineAirport(models.Model):
     
     def getLongitudeDegrees(self):
         return self.Longitude
+    
+    def convertToEnvAirport(self):
+        return Airport ( Name = self.AirportName, 
+                         LatitudeDegrees = self.Latitude , 
+                         LongitudeDegrees = self.Longitude ,
+                         fieldElevationAboveSeaLevelMeters = self.FieldElevationAboveSeaLevelMeters, 
+                         isDeparture = True, 
+                         isArrival = False,
+                         ICAOcode = self.AirportICAOcode,
+                         Country = 'unknown')
 '''
     The Charles De Gaulle airport has 2 configurations, depending on the wind directions.
     However, in both configurations Eastward and Westward of Charles de Gaulle:
@@ -113,4 +125,12 @@ class AirlineRunWay(models.Model):
     
     def getLongitudeDegrees(self):
         return self.LongitudeDegrees
+    
+    def convertToEnvRunway(self):
+        return RunWay(Name = self.Name, 
+                airportICAOcode = self.Airport.getICAOcode(), 
+                LengthFeet      = self.LengthFeet, 
+                TrueHeadingDegrees = self.TrueHeadingDegrees, 
+                LatitudeDegrees    = self.LatitudeDegrees, 
+                LongitudeDegrees   = self.LongitudeDegrees)
     

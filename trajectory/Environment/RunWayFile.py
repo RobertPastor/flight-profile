@@ -90,12 +90,12 @@ class RunWay(GeographicalPoint):
     
     def __str__(self):
         strRunWay = self.className
-        strRunWay += ': runway= ' + self.Name
-        strRunWay += ' airport ICAO code= '     + self.airportICAOcode 
-        strRunWay += ' length= {0:.2f} feet'.format(self.LengthFeet) 
-        strRunWay += ' true heading= {0:.2f} degrees'.format(self.TrueHeadingDegrees)
-        strRunWay += ' latitude= {0:.2f} degrees'.format(self.LatitudeDegrees)
-        strRunWay += ' longitude= {0:.2f} degrees'.format(self.LongitudeDegrees)
+        strRunWay += ': runway= ' + self.Name + " - "
+        strRunWay += ' airport ICAO code= '     + self.airportICAOcode  + " - "
+        strRunWay += ' length= {0:.2f} feet'.format(self.LengthFeet) + " - "
+        strRunWay += ' true heading= {0:.2f} degrees'.format(self.TrueHeadingDegrees) + " - "
+        strRunWay += ' latitude= {0:.2f} degrees'.format(self.LatitudeDegrees) + " - "
+        strRunWay += ' longitude= {0:.2f} degrees'.format(self.LongitudeDegrees) 
         return strRunWay
     
     def getEndOfRunWay(self):

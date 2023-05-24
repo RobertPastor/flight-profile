@@ -17,7 +17,7 @@ from datetime import datetime
 from xlsxwriter import Workbook
 from django.shortcuts import HttpResponse
 from django.views.decorators.csrf import csrf_protect
-from django.http import  JsonResponse
+from django.http import JsonResponse
 
 
 from airline.models import Airline, AirlineRoute, AirlineAircraft
@@ -118,11 +118,8 @@ def createExcelVerticalProfile(request, airlineName):
                 cruiseFLfeet = request.GET['fl'] 
                 logger.info( "cruise FL feet = {0}".format( cruiseFLfeet ) )
                 
-                airline = Airline.objects.filter(Name=airlineName).first()
-                if (airline):
-
-                    airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
-                    if (airlineRoute):
+                airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
+                if (airlineRoute):
                         logger.info ( airlineRoute )
                         '''  use run-ways defined in the web page '''
                         routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
@@ -165,15 +162,25 @@ def createExcelVerticalProfile(request, airlineName):
                             response['Content-Length'] = memoryFile.tell()
                             return response      
                         
-                    else:
+                else:
                         logger.info ('airline route not found = {0}'.format(airlineRoute))
                         response_data = {
                             'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
                         return JsonResponse(response_data)                                                                   
-
-                else:
-                    logger.info ('airline  not found = {0}'.format(airlineName))
-                    response_data = {
+            else:
+                logger.info ('bada aircraft not found = {0}'.format(airlineRoute))
+                response_data = {
+                            'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
+                return JsonResponse(response_data)   
+             
+        else:
+            logger.info ('airline  not found = {0}'.format(airlineName))
+            response_data = {
                         'errors' : 'Airline not found = {0}'.format(airlineName)}
-                return JsonResponse(response_data)
+            return JsonResponse(response_data)
 
+    else:
+            logger.info ('expecting a GET - received something else = {0}'.format(request.method))
+            response_data = {
+                        'errors' : 'expecting a GET - received something else = {0}'.format(request.method)}
+            return JsonResponse(response_data)

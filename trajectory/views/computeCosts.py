@@ -80,7 +80,7 @@ def computeCosts(request, airlineName):
                     flightPath = FlightPath(
                                     route = routeAsString, 
                                     aircraftICAOcode = aircraftICAOcode,
-                                    RequestedFlightLevel = float ( cruiseFLfeet )  / 100., 
+                                    RequestedFlightLevel = float ( cruiseFLfeet )  / 100.0 , 
                                     cruiseMach = acPerformance.getMaxOpMachNumber(), 
                                     takeOffMassKilograms =  float(takeOffMassKg) )
     

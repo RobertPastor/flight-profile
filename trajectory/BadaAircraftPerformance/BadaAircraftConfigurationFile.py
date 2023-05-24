@@ -215,6 +215,7 @@ class AircraftConfiguration(FlightEnvelope):
     def getAircraftInitialMassKilograms(self):
         return self.aircraftMass.getInitialMassKilograms() 
         
+        
     def getMinimumMassKilograms(self):
         return self.aircraftMass.getMinimumMassKilograms()
     
@@ -254,6 +255,13 @@ class AircraftConfiguration(FlightEnvelope):
 
         logger.debug ( self.className + ' ====================================' )
 
+
+    def setDepartureGroundRunConfiguration(self, elapsedTimeSeconds):
+        newConfiguration = 'departure-ground-run'
+        if self.aircraftCurrentConfiguration != newConfiguration:
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.aircraftCurrentConfiguration = newConfiguration
+            
 
     def setTakeOffConfiguration(self, elapsedTimeSeconds):
         ''' take off starts at the end of the ground-run when speed > 1.2 * Take-off stall speed '''

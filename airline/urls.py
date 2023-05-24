@@ -31,4 +31,5 @@ urlpatterns = [
     
     path('getAirlineSeatMilesXlsx/<slug:airlineName>' , getAirlineSeatsMilesMaxXlsx , name = 'getAirlineSeatsMilesMaxXlsx')
     
+    
 ]

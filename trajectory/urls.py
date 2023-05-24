@@ -8,6 +8,7 @@ from trajectory.views.viewsFlightProfile import launchFlightProfile, computeFlig
 from trajectory.views.computeCosts import computeCosts
 from trajectory.views.downLoadVerticalProfile import createExcelVerticalProfile
 from trajectory.views.viewsFuelPlanner import launchFuelPlanner
+from trajectory.views.computeRunwayOvershoot import computeRunwayOvershoot
 
 app_name = "trajectory"
 
@@ -22,7 +23,9 @@ urlpatterns = [
     path('computeCosts/<slug:airlineName>' , computeCosts , name='computeCosts'),
     path('getAircraft/<slug:airlineName>' , getAircraft , name="getAircraft"),
     
-    path('launchFuelPlanner/<slug:airlineName>' , launchFuelPlanner , name='launchFuelPlanner')
+    path('launchFuelPlanner/<slug:airlineName>' , launchFuelPlanner , name='launchFuelPlanner'),
+    
+    path('computeRunwayOvershoot/<slug:aircraft>/<slug:airport>/<slug:runway>/<slug:mass>' , computeRunwayOvershoot , name ='computeRunwayOvershoot')
 
 ]
 

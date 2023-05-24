@@ -170,8 +170,7 @@ class Airport(WayPoint):
     
     
     def __str__(self):
-        strMsg = self.className + ': Airport: ' + self.ICAOcode + ' - '
-        strMsg += self.Country + ' - ' 
+        strMsg = self.className + ': Airport: ' + self.ICAOcode + ' - ' 
         strMsg += self.Name + ' - lat= {0:.2f} degrees - long= {1:.2f} degrees'.format(self.LatitudeDegrees, self.LongitudeDegrees) 
         strMsg += ' - field elevation= {0:.2f} meters'.format(self.fieldElevationAboveSeaLevelMeters)
         return strMsg

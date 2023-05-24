@@ -36,7 +36,6 @@ from trajectory.Guidance.WayPointFile import Airport, WayPoint
 from trajectory.Guidance.GraphFile import Graph
 from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 
-
 from trajectory.Environment.Constants import  MeterPerSecond2Knots 
 
 class GroundRunLeg(Graph):
@@ -55,6 +54,7 @@ class GroundRunLeg(Graph):
     airport = None
     runway = None
     elapsedTimeSeconds = 0.0
+    totalLegDistanceMeters = 0.0
     
     def __init__(self,
                  runway,
@@ -200,7 +200,7 @@ class GroundRunLeg(Graph):
         ''' departure ground run => initial speed is null '''
         trueAirSpeedMetersSecond = 0.1
         ''' ground run leg distance '''
-        totalLegDistanceMeters = 0.0
+        self.totalLegDistanceMeters = 0.0
         self.aircraft.initStateVector(    elapsedTimeSeconds,
                                             trueAirSpeedMetersSecond,
                                             self.airport.getFieldElevationAboveSeaLevelMeters())
@@ -227,17 +227,18 @@ class GroundRunLeg(Graph):
             ''' fly => increase in true air speed '''
             ''' during ground run => all the energy is used to increase the Kinetic energy => no potential energy increase '''
             endOfSimulation, deltaDistanceMeters , altitudeMeters = self.aircraft.fly(
-                                                                    elapsedTimeSeconds = elapsedTimeSeconds,
+                                                                     elapsedTimeSeconds = elapsedTimeSeconds,
                                                                      deltaTimeSeconds = deltaTimeSeconds, 
                                                                      distanceStillToFlyMeters = distanceStillToFlyMeters,
                                                                      currentPosition  = intermediateWayPoint,
                                                                      distanceToLastFixMeters = distanceToLastFixMeters)
+            
             trueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
             assert (((self.airport.getFieldElevationAboveSeaLevelMeters() - 10.0) <= altitudeMeters) and
                     ( altitudeMeters <= (self.airport.getFieldElevationAboveSeaLevelMeters() + 10.0)))
             #logging.info self.className + ': delta distance= ' + str(deltaDistanceMeters) + ' meters'
             # name of the next point            
-            totalLegDistanceMeters += deltaDistanceMeters
+            self.totalLegDistanceMeters += deltaDistanceMeters
             distanceStillToFlyMeters -= deltaDistanceMeters
             distanceToLastFixMeters -= deltaDistanceMeters
             
@@ -266,9 +267,11 @@ class GroundRunLeg(Graph):
             index += 1
             
         ''' rename last point as take-off '''
-        intermediateWayPoint.setName(Name = 'takeOff-{0:.1f}-meters'.format(totalLegDistanceMeters))
+        intermediateWayPoint.setName(Name = 'takeOff-{0:.1f}-meters'.format(self.totalLegDistanceMeters))
    
    
     def getElapsedTimeSeconds(self):
         return self.elapsedTimeSeconds
 
+    def getTotalLegDistanceMeters(self):
+        return self.totalLegDistanceMeters
