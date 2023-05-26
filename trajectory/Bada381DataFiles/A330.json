@@ -1,0 +1,9 @@
+{
+	"aircraft" : {
+			"name" : "Airbus A330",
+			"manufacturer": "Airbus",
+			"variant": "A330-200",
+			"ICAO": "A332",
+			"source": "https://www.airbus.com/sites/g/files/jlcbta136/files/2022-08/Airbus-Commercial-Aircraft-AC-A330.pdf"
+			}
+}

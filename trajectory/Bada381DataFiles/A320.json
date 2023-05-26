@@ -1,0 +1,34 @@
+{
+	"aircraft" : {
+		"name" : "Airbus A320",
+		"manufacturer": "Airbus",
+		"variant": "A320-200",
+		"ICAO" : "A320",
+		"source" : "https://www.airbus.com/sites/g/files/jlcbta136/files/2023-05/Airbus-techdata-AC-A320_0523.pdf",
+		"mass": {
+			
+			"minimal": {
+				"unit" : "kg",
+				"value": "39000.0"
+			},
+			"reference": {
+				"unit" : "kg",
+				"value": "64000.0"
+			},
+			"maxPayLoad": {
+				"unit" : "kg",
+				"value": "21500.0"
+			},
+			"maximal": {
+				"unit" : "kg",
+				"value": "77000.0"
+			},
+			"maxFuel" : {
+				"unit" : "kg",
+				"value": "20000.0"
+			}
+		}
+	}
+
+
+}
