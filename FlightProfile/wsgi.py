@@ -17,9 +17,9 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FlightProfile.settings")
 
 from django.core.wsgi import get_wsgi_application
-from whitenoise import WhiteNoise
+#from whitenoise import WhiteNoise
 
 application = get_wsgi_application()
 
 #PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-application = WhiteNoise(application)
+#application = WhiteNoise(application)

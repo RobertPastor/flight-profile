@@ -1,11 +1,21 @@
 #How to rebuild the final og after applying modifications
 
 
+## install node.js if needed
+
+## install git / git Bash
+
+in gitBash launch 
+$ git clone https://github.com/openglobus/openglobus.git
+
+
+## ============= npm install ===============
+
 go to the repo and launch PowerShell
 
 PS D:\Node.js\openglobus.0.13.7> npm install
 
-#=================================================
+## =================== npm run build ==============================
 
 PS D:\Node.js\openglobus.0.13.7> npm run build
 

@@ -102,6 +102,11 @@ Installing collected packages: pytz, sqlparse, django
 Successfully installed django-2.2 pytz-2022.6 sqlparse-0.4.3
 (airlineservices) 13:48 ~ $ 
 
+## install xlrd EXCEL reader for .xls (old format files)
+
+pip install xlrd
+
+
 ## Install xlsxwriter in the virtual environment
 
 (airlineservices) 13:49 ~ $ pip install xlsxwriter
@@ -336,6 +341,7 @@ from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 
 ## allowed hosts
+
 DisallowedHost at /
 Invalid HTTP_HOST header: 'airlineservices.eu.pythonanywhere.com'. You may need to add 'airlineservices.eu.pythonanywhere.com' to ALLOWED_HOSTS.
 
