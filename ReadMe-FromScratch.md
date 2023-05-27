@@ -23,6 +23,9 @@ Successfully installed asgiref-3.7.1 django-3.2 pytz-2023.3 sqlparse-0.4.4
 [notice] A new release of pip available: 22.3.1 -> 23.1.2
 [notice] To update, run: python.exe -m pip install --upgrade pip
 PS C:\Users\rober>
+
+## ================== install xlrd !!! need to replace with openpyxl / pandas
+
 PS C:\Users\rober> pip install xlrd
 Collecting xlrd
   Downloading xlrd-2.0.1-py2.py3-none-any.whl (96 kB)
@@ -31,6 +34,9 @@ Installing collected packages: xlrd
 Successfully installed xlrd-2.0.1
 
 [notice] A new release of pip available: 22.3.1 -> 23.1.2
+
+## =================== upgrade pip
+
 [notice] To update, run: python.exe -m pip install --upgrade pip
 PS C:\Users\rober> python.exe -m pip install --upgrade pip
 Requirement already satisfied: pip in c:\users\rober\appdata\local\programs\python\python311\lib\site-packages (22.3.1)
@@ -43,17 +49,27 @@ Installing collected packages: pip
     Uninstalling pip-22.3.1:
       Successfully uninstalled pip-22.3.1
 Successfully installed pip-23.1.2
+
+## ============= install postgres -> only for the development environment
+
 PS C:\Users\rober> pip install psycopg2
 Collecting psycopg2
   Downloading psycopg2-2.9.6-cp311-cp311-win_amd64.whl (1.2 MB)
      ---------------------------------------- 1.2/1.2 MB 72.0 MB/s eta 0:00:00
 Installing collected packages: psycopg2
 Successfully installed psycopg2-2.9.6
+
+## ============= install xml2dict -> used to convert XML data to a json dictionnary for the front end
+## ============= used to display a trajectory
+
 PS C:\Users\rober> pip install xmltodict
 Collecting xmltodict
   Downloading xmltodict-0.13.0-py2.py3-none-any.whl (10.0 kB)
 Installing collected packages: xmltodict
 Successfully installed xmltodict-0.13.0
+
+## ============= install pandas -> xlsx reader 
+
 PS C:\Users\rober> pip install pandas
 Collecting pandas
   Downloading pandas-2.0.1-cp311-cp311-win_amd64.whl (10.6 MB)
@@ -74,18 +90,27 @@ Installing collected packages: tzdata, six, numpy, python-dateutil, pandas
 Successfully installed numpy-1.24.3 pandas-2.0.1 python-dateutil-2.8.2 six-1.16.0 tzdata-2023.3
 PS C:\Users\rober>
 PS C:\Users\rober>
+
+## ============= install xlsxwriter -> to create the EXCEL files to be downloaded -> could be replaced by pandas ?
+
 PS C:\Users\rober> pip install xlsxwriter
 Collecting xlsxwriter
   Downloading XlsxWriter-3.1.1-py3-none-any.whl (152 kB)
      ---------------------------------------- 152.9/152.9 kB 9.5 MB/s eta 0:00:00
 Installing collected packages: xlsxwriter
 Successfully installed xlsxwriter-3.1.1
+
+## ============= install pulp solver -> for any minimization or maximization 
+
 PS C:\Users\rober> pip install pulp
 Collecting pulp
   Downloading PuLP-2.7.0-py3-none-any.whl (14.3 MB)
      ---------------------------------------- 14.3/14.3 MB 46.7 MB/s eta 0:00:00
 Installing collected packages: pulp
 Successfully installed pulp-2.7.0
+
+## ============ install whitenoise ? not sure if it is still usefull ? was needed when deployed in Heroku
+
 PS C:\Users\rober> pip install whitenoise
 Collecting whitenoise
   Downloading whitenoise-6.4.0-py3-none-any.whl (19 kB)
@@ -94,13 +119,8 @@ Successfully installed whitenoise-6.4.0
 PS C:\Users\rober>
 
 
-## install postgres for the development environment and configure a database
-
-error -> 
-django.db.utils.ProgrammingError: relation "airline_airline" does not exist
-LINE 1: ...ees", "airline_airline"."MaxLatitudeDegrees" FROM "airline_a...
-
-## create the tables 
+## =============== configure a database
+## =============== create the tables 
 
 python manage.py makemigrations
 python manage.py migrate
@@ -125,7 +145,7 @@ trajectory.AirlineRunWay: (models.W042) Auto-created primary key used when not d
 No changes detected
 PS C:\Users\rober\git\flight-profile>
 
-## add in settings
+## add in settings -> probably needed with django 3.2
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
@@ -174,7 +194,7 @@ Running migrations:
   Applying trajectory.0008_delete_kmloutputfile... OK
 PS C:\Users\rober\git\flight-profile>
 
-## launch creation of the different airlines
+## ####### create the different airlines
 
 python manage.py AirlineDatabaseLoad
 
@@ -185,8 +205,6 @@ IndianWings
 PS C:\Users\rober\git\flight-profile>
 
 ## create fleet
-
-
 
 ## warning - need to create the BADA aircrafts to get the fleet data as some are coming from the aircraft such as mass
 
@@ -227,71 +245,8 @@ Index is: 4
 ID is: 4 - Airline is: AmericanWings - Departure Airport = KIAH
 ID is: 4 - Airline is: AmericanWings - Arrival AIrport = KORD
 departure airport= KIAH - arrival airport= KORD
-Index is: 5
-ID is: 5 - Airline is: AmericanWings - Departure Airport = KIAD
-ID is: 5 - Airline is: AmericanWings - Arrival AIrport = KSFO
-departure airport= KIAD - arrival airport= KSFO
-Index is: 6
-ID is: 6 - Airline is: AmericanWings - Departure Airport = PANC
-ID is: 6 - Airline is: AmericanWings - Arrival AIrport = KATL
-departure airport= PANC - arrival airport= KATL
-Index is: 7
-ID is: 7 - Airline is: AmericanWings - Departure Airport = KLAX
-ID is: 7 - Airline is: AmericanWings - Arrival AIrport = KATL
-departure airport= KLAX - arrival airport= KATL
-Index is: 8
-ID is: 8 - Airline is: AmericanWings - Departure Airport = KSEA
-ID is: 8 - Airline is: AmericanWings - Arrival AIrport = KJFK
-departure airport= KSEA - arrival airport= KJFK
-Index is: 9
-ID is: 9 - Airline is: AmericanWings - Departure Airport = KMSP
-ID is: 9 - Airline is: AmericanWings - Arrival AIrport = KATL
-departure airport= KMSP - arrival airport= KATL
-Index is: 10
-ID is: 10 - Airline is: AmericanWings - Departure Airport = KATL
-ID is: 10 - Airline is: AmericanWings - Arrival AIrport = KBOS
-departure airport= KATL - arrival airport= KBOS
-Index is: 11
-ID is: 11 - Airline is: AmericanWings - Departure Airport = KORD
-ID is: 11 - Airline is: AmericanWings - Arrival AIrport = KIAH
-departure airport= KORD - arrival airport= KIAH
-Index is: 12
-ID is: 12 - Airline is: AmericanWings - Departure Airport = KSFO
-ID is: 12 - Airline is: AmericanWings - Arrival AIrport = KIAD
-departure airport= KSFO - arrival airport= KIAD
-Index is: 13
-ID is: 13 - Airline is: AmericanWings - Departure Airport = KATL
-ID is: 13 - Airline is: AmericanWings - Arrival AIrport = PANC
-departure airport= KATL - arrival airport= PANC
-Index is: 14
-ID is: 14 - Airline is: AmericanWings - Departure Airport = KJFK
-ID is: 14 - Airline is: AmericanWings - Arrival AIrport = LFPG
-departure airport= KJFK - arrival airport= LFPG
-Index is: 15
-ID is: 15 - Airline is: EuropeanWings - Departure Airport = LFPG
-ID is: 15 - Airline is: EuropeanWings - Arrival AIrport = LPPT
-departure airport= LFPG - arrival airport= LPPT
-Index is: 16
-ID is: 16 - Airline is: EuropeanWings - Departure Airport = LFPG
-ID is: 16 - Airline is: EuropeanWings - Arrival AIrport = LFML
-departure airport= LFPG - arrival airport= LFML
-Index is: 17
-ID is: 17 - Airline is: EuropeanWings - Departure Airport = LFOB
-ID is: 17 - Airline is: EuropeanWings - Arrival AIrport = LHBP
-departure airport= LFOB - arrival airport= LHBP
-Index is: 18
-ID is: 18 - Airline is: EuropeanWings - Departure Airport = LHBP
-ID is: 18 - Airline is: EuropeanWings - Arrival AIrport = LFOB
-departure airport= LHBP - arrival airport= LFOB
-Index is: 19
-ID is: 19 - Airline is: IndianWings - Departure Airport = VOBL
-ID is: 19 - Airline is: IndianWings - Arrival AIrport = VIDP
-departure airport= VOBL - arrival airport= VIDP
-Index is: 20
-ID is: 20 - Airline is: IndianWings - Departure Airport = VABB
-ID is: 20 - Airline is: IndianWings - Arrival AIrport = VECC
-departure airport= VABB - arrival airport= VECC
-Index is: 21
+..........
+
 ID is: 21 - Airline is: IndianWings - Departure Airport = VOMM
 ID is: 21 - Airline is: IndianWings - Arrival AIrport = VIJP
 departure airport= VOMM - arrival airport= VIJP
@@ -299,7 +254,7 @@ read airline routes database result = True
 PS C:\Users\rober\git\flight-profile>
 
 
-## need to load the airports database with latitude longitude to see the airports on the map
+## ================ load the airports database with latitude longitude to see the airports on the map
 
 PS C:\Users\rober\git\flight-profile> python manage.py AirportsDatabaseLoad
 AirportsDatabase: file folder= C:\Users\rober\git\flight-profile\trajectory\management\commands\Airports
@@ -310,5 +265,73 @@ PS C:\Users\rober\git\flight-profile>
 
 ## open PgAdmin to see the airline routes and the airports table content
 
+## need to load the runways database
+
+PS C:\Users\rober\git\flight-profile> python manage.py RunWaysDatabaseLoad
+RunWaysDatabase: file folder= C:\Users\rober\git\flight-profile\trajectory\management\commands\RunWays
+RunWaysDatabase: file path= C:\Users\rober\git\flight-profile\trajectory\management\commands\RunWays\RunWays.xls
+runwaysDB exists
+C:\Users\rober\git\flight-profile\trajectory\management\commands\RunWays\RunWays.xls
+airport = KATL
+KATL/08L
+airport = KATL
+KATL/08R
+airport = KATL
+KATL/09L
+......
+
+
+
+
+airport = PANC
+PANC/07L
+airport = PANC
+PANC/07R
+airport = PANC
+PANC/15
+airport = VABB
+VABB/09
+airport = VABB
+VABB/14
+airport = VECC
+VECC/01L
+airport = VECC
+VECC/01R
+airport = VIDP
+VIDP/09
+airport = VIDP
+VIDP/10
+airport = VIDP
+VIDP/11
+airport = VIJP
+VIJP/09
+airport = VIJP
+VIJP/15
+airport = VOBL
+VOBL/09L
+airport = VOBL
+VOBL/09R
+airport = VOMM
+VOMM/07
+airport = VOMM
+VOMM/12
+read runways database result = True
+PS C:\Users\rober\git\flight-profile>
+
+## ================ load the way points database
+## warning = a unique EXCEL file is created after reading all the individual routes
+## this WayPoints.xlsx file must be moved to the WayPoints folder in the "trajectory" command folder 
+
+PS C:\Users\rober\git\flight-profile> python manage.py WayPointsDatabaseLoad
+WayPointsDatabaseXlsx: file folder= C:\Users\rober\git\flight-profile\trajectory\management\commands\WayPoints
+WayPointsDatabaseXlsx: file path= C:\Users\rober\git\flight-profile\trajectory\management\commands\WayPoints\WayPoints.xlsx
+acBD exists
+Index is: 0
+ID is: 0 - WayPoint is: VUZ - Latitude = N33°40'12.47" - Longitude = W086°53'59.41"
+wayPoint name = VUZ - Latitude 33.67 - Longitude = -86.90
+Index is: 1
+ID is: 1 - WayPoint is: YAALL - Latitude = N33°47'36.30" - Longitude = W087°28'51.23"
+wayPoint name = YAALL - Latitude 33.79 - Longitude = -87.48
+Index is: 2
 
 

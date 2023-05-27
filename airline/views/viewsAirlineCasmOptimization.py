@@ -5,11 +5,12 @@ Created on 17 mars 2023
 '''
 
 
-from pulp import LpProblem , LpMinimize ,  LpVariable, LpInteger, lpSum, LpStatus ,  PULP_CBC_CMD, value
-from django.http import  JsonResponse
+from pulp import LpProblem , LpMinimize ,  LpVariable, lpSum, LpStatus ,  PULP_CBC_CMD, value
+from pulp.constants import LpBinary
+
+from django.http import JsonResponse
 
 import logging
-from pulp.constants import LpBinary
 logger = logging.getLogger(__name__)
 
 from airline.models import Airline, AirlineCosts, AirlineAircraft, AirlineRoute
@@ -19,38 +20,31 @@ from trajectory.Environment.Constants import kerosene_kilo_to_US_gallons , US_ga
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
 
-def getAirlineCasmOptimization(request, airlineName):
+def computeAirlineCostsArray(airline, airlineName):
     
-    logger.debug ("get Airline Fleet for airline = {0}".format(airlineName))
-
-    if (request.method == 'GET'):
+    nbFligthtLegs = AirlineRoute.objects.filter(airline=airline).count()
+    aircraftInstances = AirlineAircraftInstances()
+    aircraftInstancesList = aircraftInstances.computeAirlineAircraftInstances(airlineName , nbFligthtLegs)
+    logger.info ( aircraftInstancesList )
         
-        airline = Airline.objects.all().filter(Name=airlineName).first()
-        if airline:
+    airlineCasmArray = []
+    airlineAircraftICAOcodeList = []
+    airlineAircraftFullNameList = []
             
-            nbFligthtLegs = AirlineRoute.objects.filter(airline=airline).count()
-            aircraftInstances = AirlineAircraftInstances()
-            aircraftInstancesList = aircraftInstances.computeAirlineAircraftInstances(airlineName , nbFligthtLegs)
-            logger.info ( aircraftInstancesList )
-        
-            airlineCasmArray = []
-            airlineAircraftICAOcodeList = []
-            airlineAircraftFullNameList = []
-            
-            for aircraftInstance in aircraftInstancesList:
+    for aircraftInstance in aircraftInstancesList:
                 
-                acICAOcode = aircraftInstances.getAircraftInstanceICAOcode(aircraftInstance)
-                airlineAircraft = AirlineAircraft.objects.filter(airline=airline , aircraftICAOcode=acICAOcode).first()
+        acICAOcode = aircraftInstances.getAircraftInstanceICAOcode(aircraftInstance)
+        airlineAircraft = AirlineAircraft.objects.filter(airline=airline , aircraftICAOcode=acICAOcode).first()
                                 
-                nbSeats = airlineAircraft.getMaximumNumberOfPassengers()
+        nbSeats = airlineAircraft.getMaximumNumberOfPassengers()
                 
-                airlineAircraftICAOcodeList.append(airlineAircraft.aircraftICAOcode)
-                airlineAircraftFullNameList.append(airlineAircraft.aircraftFullName)
+        airlineAircraftICAOcodeList.append(airlineAircraft.aircraftICAOcode)
+        airlineAircraftFullNameList.append(airlineAircraft.aircraftFullName)
                 
-                aircraftCasmArray = []
-                airlineFlightLegsList = []
+        aircraftCasmArray = []
+        airlineFlightLegsList = []
                 
-                for airlineRoute in AirlineRoute.objects.filter(airline=airline):
+        for airlineRoute in AirlineRoute.objects.filter(airline=airline):
                     
                     #print ( airlineRoute.getFlightLegAsString() )
                     airlineFlightLegsList.append(airlineRoute.getFlightLegAsString())
@@ -75,9 +69,23 @@ def getAirlineCasmOptimization(request, airlineName):
                             
                         aircraftCasmArray.append( float(casmUSdollars) )
                         
-                airlineCasmArray.append(aircraftCasmArray)
+        airlineCasmArray.append(aircraftCasmArray)
                 
-            print ( airlineCasmArray )
+    #print ( airlineCasmArray )
+    return aircraftInstancesList , airlineFlightLegsList , airlineCasmArray
+
+
+def getAirlineCasmOptimization(request, airlineName):
+    
+    logger.debug ("get Airline Fleet for airline = {0}".format(airlineName))
+    
+    if (request.method == 'GET'):
+        
+        airline = Airline.objects.all().filter(Name=airlineName).first()
+        if airline:
+            
+            ''' 27th May 2023 - unique function used by get EXCEL file and get JSON for display in an html table '''
+            aircraftInstancesList , airlineFlightLegsList , airlineCasmArray = computeAirlineCostsArray(airline, airlineName)
             
             num_flight_legs = len( AirlineRoute.objects.filter(airline=airline) )
             logger.info ( "num flight legs = {0}".format(num_flight_legs) )
@@ -118,7 +126,6 @@ def getAirlineCasmOptimization(request, airlineName):
                 pass
                 prob += lpSum ( [ x_vars[i,j] for i in range(num_aircraft_instances) ] ) == 1
                 #check_constraints(prob, c_list)
-
                 
             ''' minimize the costs '''
             #solver.Minimize(solver.Sum(objective_terms))
@@ -170,7 +177,7 @@ def getAirlineCasmOptimization(request, airlineName):
                             result["Seats"] =  nbSeats 
                             result["Miles"] =  round ( miles , 2 )
                             result["Costs"] =  round ( totalCostsUSdollars , 2 )
-                            result["CASM"] = round ( casmUSdollars , 4 )
+                            result["CASM"]  = round ( casmUSdollars , 4 )
                             
                 if ( v.varValue > 0.0 ):
                     logger.info ( "var name = {0} - var value = {1}".format( v.name, v.varValue ) )

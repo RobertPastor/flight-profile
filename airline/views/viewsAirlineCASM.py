@@ -14,13 +14,19 @@ from xlsxwriter import Workbook
 from datetime import datetime 
 from django.shortcuts import HttpResponse
 
+from pulp import LpProblem , LpMinimize ,  LpVariable, lpSum, LpStatus ,  PULP_CBC_CMD, value
+from pulp.constants import LpBinary
+
 from airline.models import Airline
 from airline.models import AirlineCosts, AirlineAircraft, AirlineRoute
+from airline.views.viewsAirlineCasmOptimization import computeAirlineCostsArray
 
 from trajectory.Environment.Constants import kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
-headers = [ 'Airline' , 'Aircraft' , 'Departure', 'Arrival', 'Is Aborted', 'nb Seats' , 'leg length NM' , 'totalCostsUS$' , 'Costs per Available Seat Mile US$' ]
+headersCASM = [ 'Airline' , 'Aircraft' , 'Departure', 'Arrival', 'Is Aborted', 'nb Seats' , 'leg length NM' , 'total Costs US$' , 'Costs per Available Seat Mile US$' ]
+headersCASMoptim = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned' , 'Departure', 'Arrival', 'nb Seats' , 'leg length (nm)' , 'total Costs US$' , 'Costs per Available Seat Mile US$' ]
+
 
 def writeReadMe(workbook, request, airlineName):
 
@@ -40,31 +46,31 @@ def writeReadMe(workbook, request, airlineName):
     wsReadMe.write(row, 0 , "Date", styleLavender)
     wsReadMe.write(row, 1 , datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") , styleEntete)
     
-    ''' set width of each column '''
-    wsReadMe.set_column(0 , 1 , len("Airline Services"))
-    
     # Autofit the worksheet.
     wsReadMe.autofit()
+    return row, wsReadMe, styleLavender, styleEntete
     
     
-def writeHeaders(worksheet, style):
+def writeHeaders(worksheet, style, headers):
     row = 0
     col = 0
     for header in headers:
         worksheet.write(row, col , header , style)
         col = col + 1
-    
+    row = row + 1
+    return row
+
     
 def writeAirlineCasmResults(workbook , airlineName):
     
     worksheet = workbook.add_worksheet("Airline CASM Costs")
     styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
-    writeHeaders(worksheet, styleLavender)
+    
+    row = writeHeaders(worksheet, styleLavender, headersCASM)
     
     airline = Airline.objects.all().filter(Name=airlineName).first()
     if airline:
         
-        row  = 1
         for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
                 
             nbSeats = airlineAircraft.getMaximumNumberOfPassengers()
@@ -117,21 +123,179 @@ def writeAirlineCasmResults(workbook , airlineName):
     
         worksheet.autofit()
     else:
-        print ( "airline not found")
+        print ( "airline not found = {0}".format( airlineName ))
+        ColumnIndex = 0
+        worksheet.write(row, ColumnIndex, airlineName)
+        
 
+def writeAirlineCasmOptimizationResults(workbook , airlineName):
+    
+    worksheet = workbook.add_worksheet("Airline CASM Optimization")
+    styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
+    row = writeHeaders(worksheet, styleLavender, headersCASMoptim)
+    
+    value_prob_objective = 0.0
+    
+    airline = Airline.objects.all().filter(Name=airlineName).first()
+    if airline:
+    
+            ''' 27th May 2023 - unique function used by get EXCEL file and get JSON for display in an html table '''
+            aircraftInstancesList , airlineFlightLegsList , airlineCasmArray = computeAirlineCostsArray(airline, airlineName)
+            
+            num_flight_legs = len( AirlineRoute.objects.filter(airline=airline) )
+            logger.info ( "num flight legs = {0}".format(num_flight_legs) )
+            num_aircraft_instances = len(aircraftInstancesList)
+            
+            logger.info ( "number of aircraft instances = {0}".format( num_aircraft_instances ) )
+            num_flight_legs = len(airlineCasmArray[0])
+            logger.info ( "num flight legs = {0}".format(num_flight_legs) )
+
+            ''' minimization problem '''
+            prob = LpProblem("CASM-Problem", LpMinimize)
+            
+            ''' define the variables '''
+            x_vars = {}
+            #print ( range(num_aircrafts) )
+            for i in range(num_aircraft_instances):
+                #print ( "---> {0} - {1}".format( i , airlineAircraftICAOcodeList[i] ) )
+                for j in range(num_flight_legs):
+                    #print ( "------> {0} - {1}".format ( j , airlineFlightLegsList[j] ) )
+                    #print ( '{0}-{1}'.format(airlineAircraftICAOcodeList[i], airlineFlightLegsList[j]) )
+                    #x[i, j] = solver.IntVar(0, 1, '{0}-{1}'.format("A320", airlineFlightLegsList[j]))
+                    pass
+                    #x_vars = LpVariable("x_vars", lowBound=0, upBound=1, cat='Integer', e=None)
+                    x_vars[i,j] = LpVariable(name="{0}-{1}".format(aircraftInstancesList[i], airlineFlightLegsList[j]), lowBound=0, upBound=1, cat=LpBinary)
+
+
+            ''' define the objective function '''
+            prob += lpSum( [ airlineCasmArray[i][j] * x_vars[i,j] for i in range(num_aircraft_instances) for j in range(num_flight_legs) ])
+
+            logger.info ( "--- add constraints ----")
+            
+            '''  Each aircraft is assigned to at most 1 flight leg. '''
+            for i in range(num_aircraft_instances):
+                pass
+                #solver.Add(solver.Sum([x[i, j] for j in range(num_flight_legs)]) <= 1)
+                prob += lpSum( [ x_vars[i,j] for j in range(num_flight_legs) ] ) <= 1
+                
+            ''' Each flight leg is assigned to exactly one aircraft '''
+            for j in range(num_flight_legs):
+                pass
+                prob += lpSum ( [ x_vars[i,j] for i in range(num_aircraft_instances) ] ) == 1
+                #check_constraints(prob, c_list)
+                
+            ''' minimize the costs '''
+            #solver.Minimize(solver.Sum(objective_terms))
+            prob.solve(PULP_CBC_CMD(msg=0))
+            logger.info ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
+            
+            for v in prob.variables():
+                
+                assigned = "no"
+                if ( v.varValue > 0.0 ):
+                    
+                    ColumnIndex = 0
+                    worksheet.write(row, ColumnIndex, airlineName)  
+                
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, str(LpStatus[prob.status]))
+                    
+                    acICAOcode = str(v.name).split("_")[0]
+    
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, acICAOcode )
+                
+                    logger.info ( "var name = {0} - var value = {1}".format( v.name, v.varValue ) )
+                    assigned  = "yes"
+                    
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, assigned )
+                    
+                    ''' between index 0 which is the aircraft ICAO code and the flight leg there is the aircraft instance '''
+                    Adep = str(v.name).split("_")[2]
+                    
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, Adep )    
+                                
+                    Ades = str(v.name).split("_")[3]
+                    
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, Ades )      
+                               
+                    airlineRoute = AirlineRoute.objects.filter(airline=airline , DepartureAirportICAOCode=Adep  , ArrivalAirportICAOCode=Ades).first()
+                    if ( airlineRoute ):
+                        
+                        airlineAircraft = AirlineAircraft.objects.filter(airline=airline, aircraftICAOcode=acICAOcode).first()
+                        if airlineAircraft:
+                            
+                            nbSeats = airlineAircraft.getMaximumNumberOfPassengers()
+                            ColumnIndex += 1
+                            worksheet.write(row, ColumnIndex, nbSeats ) 
+                            
+                            airlineCosts = AirlineCosts.objects.filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
+                            if airlineCosts:
+                                
+                                massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
+                                fuelCostsUSdollars = massLossKg * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
+                                        
+                                operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
+                                        
+                                crewCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
+                                totalCostsUSdollars = fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars     
+                                
+                                ''' 5th February 2023 - Costs per Available Seat Mile '''
+                                miles = airlineCosts.finalLengthMeters * Meter2NauticalMiles
+                                
+                                ColumnIndex += 1
+                                worksheet.write(row, ColumnIndex, miles )
+                                
+                                ColumnIndex += 1
+                                worksheet.write(row, ColumnIndex, totalCostsUSdollars ) 
+                                
+                                seatsPerMiles = nbSeats * miles
+                                casmUSdollars = totalCostsUSdollars / seatsPerMiles
+                                
+                                ColumnIndex += 1
+                                worksheet.write(row, ColumnIndex, casmUSdollars ) 
+                                
+                                row = row + 1
+                            
+                else:
+                    print ("Error - route not found")
+        
+            logger.info ( "Total CASM Objective  = {0}".format( value(prob.objective) ) )
+            value_prob_objective = value(prob.objective)
+
+            worksheet.autofit()     
+            return value_prob_objective               
+
+    else:
+        ''' worksheet will contain only the headers '''
+        print ( "airline not found = {}".format( airlineName ))
+        return value_prob_objective
+        
 
 def createExcelWorkbook(memoryFile, request, airlineName):
     ''' create the EXCEL workbook '''
     wb = Workbook(memoryFile)
     ''' write the readme sheet '''
-    writeReadMe(workbook=wb, request=request, airlineName=airlineName)
+    row, wsReadMe, styleLavender, styleEntete = writeReadMe(workbook=wb, request=request, airlineName=airlineName)
     ''' write the costs results '''
     writeAirlineCasmResults(workbook=wb , airlineName=airlineName)
+    ''' 27th May 2023 - add CASM minimization results '''
+    value_prob_objective = writeAirlineCasmOptimizationResults(workbook=wb, airlineName=airlineName)
+    
+    row = row + 1
+    wsReadMe.write(row, 0 , "CASM Objective function", styleLavender)
+    wsReadMe.write(row, 1 , value_prob_objective , styleEntete)
+    
+    wsReadMe.autofit()  
+    
     return wb
 
 
 def getAirlineCasmXlsx(request, airlineName):
-
+    ''' function retrieves a file to download '''
     logger.setLevel(logging.INFO)
     logger.info ("retrieve Airline CASM as Xlsx file")        
         

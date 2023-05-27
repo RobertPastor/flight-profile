@@ -37,7 +37,8 @@
 				let th_list = [ 'Airline' , 'Aircraft ICAO Code' , 'Aircraft Full Name', 
 								'Number of Aircrafts', 'Number of Seats', 
 								'Flying Costs per Hour (US$)', 'Crew Costs per Hour (US$)',
-								'Minimum Take Off Mass (Kg)' , 'Reference Mass (Kg)' , 'Maximum Take Off Mass (Kg)'];
+								'Minimum Take Off Mass (kg)' , 'Reference Mass (kg)' , 'Maximum Take Off Mass (kg)',
+								'Aircraft Turn Around Time (min)'];
 								
 				let th = undefined;
 				th_list.forEach ( function ( element ) {

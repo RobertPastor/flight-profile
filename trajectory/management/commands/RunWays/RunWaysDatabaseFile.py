@@ -61,6 +61,7 @@ class RunWaysDatabase(object):
     def exists(self):
         return os.path.exists(self.FilePath) and os.path.isfile(self.FilePath)
         
+        
     def getInternalRunWays(self, rowValues):
         '''
         in one row there might be one or TWO run-ways
@@ -136,6 +137,7 @@ class RunWaysDatabase(object):
             if (rowValues[self.ColumnNames['airport_ident']] == airportICAOcode):
                 return True
         return False
+ 
  
     def getRunWaysAsDict(self, airportICAOcode):
         assert not(self.sheet is None)

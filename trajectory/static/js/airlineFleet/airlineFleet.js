@@ -30,6 +30,7 @@ class AirlineFleet {
 		//console.log("AirlineFleet constructor") 
 	}
 
+	// 27th May 2023 - add aircraft turn around time in the html table 
 	addOneAirlineAircraft( oneAirlineAircraft ) {
 	
 		$("#tableAirlineFleetId").find('tbody')
@@ -63,6 +64,9 @@ class AirlineFleet {
 				)
 				.append($('<td>')
 					.append( oneAirlineAircraft["MaximumTakeOffMassKg"] )
+				)
+				.append($('<td>')
+					.append( oneAirlineAircraft["AircraftTurnAroundTimeMinutes"] )
 				)
 			);
 	}
