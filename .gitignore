@@ -132,7 +132,7 @@ dmypy.json
 *.gz
 
 # results files
-*.xlsx
+#*.xlsx
 *.kml
 
 #exception for configuration file with xlsx extension
