@@ -17,7 +17,7 @@ from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 
 from trajectory.Environment.AirportDatabaseFile import AirportsDatabase
 from trajectory.Environment.RunWaysDatabaseFile import RunWayDataBase
-from trajectory.Environment.WayPointsDatabaseFile import WayPointsDatabase
+from trajectory.Environment.WayPointsDatabaseFile import WayPointsDatabase 
 
 #============================================
 class Test_Class(unittest.TestCase):

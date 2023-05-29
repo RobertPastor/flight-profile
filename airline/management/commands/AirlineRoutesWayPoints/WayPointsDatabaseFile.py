@@ -6,6 +6,7 @@ Created on 13 sept. 2022
 
 import os
 import pandas as pd
+from numpy import isin
 
 
 class WayPointsDatabase(object):
@@ -27,10 +28,16 @@ class WayPointsDatabase(object):
         self.WayPointsDict = {}
         self.ColumnNames = ["WayPoint", "Country", "Type", "Latitude", "Longitude" , "Name"]
         self.sheetName = "WayPoints"
+        
+
+    def getColumnNames(self):
+        return self.ColumnNames
 
 
     def appendToDataFrame(self, df_source, wayPointName, Latitude, Longitude):
         ''' latitude and longitude are string here '''
+        
+        assert ( isinstance( df_source , pd.DataFrame) )
         assert isinstance(wayPointName, (str)) and len(wayPointName)>0
         assert isinstance(Latitude, (str)) and len(Latitude)>0
         assert isinstance(Longitude, (str)) and len(Longitude)>0
@@ -44,7 +51,7 @@ class WayPointsDatabase(object):
         wayPoint[self.ColumnNames[5]] = "Unknown Name"
         df = pd.DataFrame(wayPoint, index=[0])
         
-        return df_source.append(df)
+        return df_source.concat(df)
         
 
     def insertWayPoint(self, wayPointName, Latitude, Longitude):
@@ -83,7 +90,14 @@ class WayPointsDatabase(object):
     
     
     def writeDataFrame(self, df_source):
+        assert isinstance ( df_source , pd.DataFrame)
         df_source.to_excel(excel_writer=self.FilePath, sheet_name="WayPoints", index = False, columns=self.ColumnNames, engine="openpyxl")
+        print ( "file = {0} created correctly".format( self.FilePath ))
+    
+    def writeDataFrameFromList(self, wayPointsList):
+        df = pd.DataFrame(wayPointsList, columns=self.ColumnNames)
+        df = df.drop_duplicates()
+        self.writeDataFrame( df )
     
     
     def create(self):

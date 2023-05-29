@@ -4,6 +4,8 @@ Created on 1 mai 2023
 @author: robert
 '''
 
+import pandas as pd
+
 from django.core.management.base import BaseCommand
 from airline.management.commands.AirlineRoutesWayPoints.WayPointsDatabaseFile import WayPointsDatabase
 
@@ -21,10 +23,11 @@ class Command(BaseCommand):
         if not wayPointsDatabase.exists():
             print ("WayPoints EXCEL database is not existing")
             wayPointsDatabase.create()
+        
+        wayPointsList = []
             
-        ''' retrieve initial pandas dataframe '''
-        df_source = wayPointsDatabase.getDataFrame()
-            
+        ColumnNames = wayPointsDatabase.getColumnNames()
+        
         ''' loop through wayPoints '''
         airlineRoutes = AirlineRoutesDataBaseXlsx()
         if (airlineRoutes.exists()):
@@ -44,12 +47,17 @@ class Command(BaseCommand):
                         index = 1
                         for index, row in df_route.iterrows():
                             print ( "{0} - {1}".format( str(index) , str(row)  ) )
-                        
-                            wayPointName = row["wayPoint"]
-                            latitude     = row["latitude"]
-                            longitude    = row["longitude"]
-        
-                            df_source = wayPointsDatabase.appendToDataFrame(df_source, wayPointName, latitude, longitude)
                             
-        wayPointsDatabase.writeDataFrame(df_source)
-        wayPointsDatabase.dropDuplicates()
+                            wayPoint = {}
+                            wayPoint[ColumnNames[0]] = row["wayPoint"]
+                            wayPoint[ColumnNames[1]] = "Unknown"
+                            wayPoint[ColumnNames[2]] = "WayPoint"
+                            wayPoint[ColumnNames[3]] = row["latitude"]
+                            wayPoint[ColumnNames[4]] = row["longitude"]
+                            wayPoint[ColumnNames[5]] = "Unknown Name"
+                            wayPointsList.append(wayPoint)
+        
+                            #df_source = wayPointsDatabase.appendToDataFrame(df_source, wayPointName, latitude, longitude)
+                            
+        wayPointsDatabase.writeDataFrameFromList( wayPointsList )
+        #wayPointsDatabase.dropDuplicates()

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from airline.management.commands.AirlineFleet.AirlineFleetReader import AirlineFleetDataBase
+from airline.management.commands.AirlineFleet.AirlineFleetReaderXlsx import AirlineFleetDataBase
 from airline.models import AirlineAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftDatabaseFile import BadaAircraftDatabase
 

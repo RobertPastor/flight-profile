@@ -9,6 +9,7 @@ for each airline, for each aircraft, for each flight leg compute
 3) Final Mass Kg to compute Kerosene used
 
 '''
+from time import time
 from django.core.management.base import BaseCommand
 from airline.models import Airline, AirlineAircraft, AirlineRoute, AirlineCosts
 from trajectory.models import BadaSynonymAircraft
@@ -19,9 +20,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
+    
     help = 'Compute the Airline costs'
 
     def handle(self, *args, **options):
+        
+        start_time = time()
         
         AirlineCosts.objects.all().delete()
         
@@ -76,3 +80,9 @@ class Command(BaseCommand):
                                     )
                         airlineCosts.save()
         
+        end_time = time()
+        seconds_elapsed = end_time - start_time
+
+        hours, rest = divmod(seconds_elapsed, 3600)
+        minutes, seconds = divmod(rest, 60)
+        print ( "hours = {0} - minutes = {1} - seconds = {2}".format( hours, minutes, seconds))

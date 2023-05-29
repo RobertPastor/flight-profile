@@ -43,6 +43,7 @@ fieldNames = ['id' , 'airport_ref', 'airport_ident' , 'length_ft' , 'width_ft' ,
 
     
 class RunWayDataBase(object):
+    
     FilePath = ''
     #runWaysDb = {}
     

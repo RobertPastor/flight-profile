@@ -107,85 +107,97 @@ class AirlineRoute(models.Model):
     def computeBestDepartureRunWay(self):
         
         firstRouteWayPoint = AirlineRouteWayPoints.objects.all().filter(Route=self).distinct().order_by("Order").first()
-        wayPoint = AirlineWayPoint.objects.all().filter( WayPointName = firstRouteWayPoint.WayPoint ).first()
-        #print ( wayPoint )
-        firstRouteWayPoint = GeographicalPoint(wayPoint.Latitude , wayPoint.Longitude , EarthRadiusMeters)
-        #print ( "first route way Point -> {0}".format( firstRouteWayPoint ))
-        
-        Adep = self.DepartureAirportICAOCode
-        minimalDistanceMeters = 0.0
-        bestRunWay = None
-        first = True
-        for rwy in AirlineRunWay.objects.all().filter(Airport=Adep):
-            #print (rwy)
-            runWay = RunWay(Name               = rwy.Name ,
-                            airportICAOcode    = Adep,
-                            LengthFeet         = rwy.LengthFeet,
-                            TrueHeadingDegrees = rwy.TrueHeadingDegrees,
-                            LatitudeDegrees    = rwy.LatitudeDegrees,
-                            LongitudeDegrees   = rwy.LongitudeDegrees)
-            rwyEnd = runWay.getEndOfRunWay()
-            ''' 5 nautical miles after end of runway '''
-            latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading( 5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
-            pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
-            #print ( "end of runway extended path = {0}".format(pathEnd) )
-
-            distanceMeters = pathEnd.computeDistanceMetersTo(firstRouteWayPoint)
-            #print ( "distance between end of path and first way Point = {0} meters".format( distanceMeters ))
-            if first:
-                first = False
-                bestRunWay = rwy
-                minimalDistanceMeters = distanceMeters
-            else:
-                if ( distanceMeters < minimalDistanceMeters ):
-                    bestRunWay = rwy
-                    minimalDistanceMeters = distanceMeters
+        if ( firstRouteWayPoint ):
+            wayPoint = AirlineWayPoint.objects.all().filter( WayPointName = firstRouteWayPoint.WayPoint ).first()
+            if (wayPoint):
+                #print ( wayPoint )
+                firstRouteWayPoint = GeographicalPoint(wayPoint.Latitude , wayPoint.Longitude , EarthRadiusMeters)
+                #print ( "first route way Point -> {0}".format( firstRouteWayPoint ))
                 
-        #print ("best departure runway = {0}".format(bestRunWay.Name))
-        return bestRunWay.Name
+                Adep = self.DepartureAirportICAOCode
+                minimalDistanceMeters = 0.0
+                bestRunWay = None
+                first = True
+                for rwy in AirlineRunWay.objects.all().filter(Airport=Adep):
+                    #print (rwy)
+                    runWay = RunWay(Name               = rwy.Name ,
+                                    airportICAOcode    = Adep,
+                                    LengthFeet         = rwy.LengthFeet,
+                                    TrueHeadingDegrees = rwy.TrueHeadingDegrees,
+                                    LatitudeDegrees    = rwy.LatitudeDegrees,
+                                    LongitudeDegrees   = rwy.LongitudeDegrees)
+                    rwyEnd = runWay.getEndOfRunWay()
+                    ''' 5 nautical miles after end of runway '''
+                    latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading( 5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
+                    pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
+                    #print ( "end of runway extended path = {0}".format(pathEnd) )
+        
+                    distanceMeters = pathEnd.computeDistanceMetersTo(firstRouteWayPoint)
+                    #print ( "distance between end of path and first way Point = {0} meters".format( distanceMeters ))
+                    if first:
+                        first = False
+                        bestRunWay = rwy
+                        minimalDistanceMeters = distanceMeters
+                    else:
+                        if ( distanceMeters < minimalDistanceMeters ):
+                            bestRunWay = rwy
+                            minimalDistanceMeters = distanceMeters
+                        
+                #print ("best departure runway = {0}".format(bestRunWay.Name))
+                return bestRunWay.Name
+            else:
+                return "Error"
+        else:
+            return "Error"
   
     ''' best arrival runway is the one with minimal distance between start of 5 nautic descent ramp and last point of the route '''
     def computeBestArrivalRunWay(self):
         
         lastRouteWayPoint = AirlineRouteWayPoints.objects.all().filter(Route=self).distinct().order_by("Order").last()
-        wayPoint = AirlineWayPoint.objects.all().filter( WayPointName = lastRouteWayPoint.WayPoint ).first()
-        #print ( wayPoint )
-
-        lastRouteWayPoint = GeographicalPoint(wayPoint.Latitude , wayPoint.Longitude , EarthRadiusMeters)
-        #print ( "last route way Point -> {0}".format( lastRouteWayPoint ))
-
-        Ades =  self.ArrivalAirportICAOCode
-        minimalDistanceMeters = 0.0
-        bestRunWay = None
-        first = True
-        for rwy in AirlineRunWay.objects.all().filter(Airport=Ades):
-            #print (rwy)
-            runWay = RunWay(Name               = rwy.Name ,
-                            airportICAOcode    = Ades,
-                            LengthFeet         = rwy.LengthFeet,
-                            TrueHeadingDegrees = rwy.TrueHeadingDegrees,
-                            LatitudeDegrees    = rwy.LatitudeDegrees,
-                            LongitudeDegrees   = rwy.LongitudeDegrees)
-            rwyEnd = runWay.getEndOfRunWay()
-            ''' 5 nautical miles after end of runway '''
-            latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading(5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
-            pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
-            #print ( "end of runway extended path = {0}".format( pathEnd ) )
-            
-            distanceMeters = pathEnd.computeDistanceMetersTo(lastRouteWayPoint)
-            #print ( "distance between end of path and last way Point = {0} meters".format( distanceMeters ))
-
-            if first:
-                first = False
-                bestRunWay = rwy
-                minimalDistanceMeters = distanceMeters
+        if ( lastRouteWayPoint ):
+            wayPoint = AirlineWayPoint.objects.all().filter( WayPointName = lastRouteWayPoint.WayPoint ).first()
+            if ( wayPoint ):
+                #print ( wayPoint )
+        
+                lastRouteWayPoint = GeographicalPoint(wayPoint.Latitude , wayPoint.Longitude , EarthRadiusMeters)
+                #print ( "last route way Point -> {0}".format( lastRouteWayPoint ))
+        
+                Ades =  self.ArrivalAirportICAOCode
+                minimalDistanceMeters = 0.0
+                bestRunWay = None
+                first = True
+                for rwy in AirlineRunWay.objects.all().filter(Airport=Ades):
+                    #print (rwy)
+                    runWay = RunWay(Name               = rwy.Name ,
+                                    airportICAOcode    = Ades,
+                                    LengthFeet         = rwy.LengthFeet,
+                                    TrueHeadingDegrees = rwy.TrueHeadingDegrees,
+                                    LatitudeDegrees    = rwy.LatitudeDegrees,
+                                    LongitudeDegrees   = rwy.LongitudeDegrees)
+                    rwyEnd = runWay.getEndOfRunWay()
+                    ''' 5 nautical miles after end of runway '''
+                    latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading(5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
+                    pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
+                    #print ( "end of runway extended path = {0}".format( pathEnd ) )
+                    
+                    distanceMeters = pathEnd.computeDistanceMetersTo(lastRouteWayPoint)
+                    #print ( "distance between end of path and last way Point = {0} meters".format( distanceMeters ))
+        
+                    if first:
+                        first = False
+                        bestRunWay = rwy
+                        minimalDistanceMeters = distanceMeters
+                    else:
+                        if ( distanceMeters < minimalDistanceMeters ):
+                            bestRunWay = rwy
+                            minimalDistanceMeters = distanceMeters
+                        
+                #print ("best arrival runway = {0}".format(bestRunWay.Name))
+                return bestRunWay.Name
             else:
-                if ( distanceMeters < minimalDistanceMeters ):
-                    bestRunWay = rwy
-                    minimalDistanceMeters = distanceMeters
-                
-        #print ("best arrival runway = {0}".format(bestRunWay.Name))
-        return bestRunWay.Name
+                return "Error"
+        else:
+            return "Error"
  
     
 class AirlineRouteWayPoints(models.Model):
