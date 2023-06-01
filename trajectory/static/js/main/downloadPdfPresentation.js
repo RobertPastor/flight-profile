@@ -25,6 +25,8 @@ function initDownloadPdfPresentation() {
 			
 			let blob = req.response;
 			let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
+			// split filename to keep the part after the equal sign
+			fileName = fileName.split("=")[1];
 			//console.log ( fileName );
 			let link = document.createElement('a');
 			link.href = window.URL.createObjectURL(blob);

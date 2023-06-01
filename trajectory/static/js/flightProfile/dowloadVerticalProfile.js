@@ -55,7 +55,7 @@ function initDownloadVerticalProfile() {
 			
 			let blob = req.response;
 			let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
-			fileName = fileName.split("=")[1]
+			fileName = fileName.split("=")[1];
 			let link = document.createElement('a');
 			link.href = window.URL.createObjectURL(blob);
 			link.download = fileName;
