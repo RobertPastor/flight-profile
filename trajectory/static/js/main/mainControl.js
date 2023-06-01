@@ -26,10 +26,15 @@ class MainControl extends og.Control {
 		let row_0 = document.createElement('tr');
 		
 		let row_0_data_1 = document.createElement('td');
-		row_0_data_1.colSpan = "11";
-		
+		row_0_data_1.colSpan = "10";
 		row_0_data_1.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
 		row_0.appendChild(row_0_data_1);
+		
+		let row_0_data_2 = document.createElement('td');
+		row_0_data_2.colSpan = "1";
+		row_0_data_2.innerHTML = "<a title='download a pdf presentation' id='linkDownloadPdfPresentationId' class='download' href='#' onclick='initDownloadPdfPresentation()' ></a>";
+		
+		row_0.appendChild(row_0_data_2);
 		
 		tbody.appendChild(row_0);
 		
@@ -51,18 +56,19 @@ class MainControl extends og.Control {
 		row_1_data_1.appendChild(div_1);
 		row_1.appendChild(row_1_data_1);
 		
-		let row_1_data_2 = document.createElement('td');
-		row_1_data_2.colSpan = "7";
-		
-		row_1_data_2.innerHTML = '<div class="alignRight"><span>Airline Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
-		row_1.appendChild(row_1_data_2);
 		
 		let row_1_data_3 = document.createElement('td');
-		row_1_data_3.colSpan = "1";
+		row_1_data_3.colSpan = "7";
 		
-		row_1_data_3.classList.add('question_mark_bg')
-		row_1_data_3.innerHTML = '<div id="helpId" class="question_mark" title="click to obtain some help" onclick="showHelp()" ></div>';
+		row_1_data_3.innerHTML = '<div class="alignRight"><span>Airline Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
 		row_1.appendChild(row_1_data_3);
+		
+		let row_1_data_4 = document.createElement('td');
+		row_1_data_4.colSpan = "1";
+		
+		row_1_data_4.classList.add('question_mark_bg')
+		row_1_data_4.innerHTML = '<div id="helpId" class="question_mark" title="click to obtain some help" onclick="showHelp()" ></div>';
+		row_1.appendChild(row_1_data_4);
 		
 		tbody.appendChild(row_1);
 		

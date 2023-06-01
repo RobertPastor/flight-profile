@@ -32,7 +32,7 @@ class AirlineCasmOptimization {
 			$('#airlineCasmOptimizationMainDivId').hide();
 
 			// change name on the button
-			document.getElementById("btnLaunchCasmOptimization").innerText = "CASM Optimization";
+			document.getElementById("btnLaunchCasmOptimization").innerText = "CASM Min";
 			//document.getElementById("btnLaunchCasmOptimization").style.backgroundColor = "yellow";
 		}
 	}
@@ -80,7 +80,7 @@ class AirlineCasmOptimization {
 				
 				document.getElementById("btnLaunchCasmOptimization").disabled = true;
 				
-				document.getElementById("btnLaunchCasmOptimization").innerText = "CASM Optimization";
+				document.getElementById("btnLaunchCasmOptimization").innerText = "CASM Min";
 				//document.getElementById("btnLaunchCasmOptimization").style.backgroundColor = "green";
 				
 				// get the name of the airline

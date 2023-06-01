@@ -4,7 +4,7 @@
 
 Use ICAO codes for the airports
 
-# run the command : python manage.py AirlineRoutesDatabaseLoad
+# extend the list of routes
 
 PS C:\Users\rober\Documents\04 - Workspace\flight-profile> python manage.py AirlineRoutesDatabaseLoad
 airline routes database exists
@@ -47,7 +47,8 @@ launch the application and check the airports, the new airports should appear on
 
 python manage.py AirlineRoutesWayPointsDatabaseLoad
 
-# launch the following command to update the target WayPoints xlsx file
+## launch the following command to update the target WayPoints xlsx file
+## this should be needed only in the development environment as the WayPoints.xlsx file is moved to the trajectory folder
 
 python manage.py WayPointsXlsxFileCreate
 

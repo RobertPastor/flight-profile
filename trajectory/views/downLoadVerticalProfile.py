@@ -83,6 +83,7 @@ def createExcelWorkbook(memoryFile, request, airlineName):
 
 @csrf_protect
 def createExcelVerticalProfile(request, airlineName):
+    
     ''' this is the main view entry '''
     locale.setlocale(locale.LC_TIME, French_Locale)
     

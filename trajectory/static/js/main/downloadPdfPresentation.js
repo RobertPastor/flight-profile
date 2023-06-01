@@ -1,0 +1,43 @@
+
+window.addEventListener('load', (event) => { 
+       
+	//console.log("Download Pdf Presentation is loaded");
+	stopBusyAnimation();
+	
+}); 
+
+
+function initDownloadPdfPresentation() {
+	
+		// init progress bar.
+		initProgressBar();
+		initWorker();
+		
+		let urlToSend =  "pdf/downloadPresentation/";
+		
+		let req = new XMLHttpRequest();
+		req.open("GET", urlToSend, true);
+		req.responseType = "blob";
+
+		req.onload = function (event) {
+			
+			stopBusyAnimation();
+			
+			let blob = req.response;
+			let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
+			//console.log ( fileName );
+			let link = document.createElement('a');
+			link.href = window.URL.createObjectURL(blob);
+			link.download = fileName;
+			link.click();
+			
+		 };
+		 req.onerror = function (event) {
+			 
+			 stopBusyAnimation();
+			console.log("Error in Download Pdf Presentation");
+		 }
+		// send the request
+		req.send();
+	
+}

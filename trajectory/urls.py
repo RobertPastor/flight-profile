@@ -1,5 +1,6 @@
 from django.urls import  path
 
+
 from trajectory.views.viewsAirports import getAirports
 from trajectory.views.viewsWayPoints import getWayPoints
 from trajectory.views.viewsAircraft import getAircraft
@@ -32,4 +33,5 @@ urlpatterns = [
 ''' view to create an EXCEL file '''
 urlpatterns += [
     path('excel/<slug:airlineName>', createExcelVerticalProfile , name='createExcel'),
+    
 ]

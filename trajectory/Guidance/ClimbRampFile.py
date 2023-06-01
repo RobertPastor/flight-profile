@@ -38,7 +38,7 @@ from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 from trajectory.Guidance.WayPointFile import WayPoint, Airport
 from trajectory.Environment.RunWayFile import RunWay
 from trajectory.Guidance.GraphFile import Graph
-from trajectory.Environment.Constants import NauticalMiles2Meter
+from trajectory.Environment.Constants import NauticalMiles2Meter , Meter2NauticalMiles
 
 
 class ClimbRamp(Graph):
@@ -147,7 +147,7 @@ class ClimbRamp(Graph):
             index += 1
             
         ''' set name of the last point '''
-        Name = 'climbRamp-{0:.2f}-meters'.format( cumulatedLegDistanceMeters)
+        Name = 'climbRamp-{0:.1f} nm'.format( cumulatedLegDistanceMeters * Meter2NauticalMiles )
         newIntermediateWayPoint.setName(Name = Name)
  
  

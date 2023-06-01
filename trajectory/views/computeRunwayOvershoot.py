@@ -44,13 +44,13 @@ def getBadaAircraft(aircraftICAOcode):
         raise ValueError( 'aircraft not found= ' + aircraftICAOcode)
     
     
-def buildGroungRun(departureRunway , aircraft , departureAirport):
+def buildDepartureGroungRun(departureRunway , aircraft , departureAirport):
     ''' 
         this function manages the departure phases with a ground run 
     '''
         
     print (  ' ============== build the departure ground run =========== '  )
-    finalRoute = GroundRunLeg(runway = departureRunway, aircraft = aircraft, airport = departureAirport)
+    groundRun = GroundRunLeg(runway = departureRunway, aircraft = aircraft, airport = departureAirport)
         
     distanceToLastFixMeters = 10000.0
     distanceStillToFlyMeters = 10000.0
@@ -59,17 +59,17 @@ def buildGroungRun(departureRunway , aircraft , departureAirport):
     elapsedTimeSeconds = 0.0
     deltaTimeSeconds = 1.0
     
-    finalRoute.buildDepartureGroundRun(deltaTimeSeconds  = deltaTimeSeconds,
-                                                elapsedTimeSeconds = elapsedTimeSeconds,
-                                                distanceStillToFlyMeters = distanceStillToFlyMeters,
-                                                distanceToLastFixMeters = distanceToLastFixMeters)
+    groundRun.buildDepartureGroundRun(deltaTimeSeconds  = deltaTimeSeconds,
+                                        elapsedTimeSeconds = elapsedTimeSeconds,
+                                        distanceStillToFlyMeters = distanceStillToFlyMeters,
+                                        distanceToLastFixMeters = distanceToLastFixMeters)
     
-    distanceStillToFlyMeters = flightLengthMeters - finalRoute.getLengthMeters()
+    distanceStillToFlyMeters = flightLengthMeters - groundRun.getLengthMeters()
 
     #logging.info '==================== end of ground run ==================== '
-    initialWayPoint = finalRoute.getLastVertex().getWeight()
+    initialWayPoint = groundRun.getLastVertex().getWeight()
     print ( initialWayPoint )
-    return finalRoute.getTotalLegDistanceMeters()
+    return groundRun.getTotalLegDistanceMeters() , groundRun.getLastTrueAirSpeedMetersSecond()
 
 
 def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
@@ -122,7 +122,7 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                                 airportObj = airportObj.convertToEnvAirport()
                                 
                                 ''' build the ground run '''
-                                totalGrounLegLengthMeters = buildGroungRun( runwayObj , badaAircraft , airportObj )
+                                totalGrounLegLengthMeters , trueAirSpeedMetersSecond = buildDepartureGroungRun( runwayObj , badaAircraft , airportObj )
                                 
                                 response_data = {
                                                 'aircraft'                : '{0}'.format( badaSynonymAircraft ), 
@@ -131,7 +131,8 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                                                 'airport'                 : '{0}'.format( airportObj ) , 
                                                 'runway'                  : '{0}'.format( runwayObj ) , 
                                                 'runwayLengthMeters'      : '{0}'.format( round ( runwayObj.getLengthMeters() , 2 ) ),
-                                                'TakeOffStallSpeedCasKnots'      : '{0}'.format( round ( takeOffStallSpeedCasKnots , 2 ) ),
+                                                'TakeOffStallSpeedCasKnots'       : '{0}'.format( round ( takeOffStallSpeedCasKnots , 2 ) ),
+                                                'TakeOffTrueAirSpeedMetersSecond' : '{0}'.format( round ( trueAirSpeedMetersSecond , 2 ) ),
                                                 'groundRunLengthMeters'   : '{0}'.format( round ( totalGrounLegLengthMeters , 2 ) )
                                                 }
                                 return JsonResponse(response_data)

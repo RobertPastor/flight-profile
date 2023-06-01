@@ -172,6 +172,7 @@ class GroundRunLeg(Graph):
         strRunWayEndPointName = self.runway.getName() + '-' + self.airport.getName() 
         intermediateWayPoint.setName(Name = strRunWayEndPointName)
         
+        
     
     def buildDepartureGroundRun(self, 
                                 deltaTimeSeconds,
@@ -212,7 +213,7 @@ class GroundRunLeg(Graph):
         '''
         VStallSpeedCASKnots = self.aircraft.computeStallSpeedCasKnots()
         logging.info ( self.className + ': V stall Calibrated AirSpeed= {0:.2f} knots'.format(VStallSpeedCASKnots) )
-        ''' loop until Stall CAS reached '''
+        ''' loop until 1.2 * Stall CAS speed reached '''
         endOfSimulation = False
         while ((endOfSimulation == False) and
                ( tas2cas(tas = trueAirSpeedMetersSecond ,
@@ -267,7 +268,9 @@ class GroundRunLeg(Graph):
             index += 1
             
         ''' rename last point as take-off '''
-        intermediateWayPoint.setName(Name = 'takeOff-{0:.1f}-meters'.format(self.totalLegDistanceMeters))
+        intermediateWayPoint.setName(Name = 'takeOff-{0:.1f}-m'.format(self.totalLegDistanceMeters))
+        # keep the last true airspeed
+        self.lastTrueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
    
    
     def getElapsedTimeSeconds(self):
@@ -275,3 +278,6 @@ class GroundRunLeg(Graph):
 
     def getTotalLegDistanceMeters(self):
         return self.totalLegDistanceMeters
+    
+    def getLastTrueAirSpeedMetersSecond(self):
+        return self.lastTrueAirSpeedMetersSecond

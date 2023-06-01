@@ -71,5 +71,4 @@ function initDownloadVerticalProfile() {
 		req.send();
 
 	}
-	
 }

@@ -14,22 +14,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import re_path
+from django.urls import path
 from django.urls import include
 
-from FlightProfile.views import index , doc
+from FlightProfile.views import index , doc, downloadPdfPresentation
 
 urlpatterns = [
 
-    re_path(r'^trajectory/', include('trajectory.urls')),
-    re_path(r'^airline/' , include('airline.urls')),
-    re_path(r'admin/', admin.site.urls),
+    path('trajectory/', include('trajectory.urls')),
+    path('airline/' , include('airline.urls')),
+    path('admin/', admin.site.urls),
     #re_path(r'favicon.ico', RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")), ),
     
-    re_path(r'^doc/' , doc , name='doc'),
-
-    re_path('', index, name='index')
+    path('doc/' , doc , name='doc'),
+    path('', index, name='index')
     
+]
 
+''' view to download a Pdf Presentation file '''
+urlpatterns += [
+    
+    path('pdf/downloadPresentation/', downloadPdfPresentation , name='downloadPdfPresentation'),
+    
 ]
 

@@ -59,6 +59,17 @@ th {
 	background-color:	#60D6A7;
 }
 
+.download {
+	background:         url('/static/images/file_download.png');
+    background-color:	#60D6A7;
+    background-repeat:  no-repeat;
+    cursor:             pointer;
+    height:             16px;
+    width:              16px;
+    margin:             0 auto 0 auto;
+    display:			block;
+}
+
 .question_mark {
 	background:         url('/static/images/question.png');
     background-color:	#60D6A7;
