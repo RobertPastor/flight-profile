@@ -58,8 +58,8 @@ class FlighProfileControl extends og.Control {
 		
 		let input_1 = document.createElement("input");
 		input_1.id = "TakeOffMassKgId" ;
-		input_1.maxlength = "3";
-		input_1.size = "3";
+		input_1.maxlength = "5";
+		input_1.size = "5";
 		div_1.appendChild(input_1);
 		
 		// hidden input with min take off weight KG

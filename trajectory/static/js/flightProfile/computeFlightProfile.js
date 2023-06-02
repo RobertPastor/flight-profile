@@ -44,15 +44,15 @@ class AirlineProfileCosts {
 		let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
 		let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
 		
-		elemTOMassKg.value    = aircraftPerformanceData["acMaxTakeOffWeightKg"]
-		elemMinTOMassKg.value = aircraftPerformanceData["acMinTakeOffWeightKg"]
-		elemMaxTOMassKg.value = aircraftPerformanceData["acMaxTakeOffWeightKg"]
+		elemTOMassKg.value    = aircraftPerformanceData["acMaxTakeOffWeightKg"];
+		elemMinTOMassKg.value = aircraftPerformanceData["acMinTakeOffWeightKg"];
+		elemMaxTOMassKg.value = aircraftPerformanceData["acMaxTakeOffWeightKg"];
 		
 		let elemFL = document.getElementById('requestedFlightLevelId');
-		elemFL.value = aircraftPerformanceData["acMaxOpAltitudeFeet"]
+		elemFL.value = aircraftPerformanceData["acMaxOpAltitudeFeet"];
 		
 		let elemMaxFL = document.getElementById('maxFlightLevelId');
-		elemMaxFL.value = aircraftPerformanceData["acMaxOpAltitudeFeet"]
+		elemMaxFL.value = aircraftPerformanceData["acMaxOpAltitudeFeet"];
 	}
 
 	populateAircraftFlightProfileSelector( airlineAircraftsArray ) {
@@ -149,7 +149,7 @@ class AirlineProfileCosts {
 		// add the waypoints
 		for (let wayPointId = 0; wayPointId < waypoints.length; wayPointId++ ) {
 			// insert one waypoint
-			loadOneFlightProfileWayPoint( layerWayPoints, waypoints[wayPointId] );
+			SingletonProfileCosts.getInstance().loadOneFlightProfileWayPoint( layerWayPoints, waypoints[wayPointId] );
 		}
 	}
 
@@ -241,8 +241,8 @@ class AirlineProfileCosts {
 
 	deleteCreateKMLLayer(globus , layerName ) {
 	
-		let finalLayerName = "FlightProfile-" + layerName 
-		removeLayer( globus , finalLayerName )
+		let finalLayerName = "FlightProfile-" + layerName ;
+		removeLayer( globus , finalLayerName );
 		
 		let layerKML = new og.layer.KML( finalLayerName , {
 			billboard: { 
@@ -337,6 +337,7 @@ class AirlineProfileCosts {
 
 	launchFlightProfile(globus) {
 	
+		this.globus = globus ;
 		globus.planet.events.on("layeradd", function (e) {
 			
 			//console.log("layeradd event");
@@ -361,7 +362,7 @@ class AirlineProfileCosts {
 		layerFlightProfileWayPoints.addTo(globus.planet);
 		*/
 		
-		// listen to change to aircraft Mass
+		// listen to change to the aircraft Mass
 		document.getElementById("TakeOffMassKgId").addEventListener('change', function (evt) {
 			let elemTOMassKg = document.getElementById('TakeOffMassKgId');
 			//console.log(elemTOMassKg.value);
@@ -397,7 +398,6 @@ class AirlineProfileCosts {
 					showMessage("Flight Level Error" , "Flight Level must be an integer");
 					elemFL.value = elemMaxFL.value;
 				} else {
-					
 					
 					if ( FLvalue > parseInt( elemMaxFL.value ) ) {
 						showMessage ("Flight Level Error" ,  "Flight Level must be lower than " + elemMaxFL.value );
@@ -514,7 +514,7 @@ class AirlineProfileCosts {
 			
 			console.log ("select aircraft changed");
 			let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
-			console.log(aircraftICAOcode)
+			console.log(aircraftICAOcode);
 			
 			// get the name of the airline
 			let airlineName = $("#airlineSelectId option:selected").val();
@@ -545,6 +545,7 @@ class AirlineProfileCosts {
 							}
 						},
 						error: function(data, status) {
+							stopBusyAnimation();
 							alert("Error - compute Flight Profile: " + status + " Please contact your admin");
 							showMessage( "Error" , eval(data) );
 						},
@@ -604,7 +605,7 @@ class AirlineProfileCosts {
 							} else {
 								// create layers does also a delete layer if name found
 								let layerKML = SingletonProfileCosts.getInstance().deleteCreateKMLLayer(globus , route);
-								let rayLayer = SingletonProfileCosts.getInstance().deleteCreateRayLayer(globus , route)
+								let rayLayer = SingletonProfileCosts.getInstance().deleteCreateRayLayer(globus , route);
 								
 								// convert JSON to XML
 								let x2js = new X2JS();
@@ -618,7 +619,7 @@ class AirlineProfileCosts {
 								// add rays to Rays layer
 								SingletonProfileCosts.getInstance().addRays( rayLayer , dataJson["placeMarks"] );
 								
-								let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"]
+								let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"];
 								SingletonProfileCosts.getInstance().displayD3LineChart(arrayAltitudeMSLtime);
 								
 								showMessage("Information" , "Double Click in the vertical profile to return to the map") 
@@ -626,11 +627,12 @@ class AirlineProfileCosts {
 							}
 						},
 						error: function(data, status) {
+							stopBusyAnimation();
 							alert("Error - compute Flight Profile: " + status + " Please contact your admin");
 							showMessage( "Error" , eval(data) );
 						},
 						complete : function() {
-							//stopBusyAnimation();
+							stopBusyAnimation();
 							document.getElementById("btnComputeFlightProfileId").disabled = false;
 						}
 				});

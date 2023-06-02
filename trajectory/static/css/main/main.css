@@ -22,9 +22,11 @@ progress {
 /* use z-index and show above the nav bar => 
 because it will be hidden at the end of the images loading process */
 .progressBar {
+	color:blue;
 	background: blue;
-	background-color:yellow;
+	background-color:blue;
     width : 100%;
+    height: 2px;
 }
 
 
@@ -200,6 +202,12 @@ th {
 
 #hideId {
     float:right;
+    background:#ccc;
+    cursor: pointer;
+}
+
+#PdfPresentationId {
+	float:right;
     background:#ccc;
     cursor: pointer;
 }

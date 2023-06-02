@@ -19,7 +19,7 @@
 				"unit" : "kg",
 				"value": "21500.0"
 			},
-			"maximal": {
+			"maximalTakeOff": {
 				"unit" : "kg",
 				"value": "77000.0"
 			},

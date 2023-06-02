@@ -1,0 +1,47 @@
+{
+	"aircraft" : {
+		"name" : "Boieng B737-800",
+		"manufacturer": "Boieng",
+		"variant": "B737-800",
+		"ICAO" : "B738",
+		"source": "http://www.b737.org.uk/techspecsdetailed.htm",
+		
+		"engine": "CFM56-7",
+		
+		"mass": {
+			"minimal": {
+				"unit" : "kg",
+				"value": "39000.0"
+			},
+			"reference": {
+				"unit" : "kg",
+				"value": "64000.0"
+			},
+			"maxPayLoad": {
+				"unit" : "kg",
+				"value": "20540"
+			},
+			"maximalTakeOff": {
+				"unit" : "kg",
+				"value": "79016"
+			},
+			"maximalLanding": {
+				"unit" : "kg",
+				"value": "66361"
+			},
+			"FuelCapacity" : {
+				"unit" : "kg",
+				"value": "21000"
+			}
+		},
+		"phase": {
+			"cruise": {
+				"ceiling": {
+					"unit": "ft",
+					"cruiseLevel": "41000"
+				}
+			}
+		}
+	}
+	
+}

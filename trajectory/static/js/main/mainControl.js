@@ -18,6 +18,11 @@ class MainControl extends og.Control {
 		draggableMainDiv.innerHTML = "Click here to move -> Main navigation bar";
 		draggableMainDiv.classList.add("draggableDivHeader");
 		mainDiv.appendChild(draggableMainDiv);
+		
+		let span = document.createElement('span');
+		span.id = "PdfPresentationId";
+		span.innerHTML = "<a title='download a pdf presentation' id='linkDownloadPdfPresentationId' class='download' href='#' onclick='initDownloadPdfPresentation()' ></a>";
+		draggableMainDiv.appendChild(span);
 						
 		let table = document.createElement('table');
 		let tbody = document.createElement('tbody');
@@ -26,16 +31,10 @@ class MainControl extends og.Control {
 		let row_0 = document.createElement('tr');
 		
 		let row_0_data_1 = document.createElement('td');
-		row_0_data_1.colSpan = "10";
-		row_0_data_1.innerHTML = '<div id="workerId" class="w3-container w3-green" style="width:100%"></div>';
+		row_0_data_1.colSpan = "11";
+		row_0_data_1.innerHTML = '<div id="workerId" class="w3-container progressBar" style="width:100%"></div>';
 		row_0.appendChild(row_0_data_1);
-		
-		let row_0_data_2 = document.createElement('td');
-		row_0_data_2.colSpan = "1";
-		row_0_data_2.innerHTML = "<a title='download a pdf presentation' id='linkDownloadPdfPresentationId' class='download' href='#' onclick='initDownloadPdfPresentation()' ></a>";
-		
-		row_0.appendChild(row_0_data_2);
-		
+						
 		tbody.appendChild(row_0);
 		
 		// ------- 2nd row --------------

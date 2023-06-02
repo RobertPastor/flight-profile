@@ -16,8 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
-
-from FlightProfile.views import index , doc, downloadPdfPresentation
+ 
+from FlightProfile.views.views import index , doc
+from FlightProfile.views.downloadPdfPresentation import downloadPdfPresentation
 
 urlpatterns = [
 
