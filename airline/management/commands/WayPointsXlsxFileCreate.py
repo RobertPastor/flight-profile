@@ -59,5 +59,6 @@ class Command(BaseCommand):
         
                             #df_source = wayPointsDatabase.appendToDataFrame(df_source, wayPointName, latitude, longitude)
                             
+        ''' this write operation is preceeded by a drop duplicates '''
         wayPointsDatabase.writeDataFrameFromList( wayPointsList )
         #wayPointsDatabase.dropDuplicates()

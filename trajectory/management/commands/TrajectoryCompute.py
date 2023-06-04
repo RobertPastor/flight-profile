@@ -13,8 +13,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
-        aircraftICAOcode = 'A319'
-        route = 'KATL-KLAX'
+        aircraftICAOcode = 'A320'
+        route = 'KLAX-KATL'
+        AdepRunway = "24R"
+        AdesRunway = "27R"
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
             print ( badaAircraft )
@@ -22,7 +24,7 @@ class Command(BaseCommand):
             Ades = str(route).split("-")[1]
             airlineRoute = AirlineRoute.objects.all().filter(DepartureAirportICAOCode=Adep, ArrivalAirportICAOCode=Ades).first()
             if ( airlineRoute ):
-                routeAsString = airlineRoute.getRouteAsString()
+                routeAsString = airlineRoute.getRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway )
                 print ( routeAsString )
                 acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
                 print ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   

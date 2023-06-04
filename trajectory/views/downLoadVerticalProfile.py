@@ -1,6 +1,8 @@
 '''
 Created on 26 déc. 2022
 
+donwload vertical profile as an EXCEL file
+
 @author: robert
 '''
 

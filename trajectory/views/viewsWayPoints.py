@@ -14,7 +14,7 @@ from trajectory.models import BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
-from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB, getAirlineRoutesFromDB
+from trajectory.views.utils import  getAirlineAircraftsFromDB, getAirlineRoutesFromDB
 
 
 # Create your views here.
@@ -129,6 +129,7 @@ def getAirlineAircraftsFromDB():
 
 
 def launchFlightProfile(request):
+    ''' purpose is only to fill the window with the selection to be made '''
     logger.debug ("launch Flight Profile")
     if (request.method == 'GET'):
         airlineAircraftsList = getAirlineAircraftsFromDB()
@@ -166,7 +167,7 @@ def computeFlightProfile(request):
             
             logger.info(airlineRoute)
             
-            logger.info ( str(airlineRoute).split("-")[0] )
+            logger.info ( "airport = {0}".format( str(airlineRoute).split("-")[0] ) )
             logger.info ( str(airlineRoute).split("-")[1] )
             
             departureAirportICAOcode = str(airlineRoute).split("-")[0]

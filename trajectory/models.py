@@ -58,6 +58,9 @@ class AirlineWayPoint(models.Model):
     def __str__(self):
         return "wayPoint name = {0} - Latitude {1:.2f} - Longitude = {2:.2f}".format(self.WayPointName , self.Latitude , self.Longitude ) 
 
+    def getWayPointName(self):
+        return self.WayPointName
+    
 
 ''' an airport is not related to an airline '''
 class AirlineAirport(models.Model):
@@ -109,6 +112,8 @@ class AirlineAirport(models.Model):
 '''
 class AirlineRunWay(models.Model):
     ''' example : 08R/26L and 09L/27R '''
+    ''' warning the runway name is not unique as the same name can be used in different airports '''
+    ''' however for one airport , the runway names are unique '''
     Name = models.CharField(max_length = 10)
     ''' foreign key on the related airport '''
     Airport = models.ForeignKey(AirlineAirport, on_delete=models.CASCADE)
@@ -133,4 +138,52 @@ class AirlineRunWay(models.Model):
                 TrueHeadingDegrees = self.TrueHeadingDegrees, 
                 LatitudeDegrees    = self.LatitudeDegrees, 
                 LongitudeDegrees   = self.LongitudeDegrees)
+    
+    
+class AirlineStandardDepartureArrivalRoute(models.Model):
+    ''' 3rd June 2023 '''
+    isSID                      = models.BooleanField(default=True)
+    DepartureArrivalAirport    = models.ForeignKey(AirlineAirport, on_delete=models.CASCADE)
+    DepartureArrivalRunWay     = models.ForeignKey(AirlineRunWay, on_delete=models.CASCADE)
+    FirstLastRouteWayPoint     = models.ForeignKey(AirlineWayPoint, on_delete=models.CASCADE)
+    
+    def getWayPointsListAsString(self):
+        routeAsString = ""
+        first = True
+        sidStarWayPointsRoute = AirlineSidStarWayPointsRoute.objects.filter( Route = self ).order_by("Order")
+        for wayPoint in sidStarWayPointsRoute:
+            if (first):
+                if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
+                    routeAsString += str(wayPoint.WayPointName).strip()
+                first = False
+            else:
+                routeAsString += "-" + str(wayPoint.WayPointName).strip()
+        logging.info ( routeAsString )
+        print ( routeAsString )
+        return routeAsString
+
+    
+class AirlineSidStarWayPointsRoute(models.Model):
+    ''' 3rd June 2023 '''
+    Route = models.ForeignKey(AirlineStandardDepartureArrivalRoute, on_delete=models.CASCADE)
+    ''' warning - in the SID order = 0 is the departure runway '''
+    Order = models.IntegerField()
+    # linked to the WayPoint class in the trajectory
+    WayPointName     = models.CharField(max_length = 100, blank = False)
+    LatitudeDegrees  = models.FloatField(blank = False)
+    LongitudeDegrees = models.FloatField(blank = False)
+    
+    def getWayPointsListAsString(self):
+        routeAsString = ""
+        first = True
+        for wayPoint in AirlineSidStarWayPointsRoute.objects.filter(Route=self).order_by("Order"):
+            if (first):
+                routeAsString += str(wayPoint.WayPoint).strip()
+                first = False
+            else:
+                routeAsString += "-" + str(wayPoint.WayPoint).strip()
+        logging.info ( routeAsString )
+        return routeAsString
+    
+    
     

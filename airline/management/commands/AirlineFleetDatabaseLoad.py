@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
-        AirlineAircraft.objects.all().delete()
+        #AirlineAircraft.objects.all().delete()
         
         airlineFleetDatabase = AirlineFleetDataBase()
         badaAircraftDatabase = BadaAircraftDatabase()

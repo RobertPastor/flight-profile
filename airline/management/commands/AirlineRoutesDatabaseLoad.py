@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
-        AirlineRoute.objects.all().delete()
+        #AirlineRoute.objects.all().delete()
         
         airlineRoutes = AirlineRoutesDataBaseXlsx()
         if (airlineRoutes.exists()):

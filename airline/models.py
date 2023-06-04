@@ -1,7 +1,7 @@
 from django.db import models
 import logging
 # Create your models here.
-from trajectory.models import AirlineAirport, AirlineRunWay
+from trajectory.models import AirlineAirport, AirlineRunWay, AirlineStandardDepartureArrivalRoute
 
 from trajectory.Environment.RunWayFile import RunWay
 from trajectory.Environment.Constants import NauticalMiles2Meter , Meter2NauticalMiles
@@ -65,6 +65,32 @@ class AirlineRoute(models.Model):
         return airportsICAOcodeList
     
     
+    def extendRouteWithSID (self , Adep , AdepRunWayName , firstWayPointinRoute ):
+        
+        assert ( isinstance ( Adep , AirlineAirport ))
+        AdepRunWay = AirlineRunWay.objects.filter  ( Name = AdepRunWayName , Airport = Adep ).first()
+        if ( AdepRunWay ):
+            sidStar = AirlineStandardDepartureArrivalRoute.objects.filter ( isSID = True , 
+                                                                            DepartureArrivalAirport = Adep,
+                                                                            DepartureArrivalRunWay  = AdepRunWay ,
+                                                                            FirstLastRouteWayPoint = firstWayPointinRoute).first()
+            if ( sidStar ):
+                return sidStar.getWayPointsListAsString()
+        return ""
+    
+    
+    def getfirstRouteWayPoint(self):
+        airlineRouteWayPoint = AirlineRouteWayPoints.objects.filter(Route=self).distinct().order_by("Order").first()
+        if ( airlineRouteWayPoint ):
+            print ( airlineRouteWayPoint )
+            airlineWayPoint = AirlineWayPoint.objects.filter ( WayPointName = airlineRouteWayPoint.getWayPointName() ).first()
+            if ( airlineWayPoint ):
+                return airlineWayPoint
+        else:
+            raise ValueError("first way point in Route not found ")
+        return None
+    
+    
     def getRouteAsString(self, AdepRunWayName = None, AdesRunWayName = None):
         
         strRoute = "ADEP/" + self.DepartureAirportICAOCode 
@@ -72,6 +98,8 @@ class AirlineRoute(models.Model):
         if ( Adep ):
             if (AdepRunWayName):
                 strRoute += "/" + AdepRunWayName
+                strRoute += self.extendRouteWithSID( Adep , AdepRunWayName , self.getfirstRouteWayPoint() )
+                print ( strRoute )
             else:
                 print ( "Best Departure Runway = {0}".format(self.computeBestDepartureRunWay()))
                 AdepRunway = AirlineRunWay.objects.all().filter(Airport=Adep).first()
@@ -218,6 +246,10 @@ class AirlineRouteWayPoints(models.Model):
                 routeAsString += "-" + str(wayPoint.WayPoint).strip()
         logging.info ( routeAsString )
         return routeAsString
+    
+    
+    def getWayPointName(self):
+        return self.WayPoint
         
 
 class AirlineAircraftInstances(object):

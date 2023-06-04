@@ -63,7 +63,6 @@ def getPlaceMarks(XmlDocument):
     return placeMarksList
     
 
-
 def launchFlightProfile(request , airlineName):
     #print  ("launch Flight Profile - with airline = {0}".format(airlineName))
     if (request.method == 'GET'):
