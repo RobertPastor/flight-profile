@@ -208,7 +208,7 @@ class FlightPath(FlightPlan):
                     logging.info ( self.className + ': Envisage anticipated Fly By turn !!!' )
                     bearingDegrees = math.fmod ( firstAngleDegrees + 180.0 , 360.0 )
                     anticipatedTurnWayPoint = headWayPoint.getWayPointAtDistanceBearing(
-                                                                                        Name = 'Anticipated-Turn-' + headWayPoint.getName(),
+                                                                                        Name = 'flyby-' + headWayPoint.getName(),
                                                                                         DistanceMeters = anticipatedTurnStartMeters,
                                                                                         BearingDegrees = bearingDegrees)
                     headWayPoint = anticipatedTurnWayPoint

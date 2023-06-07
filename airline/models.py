@@ -65,17 +65,39 @@ class AirlineRoute(models.Model):
         return airportsICAOcodeList
     
     
-    def extendRouteWithSID (self , Adep , AdepRunWayName , firstWayPointinRoute ):
+    def extendRouteWithSID (self , Adep , AdepRunWayName , firstWayPointInRoute ):
         
         assert ( isinstance ( Adep , AirlineAirport ))
+        assert ( isinstance ( firstWayPointInRoute , AirlineWayPoint ))
+
         AdepRunWay = AirlineRunWay.objects.filter  ( Name = AdepRunWayName , Airport = Adep ).first()
         if ( AdepRunWay ):
-            sidStar = AirlineStandardDepartureArrivalRoute.objects.filter ( isSID = True , 
+            isSID = True
+            sidStar = AirlineStandardDepartureArrivalRoute.objects.filter ( isSID = isSID , 
                                                                             DepartureArrivalAirport = Adep,
                                                                             DepartureArrivalRunWay  = AdepRunWay ,
-                                                                            FirstLastRouteWayPoint = firstWayPointinRoute).first()
+                                                                            FirstLastRouteWayPoint = firstWayPointInRoute).first()
             if ( sidStar ):
-                return sidStar.getWayPointsListAsString()
+                return sidStar.getWayPointsListAsString(isSID)
+            
+        return ""
+    
+    
+    def extendRouteWithSTAR(self , Ades , AdesRunWayName , lastWayPointInRoute):
+        
+        assert ( isinstance ( Ades , AirlineAirport ))
+        assert ( isinstance ( lastWayPointInRoute , AirlineWayPoint ))
+        
+        AdesRunWay = AirlineRunWay.objects.filter  ( Name = AdesRunWayName , Airport = Ades ).first()
+        if ( AdesRunWay ):
+            isSID = False
+            sidStar = AirlineStandardDepartureArrivalRoute.objects.filter ( isSID = isSID , 
+                                                                            DepartureArrivalAirport = Ades,
+                                                                            DepartureArrivalRunWay  = AdesRunWay ,
+                                                                            FirstLastRouteWayPoint = lastWayPointInRoute).first()
+            if ( sidStar ):
+                return sidStar.getWayPointsListAsString(isSID)
+        
         return ""
     
     
@@ -91,6 +113,18 @@ class AirlineRoute(models.Model):
         return None
     
     
+    def getLastRouteWayPoint(self):
+        airlineRouteWayPoint = AirlineRouteWayPoints.objects.filter(Route=self).distinct().order_by("Order").last()
+        if ( airlineRouteWayPoint ):
+            print ( airlineRouteWayPoint )
+            airlineWayPoint = AirlineWayPoint.objects.filter ( WayPointName = airlineRouteWayPoint.getWayPointName() ).first()
+            if ( airlineWayPoint ):
+                return airlineWayPoint
+        else:
+            raise ValueError("first way point in Route not found ")
+        return None
+        
+    
     def getRouteAsString(self, AdepRunWayName = None, AdesRunWayName = None):
         
         strRoute = "ADEP/" + self.DepartureAirportICAOCode 
@@ -98,6 +132,7 @@ class AirlineRoute(models.Model):
         if ( Adep ):
             if (AdepRunWayName):
                 strRoute += "/" + AdepRunWayName
+                ''' 3th June 2023 - extend with SID when available '''
                 strRoute += self.extendRouteWithSID( Adep , AdepRunWayName , self.getfirstRouteWayPoint() )
                 print ( strRoute )
             else:
@@ -112,16 +147,25 @@ class AirlineRoute(models.Model):
         ''' 8th January 2023 - work around as DISTINCT with Order not allowed in MySQL - need to use an intermediate list '''
         wayPointsList = []
         for airlineRouteWayPoint in airlineRouteWayPoints:
+            ''' avoid duplicates '''
             if airlineRouteWayPoint.WayPoint not in wayPointsList:
                 wayPointsList.append(airlineRouteWayPoint.WayPoint)
                 strRoute += airlineRouteWayPoint.WayPoint
                 strRoute += "-"
         
-        strRoute += "ADES/" + self.ArrivalAirportICAOCode
+        
         Ades = AirlineAirport.objects.all().filter(AirportICAOcode=self.ArrivalAirportICAOCode).first()
         if ( Ades ):
             if (AdesRunWayName):
+                
+                ''' 6th June 2°23 - extend with STAR when available '''
+                strRoute += self.extendRouteWithSTAR(Ades, AdesRunWayName, self.getLastRouteWayPoint() )
+                print ( strRoute )
+                strRoute += "-"
+                strRoute += "ADES/" + self.ArrivalAirportICAOCode
                 strRoute += "/" + AdesRunWayName
+                print ( strRoute )
+                
             else:
                 print ( "Best arrival RunWay = {0}".format(self.computeBestArrivalRunWay()))
                 AdesRunWay = AirlineRunWay.objects.all().filter(Airport=Ades).first()

@@ -6,7 +6,6 @@ Created on 4 juin 2023
 from django.core.management.base import BaseCommand
 
 from trajectory.management.commands.SidStar.SidStarDatabaseLoader import SidStarLoaderOne
-from trajectory.models import AirlineStandardDepartureArrivalRoute
 
 class Command(BaseCommand):
     help = 'Reads the WayPoints and write in a table'
@@ -20,6 +19,14 @@ class Command(BaseCommand):
         if (loaderOne.exists()):
             print("acBD exists")
             ret = loaderOne.load()
+            print ("read SID STAR database result = {0}".format(ret))
+        else:
+            print("SID STAR does not exists")
+            
+        loadTwo = SidStarLoaderOne( isSID=False , departureOrArrivalAirportICAO="KATL" , FirstLastWayPointName="MEM" , RunWayStr="26L" )
+        if (loadTwo.exists()):
+            print("acBD exists")
+            ret = loadTwo.load()
             print ("read SID STAR database result = {0}".format(ret))
         else:
             print("SID STAR does not exists")

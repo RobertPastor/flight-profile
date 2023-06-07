@@ -28,7 +28,6 @@ class SidStarLoaderOne():
         assert ( isinstance( RunWayStr, str) and (len(RunWayStr)>0))
         self.RunWayStr = RunWayStr
         
-        
         self.SIDFileNamePrefix = "SID"
         self.STARFileNamePrefix = "STAR"
         
@@ -55,8 +54,10 @@ class SidStarLoaderOne():
     def getAirport(self):
         return self.airport
     
+    
     def getRunWay(self):
         return self.runway
+    
     
     def getOrCreateSidStarDBObject(self):
         
@@ -148,6 +149,7 @@ class SidStarLoaderOne():
                                 )
                 sidStarWayPoint.save()
                 
+                ''' 6th June 2023 - SID STAR waypoints must be loaded in the WayPoints database '''
                 airlineWayPoint = AirlineWayPoint.objects.filter ( WayPointName = str(row["waypoint"]).strip() ).first()
                 if ( airlineWayPoint is None ):
                     airlineWayPoint = AirlineWayPoint( WayPointName = str(row["waypoint"]).strip() ,

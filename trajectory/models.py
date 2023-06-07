@@ -147,17 +147,29 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
     DepartureArrivalRunWay     = models.ForeignKey(AirlineRunWay, on_delete=models.CASCADE)
     FirstLastRouteWayPoint     = models.ForeignKey(AirlineWayPoint, on_delete=models.CASCADE)
     
-    def getWayPointsListAsString(self):
+    
+    def getWayPointsListAsString(self , isSID):
+        assert ( isinstance ( isSID, bool ))
         routeAsString = ""
         first = True
         sidStarWayPointsRoute = AirlineSidStarWayPointsRoute.objects.filter( Route = self ).order_by("Order")
         for wayPoint in sidStarWayPointsRoute:
             if (first):
-                if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
-                    routeAsString += str(wayPoint.WayPointName).strip()
-                first = False
+                if ( isSID ):
+                    if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
+                        routeAsString += str(wayPoint.WayPointName).strip()
+                    first = False
+                else:
+                    if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
+                        routeAsString += str(wayPoint.WayPointName).strip()
+                    first = False
             else:
-                routeAsString += "-" + str(wayPoint.WayPointName).strip()
+                if ( isSID ):
+                    routeAsString += "-" + str(wayPoint.WayPointName).strip()
+                else:
+                    if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
+                        routeAsString += "-" + str(wayPoint.WayPointName).strip()
+        
         logging.info ( routeAsString )
         print ( routeAsString )
         return routeAsString
