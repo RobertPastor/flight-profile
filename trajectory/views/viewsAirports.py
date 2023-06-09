@@ -6,8 +6,8 @@ from django.template import loader
 from django.core import serializers
 from django.http import HttpResponse , JsonResponse
 
-from airline.models import AirlineRoute, Airline
-from trajectory.models import  AirlineAirport
+from airline.models import Airline
+from trajectory.views.utils import getAirportsFromDB
 
 # Create your views here.
 def indexTrajectory(request):
@@ -24,28 +24,6 @@ def indexTrajectory(request):
     context = {'siteMessages' : siteMessages}
     return HttpResponse(template.render(context, request))
 
-
-
-def getAirportsFromDB(airline):
-    ICAOlist = []
-    airportsList = []
-    ''' airports are not related to airlines '''
-    for airport in AirlineAirport.objects.all():
-        ''' routes are related to airlines '''
-        for airlineRoute in AirlineRoute.objects.filter(airline = airline):
-            #print ( airlineRoute )
-            if (airport.AirportICAOcode == airlineRoute.getDepartureAirportICAOcode()) or (airport.AirportICAOcode == airlineRoute.getArrivalAirportICAOcode() ):
-                if ( airport.AirportICAOcode not in ICAOlist):
-                    logger.debug (airport.AirportICAOcode)
-                    # add airport only once
-                    ICAOlist.append(airport.AirportICAOcode)
-                    airportsList.append({
-                        "AirportICAOcode" : airport.AirportICAOcode ,
-                        "AirportName": airport.AirportName,
-                        "Longitude": airport.Longitude,
-                        "Latitude": airport.Latitude
-                        } )
-    return airportsList
 
 
 def getAirports(request, airlineName):

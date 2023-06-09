@@ -185,6 +185,7 @@ class TurnLeg(Graph):
         ''' heading changes according to an aircraft speed => radius of turn '''
         ''' for the last turn => final heading is the heading of run-way '''
         if lastTurn == True:
+            pass
             self.finalHeadingDegrees = finalHeadingDegrees
         
         ''' initial altitude '''
@@ -226,6 +227,7 @@ class TurnLeg(Graph):
                 radiusOfTurnMeters = newRadiusOfTurnMeters
             #exit()
             
+            ''' use radius of turn computed during initial simulated arrival '''
             radiusOfTurnMeters = finalRadiusOfTurnMeters
             logging.info ("{0} - final radius of turn = {1:.2f} in meters".format(self.className, radiusOfTurnMeters))
 
@@ -384,7 +386,7 @@ class TurnLeg(Graph):
         baseTurnLeg = BaseTurnLeg(self.initialHeadingDegrees, self.finalHeadingDegrees, self.stepDegrees)
         self.listOfAngleDegrees = baseTurnLeg.build()
         
-        ''' index used to initialise the loop '''        
+        ''' index used to initialize the loop '''        
         index = 0
             
         ''' build a list that can be reversed afterwards '''
@@ -397,7 +399,7 @@ class TurnLeg(Graph):
         
         ''' loop through the list of angles '''
         for angleDegrees in self.listOfAngleDegrees:
-            ''' initial index - loop initialisation '''
+            ''' initial index - loop initialization '''
             #logging.info 'altitude= ' + str(altitudeMeanSeaLevelMeters) + ' meters'
             
             ''' init the loop '''
@@ -487,7 +489,7 @@ class TurnLeg(Graph):
             radiusOfTurnMeters = FinalArrivalTurnNauticalMiles * NauticalMiles2Meter
  
         #stop()
-        ''' index used to initialise the loop '''        
+        ''' index used to initialize the loop '''        
         index = 0
         ''' build a list that can be reversed afterwards '''
         turnLegList = []
@@ -505,7 +507,7 @@ class TurnLeg(Graph):
 
         while ( continueTurning == True ):
             
-            ''' init the loop '''
+            ''' initialize the loop '''
             if index == 0:
                 ''' set initial way Point altitude '''
                 self.initialWayPoint.setAltitudeAboveSeaLevelMeters(altitudeMeanSeaLevelMeters)             
@@ -554,7 +556,7 @@ class TurnLeg(Graph):
                         continueTurning = (currentHeadingDegrees >= self.finalHeadingDegrees)
                 
             ''' define the name of the new way-point '''
-            name = 'turn-{0:.1f}-degrees'.format( currentHeadingDegrees)
+            name = 'turn-{0:.1f}-deg'.format( currentHeadingDegrees)
             #logging.info self.className + ' next way-point= ' + name
             ''' convert heading into bearing '''
             bearingDegrees = math.fmod ( currentHeadingDegrees + 180.0 , 360.0 ) - 180.0

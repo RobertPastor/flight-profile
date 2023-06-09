@@ -122,6 +122,7 @@ class FuelPlannerControl extends og.Control {
 		// add second row to the table
 		tbody.appendChild(row_1);
 		
+		//=========================================
 		// third row
 		let row_2 = document.createElement('tr');
 		let td_2_0 = document.createElement('td');
@@ -170,7 +171,7 @@ class FuelPlannerControl extends og.Control {
 		// add  row to the table tbody
 		tbody.appendChild(row_2);
 		
-		// ================== fourth row
+		// ================== fourth row =================
 		let row_3 = document.createElement('tr');
 		let td_3_0 = document.createElement('td');
 		
@@ -265,15 +266,15 @@ class FuelPlannerControl extends og.Control {
 		div_4_0.appendChild(input_4_0);
 		
 		//---------------------------------
-		// takeoff mass
-		let label_4_1 = document.createElement("label");
-		label_4_1.innerHTML = " See Fuel Planner --->" ;
-		div_4_0.appendChild(label_4_1);
+		// link to the fuel planner website
+		//let label_4_1 = document.createElement("label");
+		//label_4_1.innerHTML = " See Fuel Planner --->" ;
+		//div_4_0.appendChild(label_4_1);
 		
-		// takeoff mass
-		let label_4_2 = document.createElement("span");
-		label_4_2.innerHTML = ' <a href="http://fuelplanner.com/" target="_blank">Fuel Planner</a> ' ;
-		div_4_0.appendChild(label_4_2);
+		// link to fuel planner
+		//let label_4_2 = document.createElement("span");
+		//label_4_2.innerHTML = ' <a href="http://fuelplanner.com/" target="_blank">Fuel Planner</a> ' ;
+		//div_4_0.appendChild(label_4_2);
 		
 		// add div to td
 		td_4_0.appendChild(div_4_0);

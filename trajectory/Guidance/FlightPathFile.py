@@ -425,8 +425,7 @@ class FlightPath(FlightPlan):
 
     def buildArrivalPhase(self, initialHeadingDegrees , finalRadiusOfTurnMeters):
         
-        logging.info ( self.className + ': initial heading= {0:.2f} degrees'.format(initialHeadingDegrees) )
-        
+        logging.info ( self.className + ': initial heading= {0:.2f} deg'.format(initialHeadingDegrees) )
         logging.info ( self.className + '==================== add last turn ==================== ' )
         if self.isDomestic() or self.isInBound():
             
@@ -434,18 +433,18 @@ class FlightPath(FlightPlan):
                 
             finalHeadingDegrees = self.arrivalRunway.getTrueHeadingDegrees()
             finalHeadingDegrees = math.fmod ( finalHeadingDegrees + 180.0 , 360.0 )
-            logging.info ( self.className + ': runway final heading= {0:.2f} degrees'.format(finalHeadingDegrees) )
+            logging.info ( self.className + ': runway final heading= {0:.2f} deg'.format(finalHeadingDegrees) )
             
-            turnLeg = TurnLeg(  initialWayPoint  = endOfLastGreatCircleWayPoint,
+            turnLeg = TurnLeg(  initialWayPoint           = endOfLastGreatCircleWayPoint,
                                     #finalWayPoint    = self.firstGlideSlopeWayPoint,
-                                    finalWayPoint    = self.touchDownWayPoint,
+                                    finalWayPoint         = self.touchDownWayPoint,
                                     initialHeadingDegrees = initialHeadingDegrees,
-                                    aircraft = self.aircraft,
-                                    reverse = False)
+                                    aircraft              = self.aircraft,
+                                    reverse               = False)
             
             distanceStillToFlyMeters = self.flightLengthMeters - self.finalRoute.getLengthMeters()
             distanceToLastFixMeters = self.computeDistanceToLastFixMeters(currentPosition = endOfLastGreatCircleWayPoint,
-                                                                          fixListIndex = self.flightListIndex)
+                                                                          fixListIndex    = self.flightListIndex)
             distanceToLastFixMeters = distanceStillToFlyMeters
             ''' for the last turn => final heading towards the runway orientation '''
             deltaTimeSeconds = 0.1

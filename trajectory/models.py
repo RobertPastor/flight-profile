@@ -23,7 +23,7 @@ class BadaSynonymAircraft(models.Model):
     def getAircraftPerformanceFile(self):
         OPFfilePrefix = self.AircraftFile    
         filePath = os.path.join ( os.path.dirname(__file__) , BADA_381_DATA_FILES , OPFfilePrefix + OPFfileExtension )
-        logging.info ( filePath )
+        #logging.info ( filePath )
         return filePath
         
     def aircraftPerformanceFileExists(self):
@@ -146,6 +146,16 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
     DepartureArrivalAirport    = models.ForeignKey(AirlineAirport, on_delete=models.CASCADE)
     DepartureArrivalRunWay     = models.ForeignKey(AirlineRunWay, on_delete=models.CASCADE)
     FirstLastRouteWayPoint     = models.ForeignKey(AirlineWayPoint, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "isSID = {0} - airport = {1} - runway = {2} - wayPoint = {3}".format( self.isSID, self.DepartureArrivalAirport , self.DepartureArrivalRunWay , self.FirstLastRouteWayPoint)
+    
+    def getIsSID(self):
+        return self.isSID
+    
+    
+    def getDepartureArrivalAirport(self):
+        return self.DepartureArrivalAirport
     
     
     def getWayPointsListAsString(self , isSID):

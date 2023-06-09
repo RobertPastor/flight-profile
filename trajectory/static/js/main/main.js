@@ -17,7 +17,7 @@ function removeAllChilds (parent) {
 function showMessage ( title, message ) {
 	
 	const dialog = document.getElementById("dialogId");
-	removeAllChilds(dialog)
+	removeAllChilds(dialog);
 	$("#dialogId")
 			.dialog({
 				autoOpen: false,
@@ -70,8 +70,8 @@ function stopBusyAnimation(){
 
 function initProgressBar() {
     // Gets the number of image elements
-    var numberOfSteps = 100;
-    var progressBar = document.getElementById('workerId');
+    //let numberOfSteps = 100;
+    let progressBar = document.getElementById('workerId');
     if (progressBar) {
         progressBar.style.width = "0" + '%';
     }
@@ -82,7 +82,7 @@ function stopWorker() {
 		worker.terminate();
 	}
     worker = undefined;
-    //console.log("worker is stopped !!!");
+    // console.log("worker is stopped !!!");
     // hide the progress bars
 }
 
@@ -280,6 +280,10 @@ function initTools(globus, viewExtent) {
 	
 	// init download EXCEL Vertical Flight Profile
 	initDownloadVerticalProfile();
+	
+	// 8th June 2023 - SID STAR
+	let sidStar = SingletonSidStar.getInstance();
+	sidStar.initSidStar(globus);
 	
 	// now finish by loading the different airlines
 	loadAirlines();

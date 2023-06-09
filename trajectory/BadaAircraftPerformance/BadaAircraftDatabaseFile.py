@@ -192,9 +192,9 @@ class BadaAircraftDatabase(object):
             OPFfilePrefix = ac.getAircraftOPFfilePrefix()
 
             filePath = os.path.dirname(__file__) + os.path.sep + ".." + os.path.sep + BADA_381_DATA_FILES + os.path.sep + OPFfilePrefix + self.OPFfileExtension
-            logging.info ( self.className + ': aircraft= {0} - OPF file= {1} - exists= {2}'.format(aircraftICAOcode,
-                                                                                          filePath,
-                                                                                          os.path.exists(filePath)) )
+            #logging.info ( self.className + ': aircraft= {0} - OPF file= {1} - exists= {2}'.format(aircraftICAOcode,
+            #                                                                              filePath,
+            #                                                                              os.path.exists(filePath)) )
             return os.path.exists(filePath) and os.path.isfile(filePath)
         
         return False

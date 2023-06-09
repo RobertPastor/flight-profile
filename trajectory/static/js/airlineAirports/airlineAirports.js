@@ -191,7 +191,6 @@ class AirlineAirports {
 						let layerName =  LayerNamePrefix + Adep + "-" + Ades;
 						//console.log( layerName );
 						SingletonAirlineAirports.getInstance().showRouteWayPoints( airlineRoutesWaypointsArray , layerName );
-								
 
 				},
 				error: function(data, status) {
@@ -317,7 +316,7 @@ class AirlineAirports {
 
 	loadAirports( dataJson , showHide ) {
 	
-		let globus = this.globus;
+		//let globus = this.globus;
 		// get all airports
 		let airports = eval(dataJson['airports']);
 
@@ -376,6 +375,7 @@ class AirlineAirports {
 		let show = true;
 			
 		if ( !document.getElementById("btnAirports") ) {
+			console.error("bouton Airports is not declared");
 			return;
 		}
 		document.getElementById("btnAirports").onclick = function () {

@@ -53,7 +53,7 @@ class AircraftMass(object):
         self.referenceMassKilograms = aircraftPerformance.getReferenceMassTons()*1000.
         self.minimumMassKilograms = aircraftPerformance.getMinimumMassTons()*1000.
         self.maximumMassKilograms = aircraftPerformance.getMaximumMassTons()*1000.
-        self.maximumPayLoadMassKilograms = aircraftPerformance.getMaximumPayLoadMassKilograms()*1000.
+        self.maximumPayLoadMassKilograms = aircraftPerformance.getMaximumPayLoadMassKilograms()
         ''' aircraft mass is computed adding the pay-load to the minimum and adding the fuel mass '''
         self.currentMassKilograms = self.referenceMassKilograms
         self.initialMassKilograms = self.referenceMassKilograms
@@ -62,7 +62,7 @@ class AircraftMass(object):
     def setAircraftMassKilograms(self, massKilograms):
         assert (self.minimumMassKilograms <= massKilograms) and (massKilograms <= self.maximumMassKilograms)
         logging.info ( self.className + ' ==========================================================' )
-        logging.info ( self.className + ': set Aircraft Mass= {0:.2f} kilograms - Mass= {1:.2f} pounds'.format(massKilograms, massKilograms*Kilogram2Pounds) )
+        logging.info ( self.className + ': set Aircraft Mass= {0:.2f} kg - Mass= {1:.2f} pounds'.format(massKilograms, massKilograms*Kilogram2Pounds) )
         self.initialMassKilograms = massKilograms
         self.currentMassKilograms = massKilograms
         logging.info ( self.className + ' ==========================================================' )
@@ -117,9 +117,9 @@ class AircraftMass(object):
 
     
     def dump(self):
-        logging.info ( self.className + ': aircraft reference mass= {0:.2f} kilograms'.format(self.referenceMassKilograms) )
-        logging.info ( self.className + ': aircraft minimum mass= {0:.2f} kilograms'.format(self.minimumMassKilograms))
-        logging.info ( self.className + ': aircraft maximum mass= {0:.2f} kilograms'.format(self.maximumMassKilograms))
-        logging.info ( self.className + ': aircraft maximum pay load mass= {0:.2f} kilograms'.format(self.maximumPayLoadMassKilograms))
+        logging.info ( self.className + ': aircraft reference mass= {0:.2f} kg'.format(self.referenceMassKilograms) )
+        logging.info ( self.className + ': aircraft minimum mass= {0:.2f} kg'.format(self.minimumMassKilograms))
+        logging.info ( self.className + ': aircraft maximum mass= {0:.2f} kg'.format(self.maximumMassKilograms))
+        logging.info ( self.className + ': aircraft maximum pay load mass= {0:.2f} kg'.format(self.maximumPayLoadMassKilograms))
         
         

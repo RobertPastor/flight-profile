@@ -147,6 +147,27 @@ def getAirlineRunWaysFromDB():
     return airlineRunWaysList
 
 
+def getAirportsFromDB(airline):
+    ICAOlist = []
+    airportsList = []
+    ''' airports are not related to airlines '''
+    for airport in AirlineAirport.objects.all():
+        ''' routes are related to airlines '''
+        for airlineRoute in AirlineRoute.objects.filter(airline = airline):
+            #print ( airlineRoute )
+            if (airport.AirportICAOcode == airlineRoute.getDepartureAirportICAOcode()) or (airport.AirportICAOcode == airlineRoute.getArrivalAirportICAOcode() ):
+                if ( airport.AirportICAOcode not in ICAOlist):
+                    #logger.debug (airport.AirportICAOcode)
+                    # add airport only once
+                    ICAOlist.append(airport.AirportICAOcode)
+                    airportsList.append({
+                        "AirportICAOcode" : airport.AirportICAOcode ,
+                        "AirportName": airport.AirportName,
+                        "Longitude": airport.Longitude,
+                        "Latitude": airport.Latitude
+                        } )
+    return airportsList
+
 
 def getAirlineAircraftsFromDB(airline):
     airlineAircraftsList = []
