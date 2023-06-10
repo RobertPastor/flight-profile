@@ -74,6 +74,10 @@ class AirlineAirport(models.Model):
     def __str__(self):
         return "{0}-{1}".format(self.AirportICAOcode, self.AirportName)
     
+    def getAsJson(self):
+        return { "AirportICAO" : self.AirportICAOcode, "LatitudeDegress": self.Latitude, "LongitudeDegrees": self.Longitude}
+    
+    
     def getICAOcode(self):
         return self.AirportICAOcode
     
@@ -138,6 +142,9 @@ class AirlineRunWay(models.Model):
                 TrueHeadingDegrees = self.TrueHeadingDegrees, 
                 LatitudeDegrees    = self.LatitudeDegrees, 
                 LongitudeDegrees   = self.LongitudeDegrees)
+        
+    def getAsJson(self):
+        return { "RunWayName" : self.Name, "LatitudeDegress": self.LatitudeDegrees, "LongitudeDegrees": self.LongitudeDegrees}
     
     
 class AirlineStandardDepartureArrivalRoute(models.Model):
@@ -150,6 +157,7 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
     def __str__(self):
         return "isSID = {0} - airport = {1} - runway = {2} - wayPoint = {3}".format( self.isSID, self.DepartureArrivalAirport , self.DepartureArrivalRunWay , self.FirstLastRouteWayPoint)
     
+    
     def getIsSID(self):
         return self.isSID
     
@@ -157,6 +165,20 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
     def getDepartureArrivalAirport(self):
         return self.DepartureArrivalAirport
     
+    
+    def getDepartureArrivalRunWay(self):
+        return self.DepartureArrivalRunWay
+    
+    
+    def getWayPointsAsGeoPointsList(self):
+        sidStarGeoPointsList = []
+        sidStarWayPointsRoute = AirlineSidStarWayPointsRoute.objects.filter( Route = self ).order_by("Order")
+        for wayPoint in sidStarWayPointsRoute:
+            sidStarGeoPointsList.append({ "wayPointName" : wayPoint.getWayPointName(),
+                                          "latitudeDegrees" : wayPoint.getLatitudeDegrees() ,
+                                          "longitudeDegrees" : wayPoint.getLongitudeDegrees()})
+        return sidStarGeoPointsList
+            
     
     def getWayPointsListAsString(self , isSID):
         assert ( isinstance ( isSID, bool ))
@@ -194,6 +216,17 @@ class AirlineSidStarWayPointsRoute(models.Model):
     WayPointName     = models.CharField(max_length = 100, blank = False)
     LatitudeDegrees  = models.FloatField(blank = False)
     LongitudeDegrees = models.FloatField(blank = False)
+    
+    
+    def getWayPointName(self):
+        return self.WayPointName
+    
+    def getLatitudeDegrees(self):
+        return self.LatitudeDegrees
+    
+    def getLongitudeDegrees(self):
+        return self.LongitudeDegrees
+    
     
     def getWayPointsListAsString(self):
         routeAsString = ""

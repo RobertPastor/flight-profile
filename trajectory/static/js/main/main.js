@@ -150,16 +150,20 @@ function hideAllDiv(globus) {
 	let fuelPlanner = SingletonFuelPlanner.getInstance();
 	fuelPlanner.hideFuelPlannerDiv();
 	
+	let sidStar = SingletonSidStar.getInstance();
+	sidStar.removeLayer();
+	
 }
+
 
 function switchAirlines(globus) {
 	
 	$( "#airlineSelectId" ).change(function() {
 		
 		// hide all div created for the other airlines
-		hideAllDiv(globus)
+		hideAllDiv(globus);
 		
-		stopBusyAnimation()
+		stopBusyAnimation();
 		
 		let airlineName = $("#airlineSelectId option:selected").val();
 		

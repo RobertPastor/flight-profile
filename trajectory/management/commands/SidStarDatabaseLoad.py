@@ -30,3 +30,13 @@ class Command(BaseCommand):
             print ("read SID STAR database result = {0}".format(ret))
         else:
             print("SID STAR does not exists")
+            
+        
+        loadThree = SidStarLoaderOne( isSID=True , departureOrArrivalAirportICAO="LFPG" , FirstLastWayPointName="ERIXU" , RunWayStr="26L" )
+        if (loadThree.exists()):
+            print("acBD exists")
+            ret = loadThree.load()
+            print ("read SID STAR database result = {0}".format(ret))
+        else:
+            print("SID STAR does not exists")
+            

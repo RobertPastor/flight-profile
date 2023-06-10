@@ -91,7 +91,7 @@ class MainControl extends og.Control {
 		
 		// 8th June 2023 - SID STAR
 		let row_2_data_5 = document.createElement('td');
-		row_2_data_5.innerHTML = '<div><button id="btnSidStar" >SID STAR</button></div>';
+		row_2_data_5.innerHTML = '<div><button id="btnSidStar" >SID/STAR</button></div>';
 		row_2.appendChild(row_2_data_5);
 		
 		

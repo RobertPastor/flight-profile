@@ -13,33 +13,73 @@ from trajectory.views.utils import getAirportsFromDB
 from trajectory.models import AirlineStandardDepartureArrivalRoute
 
 
-def getSidStarFromDB(airline):
-    pass
+def retrieveSidStarId( request ):
+    ''' Sid Star Id to retrieve is based upon a session data '''
+    
+    SidStarId = request.session.get('SidStarId', default=0)
+    SidStarCount = AirlineStandardDepartureArrivalRoute.objects.count()
+    if SidStarId < SidStarCount :
+        pass
+    else:
+        SidStarId = 0
+    #print ( "Sid Star Id = {0}".format(SidStarId))
+    return SidStarId
+
+
+def setNextSidStarId( request ):
+        
+    SidStarId = request.session.get('SidStarId', default=0)
+    SidStarCount = AirlineStandardDepartureArrivalRoute.objects.count()
+    if SidStarId < SidStarCount :
+        SidStarId = SidStarId + 1
+    else:
+        SidStarId = 0
+        
+    request.session['SidStarId'] = SidStarId
+    #print ( "Sid Star Id = {0}".format(SidStarId))
+
+
+def getSidStarFromDB(airline , request ):
+    ''' Sid Star Id is used to loop through the existing Sid Star '''
+    
     assert ( isinstance ( airline , Airline ))
-    sidStarsList = []
-    for sidStar in AirlineStandardDepartureArrivalRoute.objects.all():
-        print ( sidStar )
-        sidStarJson = {}
-        sidStarJson["isSID"] = sidStar.getIsSID()
-        sidStarJson["DepartureArrivalAirport"] = sidStar.getDepartureArrivalAirport().getICAOcode()
-        sidStarsList.append( sidStarJson )
-    return sidStarsList
+
+    SidStarId = retrieveSidStarId ( request )
+    index = 0
+    
+    sidStars = AirlineStandardDepartureArrivalRoute.objects.all()
+    sidStarJson = {}
+    for sidStar in sidStars:
+        #print ( sidStar )
+        if ( sidStar and index == SidStarId):
+            
+            #print ( sidStar )
+            sidStarJson = {}
+            sidStarJson["isSID"]                     = sidStar.getIsSID()
+            sidStarJson["DepartureArrivalAirport"]   = sidStar.getDepartureArrivalAirport().getAsJson()
+            sidStarJson["DepartureArrivalRunWay"]    = sidStar.getDepartureArrivalRunWay().getAsJson()
+            sidStarJson["SidStarWayPoints"]          = sidStar.getWayPointsAsGeoPointsList()
+        index = index + 1
+        
+    setNextSidStarId( request )
+    return sidStarJson
 
 
 def showSidStar(request , airlineName):
     #print  ("launch Flight Profile - with airline = {0}".format(airlineName))
+    
     if (request.method == 'GET'):
         
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
             
-            print (airline)
+            #print (airline)
             responseData = {}
-            airportsList = getSidStarFromDB(airline)
-            sidStarsList = getSidStarFromDB ( airline )
+            airportsList = getAirportsFromDB( airline )
+            sidStarsJson = getSidStarFromDB ( airline , request )
             responseData = {
                 'airports' : airportsList,
-                'SidStars' : sidStarsList}
+                'SidStar'  : sidStarsJson}
             
             return JsonResponse(responseData)
         else:

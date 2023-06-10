@@ -169,7 +169,7 @@ class AirlineAirports {
 	// query the server to retrieve the waypoints of the route
 	queryAirlineRouteWayPoints( id ) {
 		
-		let globus = this.globus;
+		//let globus = this.globus;
 		
 		let LayerNamePrefix = this.LayerNamePrefix;
 	
@@ -224,7 +224,7 @@ class AirlineAirports {
 					
 				},
 				error: function(data, status) {
-					console.log("Error - show Airline Routes : " + status + " Please contact your admin");
+					console.error("Error - show Airline Routes : " + status + " Please contact your admin");
 					showMessage("Error - Airline Routes" , data)
 				},
 				complete : function() {

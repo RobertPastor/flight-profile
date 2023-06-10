@@ -162,9 +162,9 @@ def getAirportsFromDB(airline):
                     ICAOlist.append(airport.AirportICAOcode)
                     airportsList.append({
                         "AirportICAOcode" : airport.AirportICAOcode ,
-                        "AirportName": airport.AirportName,
-                        "Longitude": airport.Longitude,
-                        "Latitude": airport.Latitude
+                        "AirportName"     : airport.AirportName,
+                        "Longitude"       : airport.Longitude,
+                        "Latitude"        : airport.Latitude
                         } )
     return airportsList
 
