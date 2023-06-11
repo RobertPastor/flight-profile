@@ -6,12 +6,12 @@ Created on 4 sept. 2022
 
 from django.http import  JsonResponse
 
-from airline.models import Airline, AirlineRoute
+from airline.models import Airline
 
 import logging
 logger = logging.getLogger(__name__)
 
-from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB, getAirlineRoutesFromDB
+from trajectory.views.utils import  getAirlineRoutesFromDB
 
 
 def getAirlineRoutes(request , airlineName):
@@ -22,9 +22,8 @@ def getAirlineRoutes(request , airlineName):
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
 
-            airlineRoutes = getAirlineRoutesFromDB(airline)
-            response_data = {'airlineRoutes': airlineRoutes}
-            return JsonResponse(response_data)
+            response_data = { 'airlineRoutes' : getAirlineRoutesFromDB(airline) }
+            return JsonResponse( response_data )
         else:
             return JsonResponse({'errors': "airline with name {0} not found".format(airlineName)})
 

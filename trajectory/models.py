@@ -55,6 +55,10 @@ class AirlineWayPoint(models.Model):
         return 0.0
     '''
     
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
     def __str__(self):
         return "wayPoint name = {0} - Latitude {1:.2f} - Longitude = {2:.2f}".format(self.WayPointName , self.Latitude , self.Longitude ) 
 
@@ -129,6 +133,9 @@ class AirlineRunWay(models.Model):
     def __str__(self):
         return "{0}/{1}".format(self.Airport.AirportICAOcode, self.Name)
     
+    def getName(self):
+        return self.Name
+    
     def getLatitudeDegrees(self):
         return self.LatitudeDegrees
     
@@ -161,6 +168,9 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
     def getIsSID(self):
         return self.isSID
     
+    def getIsSTAR(self):
+        return not self.isSID
+    
     
     def getDepartureArrivalAirport(self):
         return self.DepartureArrivalAirport
@@ -168,6 +178,9 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
     
     def getDepartureArrivalRunWay(self):
         return self.DepartureArrivalRunWay
+    
+    def getFirstLastRouteWayPoint(self):
+        return self.FirstLastRouteWayPoint
     
     
     def getWayPointsAsGeoPointsList(self):

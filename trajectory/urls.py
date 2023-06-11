@@ -29,7 +29,7 @@ urlpatterns = [
     
     path('computeRunwayOvershoot/<slug:aircraft>/<slug:airport>/<slug:runway>/<slug:mass>' , computeRunwayOvershoot , name ='computeRunwayOvershoot'),
     
-    path('showSidStar/<slug:airlineName>' , showSidStar , name="showSidStar")
+    path('showSidStar/<slug:SidOrStar>/<slug:airport>/<slug:runway>/<slug:waypoint>' , showSidStar , name="showSidStar")
 
 ]
 

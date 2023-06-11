@@ -104,7 +104,7 @@ class AirlineRoute(models.Model):
     def getfirstRouteWayPoint(self):
         airlineRouteWayPoint = AirlineRouteWayPoints.objects.filter(Route=self).distinct().order_by("Order").first()
         if ( airlineRouteWayPoint ):
-            print ( airlineRouteWayPoint )
+            #print ( airlineRouteWayPoint )
             airlineWayPoint = AirlineWayPoint.objects.filter ( WayPointName = airlineRouteWayPoint.getWayPointName() ).first()
             if ( airlineWayPoint ):
                 return airlineWayPoint
@@ -116,7 +116,7 @@ class AirlineRoute(models.Model):
     def getLastRouteWayPoint(self):
         airlineRouteWayPoint = AirlineRouteWayPoints.objects.filter(Route=self).distinct().order_by("Order").last()
         if ( airlineRouteWayPoint ):
-            print ( airlineRouteWayPoint )
+            #print ( airlineRouteWayPoint )
             airlineWayPoint = AirlineWayPoint.objects.filter ( WayPointName = airlineRouteWayPoint.getWayPointName() ).first()
             if ( airlineWayPoint ):
                 return airlineWayPoint

@@ -55,6 +55,7 @@ from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 from trajectory.Guidance.WayPointFile import Airport
 
 from trajectory.Environment.Constants import Meter2Feet # = 3.2808 # one meter equals 3.28 feet
+from trajectory.Environment.Constants import gravityMetersPerSquareSeconds 
 from trajectory.Environment.Constants import Meter2NauticalMiles #= 0.000539956803 # One Meter = 0.0005 nautical miles
 from trajectory.Environment.Constants import Kilogram2Pounds # = 2.20462262 # 1 kilogram = 2.204 lbs
 
@@ -197,7 +198,7 @@ class FlightPath(FlightPlan):
                 logging.info ( self.className + ': difference= {0:.2f} degrees'.format(angleDifferenceDegrees) )
     
                 tasMetersPerSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
-                radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / (9.81 * math.tan(math.radians(15.0)))
+                radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( gravityMetersPerSquareSeconds * math.tan(math.radians(15.0)))
     
                 anticipatedTurnStartMeters = radiusOfTurnMeters * math.tan(math.radians((180.0 - abs(angleDifferenceDegrees))/2.0))
                 logging.info ( self.className + ': anticipated turn start from end point= {0:.2f} meters'.format(anticipatedTurnStartMeters) )

@@ -75,7 +75,7 @@ class AirlineProfileCosts {
 		let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
 		
 		let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
-		console.log(aircraftICAOcode);
+		//console.log(aircraftICAOcode);
 		
 		// set Max TakeOff Mass
 		for (let index = 0; index < airlineAircraftsArray.length; index++) {

@@ -29,22 +29,50 @@ class SidStar {
 		return "btnSidStar";
 	}
 	
-	getLayerName() {
-		// only one layer displayed at a given time
-		return "SidStar";
-	}
-	
 	getGlobus() {
 		return this.globus;
 	}
 	
-	removeLayer() {
+	removeLayer ( sidStarPattern ) {
+		
+		if ( sidStarPattern == undefined ) {
+			return;
+		}
+		// sidStar Pattern -> SID-KLAX/24R/SLI
+		//console.log( sidStarPattern );
 		
 		let globus = this.globus;
 			
-		let layerName =  SingletonSidStar.getInstance().getLayerName();
+		let layerName =  sidStarPattern.replaceAll("/", "-");
+		//console.log( "layer name with underscores only = " + layerName );
+		
 		// function defined in main.js
 		removeLayer( globus , layerName );
+		
+		// remove layer related to the SID Star animation
+		try {
+			let polyLine = this.polyLine;
+			if ( polyLine ) {
+				polyLine.removeLayer ();
+			}
+		} catch (err) {
+			console.error(JSON.stringify(err));
+		}
+		
+		try {
+			let polyLine = this.polyLine;
+			if ( polyLine ) {
+				let polyLineLayerName = polyLine.getLayerName();
+
+				//console.log ( " remove layer with name = " + polyLineLayerName );
+				if ( polyLineLayerName ){
+					removeLayer ( globus, polyLineLayerName );
+				}
+			}
+		} catch (err) {
+			console.error(JSON.stringify(err));
+		}
+		
 	}
 	
 	loadSidStarOneRouteWayPoint( layerSidStarGlobusLayer , wayPoint) {
@@ -72,30 +100,10 @@ class SidStar {
 		}));
 	}
 	
-	hideShowSidStar( sidStarRoutesWaypointsArray , runWayJson ) {
-		
-		SingletonSidStar.getInstance().removeLayer();
-		let layerName = SingletonSidStar.getInstance().getLayerName();
-		let sidStarGlobusLayer = new og.layer.Vector( layerName , {
-				billboard: { 
-					src: '/static/trajectory/images/marker.png', 
-					color: '#6689db' ,
-					width : 4,
-					height : 4
-					},
-				clampToGround: true,
-				});
-				
-		let globus = SingletonSidStar.getInstance().getGlobus();
-		sidStarGlobusLayer.addTo(globus.planet);
-		
-		// add the waypoints
-		for (let wayPointId = 0; wayPointId < sidStarRoutesWaypointsArray.length; wayPointId++ ) {
-			// insert one waypoint
-			SingletonSidStar.getInstance().loadSidStarOneRouteWayPoint( sidStarGlobusLayer, sidStarRoutesWaypointsArray[wayPointId] );
-		}
+	setViewPort ( sidStarRoutesWaypointsArray ) {
 		
 		// compute viewPort
+		let globus = this.globus;
 		
 		let MinLatitude = 90.0;
 		let MaxLatitude = -90.0;
@@ -131,7 +139,91 @@ class SidStar {
 		
 	}
 	
-	queryServer() {
+	drawPolyline( sidStarPattern , sidStarRoutesWaypointsArray ) {
+	
+		let globus = this.globus;
+		
+		let wayPointsArr = [];
+		for (let wayPointId = 0; wayPointId < sidStarRoutesWaypointsArray.length; wayPointId++ ) {
+			
+			if ( wayPointId >= 1) {
+				let srcWayPoint = sidStarRoutesWaypointsArray[wayPointId-1];
+				let dstWayPoint = sidStarRoutesWaypointsArray[wayPointId];
+				wayPointsArr.push( {"src": srcWayPoint , "dst": dstWayPoint }  );
+			}
+		}
+		let polyLine = new PolyLine (sidStarPattern);
+		polyLine.init( globus, wayPointsArr );
+		polyLine.draw(); 
+		
+		this.polyLine = polyLine;
+		
+		// store polyline layer name
+		this.polylineLayerName = polyLine.getLayerName();
+		//console.log( "polyline layer name = " + this.polylineLayerName );
+	}
+	
+	hideShowSidStar( sidStarPattern , sidStarRoutesWaypointsArray ) {
+		
+		if ( sidStarRoutesWaypointsArray.length > 0 ) {
+		
+			SingletonSidStar.getInstance().removeLayer(sidStarPattern);
+			
+			let layerName = sidStarPattern.replaceAll("/", "-");
+			//console.log( "layer Name with underscores only = " + layerName );
+			
+			let sidStarGlobusLayer = new og.layer.Vector( layerName , {
+					billboard: { 
+						src: '/static/trajectory/images/marker.png', 
+						color: '#6689db' ,
+						width : 4,
+						height : 4
+						},
+					clampToGround: true,
+					});
+					
+			let globus = SingletonSidStar.getInstance().getGlobus();
+			sidStarGlobusLayer.addTo(globus.planet);
+			
+			// add the waypoints
+			for (let wayPointId = 0; wayPointId < sidStarRoutesWaypointsArray.length; wayPointId++ ) {
+				// insert one waypoint
+				SingletonSidStar.getInstance().loadSidStarOneRouteWayPoint( sidStarGlobusLayer, sidStarRoutesWaypointsArray[wayPointId] );
+			}
+			
+			// set the viewport
+			SingletonSidStar.getInstance().setViewPort( sidStarRoutesWaypointsArray );
+			
+			// draw polyline wetween waypoints
+			SingletonSidStar.getInstance().drawPolyline( sidStarPattern , sidStarRoutesWaypointsArray );
+			
+		} else {
+			SingletonSidStar.getInstance().removeLayer(sidStarPattern);
+		}
+	}
+	
+	queryServer( sidStarPattern ) {
+		
+		// SidStar Pattern -> Sid-KLAX/24R/SIL
+		// SidStar Pattern -> Star-KATL/26L/MEM
+		this.sidStarPattern = sidStarPattern;
+		//console.log(sidStarPattern);
+		
+		let globus = this.globus;
+		let layerName = sidStarPattern.replaceAll("/","-");
+		//console.log ( "SID STAR layer with underscores only = "+ layerName);
+		
+		let layer = globus.planet.getLayerByName( layerName );
+		if (layer) {
+			//console.log( "layer with name = "+ layerName + " already existing ");
+			
+			// loca layer removal
+			this.removeLayer ( sidStarPattern );
+			return ;
+		}
+		
+		sidStarPattern = sidStarPattern.replaceAll("-","/");
+		//console.log(" SID Star with SLASH only = " + sidStarPattern);
 		
 		// init progress bar.
 		initProgressBar();
@@ -145,7 +237,7 @@ class SidStar {
 		// only show Sid Star for the airports of the current airline
 		$.ajax( {
 				method: 'get',
-				url :  "trajectory/showSidStar/" + airlineName,
+				url :  "trajectory/showSidStar/" + sidStarPattern,
 				async : true,
 				success: function(data, status) {
 					
@@ -157,8 +249,8 @@ class SidStar {
 						if ( sidStarJson.hasOwnProperty( "SidStarWayPoints" ) && sidStarJson.hasOwnProperty( "DepartureArrivalRunWay" ) ) {
 							
 							let sidStarRoutesWaypointsArray = sidStarJson["SidStarWayPoints"];
-							let runWayJson = sidStarJson["DepartureArrivalRunWay"]
-							SingletonSidStar.getInstance().hideShowSidStar( sidStarRoutesWaypointsArray , runWayJson);
+							//let runWayJson = sidStarJson["DepartureArrivalRunWay"]
+							SingletonSidStar.getInstance().hideShowSidStar( sidStarPattern, sidStarRoutesWaypointsArray );
 						} else {
 							console.error("Error - show SID STAR : Property SidStarWayPoints is missing  - Please contact your admin");
 						}
@@ -173,7 +265,7 @@ class SidStar {
 				},
 				complete : function() {
 					stopBusyAnimation();
-					document.getElementById(SingletonSidStar.getInstance().getButtonId()).disabled = false
+					//document.getElementById(SingletonSidStar.getInstance().getButtonId()).disabled = false
 				}
 		} );
 		
@@ -181,13 +273,12 @@ class SidStar {
 	
 	initSidStar( globus ) {
 		
-		this.LayerName = SingletonSidStar.getInstance().getLayerName();
 		
 		// 9th May 2023 - class attributes
 		this.globus = globus;
 		
 		if ( !document.getElementById(SingletonSidStar.getInstance().getButtonId()) ) {
-			console.error("button Sid Star is not declared");
+			//console.error("button Sid Star is not declared");
 			return;
 		}
 		

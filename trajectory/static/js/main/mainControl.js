@@ -31,7 +31,7 @@ class MainControl extends og.Control {
 		let row_0 = document.createElement('tr');
 		
 		let row_0_data_1 = document.createElement('td');
-		row_0_data_1.colSpan = "12";
+		row_0_data_1.colSpan = "11";
 		row_0_data_1.innerHTML = '<div id="workerId" class="w3-container progressBar" style="width:100%"></div>';
 		row_0.appendChild(row_0_data_1);
 						
@@ -56,7 +56,7 @@ class MainControl extends og.Control {
 		row_1.appendChild(row_1_data_1);
 		
 		let row_1_data_3 = document.createElement('td');
-		row_1_data_3.colSpan = "8";
+		row_1_data_3.colSpan = "7";
 		
 		row_1_data_3.innerHTML = '<div class="alignRight"><span>Airline Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
 		row_1.appendChild(row_1_data_3);
@@ -90,9 +90,9 @@ class MainControl extends og.Control {
 		row_2.appendChild(row_2_data_4);
 		
 		// 8th June 2023 - SID STAR
-		let row_2_data_5 = document.createElement('td');
-		row_2_data_5.innerHTML = '<div><button id="btnSidStar" >SID/STAR</button></div>';
-		row_2.appendChild(row_2_data_5);
+		//let row_2_data_5 = document.createElement('td');
+		//row_2_data_5.innerHTML = '<div><button id="btnSidStar" >SID/STAR</button></div>';
+		//row_2.appendChild(row_2_data_5);
 		
 		
 		let row_2_data_6 = document.createElement('td');

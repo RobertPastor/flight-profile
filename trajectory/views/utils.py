@@ -6,12 +6,14 @@ Created on 26 déc. 2022
 
 from airline.models import Airline,  AirlineAircraft, AirlineRoute, AirlineCosts
 
-from trajectory.models import  AirlineRunWay , BadaSynonymAircraft, AirlineAirport
+from trajectory.models import  AirlineRunWay , BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 
 from trajectory.Environment.Earth import EarthRadiusMeters
 from trajectory.Environment.Constants import Meter2NauticalMiles
 from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
+
+from trajectory.models import AirlineStandardDepartureArrivalRoute, AirlineAirport
 
 
 def convertDegreeMinuteSecondToDecimal(DegreeMinuteSecond='43-40-51.00-N'):
@@ -92,16 +94,65 @@ def computeRouteLengthMiles( AdepICAOcode, AdesICAOcode ):
     return adepGeo.computeDistanceMetersTo(adesGeo) * Meter2NauticalMiles
 
 
+def isAirportInAirlineAirports(airline , airlineAirport ):
+    
+    assert ( isinstance ( airline , Airline ))
+    assert ( isinstance ( airlineAirport , AirlineAirport ))
+
+    for airlineRoute in AirlineRoute.objects.filter(airline = airline):
+        if (airlineAirport.getICAOcode() == airlineRoute.getDepartureAirportICAOcode()) or (airlineAirport.getICAOcode() == airlineRoute.getArrivalAirportICAOcode() ):
+            return True
+        
+    return False
+
+
+def computeListOfDepartureRunWaysWithSID(airlineRoute):
+    sidStars = AirlineStandardDepartureArrivalRoute.objects.all()
+    for sidStar in sidStars:
+        if ( sidStar.getIsSID() ):
+            if ( airlineRoute.getDepartureAirportICAOcode() == sidStar.getDepartureArrivalAirport().getICAOcode() ):
+                ''' there is a SID with the same departure airport '''
+                #print ( sidStar )
+                firstRouteWayPoint = airlineRoute.getfirstRouteWayPoint()
+                #print ( firstRouteWayPoint )
+                
+                if ( sidStar.getFirstLastRouteWayPoint() == firstRouteWayPoint):
+                    ''' warning : there might be several runways related to the same airport and the same first waypoint '''
+                    SidName = sidStar.getDepartureArrivalAirport().getICAOcode() +"/" + sidStar.getDepartureArrivalRunWay().getName() + "/" + firstRouteWayPoint.getWayPointName()
+                    return SidName
+
+    return ""
+
+
+def computeListOfArrivalRunWaysWithSTAR(airlineRoute):
+    sidStars = AirlineStandardDepartureArrivalRoute.objects.all()
+    for sidStar in sidStars:
+        if ( sidStar.getIsSTAR() ):
+            if ( airlineRoute.getArrivalAirportICAOcode() == sidStar.getDepartureArrivalAirport().getICAOcode() ):
+                ''' there is a STAR with the same arrival airport '''
+                lastRouteWayPoint = airlineRoute.getLastRouteWayPoint()
+                ''' equating Django objects '''
+                if ( sidStar.getFirstLastRouteWayPoint() == lastRouteWayPoint):
+                    ''' warning : there might be several runways related to the same airport and the same first waypoint '''
+                    StarName = sidStar.getDepartureArrivalAirport().getICAOcode() +"/" + sidStar.getDepartureArrivalRunWay().getName() + "/" + lastRouteWayPoint.getWayPointName()
+                    return StarName
+    
+    return ""
+
+
 def getAirlineRoutesFromDB(airline):
     airlineRoutesList = []
-    for airlineRoute in AirlineRoute.objects.filter(airline = airline):
+    for airlineRoute in AirlineRoute.objects.filter(airline = airline).distinct().order_by("DepartureAirportICAOCode"):
+        #print ( airlineRoute )
         #logger.debug ( str ( airlineRoute ) )
         airlineRoutesList.append({
                 "Airline"                  : airlineRoute.airline.Name,
                 "DepartureAirport"         : airlineRoute.DepartureAirport ,
                 "DepartureAirportICAOCode" : airlineRoute.DepartureAirportICAOCode,
+                "SID"                      : computeListOfDepartureRunWaysWithSID(airlineRoute),
                 "ArrivalAirport"           : airlineRoute.ArrivalAirport,
                 "ArrivalAirportICAOCode"   : airlineRoute.ArrivalAirportICAOCode,
+                "STAR"                     : computeListOfArrivalRunWaysWithSTAR(airlineRoute),
                 "RouteLengthMiles"         : round ( computeRouteLengthMiles(airlineRoute.DepartureAirportICAOCode , airlineRoute.ArrivalAirportICAOCode) , 2 )
                 } )
     return airlineRoutesList

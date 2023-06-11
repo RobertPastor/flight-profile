@@ -8,81 +8,65 @@ import logging
 logger = logging.getLogger(__name__)
 from django.http import  JsonResponse
 
-from airline.models import Airline
-from trajectory.views.utils import getAirportsFromDB
-from trajectory.models import AirlineStandardDepartureArrivalRoute
+from trajectory.models import AirlineStandardDepartureArrivalRoute, AirlineAirport, AirlineRunWay, AirlineWayPoint
 
 
-def retrieveSidStarId( request ):
-    ''' Sid Star Id to retrieve is based upon a session data '''
+def getSidStarFromDB( SidOrStar , airport , runway, waypoint ):
     
-    SidStarId = request.session.get('SidStarId', default=0)
-    SidStarCount = AirlineStandardDepartureArrivalRoute.objects.count()
-    if SidStarId < SidStarCount :
-        pass
-    else:
-        SidStarId = 0
-    #print ( "Sid Star Id = {0}".format(SidStarId))
-    return SidStarId
-
-
-def setNextSidStarId( request ):
-        
-    SidStarId = request.session.get('SidStarId', default=0)
-    SidStarCount = AirlineStandardDepartureArrivalRoute.objects.count()
-    if SidStarId < SidStarCount :
-        SidStarId = SidStarId + 1
-    else:
-        SidStarId = 0
-        
-    request.session['SidStarId'] = SidStarId
-    #print ( "Sid Star Id = {0}".format(SidStarId))
-
-
-def getSidStarFromDB(airline , request ):
+    #print ( airport )
     ''' Sid Star Id is used to loop through the existing Sid Star '''
     
-    assert ( isinstance ( airline , Airline ))
-
-    SidStarId = retrieveSidStarId ( request )
-    index = 0
+    assert ( isinstance ( airport , str ))
     
-    sidStars = AirlineStandardDepartureArrivalRoute.objects.all()
+    airport = AirlineAirport.objects.filter ( AirportICAOcode = airport ).first()
+    assert ( isinstance ( airport , AirlineAirport ))
+    #print ( airport )
+    
+    runway = AirlineRunWay.objects.filter( Name = runway , Airport = airport ).first()
+    assert ( isinstance ( runway , AirlineRunWay ))
+
+    #print ( runway )
+    
+    waypoint = AirlineWayPoint.objects.filter ( WayPointName = waypoint).first()
+    assert ( isinstance ( waypoint , AirlineWayPoint ))
+
+    #print ( waypoint )
+    
+    isSID = True if ( SidOrStar.lower() == "sid" ) else False
+    
     sidStarJson = {}
-    for sidStar in sidStars:
-        #print ( sidStar )
-        if ( sidStar and index == SidStarId):
-            
-            #print ( sidStar )
-            sidStarJson = {}
-            sidStarJson["isSID"]                     = sidStar.getIsSID()
-            sidStarJson["DepartureArrivalAirport"]   = sidStar.getDepartureArrivalAirport().getAsJson()
-            sidStarJson["DepartureArrivalRunWay"]    = sidStar.getDepartureArrivalRunWay().getAsJson()
-            sidStarJson["SidStarWayPoints"]          = sidStar.getWayPointsAsGeoPointsList()
-        index = index + 1
+    
+    if ( airport and runway and waypoint ):
+        sidStar = AirlineStandardDepartureArrivalRoute.objects.filter( isSID = isSID ,
+                                                                       DepartureArrivalAirport = airport ,
+                                                                       DepartureArrivalRunWay = runway ,
+                                                                       FirstLastRouteWayPoint = waypoint).first()
         
-    setNextSidStarId( request )
+        if ( sidStar ):
+            
+                        #print ( sidStar )
+                        sidStarJson = {}
+                        sidStarJson["isSID"]                     = sidStar.getIsSID()
+                        sidStarJson["DepartureArrivalAirport"]   = sidStar.getDepartureArrivalAirport().getAsJson()
+                        sidStarJson["DepartureArrivalRunWay"]    = sidStar.getDepartureArrivalRunWay().getAsJson()
+                        sidStarJson["SidStarWayPoints"]          = sidStar.getWayPointsAsGeoPointsList()
+                
+        
     return sidStarJson
 
 
-def showSidStar(request , airlineName):
+def showSidStar(request , SidOrStar , airport , runway, waypoint ):
     #print  ("launch Flight Profile - with airline = {0}".format(airlineName))
     
     if (request.method == 'GET'):
         
-        airline = Airline.objects.filter(Name=airlineName).first()
-        if (airline):
-            
             #print (airline)
             responseData = {}
-            airportsList = getAirportsFromDB( airline )
-            sidStarsJson = getSidStarFromDB ( airline , request )
+            sidStarsJson = getSidStarFromDB ( SidOrStar , airport , runway, waypoint )
             responseData = {
-                'airports' : airportsList,
                 'SidStar'  : sidStarsJson}
             
             return JsonResponse(responseData)
-        else:
-            return JsonResponse({'errors': "airline with name {0} not found".format(airlineName)})
+        
     else:
         return JsonResponse({'errors': "expecting GET method"})
