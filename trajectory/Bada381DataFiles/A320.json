@@ -5,8 +5,15 @@
 		"variant": "A320-200",
 		"ICAO" : "A320",
 		"source" : "https://www.airbus.com/sites/g/files/jlcbta136/files/2023-05/Airbus-techdata-AC-A320_0523.pdf",
+		"changelog": {
+			"version": "1.0",
+			"date": "12/06/2023"
+		},
+		"engines": {
+			"number": 2,
+			"type": "CFM56_5_A3"
+		},
 		"mass": {
-			
 			"minimal": {
 				"unit" : "kg",
 				"value": "39000.0"
@@ -15,11 +22,11 @@
 				"unit" : "kg",
 				"value": "64000.0"
 			},
-			"maxPayLoad": {
+			"maxPayload": {
 				"unit" : "kg",
 				"value": "21500.0"
 			},
-			"maximalTakeOff": {
+			"maxTakeOff": {
 				"unit" : "kg",
 				"value": "77000.0"
 			},
@@ -28,9 +35,25 @@
 				"value": "20000.0"
 			}
 		},
-		"speeds": {
+		"phase": {
+			"groundrun": {
+				"name": "length",
+				"unit": "meters",
+				"value": 2200
+				
+			},
+			"cruise": {
+				"ceiling": {
+					"unit": "ft",
+					"name" : "cruiseLevel",
+					"value": "39000"
+				},
+				"speed": {
+					"unit": "mach",
+					"value": 0.82
+				}
+			}
 		}
 	}
-
 
 }

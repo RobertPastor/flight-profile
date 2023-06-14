@@ -63,8 +63,12 @@
 		contents.push("Waypoints are provided for each oriented route from departure to arrival airport.<br>");
 		contents.push("Waypoints are defined by a unique name, a longitude and a latitude.<br>");
 		
-		contents.push("waypoints names are unique for all routes whatever configured airline is available in the database.<br>");
+		contents.push("Waypoints names are unique for all routes whatever configured airline is available in the database.<br>");
+		contents.push("Best Runways are runways having minimal distance from the runway end to the first route waypoint.<br>");
 		
+		contents.push("a SID, independent from any airline route, defines a set of waypoints connecting a departure runway to the first waypoint of the route.<br>");
+		contents.push("a STAR, independent from any airline route, defines a set of waypoints connecting the last waypoint of the route to the runway.<br>");
+
 		this.pushSection("WayPoints Configuration" , contents , "3");
 		
 		contents = [];
@@ -176,7 +180,10 @@ class Help extends baseHelpConfiguration {
 		contents.push("The airline routes are defined by a set of WayPoints that are linking a departure to an arrival airport.<br>");
 		contents.push("When the route wayPoints are displayed on the map, the best departure and arrival runways are computed and inserted in the routes table.<br>");
 		contents.push("<u><b>Warning:</b></u> for the time being, these routes are not dependent upon the departure and arrival runways.<br>");
-		contents.push("Future improvements : SID and STAR have to be implemented.<br>");
+		contents.push("<br>");
+		contents.push("a SID, independent from any airline route, defines a set of waypoints connecting a departure runway to the first waypoint of the route.<br>");
+		contents.push("a STAR, independent from any airline route, defines a set of waypoints connecting the last waypoint of the route to the runway.<br>");
+		
 		
 		this.pushSection("Airline Routes" , contents , "5");
 

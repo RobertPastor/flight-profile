@@ -12,6 +12,8 @@ from airline.models import Airline
 
 HeaderNames = ["Airline" , "Departure Airport", "Departure Airport ICAO Code", "Arrival Airport", "Arrival Airport ICAO Code"]
 
+import logging
+logger = logging.getLogger(__name__)
 
 class AirlineRoutesDataBaseXlsx(object):
     
@@ -19,6 +21,7 @@ class AirlineRoutesDataBaseXlsx(object):
     RoutesAirports = []
 
     def __init__(self):
+        
         self.className = self.__class__.__name__
 
         self.FilePath = "AirlineRoutesAirportsDepartureArrival.xlsx"
@@ -56,6 +59,7 @@ class AirlineRoutesDataBaseXlsx(object):
         else:
             return False
     
+    
     def createAirlineRoutes(self):
         
         if os.path.exists(self.FilePath):
@@ -74,15 +78,27 @@ class AirlineRoutesDataBaseXlsx(object):
                 
                 airline = Airline.objects.filter(Name=row[HeaderNames[0]]).first()
                 if (airline):
-                    airlineRoute = AirlineRoute(
-                        airline = airline,
-                        DepartureAirport = row[HeaderNames[1]],
+                    airlineRoute = AirlineRoute.objects.filter(
+                        airline                  = airline,
+                        DepartureAirport         = row[HeaderNames[1]],
                         DepartureAirportICAOCode = row[HeaderNames[2]],
-                        ArrivalAirport = row[HeaderNames[3]],
-                        ArrivalAirportICAOCode = row[HeaderNames[4]]
-                        )
-                    print ( str(airlineRoute) )
-                    airlineRoute.save()
+                        ArrivalAirport           = row[HeaderNames[3]],
+                        ArrivalAirportICAOCode   = row[HeaderNames[4]]
+                        ).first()
+                    if ( airlineRoute ):
+                        print ( "route is already existing -> " + str(airlineRoute))
+                        airlineRoute.save()
+                    else:
+                        print ( "route does not exist -> {0} - {1} ".format( row[HeaderNames[1]] , row[HeaderNames[3]] ) )
+                        airlineRoute = AirlineRoute(
+                            airline                  = airline,
+                            DepartureAirport         = row[HeaderNames[1]],
+                            DepartureAirportICAOCode = row[HeaderNames[2]],
+                            ArrivalAirport           = row[HeaderNames[3]],
+                            ArrivalAirportICAOCode   = row[HeaderNames[4]]
+                            )
+                        airlineRoute.save()
+                    
                 else:
                     return False
                 

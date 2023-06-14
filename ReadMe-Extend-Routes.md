@@ -1,5 +1,6 @@
 
 # add new departure and arrival airports to 
+
 /flight-profile/airline/management/commands/AirlineRoutes/AirlineRoutesAirportsDepartureArrival.xlsx 
 
 Use ICAO codes for the airports
@@ -81,7 +82,18 @@ VOMM/12
 read runways database result = True
 PS C:\Users\rober\Documents\04 - Workspace\flight-profile>
 
-# update the costs database as it updates the Django database
+## launch an update of the SID STAR that are depending upon the airports, and runways and waypoints
+
+python manage.py SidStarDatabaseLoad
+
+using PgAdmin check the SID STAR database table
+
+the same command is loading also the SID STAR waypoints
+using PgAdmin check the SID STAR waypoints database table
+
+
+
+## update the costs database as it updates the Django database
 
 python manage.py AirlineCostsDatabaseCompute
 

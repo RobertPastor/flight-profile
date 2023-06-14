@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
-        #AirlineRouteWayPoints.objects.all().delete()
+        AirlineRouteWayPoints.objects.all().delete()
         
         airlineRoutesWayPointsDatabaseXlsx = AirlineRoutesWayPointsDatabaseXlsx()
         if (airlineRoutesWayPointsDatabaseXlsx.exists()):
@@ -17,24 +17,7 @@ class Command(BaseCommand):
             
             if ret:
                 airlineRoutesWayPointsDatabaseXlsx.insertWayPointsDatabase()
-               
-            
-        #airlineRoutesWayPointsDatabase = AirlineRoutesWayPointsDatabase()
-        #if airlineRoutesWayPointsDatabase.exists():
-            
-        #    ''' create the EXCEL files containing the WayPoints '''
-        #    airlineRoutesWayPointsDatabase.createRoutesFiles()
                 
-        #    print("airline routes waypoints database exists")
-        #    ret = airlineRoutesWayPointsDatabase.load()
-        #    print ("load airline routes WayPoints database result = {0}".format(ret))
-                
-        #    airlineRoutesWayPointsDatabase.fillWayPointsFile(wayPointsDatabase)
-                
-        #else:
-        #    print("airline routes database does not exists")
-                
-        
         #wayPointsDatabase.dropDuplicates()
         return
         

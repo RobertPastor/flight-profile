@@ -1340,7 +1340,7 @@
 1364;Brenoux;Mende;France;MEN;LFNB;44.502108;3.532819;3362;1;E
 1365;Carpentras;Carpentras;France;LFNH;LFNH;44.029847;5.078058;394;1;E
 1366;Avord;Avord;France;LFOA;LFOA;47.053333;2.6325;580;1;E
-1367;Tille;Beauvais;France;BVA;LFOB;49.454444;2.112778;359;1;E
+1367;Beauvais Tille;Beauvais;France;BVA;LFOB;49.454444;2.112778;359;1;E
 1368;Chateaudun;Chateaudun;France;LFOC;LFOC;48.058142;1.376625;433;1;E
 1369;St Florent;Saumur;France;LFOD;LFOD;47.256839;-0.115142;269;1;E
 1370;Fauville;Evreux;France;LFOE;LFOE;49.028669;1.219864;464;1;E
@@ -1462,7 +1462,7 @@
 1486;Makedonia;Thessaloniki;Greece;SKG;LGTS;40.519725;22.97095;22;2;E
 1487;Tatoi;Dekelia;Greece;LGTT;LGTT;38.108928;23.783836;785;2;E
 1488;Dionysios Solomos;Zakynthos;Greece;ZTH;LGZA;37.750853;20.88425;15;2;E
-1489;Ferihegy;Budapest;Hungary;BUD;LHBP;47.436933;19.255592;495;1;E
+1489;Budapest Ferihegy;Budapest;Hungary;BUD;LHBP;47.436933;19.255592;495;1;E
 1490;Debrecen;Debrecen;Hungary;DEB;LHDC;47.488917;21.615333;359;1;E
 1491;Kecskemet;Kecskemet;Hungary;LHKE;LHKE;46.9175;19.749222;376;1;E
 1492;Nyiregyhaza;Nyirregyhaza;Hungary;LHNY;LHNY;47.983892;21.692317;338;1;E

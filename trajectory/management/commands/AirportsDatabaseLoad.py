@@ -5,9 +5,11 @@ from trajectory.models import AirlineAirport
 from airline.models import AirlineRoute
 
 class Command(BaseCommand):
+    
     help = 'Load the Airports table'
 
     def handle(self, *args, **options):
+        
         AirlineAirport.objects.all().delete()
         
         ''' load only airports defined in the airline routes '''

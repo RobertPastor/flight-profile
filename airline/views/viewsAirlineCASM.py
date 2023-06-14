@@ -123,7 +123,7 @@ def writeAirlineCasmResults(workbook , airlineName):
     
         worksheet.autofit()
     else:
-        print ( "airline not found = {0}".format( airlineName ))
+        logger.error ( " airline not found = {0}".format( airlineName ))
         ColumnIndex = 0
         worksheet.write(row, ColumnIndex, airlineName)
         

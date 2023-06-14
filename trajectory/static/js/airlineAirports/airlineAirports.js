@@ -126,8 +126,8 @@ class AirlineAirports {
 		// Update the position of `#div` dynamically
 		$('#airlineAirportsRoutesMainDivId').css({
 			'position': 'absolute',
-			'top': position["y"] + 5, // Leave some margin
-			'left': position["x"] + 5, // Leave some margin
+			'top': position["y"] - 20, // Leave some margin
+			'left': position["x"] - 20 , // Leave some margin
 			'display': 'block'
 		});
 		

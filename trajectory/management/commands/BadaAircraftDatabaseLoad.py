@@ -7,6 +7,7 @@ class Command(BaseCommand):
     help = 'Reads the Synonym file and load the Aircrafts table'
 
     def handle(self, *args, **options):
+        
         BadaSynonymAircraft.objects.all().delete()
         acBD = BadaAircraftDatabase()
         if (acBD.exists()):

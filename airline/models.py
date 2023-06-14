@@ -19,14 +19,25 @@ class Airline(models.Model):
 
     def __str__(self):
         return "{0}".format(self.Name)
+    
+    
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
 
 
 def get_default_airline():
     return Airline.objects.get_or_create(Name="AmericanWings")[0]
 
 
-
 class AirlineRoute(models.Model):
+    
     airline = models.ForeignKey(Airline, on_delete=models.CASCADE , default=None )
 
     DepartureAirport         = models.CharField(max_length = 500)
@@ -49,6 +60,16 @@ class AirlineRoute(models.Model):
     def __str__(self):
         return "departure airport= {0} - arrival airport= {1}".format(self.DepartureAirportICAOCode, self.ArrivalAirportICAOCode)
 
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
+    
+    
     def getAirportsList(self):
         airlineRoutes = AirlineRoute.objects.all()
         airportsICAOcodeList = []
@@ -216,11 +237,12 @@ class AirlineRoute(models.Model):
                             minimalDistanceMeters = distanceMeters
                         
                 #print ("best departure runway = {0}".format(bestRunWay.Name))
-                return bestRunWay.Name
+                return bestRunWay.Name if (bestRunWay) else ""
             else:
                 return "Error"
         else:
             return "Error"
+  
   
     ''' best arrival runway is the one with minimal distance between start of 5 nautic descent ramp and last point of the route '''
     def computeBestArrivalRunWay(self):
@@ -265,7 +287,7 @@ class AirlineRoute(models.Model):
                             minimalDistanceMeters = distanceMeters
                         
                 #print ("best arrival runway = {0}".format(bestRunWay.Name))
-                return bestRunWay.Name
+                return bestRunWay.Name if (bestRunWay) else ""
             else:
                 return "Error"
         else:
@@ -278,6 +300,18 @@ class AirlineRouteWayPoints(models.Model):
     Order = models.IntegerField()
     # linked to the WayPoint class in the trajectory
     WayPoint = models.CharField(max_length = 100)
+    
+    
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
+    
             
     def getWayPointsListAsString(self):
         routeAsString = ""
@@ -353,7 +387,16 @@ class AirlineAircraft(models.Model):
     
     airline = models.ForeignKey(Airline, on_delete=models.CASCADE  )
 
-        
+
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
+    
     def __str__(self):
         return "{0}-{1}".format(self.aircraftFullName, self.aircraftICAOcode)
         

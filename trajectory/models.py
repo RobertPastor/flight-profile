@@ -17,6 +17,17 @@ class BadaSynonymAircraft(models.Model):
     AircraftFile = models.CharField(max_length = 100)
     useSynonym = models.BooleanField(default = False)
     
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
+    
+    
     def __str__(self):
         return "{0}-{1}-{2}".format(self.AircraftICAOcode, self.Manufacturer, self.AircraftModel)
     
@@ -59,8 +70,16 @@ class AirlineWayPoint(models.Model):
     def __eq__(self, other):
         return models.Model.__eq__(self, other)
     
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
+    
+    
     def __str__(self):
         return "wayPoint name = {0} - Latitude {1:.2f} - Longitude = {2:.2f}".format(self.WayPointName , self.Latitude , self.Longitude ) 
+
 
     def getWayPointName(self):
         return self.WayPointName
@@ -74,6 +93,16 @@ class AirlineAirport(models.Model):
     Longitude = models.FloatField()
     FieldElevationAboveSeaLevelMeters = models.FloatField(blank = False)
     Continent = models.CharField(max_length = 100)
+    
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
+    
     
     def __str__(self):
         return "{0}-{1}".format(self.AirportICAOcode, self.AirportName)
@@ -130,6 +159,17 @@ class AirlineRunWay(models.Model):
     LatitudeDegrees = models.FloatField(blank = False)
     LongitudeDegrees = models.FloatField(blank = False)
     
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
+    
+    
     def __str__(self):
         return "{0}/{1}".format(self.Airport.AirportICAOcode, self.Name)
     
@@ -156,6 +196,8 @@ class AirlineRunWay(models.Model):
     
 class AirlineStandardDepartureArrivalRoute(models.Model):
     ''' 3rd June 2023 '''
+    ''' if SID then departure airport departure runway and first route waypoint '''
+    ''' id STAR then last route waypoint , the STAR waypoints, then arrival runway , then arrival airport '''
     isSID                      = models.BooleanField(default=True)
     DepartureArrivalAirport    = models.ForeignKey(AirlineAirport, on_delete=models.CASCADE)
     DepartureArrivalRunWay     = models.ForeignKey(AirlineRunWay, on_delete=models.CASCADE)
@@ -163,6 +205,16 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
     
     def __str__(self):
         return "isSID = {0} - airport = {1} - runway = {2} - wayPoint = {3}".format( self.isSID, self.DepartureArrivalAirport , self.DepartureArrivalRunWay , self.FirstLastRouteWayPoint)
+    
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
     
     
     def getIsSID(self):
@@ -229,6 +281,19 @@ class AirlineSidStarWayPointsRoute(models.Model):
     WayPointName     = models.CharField(max_length = 100, blank = False)
     LatitudeDegrees  = models.FloatField(blank = False)
     LongitudeDegrees = models.FloatField(blank = False)
+    
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
+    
+    
+    def __str__(self):
+        return models.Model.__str__(self)
     
     
     def getWayPointName(self):

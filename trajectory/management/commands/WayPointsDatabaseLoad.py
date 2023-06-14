@@ -8,8 +8,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
+        print ( " --- about to delete --- ")
         AirlineWayPoint.objects.all().delete()
-        
+        print ( " delete done")
+
         wayPointsBD = WayPointsDatabaseXlsx()
         if (wayPointsBD.exists()):
             print("acBD exists")

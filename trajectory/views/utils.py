@@ -84,14 +84,17 @@ def convertDegreeMinuteSecondToDecimal(DegreeMinuteSecond='43-40-51.00-N'):
 
 
 def computeRouteLengthMiles( AdepICAOcode, AdesICAOcode ):
-    adepAirport = AirlineAirport.objects.filter( AirportICAOcode = AdepICAOcode ).first()
-    adesAirport = AirlineAirport.objects.filter( AirportICAOcode = AdesICAOcode ).first()
+    try:
+        adepAirport = AirlineAirport.objects.filter( AirportICAOcode = AdepICAOcode ).first()
+        adesAirport = AirlineAirport.objects.filter( AirportICAOcode = AdesICAOcode ).first()
+        
+        adepGeo = GeographicalPoint(adepAirport.getLatitudeDegrees() , adepAirport.getLongitudeDegrees(), EarthRadiusMeters)
+        adesGeo = GeographicalPoint(adesAirport.getLatitudeDegrees() , adesAirport.getLongitudeDegrees(), EarthRadiusMeters)
+        #print ( "end of runway extended path = {0}".format(pathEnd) )
     
-    adepGeo = GeographicalPoint(adepAirport.getLatitudeDegrees() , adepAirport.getLongitudeDegrees(), EarthRadiusMeters)
-    adesGeo = GeographicalPoint(adesAirport.getLatitudeDegrees() , adesAirport.getLongitudeDegrees(), EarthRadiusMeters)
-            #print ( "end of runway extended path = {0}".format(pathEnd) )
-
-    return adepGeo.computeDistanceMetersTo(adesGeo) * Meter2NauticalMiles
+        return adepGeo.computeDistanceMetersTo(adesGeo) * Meter2NauticalMiles
+    except :
+        return 0.0
 
 
 def isAirportInAirlineAirports(airline , airlineAirport ):
