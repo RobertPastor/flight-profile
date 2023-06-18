@@ -53,7 +53,7 @@ class SidStar {
 		try {
 			let polyLine = this.polyLine;
 			if ( polyLine ) {
-				polyLine.removeLayer ();
+				polyLine.removeLayer();
 			}
 		} catch (err) {
 			console.error(JSON.stringify(err));
@@ -100,6 +100,7 @@ class SidStar {
 		}));
 	}
 	
+	// zoom on the sID or STAR area
 	setViewPort ( sidStarRoutesWaypointsArray ) {
 		
 		// compute viewPort
@@ -152,6 +153,7 @@ class SidStar {
 				wayPointsArr.push( {"src": srcWayPoint , "dst": dstWayPoint }  );
 			}
 		}
+		// defined in the polyline.js file
 		let polyLine = new PolyLine (sidStarPattern);
 		polyLine.init( globus, wayPointsArr );
 		polyLine.draw(); 

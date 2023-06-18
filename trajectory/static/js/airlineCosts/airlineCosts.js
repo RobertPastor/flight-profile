@@ -108,6 +108,8 @@ class AirlineCosts {
 		// listen to the button
 		document.getElementById("btnLaunchAirlineCosts").onclick  = function () {
 			
+			document.getElementById("btnLaunchAirlineCosts").disabled = true;
+			
 			// get the name of the airline
 			let airlineName = $("#airlineSelectId option:selected").val();
 			airlineName = encodeURIComponent(airlineName);
@@ -124,6 +126,8 @@ class AirlineCosts {
 			req.onload = function (event) {
 				
 				stopBusyAnimation();
+				document.getElementById("btnLaunchAirlineCosts").disabled = false;
+
 				
 				let blob = req.response;
 				let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
@@ -139,7 +143,6 @@ class AirlineCosts {
 			 }
 			// send the request
 			req.send();
-			
 		}
 		
 		document.getElementById("btnLaunchAirlineCosts").ondblclick = function () {

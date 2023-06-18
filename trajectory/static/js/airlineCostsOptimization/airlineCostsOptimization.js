@@ -36,7 +36,7 @@ class AirlineCostsOptimization {
 			$('#airlineCostsOptimizationMainDivId').hide();
 
 			// change name on the button
-			document.getElementById("btnLaunchCostsOptimization").innerText = "Costs Optimization";
+			document.getElementById("btnLaunchCostsOptimization").innerText = "Costs Min";
 			//document.getElementById("btnLaunchCostsOptimization").style.backgroundColor = "yellow";
 		}
 	}

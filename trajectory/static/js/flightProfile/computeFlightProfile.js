@@ -30,8 +30,6 @@ const SingletonProfileCosts = (function () {
 })();
 
 
-
-
 class AirlineProfileCosts {
 	
 	constructor() {
@@ -106,6 +104,10 @@ class AirlineProfileCosts {
 		// routesSelectionId
 		$("#routesSelectionId").show();
 		
+		// 18th June 2023 - create a list of departure and arrival airports
+		this.routes = [];
+		let airlineName = $("#airlineSelectId option:selected").val();
+		
 		// empty the selector
 		$('#airlineRouteId').empty()
 
@@ -113,6 +115,12 @@ class AirlineProfileCosts {
 			let airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
 			let airlineRouteKey = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
 			$('#airlineRouteId').append('<option value="' + airlineRouteKey + '">' + airlineRouteName + '</option>');
+			
+			
+			this.routes.push({ "airline" : airlineName , 
+								"aDep"   : airlineRoutesArray[index]["DepartureAirportICAOCode"] , 
+								"aDes"   : airlineRoutesArray[index]["ArrivalAirportICAOCode"]
+								});
 		}
 	}
 
@@ -144,7 +152,10 @@ class AirlineProfileCosts {
 	loadFlightProfileWayPoints( layerWayPoints, dataJson) {
 	
 		// get all waypoints
-		let waypoints = eval(dataJson['waypoints']);
+		let waypoints = [];
+		if ( dataJson.hasOwnProperty('waypoints')) {
+			waypoints = eval(dataJson['waypoints']);
+		}
 
 		// add the waypoints
 		for (let wayPointId = 0; wayPointId < waypoints.length; wayPointId++ ) {
@@ -182,11 +193,22 @@ class AirlineProfileCosts {
 	
 		let ellipsoid = new og.Ellipsoid(6378137.0, 6356752.3142);
 		
-		let latitude = parseFloat(placeMark["latitude"])
-		let longitude = parseFloat(placeMark["longitude"])
-		let height = parseFloat(placeMark["height"])
+		let latitude = 0.0;
+		if ( placeMark.hasOwnProperty("latitude")) {
+			latitude = parseFloat(placeMark["latitude"]);
+		}
+
+		let longitude = 0.0;
+		if ( placeMark.hasOwnProperty("longitude")) {
+			longitude = parseFloat(placeMark["longitude"]);
+		}
 		
-		let lonlat = new og.LonLat(longitude, latitude , 0.);
+		let height = 0.0;
+		if ( placeMark.hasOwnProperty("height")) {
+			height = parseFloat(placeMark["height"]);
+		}
+		
+		let lonlat = new og.LonLat(longitude, latitude , 0.0);
 		//coordinate above Bochum to allow a upwards direction of ray
 		let lonlatAir = new og.LonLat(longitude, latitude , height);
 		
@@ -195,13 +217,13 @@ class AirlineProfileCosts {
 		let cartAir = ellipsoid.lonLatToCartesian(lonlatAir);
 		
 		if ( placeMark["name"].length > 0 ) {
-			let offset = [10, 10]
+			let offset = [10, 10];
 			if ( placeMark["name"].includes("turn") || placeMark["name"].includes("climb") || placeMark["name"].includes("touch") ) {
-				offset = [10, -20]
+				offset = [10, -20];
 			} 
 			// alternate place
 			if ( placeMark["name"].includes("ground") || placeMark["name"].includes("slope") || placeMark["name"].includes("takeOff") ) {
-				offset = [10, +20]
+				offset = [10, +20];
 			}
 			
 			rayLayer.add(new og.Entity({
@@ -302,7 +324,7 @@ class AirlineProfileCosts {
 		}
 		
 		// empty the selector
-		$('#airlineArrivalRunWayFlightProfileId').empty()
+		$('#airlineArrivalRunWayFlightProfileId').empty();
 		
 		for ( let index = 0 ; index < airlineRunWaysArray.length ; index++) {
 			
@@ -333,6 +355,12 @@ class AirlineProfileCosts {
 			//document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
 			
 		}
+	}
+	
+	populateRayLayersReadyToRemove( route ) {
+		console.log( "populate table with layers ready to be removed ");
+		console.log( JSON.stringify(route ));
+		
 	}
 
 	launchFlightProfile(globus) {
@@ -481,11 +509,16 @@ class AirlineProfileCosts {
 							//alert("Data: " + data + "\nStatus: " + status);
 							let dataJson = eval(data);
 							// airlineAircrafts
-							SingletonProfileCosts.getInstance().populateAircraftFlightProfileSelector( dataJson["airlineAircrafts"] );
-							SingletonProfileCosts.getInstance().populateAirlineRoutesFlightProfileSelector( dataJson["airlineRoutes"] );
-							SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
-
-							$("#launchComputeId").show();
+							if ( dataJson.hasOwnProperty( "airlineAircrafts" ) 
+								&& dataJson.hasOwnProperty( "airlineRoutes" ) 
+								&& dataJson.hasOwnProperty( "airlineRunWays" )) {
+								
+								SingletonProfileCosts.getInstance().populateAircraftFlightProfileSelector( dataJson["airlineAircrafts"] );
+								SingletonProfileCosts.getInstance().populateAirlineRoutesFlightProfileSelector( dataJson["airlineRoutes"] );
+								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
+	
+								$("#launchComputeId").show();
+							}
 							
 						},
 						error: function(data, status) {
@@ -497,6 +530,7 @@ class AirlineProfileCosts {
 							document.getElementById("btnLaunchFlightProfile").disabled = false;
 						},
 				});
+				
 			} else {
 
 				//document.getElementById("btnLaunchFlightProfile").disabled = true
@@ -559,13 +593,13 @@ class AirlineProfileCosts {
 		/**
 		* monitor the button used to launch the profile computation
 		**/
-		let once = false;
+		
 		//document.getElementById("btnComputeFlightProfileId").disabled = true
 		document.getElementById("btnComputeFlightProfileId").onclick = function () {
 		
 			//console.log ("button compte flight profile pressed");
 		
-			document.getElementById("btnComputeFlightProfileId").disabled = true
+			document.getElementById("btnComputeFlightProfileId").disabled = true;
 			
 			let aircraft = $("#airlineAircraftId option:selected").val();
 			let route =  $("#airlineRouteId option:selected").val();
@@ -580,12 +614,13 @@ class AirlineProfileCosts {
 			let airlineName = $("#airlineSelectId option:selected").val();
 			airlineName = encodeURIComponent(airlineName);
 			
-			let data = 'aircraft=' + aircraft
-			data += '&route=' + route
-			data += '&AdepRwy=' + departureRunWay
-			data += '&AdesRwy=' + arrivalRunWay
+			let data = 'aircraft=' + aircraft;
+			data += '&route=' + route;
+			data += '&AdepRwy=' + departureRunWay;
+			data += '&AdesRwy=' + arrivalRunWay;
 			data += '&mass=' + elemTOMassKg.value;
 			data += '&fl=' + elemFL.value;
+			
 			// init progress bar.
 			initProgressBar();
 			initWorker();
@@ -599,30 +634,45 @@ class AirlineProfileCosts {
 							
 							let dataJson = eval(data);
 							if ( dataJson.hasOwnProperty("errors") ) {
+								
 								stopBusyAnimation();
 								showMessage( "Error" , dataJson["errors"] );
 								
 							} else {
-								// create layers does also a delete layer if name found
+								// create layers - performs also a delete layer if layer name found
 								let layerKML = SingletonProfileCosts.getInstance().deleteCreateKMLLayer(globus , route);
 								let rayLayer = SingletonProfileCosts.getInstance().deleteCreateRayLayer(globus , route);
 								
 								// convert JSON to XML
 								let x2js = new X2JS();
-								let xml = x2js.js2xml(dataJson["kmlXMLjson"]);
+								if ( dataJson.hasOwnProperty( "kmlXMLjson" )) {
+									
+									let xml = x2js.js2xml(dataJson["kmlXMLjson"]);
 								
-								let parser = new DOMParser();
-								let xmlDoc = parser.parseFromString(xml, "text/xml");
-								
-								layerKML.addKmlFromXml(  xmlDoc ,  null ,  null );
+									let parser = new DOMParser();
+									let xmlDoc = parser.parseFromString(xml, "text/xml");
+									
+									// add Kml From Xml add to open globus
+									try {
+										layerKML.addKmlFromXml(  xmlDoc ,  null ,  null );
+									} catch (err) {
+										showMessage( "Error" , JSON.stringify(err) );
+									}
+								}
 								
 								// add rays to Rays layer
-								SingletonProfileCosts.getInstance().addRays( rayLayer , dataJson["placeMarks"] );
-								
-								let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"];
-								SingletonProfileCosts.getInstance().displayD3LineChart(arrayAltitudeMSLtime);
-								
-								showMessage("Information" , "Double Click in the vertical profile to return to the map") 
+								if ( dataJson.hasOwnProperty( "placeMarks" )) {
+									SingletonProfileCosts.getInstance().addRays( rayLayer , dataJson["placeMarks"] );
+								}
+								// display the 3D vertical profile
+								if ( dataJson.hasOwnProperty( "csvAltitudeMSLtime" )) {
+									let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"];
+									SingletonProfileCosts.getInstance().displayD3LineChart(arrayAltitudeMSLtime);
+									showMessage("Information" , "Double Click in the vertical profile to return to the map");
+
+								}
+								// prepare for housekeeping when many rays layers to remove
+								SingletonProfileCosts.getInstance().populateRayLayersReadyToRemove( route );
 								
 							}
 						},

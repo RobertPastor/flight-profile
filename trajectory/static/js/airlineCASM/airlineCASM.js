@@ -33,7 +33,6 @@ class AirlineCASM {
 
 			// change name on the button
 			document.getElementById("btnLaunchCASM").innerText = "CASM";
-			document.getElementById("btnLaunchCASM").style.backgroundColor = "yellow";
 		}
 	}
 	
@@ -95,6 +94,8 @@ class AirlineCASM {
 		
 		document.getElementById("btnLaunchCASM").onclick  = function () {
 			
+			document.getElementById("btnLaunchCASM").disabled = true;
+
 			// get the name of the airline
 			let airlineName = $("#airlineSelectId option:selected").val();
 			airlineName = encodeURIComponent(airlineName);
@@ -111,9 +112,11 @@ class AirlineCASM {
 			req.onload = function (event) {
 				
 				stopBusyAnimation();
+				document.getElementById("btnLaunchCASM").disabled = false;
 				
 				let blob = req.response;
 				let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
+				// filename contains the pattern attachment followed by EQUAL sign (this is the separator to the filename )
 				fileName = fileName.split("=")[1]
 				let link = document.createElement('a');
 				link.href = window.URL.createObjectURL(blob);
@@ -122,7 +125,10 @@ class AirlineCASM {
 				
 			 };
 			 req.onerror = function (event) {
-				console.log("Error in Download EXCEL Costs");
+				 
+				console.error("Error in Download EXCEL Costs");
+				document.getElementById("btnLaunchCASM").disabled = false;
+
 			 }
 			// send the request
 			req.send();

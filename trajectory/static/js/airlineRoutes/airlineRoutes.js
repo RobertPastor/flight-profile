@@ -41,7 +41,11 @@ function showSidStarRoute( elem ) {
 	} else {
 		// load a Sid Star route
 		//console.log( " layer " + layerName + " is not existing");
-		SingletonSidStar.getInstance().queryServer ( elem.id );
+		try {
+			SingletonSidStar.getInstance().queryServer ( elem.id );
+		} catch (err) {
+			console.error( JSON.stringify(err));
+		}
 	}
 	return false;
 }
@@ -146,12 +150,18 @@ class AirlineRoutes {
 						SingletonAirlineRoutes.getInstance().loadRouteWayPoints( airlineRoutesWaypointsArray , layerName );
 								
 						// 3rd April 2023 - add best runways
-						let AdepRunWay = dataJson["bestAdepRunway"];
-						// true means Adep and false means Ades
-						SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , true, AdepRunWay);
+						if ( dataJson.hasOwnProperty("bestAdepRunway")) {
+							
+							let AdepRunWay = dataJson["bestAdepRunway"];
+							// true means Adep and false means Ades
+							SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , true, AdepRunWay);
+						}
+						if ( dataJson.hasOwnProperty("bestAdesRunway")) {
 						
-						let AdesRunWay = dataJson["bestAdesRunway"];
-						SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , false, AdesRunWay);
+							let AdesRunWay = dataJson["bestAdesRunway"];
+							// true means Adep and false means Ades
+							SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , false, AdesRunWay);
+						}
 
 				},
 				error: function(data, status) {
@@ -227,7 +237,7 @@ class AirlineRoutes {
 				removeLayer( globus , layerName );
 			
 			} catch (err) {
-				console.log(JSON.stringify(err));
+				console.error(JSON.stringify(err));
 			}
 		}
 		/**
@@ -241,8 +251,6 @@ class AirlineRoutes {
 	}
 	
 	configureSidStarLink( oneAirlineRoute ) {
-				
-		let globus = this.globus;
 		
 		// correct the SID ID
 		if ( oneAirlineRoute["SID"] && (oneAirlineRoute["SID"].length > 0 )) {
@@ -251,7 +259,7 @@ class AirlineRoutes {
 			elemTdSid.id = "tdSidId-" + oneAirlineRoute["SID"];
 			let id = this.LayerSidPrefix +  oneAirlineRoute["SID"];
 			elemTdSid.innerHTML = '<span> <a id="' +  id + '" href="#" onclick="showSidStarRoute(this);" >' + oneAirlineRoute["SID"] + '</a> </span>'  
-
+			elemTdSid.title = "click me";
 		}
 		
 		// correct the STAR ID
@@ -261,9 +269,8 @@ class AirlineRoutes {
 			elemTdStar.id = "tdStarId-" + oneAirlineRoute["STAR"];
 			let id = this.LayerStarPrefix +  oneAirlineRoute["STAR"];
 			elemTdStar.innerHTML = '<span> <a id="' +  id + '" href="#" onclick="showSidStarRoute(this);" >' + oneAirlineRoute["STAR"] + '</a> </span>'  
-
+			elemTdStar.title = "click me";
 		}
-
 	}
 	
 	

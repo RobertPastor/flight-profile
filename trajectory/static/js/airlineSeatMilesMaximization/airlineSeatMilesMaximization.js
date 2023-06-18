@@ -31,6 +31,8 @@ class AirlineSeatsMilesMaximization {
 		
 		document.getElementById("btnLaunchSeatMilesMaximization").onclick  = function () {
 			
+			document.getElementById("btnLaunchSeatMilesMaximization").disabled = true;
+			
 			// get the name of the airline
 			let airlineName = $("#airlineSelectId option:selected").val();
 			airlineName = encodeURIComponent(airlineName);
@@ -47,10 +49,13 @@ class AirlineSeatsMilesMaximization {
 			req.onload = function (event) {
 				
 				stopBusyAnimation();
+				document.getElementById("btnLaunchSeatMilesMaximization").disabled = false;
+
 				
 				let blob = req.response;
 				let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
-				fileName = fileName.split("=")[1]
+				// name starts with attachment followed by a EQUAL sign and the file name
+				fileName = fileName.split("=")[1];
 				let link = document.createElement('a');
 				link.href = window.URL.createObjectURL(blob);
 				link.download = fileName;

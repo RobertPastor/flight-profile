@@ -189,3 +189,8 @@ layerKML.addKmlFromXml(  xmlDoc ,  null ,  null );
             this.events.dispatch(this.events.loadend);
         }
     }
+
+    
+##  see also modifications in og.css
+
+ 

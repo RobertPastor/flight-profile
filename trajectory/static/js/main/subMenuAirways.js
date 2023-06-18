@@ -43,7 +43,7 @@ class AirlineRoutesAirwaysSubMenu extends og.Control {
 		this.renderer.div.appendChild(mainDiv);
 		
 		// start hiding this table
-		$("#mainSubMenuDivId").hide();
+		$("#mainSubMenuAirwaysDivId").hide();
 		
 	}
 }
