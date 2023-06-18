@@ -1,11 +1,12 @@
 
 //Define custom control class
-		class DialogControl extends og.Control {
-            constructor(options) {
+class DialogControl extends og.Control {
+      
+      constructor(options) {
                 super(options);
-            }
+      }
 
-            onadd() {
+      onadd() {
 				//console.log("dialog Control - onadd");
 				
 				let dialogDiv = document.createElement('div');
@@ -13,9 +14,9 @@
 				dialogDiv.style="display: none;";
                 
                 this.renderer.div.appendChild(dialogDiv);
-            }
+      }
 
-            oninit() {
+      oninit() {
                 //console.log("dialog Control - oninit");
-            }
-        };
+      }
+}

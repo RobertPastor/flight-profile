@@ -1,10 +1,21 @@
 
 var worker = undefined;
 
-
-document.addEventListener('DOMContentLoaded', () => {
-	//console.log("DOM content loaded");
-	init();
+window.addEventListener('DOMContentLoaded', () => {
+	
+	//console.log(" DOM content loaded");
+	
+	window.addEventListener("load", ($) => {
+		
+		//console.log(" page is loaded");
+			
+			setTimeout( function() {
+				
+				//console.log(" all is ready to start" );
+				init();
+				
+			} , 500 );
+	});
 });
 
 
@@ -47,8 +58,8 @@ function removeLayer( globus , layerName ) {
 			layerOne.remove();
 		}
 	} catch (err) {
-		console.log(JSON.stringify(err));
-		console.log("layerOne is probably not existing anymore...");
+		console.error(JSON.stringify(err));
+		//console.error("layerOne is probably not existing anymore...");
 	}
 	try {
 		let layerTwo = globus.planet.getLayerByName( layerName );
@@ -57,8 +68,8 @@ function removeLayer( globus , layerName ) {
 			layerTwo._entityCollectionsTree.entityCollection.clear();
 		}
 	} catch (err) {
-		console.log(JSON.stringify(err));
-		console.log("layerTwo is probably not existing anymore...");
+		console.error(JSON.stringify(err));
+		//console.error("layerTwo is probably not existing anymore...");
 	}
 }
 
@@ -106,7 +117,7 @@ function initWorker() {
         }
     } else {
         // Sorry! No Web Worker support..
-		console.log("Sorry! no web worker support ...");
+		console.error("Sorry! no web worker support ...");
     }
 }
 
@@ -184,20 +195,22 @@ function switchAirlines(globus) {
 
 					globus.planet.viewExtent(viewExtent);
 				}
-			})
+			});
 		}
     });
 }
 
+
 function loadAirlines() {
 	/*
 	* fill the selector with the names of the airlines
+	* Warning : the airlines object is loaded in the index-og.html
 	*/
 	if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 		airlines.forEach ( function ( airline ) {
-			let option = document.createElement("option");
+			//let option = document.createElement("option");
             //option.text = "AmericanWings";
-			let select = document.getElementById("airlineSelectId")
+			let select = document.getElementById("airlineSelectId");
 			if ( select ) {
 				
 				let option = document.createElement("option");
@@ -208,96 +221,105 @@ function loadAirlines() {
 	}
 }
 
+
 function initTools(globus, viewExtent) {
 			
 	// add all controls that are derived from an og control class
-	globus.planet.addControl(new MainControl());
-	globus.planet.addControl(new HelpControl());
-	globus.planet.addControl(new D3Control());
-	globus.planet.addControl(new DialogControl());
+			
+		globus.planet.addControl(new MainControl());
+		globus.planet.addControl(new AirlineRoutesAirwaysSubMenu());
+		globus.planet.addControl(new AirlineOptimizationsSubMenu());
+		
+		// control to display help or configuration information
+		globus.planet.addControl(new HelpControl());
+		// control used to draw a vertical profile
+		globus.planet.addControl(new D3Control());
+		// control used to display a message to the user
+		globus.planet.addControl(new DialogControl());
+		
+		globus.planet.addControl(new AirlineFleetControl());
+		
+		// load airline fleet
+		let airlineFleet = SingletonAirlineFleet.getInstance()
+		airlineFleet.initAirlineFleet();
+		
+		//console.log("init other tools");
+		// contextual menu to show the routes from one right click selected airport 
+		globus.planet.addControl(new AirlineAirportsRoutesControl());
+		
+		// load the airline airports
+		let airlineAirports = SingletonAirlineAirports.getInstance();
+		airlineAirports.initAirports(globus);
+		
+		globus.planet.addControl(new AirlineRoutesControl());
 	
-	globus.planet.addControl(new AirlineFleetControl());
+		// load the airline routes waypoints
+		let airlineRoutes = SingletonAirlineRoutes.getInstance();
+		airlineRoutes.initAirlineRoutes(globus);
 	
-	// load airline fleet
-	let airlineFleet = SingletonAirlineFleet.getInstance()
-	airlineFleet.initAirlineFleet();
+		let airlineWayPoints = SingletonAirlineWayPoints.getInstance();
+		airlineWayPoints.initWayPoints(globus, viewExtent);
+		
+		// load a flight profile
+		//showFlightProfile(globus);
+		
+		// compute Flight Profile
+		globus.planet.addControl(new FlighProfileControl());
+		let airlineProfileCosts = SingletonProfileCosts.getInstance();
+		airlineProfileCosts.launchFlightProfile(globus);
+		
+		// compute costs
+		// flight profile inputs are shared with flight leg cost controls inputs
+		globus.planet.addControl(new AirlineFlightLegCostsResultsControl());
+		let airlineFlightLegCosts = SingletonAirlineFlightLegCosts.getInstance()
+		airlineFlightLegCosts.initFlightLegCosts();
+		
+		// airline costs optimization
+		globus.planet.addControl(new AirlineCostsControl());
+		let airlineCosts = SingletonAirlineCosts.getInstance();
+		airlineCosts.initAirlineCosts();
+		
+		// airline costs optimization
+		globus.planet.addControl(new AirlineCostsOptimizationControl());
+		let airlineCostsOptimization = SingletonAirlineCostsOptimization.getInstance();
+		airlineCostsOptimization.initAirlineCostsOptimization();
+		
+		// airline CASM
+		globus.planet.addControl(new AirlineCasmControl());
+		let airlineCASM = SingletonAirlineCASM.getInstance();
+		airlineCASM.initAirlineCASM();
+		
+		// airline CASM Optimization
+		globus.planet.addControl(new AirlineCasmOptimizationControl());
+		let airlineCasmOptimization = SingletonAirlineCasmOptimization.getInstance();
+		airlineCasmOptimization.initAirlineCasmOptimization();
+		
+		// 6th May 2023 Seat Miles Maximization
+		let airlineSeatMilesMaximization = SingletonAirlineSeatMiles.getInstance();
+		airlineSeatMilesMaximization.initAirlineSeatsMilesMaximization();
+		
+		// 13th May 2023 - Fuel Planner
+		globus.planet.addControl(new FuelPlannerControl());
+		let fuelPlanner = SingletonFuelPlanner.getInstance();
+		fuelPlanner.initFuelPlanner(globus);
+		
+		// init download EXCEL Vertical Flight Profile
+		initDownloadVerticalProfile();
+		
+		// 8th June 2023 - SID STAR
+		let sidStar = SingletonSidStar.getInstance();
+		sidStar.initSidStar(globus);
+		
+		// now finish by loading the different airlines
+		loadAirlines();
+		
+		// prepare to switch from one airline to the other
+		switchAirlines(globus);
 	
-	//console.log("init other tools");
-	// contextual menu to show the routes from one right click selected airport 
-	globus.planet.addControl(new AirlineAirportsRoutesControl());
-	
-	// load the airline airports
-	let airlineAirports = SingletonAirlineAirports.getInstance();
-	airlineAirports.initAirports(globus);
-	
-	globus.planet.addControl(new AirlineRoutesControl());
-
-	// load the airline routes waypoints
-	let airlineRoutes = SingletonAirlineRoutes.getInstance();
-	airlineRoutes.initAirlineRoutes(globus);
-
-	let airlineWayPoints = SingletonAirlineWayPoints.getInstance();
-	airlineWayPoints.initWayPoints(globus, viewExtent)
-	
-	// load a flight profile
-	//showFlightProfile(globus);
-	
-	// compute Flight Profile
-	globus.planet.addControl(new FlighProfileControl());
-	let airlineProfileCosts = SingletonProfileCosts.getInstance();
-	airlineProfileCosts.launchFlightProfile(globus);
-	
-	// compute costs
-	// flight profile inputs are shared with flight leg cost controls inputs
-	globus.planet.addControl(new AirlineFlightLegCostsResultsControl());
-	let airlineFlightLegCosts = SingletonAirlineFlightLegCosts.getInstance()
-	airlineFlightLegCosts.initFlightLegCosts();
-	
-	// airline costs optimization
-	globus.planet.addControl(new AirlineCostsControl());
-	let airlineCosts = SingletonAirlineCosts.getInstance();
-	airlineCosts.initAirlineCosts();
-	
-	// airline costs optimization
-	globus.planet.addControl(new AirlineCostsOptimizationControl());
-	let airlineCostsOptimization = SingletonAirlineCostsOptimization.getInstance();
-	airlineCostsOptimization.initAirlineCostsOptimization();
-	
-	// airline CASM
-	globus.planet.addControl(new AirlineCasmControl());
-	let airlineCASM = SingletonAirlineCASM.getInstance();
-	airlineCASM.initAirlineCASM();
-	
-	// airline CASM Optimization
-	globus.planet.addControl(new AirlineCasmOptimizationControl());
-	let airlineCasmOptimization = SingletonAirlineCasmOptimization.getInstance();
-	airlineCasmOptimization.initAirlineCasmOptimization();
-	
-	// 6th May 2023 Seat Miles Maximization
-	let airlineSeatMilesMaximization = SingletonAirlineSeatMiles.getInstance();
-	airlineSeatMilesMaximization.initAirlineSeatsMilesMaximization();
-	
-	// 13th May 2023 - Fuel Planner
-	globus.planet.addControl(new FuelPlannerControl());
-	let fuelPlanner = SingletonFuelPlanner.getInstance();
-	fuelPlanner.initFuelPlanner(globus);
-	
-	// init download EXCEL Vertical Flight Profile
-	initDownloadVerticalProfile();
-	
-	// 8th June 2023 - SID STAR
-	let sidStar = SingletonSidStar.getInstance();
-	sidStar.initSidStar(globus);
-	
-	// now finish by loading the different airlines
-	loadAirlines();
-	
-	// prepare to switch from one airline to the other
-	switchAirlines(globus);
 }
 
+
 function initMain(viewExtent) {
-	//console.log("init Main ");
 	
 	var osm = new og.layer.XYZ("OpenStreetMap", {
             isBaseLayer: true,
@@ -316,23 +338,17 @@ function initMain(viewExtent) {
 			"viewExtent" : viewExtent
 	});
 	
-	setTimeout( function() {
-		initTools (globus, viewExtent);
-	} , 100 );
+	initTools (globus, viewExtent);
 }
 
 
 function init() {
-	//console.log("init");
-
-	//$( window ).on( "load", function () {
-	//the event occurred
+	
+	// Warning : the airlines object is loaded in the index-og.html
 		  
 	//let airlineList = JSON.parse('{{ airlines|escapejs }}');
 	if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
-		
-		//console.log("receive Airline list");
-		
+				
 		let airline = airlines[0]
 		let MinLongitude = airline["MinLongitudeDegrees"]
 		let MinLatitude = airline["MinLatitudeDegrees"]
@@ -349,8 +365,4 @@ function init() {
 	}
 }
 	
-
-
-
-
 

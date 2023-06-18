@@ -106,14 +106,14 @@ def computeFlightProfile(request, airlineName):
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
 
-            logger.info ("selected aircraft = {0}".format( aircraftICAOcode ) )
+            logger.debug ("selected aircraft = {0}".format( aircraftICAOcode ) )
             
             airlineRoute = request.GET['route']
             
-            logger.info(airlineRoute)
+            logger.debug(airlineRoute)
             
-            logger.info ( str(airlineRoute).split("-")[0] )
-            logger.info ( str(airlineRoute).split("-")[1] )
+            logger.debug ( str(airlineRoute).split("-")[0] )
+            logger.debug ( str(airlineRoute).split("-")[1] )
             
             departureAirportICAOcode = str(airlineRoute).split("-")[0]
             departureAirportRunWayName = request.GET['AdepRwy']
@@ -122,22 +122,22 @@ def computeFlightProfile(request, airlineName):
             arrivalAirportRunWayName = request.GET['AdesRwy']
             
             takeOffMassKg = request.GET['mass']
-            logger.info( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
+            logger.debug( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
             cruiseFLfeet = request.GET['fl'] 
-            logger.info( "cruise FL feet = {0}".format( cruiseFLfeet ) )
+            logger.debug( "cruise FL feet = {0}".format( cruiseFLfeet ) )
             
             airline = Airline.objects.filter(Name=airlineName).first()
             if (airline):
 
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 if (airlineRoute):
-                    logger.info( airlineRoute )
+                    logger.debug( airlineRoute )
                     '''  use run-ways defined in the web page '''
                     routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
-                    logger.info ( routeAsString )
+                    logger.debug ( routeAsString )
                     acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-                    #logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                    #logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
+                    #logger.debug ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                    #logger.debug ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
     
                     flightPath = FlightPath(
                                     route = routeAsString, 
@@ -148,12 +148,12 @@ def computeFlightProfile(request, airlineName):
     
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
         
-                    logger.info ( "=========== Flight Plan create output files  =========== " )
+                    logger.debug ( "=========== Flight Plan create output files  =========== " )
                     csvAltitudeMSLTimeGroundTrack = flightPath.createCsvAltitudeTimeProfile()
         
                     kmlXmlDocument = flightPath.createKmlXmlDocument()
                     if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack):
-                        logger.info ( "=========== Flight Plan end  =========== "  )
+                        logger.debug ( "=========== Flight Plan end  =========== "  )
                                             
                         response_data = {
                                     'kmlXMLjson': xmltodict.parse( kmlXmlDocument ),
@@ -162,12 +162,12 @@ def computeFlightProfile(request, airlineName):
                                     }
                         return JsonResponse(response_data)
                     else:
-                        logger.info ('Error while retrieving the KML document')
+                        logger.debug ('Error while retrieving the KML document')
                         response_data = {'errors' : 'Error while retrieving the KML document'}
                         return JsonResponse(response_data)
     
                 else:
-                    logger.info ('airline route not found = {0}'.format(airlineRoute))
+                    logger.debug ('airline route not found = {0}'.format(airlineRoute))
                     response_data = {
                     'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
                     return JsonResponse(response_data)
@@ -177,8 +177,8 @@ def computeFlightProfile(request, airlineName):
                 return JsonResponse(response_data)
                 
         else:
-            logger.info ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))
-            logger.info ("or aircraft performance file = {0} not found".format(badaAircraft))
+            logger.debug ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))
+            logger.debug ("or aircraft performance file = {0} not found".format(badaAircraft))
             response_data = {
                 'errors' : 'Aircraft performance file {0} not found - please select another aircraft'.format(aircraftICAOcode)}
             return JsonResponse(response_data)

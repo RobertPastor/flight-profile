@@ -258,7 +258,7 @@ def writeAirlineSeatMilesMaximization(workbook, airlineName):
         ''' define the objective function '''
         prob += lpSum( [ airlineSeatsMiles[i][j] * x_vars[i,j] for i in range(num_aircraft_instances) for j in range(num_flight_legs) ])
 
-        logger.info ( "--- add constraints ----")
+        logger.debug ( "--- add constraints ----")
         '''  Each aircraft is assigned to at most 1 flight leg. '''
         for i in range(num_aircraft_instances):
                 pass
@@ -271,7 +271,7 @@ def writeAirlineSeatMilesMaximization(workbook, airlineName):
                 prob += lpSum ( [ x_vars[i,j] for i in range(num_aircraft_instances) ] ) == 1
                 
         prob.solve(PULP_CBC_CMD(msg=0))
-        logger.info ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
+        logger.debug ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
         
         #print ( "Seat Miles Max - objective function value   = {0}".format( value(prob.objective) ) )
             
@@ -281,7 +281,7 @@ def writeAirlineSeatMilesMaximization(workbook, airlineName):
                 
                 if ( v.varValue > 0.0 ):
                     ''' this aircraft is assigned to a leg '''
-                    logger.info ( "var name = {0} - var value = {1}".format( v.name, v.varValue ) )
+                    logger.debug ( "var name = {0} - var value = {1}".format( v.name, v.varValue ) )
                 
                     ColumnIndex = 0
                     worksheet.write(row, ColumnIndex, airlineName)   
@@ -373,7 +373,7 @@ def createExcelWorkbook(memoryFile, request, airlineName):
 def getAirlineSeatsMilesMaxXlsx(request, airlineName):
 
     logger.setLevel(logging.INFO)
-    logger.info ("retrieve Airline CASM as Xlsx file")        
+    logger.debug ("retrieve Airline CASM as Xlsx file")        
             
     if (request.method == 'GET'):
             

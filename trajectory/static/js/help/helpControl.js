@@ -2,6 +2,7 @@
 
 //Define custom control class
 class HelpControl extends og.Control {
+	
 	constructor(options) {
 		super(options);
 	}

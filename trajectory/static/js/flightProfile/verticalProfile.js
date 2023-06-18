@@ -10,7 +10,7 @@ class VerticalProfile {
 	
 	displayVerticalProfile (arrayAltitudeMSLtime) {
 		
-	// set the dimensions and margins of the graph
+		// set the dimensions and margins of the graph
 		let margin = {top: 10, right: 100, bottom: 10, left: 50}
 		let width = 700 - margin.left - margin.right;
 		let height = 700 - margin.top - margin.bottom;
@@ -101,6 +101,7 @@ class VerticalProfile {
 				.attr('r', 12.5)
 				.style("opacity", 0)
 				
+		// bounding box
 		function getBB(selection) {
 			selection.each(function(d){
 				d.bbox = this.getBBox();
@@ -145,7 +146,8 @@ class VerticalProfile {
 			  
 		let path = svg.selectAll("dot")
 			 .data(data)
-			 .enter().append("circle")
+			 .enter()
+			 .append("circle")
 			 .attr("r", 1.5)
 			 .attr("cx", function (d) {
 				   return x(d.x);
@@ -160,8 +162,8 @@ class VerticalProfile {
 		// What happens when the mouse move -> show the annotations at the right positions.
 		function mouseover() {
 			//console.log("mouse over")
-			focus.style("opacity", 1)
-			focusText.style("opacity",1)
+			focus.style("opacity", 1);
+			focusText.style("opacity",1);
 		}
 
 		function mousemove(domElement) {
@@ -202,7 +204,7 @@ class VerticalProfile {
 			.on('dblclick',function(node) { 
 				//console.log("node was double clicked");
 				$("#d3vizId").hide();
-				//$("#globusDivId").show()
+				//$("#globusDivId").show();
 		});
 
 		// show the vertical profile
@@ -227,5 +229,4 @@ class VerticalProfile {
 		//$("#globusDivId").hide()	
 		
 	}
-	
 }

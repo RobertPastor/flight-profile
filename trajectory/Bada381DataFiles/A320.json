@@ -37,21 +37,40 @@
 		},
 		"phase": {
 			"groundrun": {
-				"name": "length",
-				"unit": "meters",
-				"value": 2200
-				
+				"runway": {
+					"name": "length",
+					"unit": "meters",
+					"value": 2200
+				},
+				"dragCDO": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
+				}
 			},
 			"cruise": {
 				"ceiling": {
-					"unit": "ft",
 					"name" : "cruiseLevel",
+					"unit": "ft",
 					"value": "39000"
 				},
 				"speed": {
 					"unit": "mach",
 					"value": 0.82
 				}
+			},
+			"landing": {
+				"gearDrag": {
+					"name": "landingGearDragCoeff",
+					"unit": "none",
+					"value": 0.83800
+				}
+				
 			}
 		}
 	}

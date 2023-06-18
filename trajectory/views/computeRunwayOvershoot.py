@@ -168,7 +168,6 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
             return JsonResponse(response_data)
             
     else:
-        logger.info ('expecting a GET - received something else = {0}'.format(request.method))
-        response_data = {
-                        'errors' : 'expecting a GET - received something else = {0}'.format(request.method)}
+        logger.debug ('expecting a GET - received something else = {0}'.format(request.method))
+        response_data = { 'errors' : 'expecting a GET - received something else = {0}'.format(request.method) }
         return JsonResponse(response_data)

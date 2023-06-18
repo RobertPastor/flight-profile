@@ -19,7 +19,7 @@ function initDownloadPdfPresentation() {
 		req.open("GET", urlToSend, true);
 		req.responseType = "blob";
 
-		req.onload = function (event) {
+		req.onload = function () {
 			
 			stopBusyAnimation();
 			
@@ -34,12 +34,11 @@ function initDownloadPdfPresentation() {
 			link.click();
 			
 		 };
-		 req.onerror = function (event) {
+		 req.onerror = function () {
 			 
-			 stopBusyAnimation();
+			stopBusyAnimation();
 			console.log("Error in Download Pdf Presentation");
 		 }
 		// send the request
 		req.send();
-	
 }

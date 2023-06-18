@@ -143,12 +143,12 @@ def writeAirlineCasmOptimizationResults(workbook , airlineName):
             aircraftInstancesList , airlineFlightLegsList , airlineCasmArray = computeAirlineCostsArray(airline, airlineName)
             
             num_flight_legs = len( AirlineRoute.objects.filter(airline=airline) )
-            logger.info ( "num flight legs = {0}".format(num_flight_legs) )
+            logger.debug ( "num flight legs = {0}".format(num_flight_legs) )
             num_aircraft_instances = len(aircraftInstancesList)
             
-            logger.info ( "number of aircraft instances = {0}".format( num_aircraft_instances ) )
+            logger.debug ( "number of aircraft instances = {0}".format( num_aircraft_instances ) )
             num_flight_legs = len(airlineCasmArray[0])
-            logger.info ( "num flight legs = {0}".format(num_flight_legs) )
+            logger.debug ( "num flight legs = {0}".format(num_flight_legs) )
 
             ''' minimization problem '''
             prob = LpProblem("CASM-Problem", LpMinimize)
@@ -170,7 +170,7 @@ def writeAirlineCasmOptimizationResults(workbook , airlineName):
             ''' define the objective function '''
             prob += lpSum( [ airlineCasmArray[i][j] * x_vars[i,j] for i in range(num_aircraft_instances) for j in range(num_flight_legs) ])
 
-            logger.info ( "--- add constraints ----")
+            logger.debug ( "--- add constraints ----")
             
             '''  Each aircraft is assigned to at most 1 flight leg. '''
             for i in range(num_aircraft_instances):
@@ -187,7 +187,7 @@ def writeAirlineCasmOptimizationResults(workbook , airlineName):
             ''' minimize the costs '''
             #solver.Minimize(solver.Sum(objective_terms))
             prob.solve(PULP_CBC_CMD(msg=0))
-            logger.info ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
+            logger.debug ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
             
             for v in prob.variables():
                 
@@ -205,7 +205,7 @@ def writeAirlineCasmOptimizationResults(workbook , airlineName):
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, acICAOcode )
                 
-                    logger.info ( "var name = {0} - var value = {1}".format( v.name, v.varValue ) )
+                    logger.debug ( "var name = {0} - var value = {1}".format( v.name, v.varValue ) )
                     assigned  = "yes"
                     
                     ColumnIndex += 1
@@ -263,7 +263,7 @@ def writeAirlineCasmOptimizationResults(workbook , airlineName):
                 else:
                     print ("Error - route not found")
         
-            logger.info ( "Total CASM Objective  = {0}".format( value(prob.objective) ) )
+            logger.debug ( "Total CASM Objective  = {0}".format( value(prob.objective) ) )
             value_prob_objective = value(prob.objective)
 
             worksheet.autofit()     
@@ -297,7 +297,7 @@ def createExcelWorkbook(memoryFile, request, airlineName):
 def getAirlineCasmXlsx(request, airlineName):
     ''' function retrieves a file to download '''
     logger.setLevel(logging.INFO)
-    logger.info ("retrieve Airline CASM as Xlsx file")        
+    logger.debug ("retrieve Airline CASM as Xlsx file")        
         
     if (request.method == 'GET'):
         
@@ -326,7 +326,7 @@ def getAirlineCasmXlsx(request, airlineName):
 def getAirlineCASM(request, airlineName):
     
     logger.setLevel(logging.INFO)
-    logger.info ("views Airline CASM")
+    logger.debug ("views Airline CASM")
     
     airlineCostsList = []
 

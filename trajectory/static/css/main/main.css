@@ -229,3 +229,11 @@ th {
 .alignRight {
 	text-align: right;
 }
+
+.mainAirwaysSubMenuDivIdHide {
+	display: none;
+}
+
+.mainAirwaysSubMenuDiv:hover + mainAirwaysSubMenuDivIdHide {
+	display: block;
+}

@@ -33,7 +33,7 @@ def computeDurationHours( durationSeconds ):
 def computeCosts(request, airlineName):
     
     logger.setLevel(logging.DEBUG)
-    logger.info ("compute Flight Profile")
+    logger.debug ("compute Flight Profile")
     
     #routeWayPointsList = []
     if (request.method == 'GET'):
@@ -42,14 +42,15 @@ def computeCosts(request, airlineName):
         
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
 
-            logger.info ("selected aircraft = {0}".format( aircraftICAOcode ) )
+            logger.debug ("selected aircraft = {0}".format( aircraftICAOcode ) )
             
+            # route as string
             airlineRoute = request.GET['route']
             
-            logger.info(airlineRoute)
+            logger.debug(airlineRoute)
             
-            logger.info ( str(airlineRoute).split("-")[0] )
-            logger.info ( str(airlineRoute).split("-")[1] )
+            logger.debug ( str(airlineRoute).split("-")[0] )
+            logger.debug ( str(airlineRoute).split("-")[1] )
             
             departureAirportICAOcode = str(airlineRoute).split("-")[0]
             departureAirportRunWayName = request.GET['AdepRwy']
@@ -58,9 +59,9 @@ def computeCosts(request, airlineName):
             arrivalAirportRunWayName = request.GET['AdesRwy']
             
             takeOffMassKg = request.GET['mass']
-            logger.info( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
+            logger.debug( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
             cruiseFLfeet = request.GET['fl'] 
-            logger.info( "cruise FL feet = {0}".format( cruiseFLfeet ) )
+            logger.debug( "cruise FL feet = {0}".format( cruiseFLfeet ) )
             
             airline = Airline.objects.filter(Name=airlineName).first()
             if (airline):
@@ -71,7 +72,7 @@ def computeCosts(request, airlineName):
                     #print ( airlineRoute )
                     '''  use runways defined in the web page '''
                     routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
-                    logger.info ( routeAsString )
+                    logger.debug ( routeAsString )
                     
                     acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
                     #logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
@@ -86,7 +87,7 @@ def computeCosts(request, airlineName):
     
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
         
-                    logger.info ( "=========== Flight Plan computation is done  =========== " )
+                    logger.debug ( "=========== Flight Plan computation is done  =========== " )
                     
                     fuelCostsUSdollars =  ( flightPath.aircraft.getAircraftInitialMassKilograms() - flightPath.aircraft.getAircraftCurrentMassKilograms() )  * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
     
@@ -111,17 +112,14 @@ def computeCosts(request, airlineName):
                                     }
                     return JsonResponse(response_data)
                     
-    
                 else:
                     logger.info ('airline route not found = {0}'.format(airlineRoute))
-                    response_data = {
-                        'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
+                    response_data = { 'errors' : 'Airline route not found = {0}'.format(airlineRoute) }
                     return JsonResponse(response_data)
                 
             else:
                 logger.info ('airline  not found = {0}'.format(airlineName))
-                response_data = {
-                        'errors' : 'Airline not found = {0}'.format(airlineName)}
+                response_data = {'errors' : 'Airline not found = {0}'.format(airlineName)}
                 return JsonResponse(response_data)
                 
         else:

@@ -7,7 +7,7 @@ Use ICAO codes for the airports
 
 # extend the list of routes
 
-PS C:\Users\rober\Documents\04 - Workspace\flight-profile> python manage.py AirlineRoutesDatabaseLoad
+python manage.py AirlineRoutesDatabaseLoad
 airline routes database exists
 Index is: 0
 ID is: 0 - Airline is: AmericanWings - Departure Airport = KATL
@@ -28,7 +28,6 @@ PS C:\Users\rober\Documents\04 - Workspace\flight-profile>
 
 python manage.py AirportsDatabaseLoad
 
-PS C:\Users\rober\Documents\04 - Workspace\flight-profile> python manage.py AirportsDatabaseLoad
 airports database exists
 read airports database result = True
 PS C:\Users\rober\Documents\04 - Workspace\flight-profile>

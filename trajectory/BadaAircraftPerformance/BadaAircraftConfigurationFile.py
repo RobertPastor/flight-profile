@@ -196,7 +196,7 @@ class AircraftConfiguration(FlightEnvelope):
         Mach = self.getTargetCruiseMach()
         
         self.transitionAltitudeFeet = self.transitionAltitude.computeTransitionAltitudeFeet(VCasMeterSecond, Mach)
-        logger.info ( self.className + ': transition altitude= {0:.2f} feet'.format(self.transitionAltitudeFeet) )
+        logger.debug ( self.className + ': transition altitude= {0:.2f} feet'.format(self.transitionAltitudeFeet) )
         
         self.energyShareFactor = EnergyShareFactor()
         
@@ -702,20 +702,20 @@ class AircraftConfiguration(FlightEnvelope):
         '''
         if (lastAltitudeMeanSeaLevelMeters * Meter2Feet <= 400.0) and (altitudeMeanSeaLevelMeters * Meter2Feet > 400.0):
                 if self.TakeOffMaxAltitudeThresholdReached == False:
-                    logger.info ( self.className + ': Take-Off max altitude threshold reached' )
+                    logger.debug ( self.className + ': Take-Off max altitude threshold reached' )
                     self.TakeOffMaxAltitudeThresholdReached = True
                 
         if (lastAltitudeMeanSeaLevelMeters * Meter2Feet <= 2000) and (altitudeMeanSeaLevelMeters * Meter2Feet > 400.0):
                 if self.InitialClimbMaxAltitudeThresholdReached == False:
-                    logger.info ( self.className + ': Initial-Climb max altitude threshold reached' )
+                    logger.debug ( self.className + ': Initial-Climb max altitude threshold reached' )
                     self.InitialClimbMaxAltitudeThresholdReached = True
 
         if (lastAltitudeMeanSeaLevelMeters * Meter2Feet >= 8000.0) and (altitudeMeanSeaLevelMeters * Meter2Feet < 8000.0):
             
-                logger.info ( self.className + ': Approach max altitude threshold reached' )
+                logger.debug ( self.className + ': Approach max altitude threshold reached' )
 
         if (lastAltitudeMeanSeaLevelMeters * Meter2Feet >= 3000.0) and (altitudeMeanSeaLevelMeters * Meter2Feet < 3000.0):
-                logger.info ( self.className + ': Landing max altitude threshold reached' )
+                logger.debug ( self.className + ': Landing max altitude threshold reached' )
 
         ''' need to check an altitude change versus its history '''
 #         if (altitudeMeanSeaLevelMeters > (targetCruiseAltitudeMslMeters-100.0)):
@@ -871,7 +871,7 @@ class AircraftConfiguration(FlightEnvelope):
                         temp='std', 
                         speed_units = 'm/s', 
                         alt_units = 'm')
-                logger.info ( self.className + ': TAS= {0:.2f} knots - CAS= {1:.2f} knots > (1.2 * V CAS stall)= {2:.2f} knots'.format(trueAirSpeedMetersSecond*MeterSecond2Knots ,cas*MeterSecond2Knots, (1.2*VStallSpeedCASKnots)) )
+                logger.debug ( self.className + ': TAS= {0:.2f} knots - CAS= {1:.2f} knots > (1.2 * V CAS stall)= {2:.2f} knots'.format(trueAirSpeedMetersSecond*MeterSecond2Knots ,cas*MeterSecond2Knots, (1.2*VStallSpeedCASKnots)) )
                 ''' update aircraft configuration '''
                 self.setTakeOffConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
             
@@ -908,7 +908,7 @@ class AircraftConfiguration(FlightEnvelope):
                                                   alt_units = 'm') * MeterSecond2Knots 
             if ((casKnots >= initialClimbStallSpeedCasKnots) 
                 and (altitudeMeanSeaLevelMeters >= (self.departureAirportAltitudeMSLmeters+50.0))):
-                logger.info ( self.className + ': CAS= {0:.2f} knots >= Initial Climb Stall Speed= {1:.2f} knots'.format(casKnots, initialClimbStallSpeedCasKnots) )
+                logger.debug ( self.className + ': CAS= {0:.2f} knots >= Initial Climb Stall Speed= {1:.2f} knots'.format(casKnots, initialClimbStallSpeedCasKnots) )
                 self.setInitialClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
                 
             ''' distance flown '''
@@ -949,7 +949,7 @@ class AircraftConfiguration(FlightEnvelope):
            
             ''' check if target cruise altitude is reached -> 10.000 feet '''
             if ( ( altitudeMeanSeaLevelMeters * Meter2Feet ) >= 10000.0 ):
-                #logger.info ( self.className + ': transition altitude= {0:.2f} feet reached - elapsed Time= {1:.2f} seconds'.format(altitudeMeanSeaLevelMeters * Meter2Feet, elapsedTimeSeconds) )
+                #logger.debug ( self.className + ': transition altitude= {0:.2f} feet reached - elapsed Time= {1:.2f} seconds'.format(altitudeMeanSeaLevelMeters * Meter2Feet, elapsedTimeSeconds) )
                 ''' target cruise altitude reached '''
                 self.setClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
 
@@ -1020,7 +1020,7 @@ class AircraftConfiguration(FlightEnvelope):
             if ( altitudeMeanSeaLevelMeters > (self.getTargetCruiseFlightLevelMeters() - 100.0)):
                 ''' target cruise altitude reached '''
                 if self.cruiseLevelReached == False:
-                    logger.info ( self.className + ': cruise level reached= {0:.2f} meters = {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, altitudeMeanSeaLevelMeters * Meter2Feet) )
+                    logger.debug ( self.className + ': cruise level reached= {0:.2f} meters = {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, altitudeMeanSeaLevelMeters * Meter2Feet) )
                     self.cruiseLevelReached = True
                 self.setCruiseConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
                 
@@ -1095,7 +1095,7 @@ class AircraftConfiguration(FlightEnvelope):
                                                                                         distanceToLastFixMeters = distanceToLastFixMeters)
             trueAirSpeedMetersSecond += aircraftAcceleration * deltaTimeSeconds
             deltaDistanceMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees))* deltaTimeSeconds
-            #logger.info 'acceleration= {0:.2f} - speed= {1:.2f} - distance= {2:.2f}'.format(aircraftAcceleration, trueAirSpeedMetersSecond, deltaDistanceMeters)
+            #logger.debug 'acceleration= {0:.2f} - speed= {1:.2f} - distance= {2:.2f}'.format(aircraftAcceleration, trueAirSpeedMetersSecond, deltaDistanceMeters)
 
             ''' check altitude versus approach altitude '''
             
@@ -1166,7 +1166,7 @@ class AircraftConfiguration(FlightEnvelope):
                        altitude = altitudeMeanSeaLevelMeters,
                      speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots ) <= (VStallSpeedCASKnots)):
                 ''' as soon as speed decrease to approach configuration => change aircraft configuration '''
-                logger.info ( self.className +': distance to approach fix= {0:.2f} meters - delta altitude to approach fix= {1:.2f} meters'.format(distanceToTargetApproachFixMeters, deltaAltitudeToTargetApproachFixMeters) )
+                logger.debug ( self.className +': distance to approach fix= {0:.2f} meters - delta altitude to approach fix= {1:.2f} meters'.format(distanceToTargetApproachFixMeters, deltaAltitudeToTargetApproachFixMeters) )
                 self.setLandingConfiguration(elapsedTimeSeconds + deltaTimeSeconds )
 
                 
@@ -1192,9 +1192,9 @@ class AircraftConfiguration(FlightEnvelope):
                 
             arrivalRunwayTouchDownAltitudeMSLmeters = self.getArrivalRunwayTouchDownWayPoint().getAltitudeMeanSeaLevelMeters()
             if (altitudeMeanSeaLevelMeters <= arrivalRunwayTouchDownAltitudeMSLmeters):
-                ''' if altitude is lower than airport elevation then correct it '''
+                ''' if altitude is lower than airport elevation then correct it - cap size '''
                 altitudeMeanSeaLevelMeters = arrivalRunwayTouchDownAltitudeMSLmeters
-                logger.info ( self.className +': distance to runway touch-down= {0:.2f} meters - delta altitude to runway touch-down= {1:.2f} meters'.format(distanceToRunWayTouchDownMeters, deltaAltitudeToRunWayTouchDownMeters) )
+                logger.debug ( self.className +' - distance to runway touch-down= {0:.2f} meters - delta altitude to runway touch-down= {1:.2f} meters'.format(distanceToRunWayTouchDownMeters, deltaAltitudeToRunWayTouchDownMeters) )
 
                 self.setArrivalGroundRunConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
 
@@ -1214,11 +1214,12 @@ class AircraftConfiguration(FlightEnvelope):
             if ( ( self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
                     altitude = altitudeMeanSeaLevelMeters,
                      speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots ) <= (5.0)):
-                logger.info ( self.className +': taxi speed reached => end of simulation' )
+                logger.info ( self.className +' - taxi speed reached => end of simulation' )
                 endOfSimulation = True
             
  
         else:
+            logger.info("Error - phase is not yet implemented")
             raise ValueError('not yet implemented')
             
         ''' aircraft mass decreases according to fuel flow '''
@@ -1229,9 +1230,9 @@ class AircraftConfiguration(FlightEnvelope):
         try:
             aircraftMassKilograms = self.aircraftMass.updateAircraftMassKilograms(fuelFlowKilograms)
         except:
-            logger.info ( self.className + ': no more fuel !!!!' )
+            logger.info ( self.className + ' - no more fuel !!!!' )
             endOfSimulation = True
-            raise ValueError ( self.className + ': no more fuel !!!! ' )
+            raise ValueError ( self.className + ' - no more fuel !!!! ' )
 
         ''' store updated speed '''
         currentDistanceFlownMeters += deltaDistanceMeters
@@ -1307,9 +1308,9 @@ class AircraftConfiguration(FlightEnvelope):
         ''' delta height to descent '''
         deltaAltitudeMeters = altitudeMeanSeaLevelMeters - arrivalAirportFieldElevationMeters
         durationDescentSeconds = ((deltaAltitudeMeters * Meter2Feet) / self.computeDescentRateFeetPerMinute()) * 60.0
-#         logger.info "descent duration Seconds= ", durationDescentSeconds, " duration in minutes= ", durationDescentSeconds/60.
+        #logger.info "descent duration Seconds= ", durationDescentSeconds, " duration in minutes= ", durationDescentSeconds/60.
         descentDistanceMeters = trueAirSpeedMetersSeconds * durationDescentSeconds
-#         logger.info "Start Descent at distance Meters from Airport= ", descentDistanceMeters, " descent distance in nautical miles= ", (descentDistanceMeters)/OneNauticalMiles
+        #logger.info "Start Descent at distance Meters from Airport= ", descentDistanceMeters, " descent distance in nautical miles= ", (descentDistanceMeters)/OneNauticalMiles
         return descentDistanceMeters
 
 
@@ -1338,8 +1339,8 @@ class AircraftConfiguration(FlightEnvelope):
         #logger.info self.className + ': create State Vector output file'
         filePrefix = ""
         if abortedFlight:
-            filePrefix = "ABORTED-"
-        filePrefix += aircraftICAOcode + "-" + AdepICAOcode + "-" + AdesICAOcode
+            filePrefix = "ABORTED"
+        filePrefix += "-" + aircraftICAOcode + "-" + AdepICAOcode + "-" + AdesICAOcode
         self.StateVector.createStateVectorHistoryFile(filePrefix)
 
 
@@ -1348,7 +1349,7 @@ class AircraftConfiguration(FlightEnvelope):
         #logging.info self.className + ': create State Vector output file'
         filePrefix = ""
         if abortedFlight:
-            filePrefix = "ABORTED-"
-        filePrefix += aircraftICAOcode + "-" + AdepICAOcode + "-" + AdesICAOcode
+            filePrefix = "ABORTED"
+        filePrefix += "-" + aircraftICAOcode + "-" + AdepICAOcode + "-" + AdesICAOcode
         self.StateVector.createStateVectorHistorySheet(workbook)
         

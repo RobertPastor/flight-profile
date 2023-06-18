@@ -1,10 +1,72 @@
 
 
+function listenSubMenuOptimizationsEntry( btnOptimizationsId , mainSubMenuOptimizationsDivId) {
+		
+		document.getElementById(btnOptimizationsId).onclick = function () {
+			
+			//console.log("button airways was clicked")
+			let position =  $("#"+ btnOptimizationsId).offset();
+				
+    		// show the submenu defined in SubMenuAirways.js
+    		if ( document.getElementById(mainSubMenuOptimizationsDivId) ) {
+				
+				$("#" + mainSubMenuOptimizationsDivId).css({
+					'position': 'absolute',
+					'top': position.top + 5, // Leave some margin
+					'left': position.left + 5 , // Leave some margin
+					'display': 'block'
+				});
+				
+				$("#"+ mainSubMenuOptimizationsDivId).show();
+				
+				document.getElementById(mainSubMenuOptimizationsDivId).addEventListener("mouseleave", function (e) {
+					$("#"+ mainSubMenuOptimizationsDivId).hide();
+				});
+			}
+    		return false;
+		};
+}
+
+
+function listenSubMenuAirwaysEntry( btnAirwaysId , mainSubMenuAirwaysDivId) {
+		
+		document.getElementById(btnAirwaysId).onclick = function () {
+			
+			//console.log("button airways was clicked")
+			let position =  $("#"+ btnAirwaysId).offset();
+				
+    		// show the submenu defined in SubMenuAirways.js
+    		if ( document.getElementById(mainSubMenuAirwaysDivId) ) {
+				
+				$("#" + mainSubMenuAirwaysDivId).css({
+					'position': 'absolute',
+					'top': position.top + 5, // Leave some margin
+					'left': position.left + 5 , // Leave some margin
+					'display': 'block'
+				});
+				
+				$("#"+ mainSubMenuAirwaysDivId).show();
+				
+				document.getElementById(mainSubMenuAirwaysDivId).addEventListener("mouseleave", function (e) {
+					$("#"+ mainSubMenuAirwaysDivId).hide();
+				});
+			}
+    		return false;
+		};
+}
+
+
 //Define custom control class
 class MainControl extends og.Control {
+	
 	constructor(options) {
 		super(options);
 	}
+	
+	oninit() {
+		//console.log("main Control - oninit");
+	}
+
 
 	onadd() {
 		//console.log("main Control - onadd");
@@ -31,13 +93,15 @@ class MainControl extends og.Control {
 		let row_0 = document.createElement('tr');
 		
 		let row_0_data_1 = document.createElement('td');
-		row_0_data_1.colSpan = "11";
+		row_0_data_1.colSpan = "10";
 		row_0_data_1.innerHTML = '<div id="workerId" class="w3-container progressBar" style="width:100%"></div>';
 		row_0.appendChild(row_0_data_1);
 						
 		tbody.appendChild(row_0);
 		
+		//===================================
 		// ------- 2nd row --------------
+		//===================================
 		
 		let row_1 = document.createElement('tr');
 		
@@ -56,9 +120,9 @@ class MainControl extends og.Control {
 		row_1.appendChild(row_1_data_1);
 		
 		let row_1_data_3 = document.createElement('td');
-		row_1_data_3.colSpan = "7";
+		row_1_data_3.colSpan = "6";
 		
-		row_1_data_3.innerHTML = '<div class="alignRight"><span>Airline Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
+		row_1_data_3.innerHTML = '<div class="alignRight"><span>Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
 		row_1.appendChild(row_1_data_3);
 		
 		let row_1_data_4 = document.createElement('td');
@@ -70,7 +134,9 @@ class MainControl extends og.Control {
 		
 		tbody.appendChild(row_1);
 		
-		// --------- 3rd row
+		//==================================================================
+		// --------- 3rd row -----------------------------------------------
+		//==================================================================
 		
 		let row_2 = document.createElement('tr');
 		
@@ -79,21 +145,22 @@ class MainControl extends og.Control {
 		row_2_data_2.title = "click to see the airline fleet, aircraft, number of seats, hourly costs";
 		row_2.appendChild(row_2_data_2);
 		
+		//=============================================
+		// sub menu Airports and Airways
+		
 		let row_2_data_3 = document.createElement('td');
-		row_2_data_3.innerHTML = '<div><button id="btnAirports" >Airports</button></div>';
-		row_2_data_3.title = "click to see the airline airports and the waypoints";
+		row_2_data_3.id = "mainSubMenuTdId";
+		row_2_data_3.colSpan = "2";
+		
+		let menuEntryAirwaysDiv = document.createElement('div');
+		
+		menuEntryAirwaysDiv.innerHTML = '<div><button id="btnAirwaysId" >Airports & Airways</button></div>';
+		menuEntryAirwaysDiv.id = "menuEntryAirwaysDivId";
+		
+		row_2_data_3.appendChild ( menuEntryAirwaysDiv );
 		row_2.appendChild(row_2_data_3);
 		
-		let row_2_data_4 = document.createElement('td');
-		row_2_data_4.innerHTML = '<div><button id="btnAirlineRoutes" >Routes</button></div>';
-		row_2_data_4.title = "click to see the routes, way-points, best runway";
-		row_2.appendChild(row_2_data_4);
-		
-		// 8th June 2023 - SID STAR
-		//let row_2_data_5 = document.createElement('td');
-		//row_2_data_5.innerHTML = '<div><button id="btnSidStar" >SID/STAR</button></div>';
-		//row_2.appendChild(row_2_data_5);
-		
+		//==============================================
 		
 		let row_2_data_6 = document.createElement('td');
 		row_2_data_6.innerHTML = '<div><button id="btnLaunchFlightProfile" >Profile</button></div>';
@@ -107,28 +174,23 @@ class MainControl extends og.Control {
 
 		row_2.appendChild(row_2_data_7);
 		
-		// 27th January 2023 - Fleet Assignment based upon costs optimization
+		//=============================================
+		// sub menu optimizations
+		
+		// sub menu
 		let row_2_data_8 = document.createElement('td');
-		row_2_data_8.innerHTML = '<div><button id="btnLaunchCostsOptimization" >Costs Min</button></div>';
-		row_2_data_8.title = "click to see the best aircraft selection to minimize costs";
+		row_2_data_8.id = "mainSubMenuOptimizationsTdId";
+		row_2_data_8.colSpan = "3";
+		
+		let menuEntryOptimizationsDiv = document.createElement('div');
+		
+		menuEntryOptimizationsDiv.innerHTML = '<div><button id="btnOptimizationsId" >Optimizations</button></div>';
+		menuEntryOptimizationsDiv.id = "menuEntryOptimizationsDivId";
+		
+		row_2_data_8.appendChild ( menuEntryOptimizationsDiv );
 		row_2.appendChild(row_2_data_8);
 		
-		// Costs per Average Seat Miles
-		let row_2_data_9 = document.createElement('td');
-		row_2_data_9.innerHTML = '<div><button id="btnLaunchCASM" >CASM</button></div>';
-		row_2_data_9.title = "click to download an EXCEL Cost per Available Seat Miles file";
-		row_2.appendChild(row_2_data_9);
-		
-		// Costs per Average Seat Miles Optimization
-		let row_2_data_10 = document.createElement('td');
-		row_2_data_10.innerHTML = '<div><button id="btnLaunchCasmOptimization" >CASM Min</button></div>';
-		row_2_data_10.title = "click to see the best aircraft selection to minimize Costs per Available Seat Miles"; 
-		row_2.appendChild(row_2_data_10);
-		
-		let row_2_data_11 = document.createElement('td');
-		row_2_data_11.innerHTML = '<div><button id="btnLaunchSeatMilesMaximization" >Seat Miles Max</button></div>';
-		row_2_data_11.title = "click to see the best aircraft selection to minimize Costs per Available Seat Miles"; 
-		row_2.appendChild(row_2_data_11);
+		//=============================================
 		
 		let row_2_data_12 = document.createElement('td');
 		row_2_data_12.innerHTML = '<div><button id="btnLaunchFuelPlanner" >Fuel Planner</button></div>';
@@ -151,10 +213,11 @@ class MainControl extends og.Control {
 		
 		// Make the Main Div element draggable:
 		dragElement(document.getElementById("mainTableId"));
+		
+		// listen to the submenu entry Airports Airways
+		// buttons are defined in this js, but ids are defined in each js that is creating a sub menu
+		listenSubMenuAirwaysEntry( "btnAirwaysId" , "mainSubMenuAirwaysDivId");
+		listenSubMenuOptimizationsEntry( "btnOptimizationsId" , "mainSubMenuOptimizationsDivId");
 
-	}
-
-	oninit() {
-		//console.log("main Control - oninit");
 	}
 };

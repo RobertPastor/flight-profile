@@ -1,7 +1,4 @@
-document.addEventListener('DOMContentLoaded', (event) => { 
-       
-	// console.log("airline airports js is loaded");
-}); 
+
 
 const SingletonAirlineAirports = (function () {
 	
@@ -63,9 +60,9 @@ class AirlineAirports {
 		
 		let arr = routeId.split("-");
 		let Adep = arr[1];
-		//console.log(Adep)
+		//console.log(Adep);
 		let Ades = arr[2];
-		//console.log(Ades)
+		//console.log(Ades);
 			
 		let layerName =  this.LayerNamePrefix + Adep + "-" + Ades;
 		// function defined in main.js
@@ -187,10 +184,13 @@ class AirlineAirports {
 											
 						//alert("Data: " + data + "\nStatus: " + status);
 						let dataJson = eval(data);		
-						let airlineRoutesWaypointsArray = dataJson["airlineRouteWayPoints"];
-						let layerName =  LayerNamePrefix + Adep + "-" + Ades;
-						//console.log( layerName );
-						SingletonAirlineAirports.getInstance().showRouteWayPoints( airlineRoutesWaypointsArray , layerName );
+						if ( dataJson.hasOwnProperty("airlineRouteWayPoints")) {
+							
+							let airlineRoutesWaypointsArray = dataJson["airlineRouteWayPoints"];
+							let layerName =  LayerNamePrefix + Adep + "-" + Ades;
+							//console.log( layerName );
+							SingletonAirlineAirports.getInstance().showRouteWayPoints( airlineRoutesWaypointsArray , layerName );
+						}
 
 				},
 				error: function(data, status) {
@@ -219,8 +219,11 @@ class AirlineAirports {
 								
 					//alert("Data: " + data + "\nStatus: " + status);
 					let dataJson = eval(data);		
-					let airlineRoutesArray = dataJson["airlineRoutes"]
-					SingletonAirlineAirports.getInstance().writeRoutesTableFromStartingAirport( departureAirportICAOcode, airlineRoutesArray , position );
+					if ( dataJson.hasOwnProperty("airlineRoutes")) {
+						
+						let airlineRoutesArray = dataJson["airlineRoutes"]
+						SingletonAirlineAirports.getInstance().writeRoutesTableFromStartingAirport( departureAirportICAOcode, airlineRoutesArray , position );
+					}
 					
 				},
 				error: function(data, status) {
@@ -283,7 +286,7 @@ class AirlineAirports {
 				
 				let position = {}
 				position["x"] = e.clientX;
-				position["y"] = e.clientY
+				position["y"] = e.clientY;
 				
 				// show table with routes starting in this airport
 				$("#airlineAirportsRoutesMainDivId").show();

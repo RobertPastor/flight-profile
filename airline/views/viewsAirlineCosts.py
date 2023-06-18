@@ -159,7 +159,7 @@ def writeAirlineCostsMinimization( workbook , airlineName ):
             aircraftInstancesList = aircraftInstances.computeAirlineAircraftInstances(airlineName , nbFligthtLegs)
             #print ( aircraftInstancesList )
             
-            logger.info ( "length of flight legs = {0}".format( AirlineRoute.objects.filter(airline=airline).count() ) )
+            #logger.debug ( "length of flight legs = {0}".format( AirlineRoute.objects.filter(airline=airline).count() ) )
             
             airlineCostsArray = []
             airlineAircraftICAOcodeList = []
@@ -194,7 +194,7 @@ def writeAirlineCostsMinimization( workbook , airlineName ):
                         
                 airlineCostsArray.append(aircraftCostsArray)
                 
-            logger.info ( airlineCostsArray )
+            logger.debug ( airlineCostsArray )
             #print ( "number of aircrafts = {0}".format( len( AirlineAircraft.objects.filter(airline=airline) ) ) )
             #print ( "number of routes = {0}".format( len( AirlineRoute.objects.filter(airline=airline) ) ) )
             
@@ -206,7 +206,7 @@ def writeAirlineCostsMinimization( workbook , airlineName ):
             #num_aircrafts = len(airlineCostsArray)
             num_aircraft_instances = len(aircraftInstancesList)
             
-            logger.info ( "number of aircraft instances = {0}".format( num_aircraft_instances ))
+            logger.debug ( "number of aircraft instances = {0}".format( num_aircraft_instances ))
             num_flight_legs = len(airlineCostsArray[0])
             #print ( num_flight_legs )
             
@@ -234,7 +234,7 @@ def writeAirlineCostsMinimization( workbook , airlineName ):
                     #objective_terms.append(float(airlineCostsArray[i][j]) * x[i, j])
             prob += lpSum( [ airlineCostsArray[i][j] * x_vars[i,j] for i in range(num_aircraft_instances) for j in range(num_flight_legs) ])
                     
-            logger.info ("--- add constraints ----")
+            logger.debug ("--- add constraints ----")
             '''  Each aircraft is assigned to at most 1 flight leg. '''
             for i in range(num_aircraft_instances):
                 pass
@@ -254,7 +254,7 @@ def writeAirlineCostsMinimization( workbook , airlineName ):
             ''' minimize the costs '''
             #solver.Minimize(solver.Sum(objective_terms))
             prob.solve(PULP_CBC_CMD(msg=0))
-            logger.info ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
+            logger.debug ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
             
             #for name, c in list(prob.constraints.items()):
             #    print(name, ":", c, "\t", c.pi, "\t\t", c.slack)
@@ -363,7 +363,7 @@ def getAirlineCostsAsXlsx(request, airlineName):
 
 def getAirlineCosts(request, airlineName):
     logger.setLevel(logging.INFO)
-    logger.info ("views Airline Costs")
+    logger.debug ("views Airline Costs")
     
     airlineCostsList = []
     if (request.method == 'GET'):
