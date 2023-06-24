@@ -564,6 +564,7 @@ class FlightPath(FlightPlan):
         logging.info (  '{0} - final route length= {1:.2f} nautics'.format(self.className, self.finalRoute.getLengthMeters()*Meter2NauticalMiles) )
         return kmlXmlDocument
     
+    
     def createStateVectorOutputFile(self):
         self.aircraft.createStateVectorOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
 
@@ -575,6 +576,10 @@ class FlightPath(FlightPlan):
     def createCsvAltitudeTimeProfile(self):
         csvAltitudeTimeProfile = self.finalRoute.createCsvAltitudeTimeProfile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
         return csvAltitudeTimeProfile
+    
+    
+    def createKMLfileLike(self, memoryFile):
+        self.finalRoute.createKmlFileLike(memoryFile, self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
     
     
     def createKmlXmlDocument(self):

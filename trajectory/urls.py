@@ -11,6 +11,7 @@ from trajectory.views.downLoadVerticalProfile import createExcelVerticalProfile
 from trajectory.views.viewsFuelPlanner import launchFuelPlanner
 from trajectory.views.computeRunwayOvershoot import computeRunwayOvershoot
 from trajectory.views.viewsSidStar import showSidStar
+from trajectory.views.downloadKMLfile import createKMLfile
 
 app_name = "trajectory"
 
@@ -29,12 +30,14 @@ urlpatterns = [
     
     path('computeRunwayOvershoot/<slug:aircraft>/<slug:airport>/<slug:runway>/<slug:mass>' , computeRunwayOvershoot , name ='computeRunwayOvershoot'),
     
-    path('showSidStar/<slug:SidOrStar>/<slug:airport>/<slug:runway>/<slug:waypoint>' , showSidStar , name="showSidStar")
+    path('showSidStar/<slug:SidOrStar>/<slug:airport>/<slug:runway>/<slug:waypoint>' , showSidStar , name="showSidStar"),
 
 ]
 
-''' view to create an EXCEL file '''
+''' view to create an EXCEL file or a KML google earth file '''
 urlpatterns += [
     path('excel/<slug:airlineName>', createExcelVerticalProfile , name='createExcel'),
+    
+    path('kml/<slug:airlineName>', createKMLfile , name='createKMLfile'),
     
 ]

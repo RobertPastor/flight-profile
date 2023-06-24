@@ -232,15 +232,17 @@ function initTools(globus, viewExtent) {
 		
 		// control to display help or configuration information
 		globus.planet.addControl(new HelpControl());
+		
 		// control used to draw a vertical profile
 		globus.planet.addControl(new D3Control());
+		
 		// control used to display a message to the user
 		globus.planet.addControl(new DialogControl());
 		
 		globus.planet.addControl(new AirlineFleetControl());
 		
 		// load airline fleet
-		let airlineFleet = SingletonAirlineFleet.getInstance()
+		let airlineFleet = SingletonAirlineFleet.getInstance();
 		airlineFleet.initAirlineFleet();
 		
 		//console.log("init other tools");
@@ -260,18 +262,17 @@ function initTools(globus, viewExtent) {
 		let airlineWayPoints = SingletonAirlineWayPoints.getInstance();
 		airlineWayPoints.initWayPoints(globus, viewExtent);
 		
-		// load a flight profile
-		//showFlightProfile(globus);
-		
 		// compute Flight Profile
 		globus.planet.addControl(new FlighProfileControl());
+		// costs for each profile
 		let airlineProfileCosts = SingletonProfileCosts.getInstance();
 		airlineProfileCosts.launchFlightProfile(globus);
 		
 		// compute costs
 		// flight profile inputs are shared with flight leg cost controls inputs
 		globus.planet.addControl(new AirlineFlightLegCostsResultsControl());
-		let airlineFlightLegCosts = SingletonAirlineFlightLegCosts.getInstance()
+		
+		let airlineFlightLegCosts = SingletonAirlineFlightLegCosts.getInstance();
 		airlineFlightLegCosts.initFlightLegCosts();
 		
 		// airline costs optimization
@@ -303,8 +304,11 @@ function initTools(globus, viewExtent) {
 		let fuelPlanner = SingletonFuelPlanner.getInstance();
 		fuelPlanner.initFuelPlanner(globus);
 		
-		// init download EXCEL Vertical Flight Profile
+		// init listener for downloading EXCEL Vertical Flight Profile
 		initDownloadVerticalProfile();
+		
+		// 24th June 2023 - init listener for downloading KML file
+		initDownloadKMLfile();
 		
 		// 8th June 2023 - SID STAR
 		let sidStar = SingletonSidStar.getInstance();

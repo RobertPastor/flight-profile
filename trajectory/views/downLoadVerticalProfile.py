@@ -29,7 +29,7 @@ from trajectory.Guidance.FlightPathFile import FlightPath
 from trajectory.models import BadaSynonymAircraft
 
 def writeReadMe(workbook, request, airlineName):
-    pass
+
     wsReadMe = workbook.add_worksheet("ReadMe")
     styleEntete = workbook.add_format({'bold': False, 'border':True})
     styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})

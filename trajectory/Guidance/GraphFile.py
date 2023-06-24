@@ -30,7 +30,7 @@ from datetime import datetime
 
 from trajectory.Guidance.WayPointFile import WayPoint, Airport
 
-from trajectory.OutputFiles.KmlOutput import KmlOutput
+from trajectory.OutputFiles.KmlOutput import KmlOutput, KmlFileLike
 from trajectory.OutputFiles.GroundTrackOutput import GroundTrackOutput
 
 class Vertex(object):
@@ -94,14 +94,12 @@ class Graph(object):
     def __str__(self):
         return self.className + ': number of vertices= {0}'.format(len(self._vertex))
 
-
     def addGraph(self, otherGraph):
         ''' add the vertices of a another graph to self '''
         assert isinstance(otherGraph, Graph)
         for vertex in otherGraph._vertex:
             ''' add the vertex '''
             self.addVertex( vertex.getWeight() )
-        
         
     def addVertex(self, *args):
         if len(args) == 1:
@@ -187,7 +185,6 @@ class Graph(object):
             return self._edge[numberOfEdges-1]
         return None
 
-
     def getEdge(self, w):
         '''
         (Graph, int) -> Edge
@@ -197,14 +194,12 @@ class Graph(object):
             raise ValueError('Graph: getEdge: edge index out of bounds!!!')
         return self._edge[w]
     
-    
     def getNumberOfVertices(self):
         """
         (Graph) -> int
         Returns the number of vertices in this graph.
         """
         return len(self._vertex)
-
 
     def getNumberOfEdges(self):
         """
@@ -213,17 +208,55 @@ class Graph(object):
         """
         return len(self._edge)
     
-     
     def getVertices(self):
         for vertex in self._vertex:
             yield vertex
-
 
     def getEdges(self):
         ''' returns an iterator on the edges '''
         for edge in self._edge:
             yield edge
     
+    
+    def createKmlFileLike(self, memoryFile, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde):
+        
+        self.AbortedFlight = abortedFlight
+        self.AircraftICAOcode = aircraftICAOcode
+        self.AdepICAOcode = AdepICAOcode
+        self.AdesICAOcode = AdesICAOcde
+        
+        assert ( type(abortedFlight) == bool )
+        if self.getNumberOfVertices() > 1:
+            ''' need at least two vertices '''
+            tail = self.getVertex(0)
+            head = self.getVertex(self.getNumberOfVertices()-1)
+            assert isinstance(tail.getWeight(), WayPoint)
+            assert isinstance(head.getWeight(), WayPoint)
+            tailWayPoint = tail.getWeight()
+            headWayPoint = head.getWeight()
+            
+            strFileName = ""
+            if abortedFlight:
+                strFileName = "ABORTED-"
+            strFileName += str(aircraftICAOcode) + "-" + AdepICAOcode + "-" + AdesICAOcde
+            strFileName += "-" + tailWayPoint.getName()+'-'+headWayPoint.getName()
+            ''' replace '''
+            strFileName = str(strFileName).replace(' ', '-')
+            strFileName += '-{0}.kml'.format(datetime.now().strftime("%d-%b-%Y-%Hh%Mm%S"))
+            
+            kmlFileLike = KmlFileLike( strFileName, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde)
+            for vertex in self.getVertices():
+                    wayPoint = vertex.getWeight()
+                    kmlFileLike.write( wayPoint.getName(),
+                                        wayPoint.getLongitudeDegrees(),
+                                        wayPoint.getLatitudeDegrees(), 
+                                        wayPoint.getAltitudeMeanSeaLevelMeters())
+            kmlFileLike.close(memoryFile)
+            
+            logging.info ( "{0} - {1}".format(self.className , strFileName) )
+        
+        return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")
+
     
     def createKmlOutputFile(self, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde):
         
@@ -359,6 +392,7 @@ class Graph(object):
             "MaxAltitudeMSLmeters" : maxAltitudeMSLmeters,
             "maxElapsedTimeSeconds" : maxElapsedTimeSeconds
             }
+            
             
     def getLengthMeters(self):
         return self.lengthMeters

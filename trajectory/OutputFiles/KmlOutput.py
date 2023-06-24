@@ -32,6 +32,9 @@ import xml.dom.minidom
 import logging
 
 
+        
+
+
 class KmlOutput():
     
     fileName = ""
@@ -96,6 +99,7 @@ class KmlOutput():
         pointElement.appendChild(coorElement)
         
         self.documentElement.appendChild(placemarkElement)
+        
 
     ''' warning - this folder cleaning does not work in heroku '''
     def cleanKmlFolder(self):
@@ -104,6 +108,11 @@ class KmlOutput():
         for f in os.listdir(self.FilesFolder):
             os.remove(os.path.join(self.FilesFolder, f))
             
+            
+    def closeFileLike(self):
+        kmlXmlDocument = self.kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8')
+        return kmlXmlDocument
+        
         
     def close(self):
         ''' always write in the static kml folder '''
@@ -122,9 +131,22 @@ class KmlOutput():
     def getFilePath(self):
         return self.filePath
     
+    
     def getKmlFileName(self):
         return self.fileName
+    
+    
+    
+class KmlFileLike(KmlOutput):
+    
+        
+    def close(self, memoryFile):
+        indent="\t";
+        newl="\n"
+        encoding='utf-8'
+        addindent = ""
+        standalone=None
+        self.kmlDoc.writexml(memoryFile, indent, addindent, newl, encoding, standalone)
 
         
-
     

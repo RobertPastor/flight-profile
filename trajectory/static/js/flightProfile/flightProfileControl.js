@@ -6,12 +6,17 @@ class FlighProfileControl extends og.Control {
 	constructor(options) {
 		super(options);
 	}
+	
+	getMainDivId() {
+		this.mainDivId = "flightProfileMainDivId";
+		return this.mainDivId;
+	}
 
 	onadd() {
 		//console.log("flight profile Control - onadd");
 		
 		let mainDiv = document.createElement('div');
-		mainDiv.id = "flightProfileMainDivId";
+		mainDiv.id = this.getMainDivId();
 		mainDiv.style="display: none;";
 		mainDiv.classList.add('flightProfileTableDiv');
 		
@@ -71,7 +76,7 @@ class FlighProfileControl extends og.Control {
 		input_1_1.title = "minTakeOffMassKgId" ;
 		div_1.appendChild(input_1_1);
 		
-		// hidden input with min take off weight KG
+		// hidden input with max take off weight KG
 		let input_1_2 = document.createElement("input");
 		input_1_2.id = "maxTakeOffMassKgId" ;
 		input_1_2.hidden = true;
@@ -92,6 +97,8 @@ class FlighProfileControl extends og.Control {
 		input_2.size = "3";
 		div_1.appendChild(input_2);
 		
+		// hidden input with max fligh level
+		
 		let input_2_1 = document.createElement("input");
 		input_2_1.id = "maxFlightLevelId" ;
 		input_2_1.hidden = true;
@@ -111,6 +118,7 @@ class FlighProfileControl extends og.Control {
 		label_2.innerHTML = "Route ->" ;
 		div_2.appendChild(label_2);
 		
+		// route selector
 		let select_2 = document.createElement("select");
 		select_2.id = "airlineRouteId";
 		select_2.name = "airlineRouteName";
@@ -134,7 +142,6 @@ class FlighProfileControl extends og.Control {
 		select_3.name = "airlineDepartureRunWayFlightProfileName";
 
 		div_3.appendChild(select_3);
-		
 		td.appendChild(div_3);
 		
 		// --------------------
@@ -161,49 +168,38 @@ class FlighProfileControl extends og.Control {
 		div_5.id = "launchComputeProfileId";
 		div_5.classList.add("launchComputeProfileClass");
 
-		//let label_5 = document.createElement("label");
-		//label_5.innerHTML = "Click to -> " ;
-		//div_5.appendChild(label_5);
+		// -------------------------------------------
+		// first button  - all button added to the same div
 		
 		let button_5 = document.createElement("button");
 		button_5.id = "btnComputeFlightProfileId";
 		button_5.innerHTML = "Compute Flight Profile";
 		div_5.appendChild(button_5);
 
-		//td.appendChild(div_5);
-
 		// --------------------
-
-		//let div_6 = document.createElement('div');
-		//div_6.id = "launchComputeCostsId";
-		//div_6.classList.add("launchComputeCostsClass");
-
-		//let label_6 = document.createElement("label");
-		//label_6.innerHTML = "Click to -> " ;
-		//div_6.appendChild(label_6);
 		
 		let button_6 = document.createElement("button");
 		button_6.id = "btnComputeCostsId";
 		button_6.innerHTML = "Compute Costs";
 		div_5.appendChild(button_6);
-
-		//td.appendChild(div_6);
 		
 		// --------------------
-
-		//let div_7 = document.createElement('div');
-		//div_7.id = "launchDownLoadVerticalProfileId";
-		//div_7.classList.add("launchDownLoadVerticalProfileClass");
-
-		//let label_7 = document.createElement("label");
-		//label_7.innerHTML = "Click to -> " ;
-		//div_7.appendChild(label_7);
+		// button down load state vector
 		
 		let button_7 = document.createElement("button");
 		button_7.id = "btnDownLoadVerticalProfileId";
 		button_7.innerHTML = "Download Vertical Profile";
 		div_5.appendChild(button_7);
+		
+		// --------------------
+		// button download XML file
+		
+		let button_8 = document.createElement("button");
+		button_8.id = "btnDownLoadKMLfileId";
+		button_8.innerHTML = "Download KML";
+		div_5.appendChild(button_8);
 
+		// add div with all buttons to the TD
 		td.appendChild(div_5);
 		
 		// --------------------
@@ -214,7 +210,7 @@ class FlighProfileControl extends og.Control {
 		this.renderer.div.appendChild(mainDiv);
 		
 		// Make the Main Div element draggable:
-		dragElement(document.getElementById("flightProfileMainDivId"));
+		dragElement(document.getElementById(this.getMainDivId()));
 	}
 
 	oninit() {

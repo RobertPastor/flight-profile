@@ -1,9 +1,5 @@
 
-document.addEventListener('DOMContentLoaded', (event) => { 
-       
-	//console.log("Down Load Vertical Profile is loaded");
-	
-}); 
+
 
 function initDownloadVerticalProfile() {
 	
@@ -28,15 +24,6 @@ function initDownloadVerticalProfile() {
 		// init progress bar.
 		initProgressBar();
 		initWorker();
-		
-		let data = {
-			aircraft : aircraftICAOcode,
-			route    : route,
-			AdepRwy  : departureRunWay,
-			AdesRwy  : arrivalRunWay,
-			mass     : elemTOMassKg.value,
-			fl       : elemFL.value
-		}
 		
 		let urlToSend =  "trajectory/excel/" + airlineName + "?ac=" + aircraftICAOcode;
 		urlToSend += "&route=" + route;
