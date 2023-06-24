@@ -5,7 +5,7 @@ function initDownloadKMLfile() {
 	
 	let buttonId = "btnDownLoadKMLfileId";
 	// temporary issue between kml versions local and python anywhere
-	document.getElementById(buttonId).disabled = true;
+	//document.getElementById(buttonId).disabled = true;
 	
 	try {
 		document.getElementById(buttonId).onclick = function () {

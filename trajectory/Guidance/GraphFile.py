@@ -251,8 +251,9 @@ class Graph(object):
                                         wayPoint.getLongitudeDegrees(),
                                         wayPoint.getLatitudeDegrees(), 
                                         wayPoint.getAltitudeMeanSeaLevelMeters())
+            ''' this is where the xml / kml document is pushed into the StringIO '''
             kmlFileLike.close(memoryFile)
-            
+            ''' no need to return anything as the memoryFile is directly written in '''
             logging.info ( "{0} - {1}".format(self.className , strFileName) )
         
         return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")

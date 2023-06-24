@@ -31,10 +31,6 @@ import os
 import xml.dom.minidom
 import logging
 
-
-        
-
-
 class KmlOutput():
     
     fileName = ""
@@ -107,11 +103,6 @@ class KmlOutput():
         self.FilesFolder =  os.path.join( self.FilesFolder , '..' , 'static' , 'kml')
         for f in os.listdir(self.FilesFolder):
             os.remove(os.path.join(self.FilesFolder, f))
-            
-            
-    def closeFileLike(self):
-        kmlXmlDocument = self.kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8')
-        return kmlXmlDocument
         
         
     def close(self):
@@ -142,11 +133,10 @@ class KmlFileLike(KmlOutput):
         
     def close(self, memoryFile):
         indent="\t";
+        addindent = ""
         newl="\n"
         encoding='utf-8'
-        addindent = ""
-        standalone=None
-        self.kmlDoc.writexml(memoryFile, indent, addindent, newl, encoding, standalone)
+        self.kmlDoc.writexml(memoryFile, indent, addindent, newl, encoding)
 
         
     
