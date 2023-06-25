@@ -100,7 +100,7 @@ class AirlineCostsOptimization {
 				
 				$.ajax( {
 						method: 'get',
-							url :  "airline/getAirlineCostsOptimization/" + airlineName,
+							url :  "airline/airlineCostsOptimization/" + airlineName,
 							async : true,
 							success: function(data, status) {
 															

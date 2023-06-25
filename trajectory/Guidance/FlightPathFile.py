@@ -39,6 +39,7 @@ import logging
 
 from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.Environment.Earth import Earth
+from trajectory.Environment.Utils import logElapsedRealTime
 
 from trajectory.Guidance.FlightPlanFile import FlightPlan
 from trajectory.Guidance.GroundRunLegFile import GroundRunLeg
@@ -119,6 +120,7 @@ class FlightPath(FlightPlan):
              acBd.aircraftPerformanceFileExists(self.aircraftICAOcode)):
             
             logging.info ( self.className +': performance file= {0}'.format(acBd.getAircraftPerformanceFile(self.aircraftICAOcode)) )
+            
             self.aircraft = BadaAircraft(ICAOcode = self.aircraftICAOcode, 
                                          aircraftFullName = acBd.getAircraftFullName(self.aircraftICAOcode),
                                           badaPerformanceFilePath = acBd.getAircraftPerformanceFile(self.aircraftICAOcode),
@@ -131,24 +133,16 @@ class FlightPath(FlightPlan):
 
     def printPassedWayPoint(self, finalWayPoint):
         
-        minutes, seconds = divmod(finalWayPoint.getElapsedTimeSeconds(), 60)
         distanceFlownNautics = self.finalRoute.getLengthMeters() * Meter2NauticalMiles
         strMsg = ': passing way-point: {0} - alt= {1:.2f} meters - alt= {2:.2f} feet - already flown distance= {3:.2f} nautics'.format(
                                                     finalWayPoint.getName(),
                                                     finalWayPoint.getAltitudeMeanSeaLevelMeters(),
                                                     finalWayPoint.getAltitudeMeanSeaLevelMeters() * Meter2Feet,
                                                     distanceFlownNautics)
+        logging.info  ( "{0} - {1}".format (self.className, strMsg ) )
         elapsedTimeSeconds = finalWayPoint.getElapsedTimeSeconds()
-        if elapsedTimeSeconds >= 60.0 and elapsedTimeSeconds < 3600.0:
-            minutes, seconds = divmod(elapsedTimeSeconds, 60)
-          
-            strMsg += ' - real time = {0:.2f} seconds - {1:.2f} minutes {2:.2f} seconds'.format(elapsedTimeSeconds, minutes, seconds)
-        else:
-            minutes, seconds = divmod(elapsedTimeSeconds, 60)
-            hours, minutes = divmod(minutes, 60)
-            strMsg += ' - real time = {0:.2f} seconds - {1:.2f} hours {2:.2f} minutes {3:.2f} seconds'.format(elapsedTimeSeconds, hours, minutes, seconds)
 
-        logging.info (self.className + strMsg)
+        logElapsedRealTime ( self.className  , elapsedTimeSeconds)
         
         
     def turnAndFly(self, 
@@ -500,6 +494,7 @@ class FlightPath(FlightPlan):
             ''' set total elapsed time seconds '''
             logging.info ("------------------- arrival ground run ----------")
             logging.info ("------------------- elapsed time seconds = {0} --------------".format( int ( arrivalGroundRun.getElapsedTimeSeconds() ) ) ) 
+            logElapsedRealTime( self.className , int ( arrivalGroundRun.getElapsedTimeSeconds() ) )
             logging.info ("------------------- arrival ground run ----------")
             self.elapsedTimeSeconds = arrivalGroundRun.getElapsedTimeSeconds()
         

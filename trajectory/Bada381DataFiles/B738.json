@@ -5,10 +5,19 @@
 		"variant": "B737-800",
 		"ICAO" : "B738",
 		"source": "http://www.b737.org.uk/techspecsdetailed.htm",
-		
+		"changelog": {
+			"version": "1.0",
+			"date": "25/06/2023"
+		},
 		"engines": {
 			"number": 2,
 			"type": "CFM56-7"
+		},
+		"wing" : {
+			"source": "https://www.airliners.net/aircraft-data/boeing-737-800900/96#:~:text=737-800%20-%20Wing%20span%2034.31m%20%28112ft%207in%29%2C%20length,737-900%20-%20Same%20except%20length%2042.11m%20%28138ft%202in%29.",
+			"name": "Wing Area Surface",
+			"unit": "square meters",
+			"value" : 361.612465
 		},
 		
 		"mass": {
@@ -20,19 +29,19 @@
 				"unit" : "kg",
 				"value": "64000.0"
 			},
-			"maxPayload": {
+			"maxpayload": {
 				"unit" : "kg",
 				"value": "20540"
 			},
-			"maxTakeOff": {
+			"maxtakeOff": {
 				"unit" : "kg",
 				"value": "79016"
 			},
-			"maxLanding": {
+			"maxlanding": {
 				"unit" : "kg",
 				"value": "66361"
 			},
-			"FuelCapacity" : {
+			"fuelcapacity" : {
 				"unit" : "kg",
 				"value": "21000"
 			}

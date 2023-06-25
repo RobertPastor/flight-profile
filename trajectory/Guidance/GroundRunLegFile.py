@@ -36,7 +36,8 @@ from trajectory.Guidance.WayPointFile import Airport, WayPoint
 from trajectory.Guidance.GraphFile import Graph
 from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 
-from trajectory.Environment.Constants import  MeterPerSecond2Knots 
+from trajectory.Environment.Constants import  MeterPerSecond2Knots , Meter2NauticalMiles
+from trajectory.Environment.Utils import logElapsedRealTime
 
 class GroundRunLeg(Graph):
     '''
@@ -168,12 +169,13 @@ class GroundRunLeg(Graph):
             ''' increment the index '''
             index += 1
   
-        #logging.info '============ end of arrival ground run ======================'
+        logging.info ('============ end of arrival ground run ======================')
+        logElapsedRealTime ( self.className , elapsedTimeSeconds)
         strRunWayEndPointName = self.runway.getName() + '-' + self.airport.getName() 
+        logging.info( '{0}: current distance flown = {1} meters = {2} NM'.format ( self.className, self.aircraft.getCurrentDistanceFlownMeters(), self.aircraft.getCurrentDistanceFlownMeters() * Meter2NauticalMiles) )
         intermediateWayPoint.setName(Name = strRunWayEndPointName)
         
         
-    
     def buildDepartureGroundRun(self, 
                                 deltaTimeSeconds,
                                 elapsedTimeSeconds,

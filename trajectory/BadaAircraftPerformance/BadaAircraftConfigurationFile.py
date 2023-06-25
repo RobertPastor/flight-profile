@@ -30,9 +30,9 @@ Created on 22 february 2015
 import math
 import logging 
 
+logger = logging.getLogger(__name__)
 
 from trajectory.Environment.Constants  import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes
-logger = logging.getLogger(__name__)
 
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.BadaAircraftPerformance.BadaEngineFile import Engine
@@ -44,6 +44,8 @@ from trajectory.BadaAircraftPerformance.BadaFlightEnvelopeFile import FlightEnve
 
 from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.Environment.Earth import Earth
+from trajectory.Environment.Utils import logElapsedRealTime
+
 
 Knots2MetersPerSecond = 0.514444444
 Meter2Feet = 3.2808
@@ -241,14 +243,7 @@ class AircraftConfiguration(FlightEnvelope):
         logger.info ( self.className + ': entering {0} configuration - distance flown {1:.2f} meters - distance flown {2:.2f} nautics'.format(newConfiguration, currentDistanceFlownMeters, currentDistanceFlownMeters*Meter2NauticalMiles) )
         logger.info ( self.className + ': alt= {0:.2f} meters alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, (altitudeMeanSeaLevelMeters*Meter2Feet)) ) 
         logger.info ( self.className + ': tas= {0:.2f} m/s - tas= {1:.2f} knots - cas= {2:.2f} m/s - cas= {3:.2f} knots - mach= {4:.2f}'.format(tas, (tas*MeterSecond2Knots), cas, (cas*MeterSecond2Knots), mach) )
-        if elapsedTimeSeconds >= 60.0 and elapsedTimeSeconds < 3600.0:
-            minutes, seconds = divmod(elapsedTimeSeconds, 60)
-            logger.info  ( self.className + ': real time = {0:.2f} seconds - {1:.2f} minutes {2:.2f} seconds'.format(elapsedTimeSeconds, minutes, seconds) )
-        else:
-            minutes, seconds = divmod(elapsedTimeSeconds, 60)
-            hours, minutes = divmod(minutes, 60)
-            logger.info  ( self.className + ': real time = {0:.2f} seconds - {1:.2f} hours {2:.2f} minutes {3:.2f} seconds'.format(elapsedTimeSeconds, hours, minutes, seconds) )
-
+        logElapsedRealTime( self.className , elapsedTimeSeconds )
         logger.info ( self.className + ' ====================================' )
 
 

@@ -18,15 +18,18 @@ app_name = "trajectory"
 urlpatterns = [
     
     path('airports/<slug:airlineName>' , getAirports , name='getAirports'),
+    
     path('waypoints/<slug:airlineName>' , getWayPoints , name='getWayPoints'),
 
     path('launchFlightProfile/<slug:airlineName>' , launchFlightProfile , name='launchFlightProfile'),
+    
     path('computeFlightProfile/<slug:airlineName>' , computeFlightProfile , name='computeFlightProfile'),
 
     path('computeCosts/<slug:airlineName>' , computeCosts , name='computeCosts'),
+    
     path('getAircraft/<slug:airlineName>' , getAircraft , name="getAircraft"),
     
-    path('launchFuelPlanner/<slug:airlineName>' , launchFuelPlanner , name='launchFuelPlanner'),
+    path('fuelPlanner/<slug:airlineName>' , launchFuelPlanner , name='launchFuelPlanner'),
     
     path('computeRunwayOvershoot/<slug:aircraft>/<slug:airport>/<slug:runway>/<slug:mass>' , computeRunwayOvershoot , name ='computeRunwayOvershoot'),
     
@@ -34,8 +37,9 @@ urlpatterns = [
 
 ]
 
-''' view to create an EXCEL file or a KML google earth file '''
+''' view to create an EXCEL file with the state vector (vertical profile) or a KML Google Earth file '''
 urlpatterns += [
+    
     path('excel/<slug:airlineName>', createExcelVerticalProfile , name='createExcel'),
     
     path('kml/<slug:airlineName>', createKMLfile , name='createKMLfile'),

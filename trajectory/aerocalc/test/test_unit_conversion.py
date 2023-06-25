@@ -8,7 +8,7 @@ Run this script directly to do all the tests.
 import unittest
 import sys
 sys.path[0] = '../'
-import unit_conversion as U
+import trajectory.aerocalc.unit_conversion as U
 
 
 def RE(value, truth):

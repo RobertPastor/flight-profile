@@ -23,7 +23,7 @@ from trajectory.Guidance.GroundRunLegFile import GroundRunLeg
 
 def getBadaAircraft(aircraftICAOcode):
         
-    print ( '================ get aircraft =================' )
+    logger.info ( '================ get aircraft =================' )
     atmosphere = Atmosphere()
     earth = Earth()
     acBd = BadaAircraftDatabase()
@@ -32,7 +32,7 @@ def getBadaAircraft(aircraftICAOcode):
     if ( acBd.aircraftExists( aircraftICAOcode ) and
         acBd.aircraftPerformanceFileExists( aircraftICAOcode)):
             
-        print ( 'performance file= {0}'.format(acBd.getAircraftPerformanceFile(aircraftICAOcode)) )
+        logger.info ( 'performance file= {0}'.format(acBd.getAircraftPerformanceFile(aircraftICAOcode)) )
         aircraft = BadaAircraft(ICAOcode = aircraftICAOcode, 
                                         aircraftFullName = acBd.getAircraftFullName(aircraftICAOcode),
                                         badaPerformanceFilePath = acBd.getAircraftPerformanceFile(aircraftICAOcode),
@@ -49,7 +49,7 @@ def buildDepartureGroungRun(departureRunway , aircraft , departureAirport):
         this function manages the departure phases with a ground run 
     '''
         
-    print (  ' ============== build the departure ground run =========== '  )
+    logger.info (  ' ============== build the departure ground run =========== '  )
     groundRun = GroundRunLeg(runway = departureRunway, aircraft = aircraft, airport = departureAirport)
         
     distanceToLastFixMeters = 10000.0
@@ -68,13 +68,13 @@ def buildDepartureGroungRun(departureRunway , aircraft , departureAirport):
 
     #logging.info '==================== end of ground run ==================== '
     initialWayPoint = groundRun.getLastVertex().getWeight()
-    print ( initialWayPoint )
+    logger.info ( initialWayPoint )
     return groundRun.getTotalLegDistanceMeters() , groundRun.getLastTrueAirSpeedMetersSecond()
 
 
 def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
     pass
-    print ( "aircraft = {0} - airport = {1} - runway name = {2} - mass ={3} tons".format( aircraft , airport , runway , mass) )
+    logger.info ( "aircraft = {0} - airport = {1} - runway name = {2} - mass ={3} tons".format( aircraft , airport , runway , mass) )
     
     logger.setLevel(logging.DEBUG)
 
@@ -82,34 +82,34 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
 
         airline = Airline.objects.first()
         if ( airline ):
-            print ( airline )
+            logger.info ( airline )
                 
             badaSynonymAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraft).first()
             if ( badaSynonymAircraft and badaSynonymAircraft.aircraftPerformanceFileExists()):
                 
                 acPerformance = AircraftPerformance(badaSynonymAircraft.getAircraftPerformanceFile()) 
 
-                print ("selected aircraft = {0}".format( badaSynonymAircraft ) )
+                logger.info ("selected aircraft = {0}".format( badaSynonymAircraft ) )
                 
                 airportObj = AirlineAirport.objects.filter(AirportICAOcode = airport).first()
                 if ( airportObj ):
-                    print (airportObj)
+                    logger.info (airportObj)
                     
                     badaAircraft = getBadaAircraft ( aircraft )
                     if ( badaAircraft ):
                         
                         runwayObj = AirlineRunWay.objects.filter( Airport = airportObj, Name = runway ).first()
-                        print ( "Airline runway = {0}".format ( runway ) )
+                        logger.info ( "Airline runway = {0}".format ( runway ) )
                         
                         if ( runwayObj ):
                             ''' convert to environment runway '''
                             runwayObj = runwayObj.convertToEnvRunway()
                         
-                            #print ( "Trajectory Environment RunWay = {0}".format ( runwayObj ) )
+                            #logger.info ( "Trajectory Environment RunWay = {0}".format ( runwayObj ) )
                             
                             maxTakeOffMassKg = acPerformance.getMaximumMassKilograms()
                             minTakeOffMassKg = acPerformance.getMinimumMassKilograms()
-                            #print ( "takeoff maximum mass kg = {0}".format ( maxTakeOffMassKg ) )
+                            #logger.info ( "takeoff maximum mass kg = {0}".format ( maxTakeOffMassKg ) )
                             
                             if ( ( float ( mass ) * 1000.0 ) >= minTakeOffMassKg ) and  ( ( float ( mass ) * 1000.0 ) <= maxTakeOffMassKg ):
                                 
@@ -117,7 +117,7 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                                 badaAircraft.setDepartureGroundRunConfiguration( 0.0 )
                                 
                                 takeOffStallSpeedCasKnots = badaAircraft.computeStallSpeedCasKnots()
-                                print ( "TakeOff Stall speed = {0} Kcas Knots".format( badaAircraft.computeStallSpeedCasKnots() ) )
+                                logger.info ( "TakeOff Stall speed = {0} Kcas Knots".format( badaAircraft.computeStallSpeedCasKnots() ) )
                                 
                                 airportObj = airportObj.convertToEnvAirport()
                                 
@@ -138,32 +138,32 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                                 return JsonResponse(response_data)
                             
                             else:
-                                print ('TakeOff mass must be greaterOrEqual to = {0} and lowerOrEqual to = {1}'.format(minTakeOffMassKg , maxTakeOffMassKg))
+                                logger.info ('TakeOff mass must be greaterOrEqual to = {0} and lowerOrEqual to = {1}'.format(minTakeOffMassKg , maxTakeOffMassKg))
                                 response_data = {'errors' : 'TakeOff mass must be greaterOrEqual to = {0} and lowerOrEqual to = {1}'.format(minTakeOffMassKg , maxTakeOffMassKg)}
                                 return JsonResponse(response_data)
                             
                         else:
-                            print ('Runway  not found = {0}'.format(runway))
+                            logger.info ('Runway  not found = {0}'.format(runway))
                             response_data = {'errors' : 'Runway not found = {0}'.format(runway)}
                             return JsonResponse(response_data)
                         
                     else:
-                        print ('Aircraft  not found = {0}'.format(aircraft))
+                        logger.info ('Aircraft  not found = {0}'.format(aircraft))
                         response_data = {'errors' : 'Aircraft not found = {0}'.format(aircraft)}
                         return JsonResponse(response_data)
                     
                 else:
-                    print ('Airport  not found = {0}'.format(airport))
+                    logger.info ('Airport  not found = {0}'.format(airport))
                     response_data = {'errors' : 'Airport not found = {0}'.format(airport)}
                     return JsonResponse(response_data)
             
             else:
-                print ('Aircraft  not found = {0}'.format(aircraft))
+                logger.info ('Aircraft  not found = {0}'.format(aircraft))
                 response_data = {'errors' : 'Aircraft not found = {0}'.format(aircraft)}
                 return JsonResponse(response_data)
                 
         else:
-            print ('airline  not found = {0}'.format(airline))
+            logger.info ('airline  not found = {0}'.format(airline))
             response_data = {'errors' : 'Airline not found = {0}'.format(airline)}
             return JsonResponse(response_data)
             

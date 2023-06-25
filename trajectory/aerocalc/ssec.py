@@ -38,10 +38,10 @@
 Various functions related to static source error correction.
 """
 
-import Home.aerocalc.airspeed as A
+import trajectory.aerocalc.airspeed as A
 import math as M
-import Home.aerocalc.std_atm as SA
-import Home.aerocalc.unit_conversion as U
+import trajectory.aerocalc.std_atm as SA
+import trajectory.aerocalc.unit_conversion as U
 
 ##############################################################################
 #

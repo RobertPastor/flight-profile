@@ -1,8 +1,13 @@
 
 //Define custom control class
+// display a floating table related to the right click on an airport 
 class AirlineAirportsRoutesControl extends og.Control {
 	constructor(options) {
 		super(options);
+	}
+	
+	getMainDivId() {
+		return "airlineAirportsRoutesMainDivId";
 	}
 
 	onadd() {
@@ -20,7 +25,8 @@ class AirlineAirportsRoutesControl extends og.Control {
 		let row_1 = document.createElement('tr');
 		
 		// 8th May 2023 - add hyperlink to show the route
-		let th_list = [ 'Airline' , 'action' , 'Departure Airport' , 'ICAO', 'Arrival Airport', 'ICAO']
+		// 25th June 2023 - show direction of the flight leg
+		let th_list = [ 'Airline' , 'direction', 'action' , 'Departure Airport' , 'ICAO', 'Arrival Airport', 'ICAO']
 		let th = undefined;
 		th_list.forEach ( function ( element ) {
 			th = document.createElement('th');

@@ -1,3 +1,10 @@
 eclipse.preferences.version=1
+encoding//trajectory/aerocalc/__init__.py=utf-8
 encoding//trajectory/aerocalc/airspeed.py=utf-8
+encoding//trajectory/aerocalc/default_units.py=utf-8
+encoding//trajectory/aerocalc/ssec.py=utf-8
 encoding//trajectory/aerocalc/std_atm.py=utf-8
+encoding//trajectory/aerocalc/test/test_airspeed.py=utf-8
+encoding//trajectory/aerocalc/test/test_ssec.py=utf-8
+encoding//trajectory/aerocalc/test/test_std_atm.py=utf-8
+encoding//trajectory/aerocalc/test/test_unit_conversion.py=utf-8

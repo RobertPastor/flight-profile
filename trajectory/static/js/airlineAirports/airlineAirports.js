@@ -117,7 +117,7 @@ class AirlineAirports {
 		}
 	}
 	
-	writeRoutesTableFromStartingAirport(  departureAirportICAOcode , airlineRoutesArray , position ) {
+	writeRoutesTableFromToAirport(  departureAirportICAOcode , airlineRoutesArray , position ) {
 		
 		// modify the div position
 		// Update the position of `#div` dynamically
@@ -133,7 +133,9 @@ class AirlineAirports {
 			// insert one route
 			
 			let oneAirlineRoute = airlineRoutesArray[airlineRouteId];
-			if ( oneAirlineRoute["DepartureAirportICAOCode"] == departureAirportICAOcode ) {
+			// 25th June 2023 show arrival and departing routs / flight legs
+			if ( ( oneAirlineRoute["DepartureAirportICAOCode"] == departureAirportICAOcode ) || 
+				 ( oneAirlineRoute["ArrivalAirportICAOCode"]   == departureAirportICAOcode ) ) {
 				
 				let id = oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"];
 				
@@ -143,6 +145,22 @@ class AirlineAirports {
 						.append($('<td>')
 							.append( oneAirlineRoute["Airline"] )
 						)
+					);
+					
+				if ( oneAirlineRoute["DepartureAirportICAOCode"] == departureAirportICAOcode ) {
+					$("#airlineAirportsRoutesMainDivId").find('tbody').find("tr").last()
+							.append($('<td>')
+								.append( '<span class="arrow-right" ></span>')
+							)
+				} else {
+					$("#airlineAirportsRoutesMainDivId").find('tbody').find("tr").last()
+							.append($('<td>')
+								.append( '<span class="arrow-left" ></span>')
+							)
+				}
+					
+				$("#airlineAirportsRoutesMainDivId").find('tbody').find("tr").last()
+					
 						.append($('<td>')
 							.append( '<span> <a id="' + this.LayerNamePrefix + id + '" href="#" onclick="showRoute(this);" >show / hide route</a> </span>'  )
 						)
@@ -158,7 +176,7 @@ class AirlineAirports {
 						.append($('<td>')
 							.append( oneAirlineRoute["ArrivalAirportICAOCode"] )
 						)
-					);
+					
 			}
 		}
 	}
@@ -222,7 +240,7 @@ class AirlineAirports {
 					if ( dataJson.hasOwnProperty("airlineRoutes")) {
 						
 						let airlineRoutesArray = dataJson["airlineRoutes"]
-						SingletonAirlineAirports.getInstance().writeRoutesTableFromStartingAirport( departureAirportICAOcode, airlineRoutesArray , position );
+						SingletonAirlineAirports.getInstance().writeRoutesTableFromToAirport( departureAirportICAOcode, airlineRoutesArray , position );
 					}
 					
 				},
@@ -342,10 +360,8 @@ class AirlineAirports {
 		let airlineName = $("#airlineSelectId option:selected").val();
 		airlineName = encodeURIComponent(airlineName);
 
-		//if ( showHide == true ) {
-
-			// use ajax to get the data 
-			$.ajax( {
+		// use ajax to get the data 
+		$.ajax( {
 				method: 'get',
 				url :  "trajectory/airports/" + airlineName,
 				async : true,
@@ -365,8 +381,7 @@ class AirlineAirports {
 					stopBusyAnimation();
 					document.getElementById("btnAirports").disabled = false
 				}
-			} );
-		//}
+		} );
 	
 	}
 
@@ -386,17 +401,13 @@ class AirlineAirports {
 			if (show) {
 				
 				show = false;
-				document.getElementById("btnAirports").innerText = "Airports";
-				//document.getElementById("btnAirports").style.backgroundColor = "green";
-					
+				document.getElementById("btnAirports").innerText = "Airports";					
 				SingletonAirlineAirports.getInstance().showHideAllAirports( true );
 				
 			} else {
 				
 				show = true;
 				document.getElementById("btnAirports").innerText = "Airports";
-				//document.getElementById("btnAirports").style.backgroundColor = "yellow";
-
 				SingletonAirlineAirports.getInstance().showHideAllAirports( false );
 				
 			}

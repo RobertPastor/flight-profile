@@ -13,7 +13,7 @@ import sys
 # It is assumed that ssec.py is in the directory directly above
 
 sys.path.append('../')
-import ssec as SS
+import trajectory.aerocalc.ssec as SS
 
 
 

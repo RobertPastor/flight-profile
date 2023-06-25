@@ -19,7 +19,7 @@ import sys
 # It is assumed that std_atm.py is in the directory directly above
 
 sys.path.append('../')
-import std_atm as SA
+import trajectory.aerocalc.std_atm as SA
 
 # These tests require that default_units.py contain the following defaults:
 # default_area_units = 'ft**2'

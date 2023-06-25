@@ -230,9 +230,9 @@ class Help extends baseHelpConfiguration {
 		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/airlineFleet/AmericanWings" target="_blank">Fleet Definition</a> to retrieve the fleet definition.<br>');
 		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/airlineRoutes/AmericanWings" target="_blank">Routes Definition</a> to retrieve the routes.<br>');
 		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/airlineCosts/AmericanWings" target="_blank">Costs</a> to retrieve the costs.<br>');
-		contents.push('Use the following URL : <a href="http://airlineservices.eu.pythonanywhere.com/airline/wayPointsRoute/KATL/KLAX" target="_blank">WayPoints</a> to retrieve the wayPoints.<br>');
-		contents.push('Use the following URL : <a href="http://airlineservices.eu.pythonanywhere.com/trajectory/airports/AmericanWings" target="_blank">Airports</a> to retrieve the airports of the airline.<br>');
-		contents.push('Use the following URL : <a href="http://airlineservices.eu.pythonanywhere.com/trajectory/computeRunwayOvershoot/A332/KATL/08L/230" target="_blank">Runway overshoot</a> to retrieve the ground run length.<br>');
+		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/wayPointsRoute/KATL/KLAX" target="_blank">WayPoints</a> to retrieve the wayPoints.<br>');
+		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/trajectory/airports/AmericanWings" target="_blank">Airports</a> to retrieve the airports of the airline.<br>');
+		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/trajectory/computeRunwayOvershoot/A332/KATL/08L/230" target="_blank">Runway overshoot</a> to retrieve the ground run length.<br>');
 
 		this.pushSection("API - Application Programming Interface" , contents , "10");
 

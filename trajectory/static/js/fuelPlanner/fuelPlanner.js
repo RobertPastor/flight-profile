@@ -57,7 +57,6 @@ class FuelPlanner {
 	populateAircraftWeightInputs ( airlineAircraftsArray ) {
 		
 		this.airlineAircraftsArray = airlineAircraftsArray;
-		
 		SingletonFuelPlanner.getInstance().setAircraftWeightsInput();
 	}
 	
@@ -284,9 +283,9 @@ class FuelPlanner {
 				// use ajax to get the data 
 				$.ajax( {
 						method: 'get',
-						url :  "trajectory/launchFuelPlanner/" + airlineName,
+						url :  "trajectory/fuelPlanner/" + airlineName,
 						async : true,
-						success: function(data, status) {
+						success: function(data) {
 										
 							//alert("Data: " + data + "\nStatus: " + status);
 							let dataJson = eval(data);

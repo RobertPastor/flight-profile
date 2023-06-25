@@ -23,9 +23,11 @@ urlpatterns = [
     
     path('airlineCosts/<slug:airlineName>' , getAirlineCosts , name = 'getAirlineCosts'),
     
+    path('airlineCostsOptimization/<slug:airlineName>' , getAirlineCostsOptimization , name = 'getAirlineCostsOptimization'),
+
+    
     path('getAirlineCostsXlsx/<slug:airlineName>' , getAirlineCostsAsXlsx , name = 'getAirlineCostsAsXlsx'),
     
-    path('getAirlineCostsOptimization/<slug:airlineName>' , getAirlineCostsOptimization , name = 'getAirlineCostsOptimization'),
     
     path('getAirlineCASM/<slug:airlineName>' , getAirlineCASM , name = 'getAirlineCASM'),
     

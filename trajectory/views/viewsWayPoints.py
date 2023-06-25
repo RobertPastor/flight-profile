@@ -70,8 +70,8 @@ def getWayPointsFromDB(viewExtent, airlineName):
     if (airline):
         for airlineRoute in AirlineRoute.objects.filter(airline=airline):
             
-            #print ( "best departure runway = {0}".format( airlineRoute.computeBestDepartureRunWay() ) )
-            #print ( "best arrival runway = {0}".format( airlineRoute.computeBestArrivalRunWay() ) )
+            print ( "best departure runway = {0}".format( airlineRoute.computeBestDepartureRunWay() ) )
+            print ( "best arrival runway = {0}".format( airlineRoute.computeBestArrivalRunWay() ) )
             
             for airlineRouteWayPoints in AirlineRouteWayPoints.objects.filter(Route = airlineRoute):
                 wayPointName = airlineRouteWayPoints.WayPoint
@@ -98,18 +98,22 @@ def getWayPoints(request, airlineName):
     logger.debug ("get WayPoints")
     if (request.method == 'GET'):
         logger.debug("get request received - WayPoints")
-        
-        viewExtent = {
-           "minlatitude" : int(request.GET['minlatitude']),
-           "maxlatitude" : int(request.GET['maxlatitude']),
-           "minlongitude" : int(request.GET['minlongitude']),
-           "maxlongitude" : int(request.GET['maxlongitude'])
-        }
-        logger.debug(viewExtent)
-        #print ( viewExtent )
-        waypoints = getWayPointsFromDB(viewExtent, airlineName)
-        response_data = {'waypoints': waypoints}
-        return JsonResponse(response_data)
+        print ( request.GET )
+        try:
+            viewExtent = {
+               "minlatitude" : int(request.GET['minlatitude']),
+               "maxlatitude" : int(request.GET['maxlatitude']),
+               "minlongitude" : int(request.GET['minlongitude']),
+               "maxlongitude" : int(request.GET['maxlongitude'])
+            }
+            logger.debug(viewExtent)
+            #print ( viewExtent )
+            waypoints = getWayPointsFromDB(viewExtent, airlineName)
+            response_data = {'waypoints': waypoints}
+            return JsonResponse(response_data)
+        except:
+            response_data = { "errors" : "Expecting a GET - min max latitude & longitude = {0}".format(request.method)}
+            return JsonResponse(response_data)
     
     else:
         response_data = { "errors" : "Expecting a GET - received something else = {0}".format(request.method)}

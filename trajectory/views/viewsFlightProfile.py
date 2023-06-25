@@ -59,7 +59,7 @@ def getPlaceMarks(XmlDocument):
                 "height": str(coordinates).split(",")[2]
             })
    
-    logging.info ( "length place marks = {0}".format(len ( placeMarksList )) )
+    #logging.info ( "length place marks = {0}".format(len ( placeMarksList )) )
     return placeMarksList
     
 

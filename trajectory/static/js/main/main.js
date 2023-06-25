@@ -178,16 +178,17 @@ function switchAirlines(globus) {
 		
 		let airlineName = $("#airlineSelectId option:selected").val();
 		
+		// airlines is made available through template index-og.html
 		if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 
 			airlines.forEach ( function ( airline ) {
 				
 				if (airlineName == airline["Name"] ) {
 					
-					let MinLongitude = airline["MinLongitudeDegrees"]
-					let MinLatitude = airline["MinLatitudeDegrees"]
-					let MaxLongitude = airline["MaxLongitudeDegrees"]
-					let MaxLatitude = airline["MaxLatitudeDegrees"]
+					let MinLongitude = airline["MinLongitudeDegrees"];
+					let MinLatitude  = airline["MinLatitudeDegrees"];
+					let MaxLongitude = airline["MaxLongitudeDegrees"];
+					let MaxLatitude  = airline["MaxLatitudeDegrees"];
 
 					let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
 					let NorthEast = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
@@ -201,7 +202,7 @@ function switchAirlines(globus) {
 }
 
 
-function loadAirlines() {
+function loadAirlinesSelector() {
 	/*
 	* fill the selector with the names of the airlines
 	* Warning : the airlines object is loaded in the index-og.html
@@ -264,6 +265,7 @@ function initTools(globus, viewExtent) {
 		
 		// compute Flight Profile
 		globus.planet.addControl(new FlighProfileControl());
+		
 		// costs for each profile
 		let airlineProfileCosts = SingletonProfileCosts.getInstance();
 		airlineProfileCosts.launchFlightProfile(globus);
@@ -315,10 +317,13 @@ function initTools(globus, viewExtent) {
 		sidStar.initSidStar(globus);
 		
 		// now finish by loading the different airlines
-		loadAirlines();
+		loadAirlinesSelector();
 		
 		// prepare to switch from one airline to the other
 		switchAirlines(globus);
+		
+		// show the airports
+		SingletonAirlineAirports.getInstance().showHideAllAirports( true );
 	
 }
 

@@ -94,6 +94,28 @@ th {
     display:			block;
 }
 
+.arrow-left {
+	background:         url('/static/images/arrow-left.png');
+    background-color:	#60D6A7;
+    background-repeat:  no-repeat;
+    cursor:             pointer;
+    height:             32px;
+    width:              32px;
+    margin:             0 auto 0 auto;
+    display:			block;
+}
+
+.arrow-right {
+	background:         url('/static/images/arrow-right.png');
+    background-color:	#60D6A7;
+    background-repeat:  no-repeat;
+    cursor:             pointer;
+    height:             32px;
+    width:              32px;
+    margin:             0 auto 0 auto;
+    display:			block;
+}
+
 .divOverlayClass {
 	position: fixed; /* Sit on top of the page content */
 	display: none; /* displayed by default */

@@ -13,6 +13,12 @@
 			"number": 2,
 			"type": "CFM56_5_A3"
 		},
+		"wing" : {
+			"source": "https://en.wikipedia.org/wiki/Airbus_A320_family",
+			"name": "Wing Area Surface",
+			"unit": "m*m",
+			"value" : 124 
+		},
 		"mass": {
 			"minimal": {
 				"unit" : "kg",
@@ -22,17 +28,17 @@
 				"unit" : "kg",
 				"value": "64000.0"
 			},
-			"maxPayload": {
+			"maxpayload": {
 				"unit" : "kg",
 				"value": "21500.0"
 			},
-			"maxTakeOff": {
+			"maxtakeoff": {
 				"unit" : "kg",
 				"value": "77000.0"
 			},
-			"maxFuel" : {
+			"fuelcapacity" : {
 				"unit" : "kg",
-				"value": "20000.0"
+				"value": "21000"
 			}
 		},
 		"phase": {
