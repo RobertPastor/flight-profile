@@ -260,8 +260,14 @@ def writeAirlineCasmOptimizationResults(workbook , airlineName):
                                 
                                 row = row + 1
                             
-                else:
-                    print ("Error - route not found")
+                            else:
+                                print ("Airline costs not found")
+                        
+                        else:
+                            print ("Aircraft not found = {0}".format(airlineAircraft))
+                            
+                    else:
+                        print ("Error - route not found = {0}".format( airlineRoute ))
         
             logger.debug ( "Total CASM Objective  = {0}".format( value(prob.objective) ) )
             value_prob_objective = value(prob.objective)

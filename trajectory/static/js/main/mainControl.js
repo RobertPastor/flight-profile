@@ -67,7 +67,6 @@ class MainControl extends og.Control {
 		//console.log("main Control - oninit");
 	}
 
-
 	onadd() {
 		//console.log("main Control - onadd");
 		
@@ -142,7 +141,7 @@ class MainControl extends og.Control {
 		
 		let row_2_data_2 = document.createElement('td');
 		row_2_data_2.innerHTML = '<div><button id="btnAirlineFleet" >Fleet</button></div>';
-		row_2_data_2.title = "click to see the airline fleet, aircraft, number of seats, hourly costs";
+		row_2_data_2.title = "click to see the airline fleet, aircrafts, number of seats, hourly costs ...";
 		row_2.appendChild(row_2_data_2);
 		
 		//=============================================
@@ -156,6 +155,8 @@ class MainControl extends og.Control {
 		
 		menuEntryAirwaysDiv.innerHTML = '<div><button id="btnAirwaysId" >Airports & Airways</button></div>';
 		menuEntryAirwaysDiv.id = "menuEntryAirwaysDivId";
+		menuEntryAirwaysDiv.title = "click to open a submenu for Airports & Airways";
+
 		
 		row_2_data_3.appendChild ( menuEntryAirwaysDiv );
 		row_2.appendChild(row_2_data_3);
@@ -186,6 +187,9 @@ class MainControl extends og.Control {
 		
 		menuEntryOptimizationsDiv.innerHTML = '<div><button id="btnOptimizationsId" >Optimizations</button></div>';
 		menuEntryOptimizationsDiv.id = "menuEntryOptimizationsDivId";
+		
+		menuEntryOptimizationsDiv.title = "click to open a submenu for all optimizations";
+
 		
 		row_2_data_8.appendChild ( menuEntryOptimizationsDiv );
 		row_2.appendChild(row_2_data_8);

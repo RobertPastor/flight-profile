@@ -47,6 +47,10 @@ function showMessage ( title, message ) {
 			.dialog('open'); 
 }
 
+/**
+ * currently there are two methodes to delete a layer in og
+ * this recommandation has been received directly from open globus
+ */
 function removeLayer( globus , layerName ) {
 	
 	try {
@@ -58,8 +62,7 @@ function removeLayer( globus , layerName ) {
 			layerOne.remove();
 		}
 	} catch (err) {
-		console.error(JSON.stringify(err));
-		//console.error("layerOne is probably not existing anymore...");
+		console.error("1st method to delete og layer - err = "+ JSON.stringify(err));
 	}
 	try {
 		let layerTwo = globus.planet.getLayerByName( layerName );
@@ -68,8 +71,7 @@ function removeLayer( globus , layerName ) {
 			layerTwo._entityCollectionsTree.entityCollection.clear();
 		}
 	} catch (err) {
-		console.error(JSON.stringify(err));
-		//console.error("layerTwo is probably not existing anymore...");
+		console.error("2nd method to delete a lyer - err = "+ JSON.stringify(err));
 	}
 }
 
@@ -121,6 +123,10 @@ function initWorker() {
     }
 }
 
+/**
+ * function used to hide any contextual table
+ * using the hide button placed upper right in the table div menu bar
+ */
 function clickToHide() {
 	// span in div and div in div -> hence twice parentNode
 	let elem = this.parentNode.parentNode;
@@ -128,6 +134,9 @@ function clickToHide() {
 	return false;
 }
 
+/**
+ * hide all fivs - use it when an airline is changed
+ */
 function hideAllDiv(globus) {
 	
 	let airlineFleet = SingletonAirlineFleet.getInstance()
@@ -162,6 +171,7 @@ function hideAllDiv(globus) {
 	fuelPlanner.hideFuelPlannerDiv();
 	
 	let sidStar = SingletonSidStar.getInstance();
+	// to hide a sidStar layer we remove it from open globus
 	sidStar.removeLayer();
 	
 }
@@ -185,6 +195,7 @@ function switchAirlines(globus) {
 				
 				if (airlineName == airline["Name"] ) {
 					
+					// airline data made available through template index-og.html
 					let MinLongitude = airline["MinLongitudeDegrees"];
 					let MinLatitude  = airline["MinLatitudeDegrees"];
 					let MaxLongitude = airline["MaxLongitudeDegrees"];
@@ -201,7 +212,9 @@ function switchAirlines(globus) {
     });
 }
 
-
+/**
+ * build and fill the airline selector
+ */
 function loadAirlinesSelector() {
 	/*
 	* fill the selector with the names of the airlines
@@ -305,6 +318,9 @@ function initTools(globus, viewExtent) {
 		globus.planet.addControl(new FuelPlannerControl());
 		let fuelPlanner = SingletonFuelPlanner.getInstance();
 		fuelPlanner.initFuelPlanner(globus);
+		
+		// 1st July 2023 - add Layer Housekeeping
+		//globus.planet.addControl(new LayerHouseKeepingControl());
 		
 		// init listener for downloading EXCEL Vertical Flight Profile
 		initDownloadVerticalProfile();

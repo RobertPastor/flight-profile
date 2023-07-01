@@ -230,6 +230,8 @@ def getAirlineAircraftsFromDB(airline):
         acMaxTakeOffWeightKg = 0.0
         acMinTakeOffWeightKg = 0.0
         acMaxOpAltitudeFeet  = 0.0 
+        acReferenceWeightKg  = 0.0
+        
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=airlineAircraft.aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
             acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
@@ -238,13 +240,16 @@ def getAirlineAircraftsFromDB(airline):
                 acMinTakeOffWeightKg = acPerformance.getMinimumMassKilograms()
                 acMaxOpAltitudeFeet  = acPerformance.getMaxOpAltitudeFeet()
                 acMaxPayLoadKg       = acPerformance.getMaximumPayLoadMassKilograms()
+                acReferenceWeightKg  = acPerformance.getReferenceMassKilograms()
+                
         airlineAircraftsList.append({
-            "airlineAircraftICAOcode" : airlineAircraft.aircraftICAOcode,
-            "airlineAircraftFullName" : airlineAircraft.aircraftFullName,
-            "acMaxTakeOffWeightKg"    : acMaxTakeOffWeightKg,
-            "acMinTakeOffWeightKg"    : acMinTakeOffWeightKg,
-            "acMaxOpAltitudeFeet"     : acMaxOpAltitudeFeet,
-            "acMaxPayLoadKg"          : acMaxPayLoadKg
+            "airlineAircraftICAOcode"    : airlineAircraft.aircraftICAOcode,
+            "airlineAircraftFullName"    : airlineAircraft.aircraftFullName,
+            "acMaxTakeOffWeightKg"       : acMaxTakeOffWeightKg,
+            "acReferenceTakeOffWeightKg" : acReferenceWeightKg,
+            "acMinTakeOffWeightKg"       : acMinTakeOffWeightKg,
+            "acMaxOpAltitudeFeet"        : acMaxOpAltitudeFeet,
+            "acMaxPayLoadKg"             : acMaxPayLoadKg
             })
     #print ("length of airline aircrafts list = {0}".format(len(airlineAircraftsList)))
     return airlineAircraftsList

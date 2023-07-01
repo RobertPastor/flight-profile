@@ -78,7 +78,8 @@ class AirlineProfileCosts {
 		// set Max TakeOff Mass
 		for (let index = 0; index < airlineAircraftsArray.length; index++) {
 			if ( airlineAircraftsArray[index]["airlineAircraftICAOcode"] == aircraftICAOcode ) {
-				elemTOMassKg.value = airlineAircraftsArray[index]["acMaxTakeOffWeightKg"];
+				// 1st July 2023 - show reference mass
+				elemTOMassKg.value = airlineAircraftsArray[index]["acReferenceTakeOffWeightKg"];
 				elemMinTOMassKg.value = airlineAircraftsArray[index]["acMinTakeOffWeightKg"];
 				elemMaxTOMassKg.value = airlineAircraftsArray[index]["acMaxTakeOffWeightKg"];
 			}
@@ -94,7 +95,6 @@ class AirlineProfileCosts {
 				elemMaxFL.value = airlineAircraftsArray[index]["acMaxOpAltitudeFeet"];
 			}
 		}
-		
 	}
 
 	populateAirlineRoutesFlightProfileSelector( airlineRoutesArray ) {
@@ -115,7 +115,6 @@ class AirlineProfileCosts {
 			let airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
 			let airlineRouteKey = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
 			$('#airlineRouteId').append('<option value="' + airlineRouteKey + '">' + airlineRouteName + '</option>');
-			
 			
 			this.routes.push({ "airline" : airlineName , 
 								"aDep"   : airlineRoutesArray[index]["DepartureAirportICAOCode"] , 
@@ -278,15 +277,43 @@ class AirlineProfileCosts {
 		layerKML.addTo(globus.planet);
 		return layerKML;
 	}
-
-	deleteCreateRayLayer(globus , layerName ) {
 	
-		let finalLayerName = "Rays-" + layerName;
-		removeLayer( globus , finalLayerName );
+	/**
+	 * unique way to define a global layer name for all airlines
+	 * warning = not applicable if several Adep Ades routes for one airline
+	 */
+	getLayerPrefix() {
+		
+		// get the name of the airline
+		let airlineName = $("#airlineSelectId option:selected").val();
+		airlineName = encodeURIComponent(airlineName);
+		
+		return "Rays" + "-" + airlineName;
+	}
+	
+	/**
+	 * called when a new Ray Layer has to be created or a new layer with the same Adep Ades.
+	 */
+	deleteCreateRayLayer( globus , layerName ) {
+		
+		console.log ( layerName );
+		let layerPrefix = SingletonProfileCosts.getInstance().getLayerPrefix();
+	
+		layerName = layerPrefix + "-" + layerName;
+		console.log( layerName );
+		
+		// removeLayer to use Promise !!!
+		// removeLayer defined in the main.js
+		let ogLayer = globus.planet.getLayerByName( layerName );
+		if ( ogLayer ) {
+			console.log( "layer with name = " + layerName + " is existing in OG");
+			removeLayer( globus , layerName );
+		}
 
 		//polygonOffsetUnits is needed to hide rays behind globe
-		let rayLayer = new og.layer.Vector( finalLayerName , { polygonOffsetUnits: 0 });
+		let rayLayer = new og.layer.Vector( layerName , { polygonOffsetUnits: 0 });
 		rayLayer.addTo(globus.planet);
+		
 		return rayLayer;
 	}
 
@@ -392,6 +419,7 @@ class AirlineProfileCosts {
 		
 		// listen to change to the aircraft Mass
 		document.getElementById("TakeOffMassKgId").addEventListener('change', function (evt) {
+			
 			let elemTOMassKg = document.getElementById('TakeOffMassKgId');
 			//console.log(elemTOMassKg.value);
 			let massValue = elemTOMassKg.value;
@@ -456,8 +484,9 @@ class AirlineProfileCosts {
 							//alert("Data: " + data + "\nStatus: " + status);
 							let dataJson = eval(data);
 							// airlineAircrafts
-							SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
-							
+							if ( dataJson.hasOwnProperty( "airlineRunWays" )) {
+								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
+							}
 							$("#btnLaunchCosts").show();
 							
 						},
@@ -493,7 +522,6 @@ class AirlineProfileCosts {
 				
 				// change name on the button
 				document.getElementById("btnLaunchFlightProfile").innerText = "Profile";
-				//document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "green";
 				
 				// get the name of the airline
 				let airlineName = $("#airlineSelectId option:selected").val();

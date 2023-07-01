@@ -17,7 +17,7 @@ class FlighProfileControl extends og.Control {
 		
 		let mainDiv = document.createElement('div');
 		mainDiv.id = this.getMainDivId();
-		mainDiv.style="display: none;";
+		mainDiv.style = "display: none;";
 		mainDiv.classList.add('flightProfileTableDiv');
 		
 		let draggableMainDiv = document.createElement('div');
@@ -58,52 +58,72 @@ class FlighProfileControl extends og.Control {
 		// ---------- label take off weight
 		
 		let label_1_2 = document.createElement("label");
-		label_1_2.innerHTML = " TakeOff Weight (kg) ->" ;
+		//label_1_2.innerHTML = " Min TakeOff Mass (kg) ->" ;
+		label_1_2.innerHTML = " ->" ;
 		div_1.appendChild(label_1_2);
-		
-		let input_1 = document.createElement("input");
-		input_1.id = "TakeOffMassKgId" ;
-		input_1.maxlength = "5";
-		input_1.size = "5";
-		div_1.appendChild(input_1);
 		
 		// hidden input with min take off weight KG
 		let input_1_1 = document.createElement("input");
 		input_1_1.id = "minTakeOffMassKgId" ;
-		input_1_1.hidden = true;
+		input_1_1.hidden = false;
 		input_1_1.maxlength = "6";
-		input_1_1.size = "6";
-		input_1_1.title = "minTakeOffMassKgId" ;
+		input_1_1.size = "3";
+		input_1_1.title = "minimal TakeOff Mass (Kg)" ;
+		input_1_1.readOnly = true;
 		div_1.appendChild(input_1_1);
+		
+		let label_1_3 = document.createElement("label");
+		label_1_3.innerHTML = " TakeOff Mass (kg) ->" ;
+		div_1.appendChild(label_1_3);
+		
+		let input_1 = document.createElement("input");
+		input_1.id = "TakeOffMassKgId" ;
+		input_1.maxlength = "5";
+		input_1.size = "3";
+		input_1.title = "insert here the TakeOff mass (kg)" ;
+		div_1.appendChild(input_1);
+		
+		let label_1_4 = document.createElement("label");
+		//label_1_4.innerHTML = " MaxTakeOff Mass (kg) ->" ;
+		label_1_4.innerHTML = " ->" ;
+		div_1.appendChild(label_1_4);
 		
 		// hidden input with max take off weight KG
 		let input_1_2 = document.createElement("input");
 		input_1_2.id = "maxTakeOffMassKgId" ;
-		input_1_2.hidden = true;
+		input_1_2.hidden = false;
 		input_1_2.maxlength = "6";
-		input_1_2.size = "6";
-		input_1_2.title = "maxTakeOffMassKgId" ;
+		input_1_2.size = "3";
+		input_1_2.title = "maximal TakeOff Mass (Kg)" ;
+		input_1_2.readOnly = true;
 		div_1.appendChild(input_1_2);
 		
 		// ------------- Requested Flight Level
 		
-		let label_1_3 = document.createElement("label");
-		label_1_3.innerHTML = " Flight Level (feet) ->" ;
-		div_1.appendChild(label_1_3);
+		let label_1_5 = document.createElement("label");
+		label_1_5.innerHTML = "Requested Flight Level (feet) ->" ;
+		div_1.appendChild(label_1_5);
 		
 		let input_2 = document.createElement("input");
 		input_2.id = "requestedFlightLevelId" ;
 		input_2.maxlength = "3";
 		input_2.size = "3";
+		input_2.title = "insert here the requested flight level (feet)";
 		div_1.appendChild(input_2);
 		
 		// hidden input with max fligh level
 		
+		let label_1_6 = document.createElement("label");
+		label_1_6.innerHTML = " ->" ;
+		div_1.appendChild(label_1_6);
+		
 		let input_2_1 = document.createElement("input");
 		input_2_1.id = "maxFlightLevelId" ;
-		input_2_1.hidden = true;
+		input_2_1.hidden = false;
 		input_2_1.maxlength = "3";
 		input_2_1.size = "3";
+		input_2_1.title = "max Flight Level (feet)";
+		input_2_1.readOnly = true;
 		div_1.appendChild(input_2_1);
 		
 		td.appendChild(div_1);
