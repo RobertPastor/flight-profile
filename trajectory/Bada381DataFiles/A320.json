@@ -5,6 +5,7 @@
 		"variant": "A320-200",
 		"ICAO" : "A320",
 		"source" : "https://www.airbus.com/sites/g/files/jlcbta136/files/2023-05/Airbus-techdata-AC-A320_0523.pdf",
+		"wakeTurbulence" : "Medium",
 		"changelog": {
 			"version": "1.0",
 			"date": "12/06/2023"
@@ -22,23 +23,23 @@
 		"mass": {
 			"minimal": {
 				"unit" : "kg",
-				"value": "39000.0"
+				"value": 39000
 			},
 			"reference": {
 				"unit" : "kg",
-				"value": "64000.0"
+				"value": 64000
 			},
 			"maxpayload": {
 				"unit" : "kg",
-				"value": "21500.0"
+				"value": 21500
 			},
 			"maxtakeoff": {
 				"unit" : "kg",
-				"value": "77000.0"
+				"value": 77000
 			},
 			"fuelcapacity" : {
 				"unit" : "kg",
-				"value": "21000"
+				"value": 21100
 			}
 		},
 		"phase": {

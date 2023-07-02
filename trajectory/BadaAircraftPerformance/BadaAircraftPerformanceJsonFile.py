@@ -16,9 +16,14 @@ class AircraftJsonPerformance(AircraftPerformance):
     className = ''
     filePath = ''
     schemaFilePath = ''
+    aircraftICAOcode = ''
+    performanceJsonData = ''
     
-    def __init__(self, aircraftPerformanceFilePath):
+    def __init__(self, aircraftICAOcode , aircraftPerformanceFilePath):
+        
         self.className = self.__class__.__name__
+        
+        self.aircraftICAOcode = aircraftICAOcode
 
         self.filePath = aircraftPerformanceFilePath
         super().__init__(self.filePath)
@@ -37,22 +42,46 @@ class AircraftJsonPerformance(AircraftPerformance):
                 
                 fData = open(self.filePath)
                 #print ( self.schemaFilePath )
-                performanceJsonData = json.load(fData)
-                print ( performanceJsonData )
+                self.performanceJsonData = json.load(fData)
+                print ( self.performanceJsonData )
                 
                 fSchema = open(self.schemaFilePath)
                 schema = json.load(fSchema)
                 print ( schema )
                 
-                validate(instance = performanceJsonData , schema = schema )
+                validate(instance = self.performanceJsonData , schema = schema )
+                print ("============================================")
                 print("File = {0} is validated against schema = {1}".format( self.filePath , self.schemaFilePath))
-                
+                print ("============================================")
+
                 return True
             
             else:
-                print (" one file is not existing - {0} - {1}".format( self.filePath , self.schemaFilePath))
+                print (" one file at least is not existing - {0} - {1}".format( self.filePath , self.schemaFilePath))
                 return False
 
         except exceptions.ValidationError as e:
             print("Invalid JSON:", e)
+            return False
+        
+        
+    def getICAOcode(self):
+        acICAO = self.performanceJsonData["aircraft"]["ICAO"]
+        print ( acICAO.upper() )
+        return acICAO.upper()
+    
+    
+    def getNumberOfEngines(self):
+        try:
+            nbEngines = int ( self.performanceJsonData["aircraft"]["engines"]["number"])
+            print ( "number of engines = {0}".format( nbEngines ) )
+            return nbEngines
+        except:
+            raise ValueError(self.className + ': error while reading number of engines')
+        return 0
+    
+    
+    def getWakeTurbulenceCategory(self):
+        return self.performanceJsonData["aircraft"]["wakeTurbulence"]
+    
         

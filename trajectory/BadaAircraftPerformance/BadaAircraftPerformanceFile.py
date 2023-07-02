@@ -130,6 +130,7 @@ class AircraftPerformance(object):
             raise ValueError("BadaPerformanceFile: error while reading engine type")
         return engineType
     
+    
     def getWakeTurbulenceCategory(self):
         wakeTurbulenceCategory = ''
         try:
@@ -138,10 +139,11 @@ class AircraftPerformance(object):
             if wakeTurbulenceCategory in wakeTurbulenceCategoryTypes:
                 return wakeTurbulenceCategory
             else:
-                raise ValueError('Bada PerformanceFile: unkown wake turbulence category'+wakeTurbulenceCategory)
+                raise ValueError('Bada PerformanceFile: unknown wake turbulence category'+wakeTurbulenceCategory)
         except:
             raise ValueError('BadaPerformanceFile: error while reading wake turbulence category')
         return wakeTurbulenceCategory      
+    
     
     def getReferenceMassTons(self):
         try:
@@ -152,8 +154,10 @@ class AircraftPerformance(object):
             raise ValueError("BadaPerformanceFile: error while reading reference mass in Tons")
         return 0.0
     
+    
     def getReferenceMassKilograms(self):
         return self.getReferenceMassTons() * 1000.0
+    
     
     def getMinimumMassTons(self):
         try:

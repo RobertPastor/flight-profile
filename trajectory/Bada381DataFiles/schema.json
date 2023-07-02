@@ -8,6 +8,7 @@
 				"manufacturer" : {"type" : "string"},
 				"variant": {"type" : "string"},
 				"ICAO": {"type" : "string"},
+				"wakeTurbulence" : {"type" : "string"},
 				"engines" : {
 					"type" : "object",
 					"properties" : {
@@ -15,9 +16,32 @@
 						"type" : {"type" : "string"}
 					},
 					"required": ["number","type"]
+				},
+				"mass": {
+					"type": "object",
+					"properties": {
+						"minimal" : {
+							"type": "object",
+							"properties": {
+								"unit" : {"type" : "string"},
+								"value" : {"type" : "number" }
+							},
+							"required": ["unit","value"]
+							
+						},
+						"reference" : {
+							"type": "object",
+							"properties": {
+								"unit" : {"type" : "string"},
+								"value" : {"type" : "number" }
+							},
+							"required": ["unit","value"]
+							
+						}
+					}
 				}
 			},
-			"required": ["ICAO", "engines"]
+			"required": ["ICAO", "wakeTurbulence" , "engines" , "mass" ]
 		}
 	}
 }

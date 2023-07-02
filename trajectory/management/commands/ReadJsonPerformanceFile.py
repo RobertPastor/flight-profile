@@ -14,20 +14,22 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
-        acList = ["A320.json", "A330.json", "B738.json"]
+        acList = ["A320", "A330", "B738"]
         #acList = ["AXXX.json"]
         for ac in acList:
             
             filePath = getBadaFilePath()
     
-            filePath = os.path.join( filePath , ac )
+            filePath = os.path.join( filePath , "{0}.json".format(ac) )
             filePath = os.path.abspath( filePath )
-            #print ( filePath )
+            print ( filePath )
         
-            aircraftJsonPerformance = AircraftJsonPerformance(filePath)
+            aircraftJsonPerformance = AircraftJsonPerformance(ac , filePath)
             #print( "Aircraft Performance file = {0} - is existing = {1}".format( filePath, aircraftJsonPerformance.exists() ) )
             
             ret = aircraftJsonPerformance.read()
             print( "Aircraft Performance read = {0} ".format( ret ) )
-
+            
+            print (aircraftJsonPerformance.getICAOcode())
+            print (aircraftJsonPerformance.getNumberOfEngines())
 

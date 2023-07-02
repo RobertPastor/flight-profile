@@ -5,6 +5,8 @@
 		"variant": "B737-800",
 		"ICAO" : "B738",
 		"source": "http://www.b737.org.uk/techspecsdetailed.htm",
+		"wakeTurbulence" : "Medium",
+
 		"changelog": {
 			"version": "1.0",
 			"date": "25/06/2023"
@@ -23,27 +25,27 @@
 		"mass": {
 			"minimal": {
 				"unit" : "kg",
-				"value": "39000.0"
+				"value": 39000
 			},
 			"reference": {
 				"unit" : "kg",
-				"value": "64000.0"
+				"value": 64000
 			},
 			"maxpayload": {
 				"unit" : "kg",
-				"value": "20540"
+				"value": 20540
 			},
 			"maxtakeOff": {
 				"unit" : "kg",
-				"value": "79016"
+				"value": 79016
 			},
 			"maxlanding": {
 				"unit" : "kg",
-				"value": "66361"
+				"value": 66361
 			},
 			"fuelcapacity" : {
 				"unit" : "kg",
-				"value": "21000"
+				"value": 21000
 			}
 		},
 		"phase": {
