@@ -22,7 +22,7 @@ def getAircraft(request, airlineName):
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
             acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-            if acPerformance:
+            if acPerformance.read():
                 acMaxTakeOffWeightKg = acPerformance.getMaximumMassKilograms()
                 acMinTakeOffWeightKg = acPerformance.getMinimumMassKilograms()
                 acMaxOpAltitudeFeet = acPerformance.getMaxOpAltitudeFeet()

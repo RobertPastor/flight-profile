@@ -88,74 +88,80 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
             if ( badaSynonymAircraft and badaSynonymAircraft.aircraftPerformanceFileExists()):
                 
                 acPerformance = AircraftPerformance(badaSynonymAircraft.getAircraftPerformanceFile()) 
+                if ( acPerformance.read() ):
 
-                logger.info ("selected aircraft = {0}".format( badaSynonymAircraft ) )
-                
-                airportObj = AirlineAirport.objects.filter(AirportICAOcode = airport).first()
-                if ( airportObj ):
-                    logger.info (airportObj)
+                    logger.info ("selected aircraft = {0}".format( badaSynonymAircraft ) )
                     
-                    badaAircraft = getBadaAircraft ( aircraft )
-                    if ( badaAircraft ):
+                    airportObj = AirlineAirport.objects.filter(AirportICAOcode = airport).first()
+                    if ( airportObj ):
+                        logger.info (airportObj)
                         
-                        runwayObj = AirlineRunWay.objects.filter( Airport = airportObj, Name = runway ).first()
-                        logger.info ( "Airline runway = {0}".format ( runway ) )
-                        
-                        if ( runwayObj ):
-                            ''' convert to environment runway '''
-                            runwayObj = runwayObj.convertToEnvRunway()
-                        
-                            #logger.info ( "Trajectory Environment RunWay = {0}".format ( runwayObj ) )
+                        badaAircraft = getBadaAircraft ( aircraft )
+                        if ( badaAircraft ):
                             
-                            maxTakeOffMassKg = acPerformance.getMaximumMassKilograms()
-                            minTakeOffMassKg = acPerformance.getMinimumMassKilograms()
-                            #logger.info ( "takeoff maximum mass kg = {0}".format ( maxTakeOffMassKg ) )
+                            runwayObj = AirlineRunWay.objects.filter( Airport = airportObj, Name = runway ).first()
+                            logger.info ( "Airline runway = {0}".format ( runway ) )
                             
-                            if ( ( float ( mass ) * 1000.0 ) >= minTakeOffMassKg ) and  ( ( float ( mass ) * 1000.0 ) <= maxTakeOffMassKg ):
-                                
-                                badaAircraft.setAircraftMassKilograms( float ( mass ) * 1000.0 )
-                                badaAircraft.setDepartureGroundRunConfiguration( 0.0 )
-                                
-                                takeOffStallSpeedCasKnots = badaAircraft.computeStallSpeedCasKnots()
-                                logger.info ( "TakeOff Stall speed = {0} Kcas Knots".format( badaAircraft.computeStallSpeedCasKnots() ) )
-                                
-                                airportObj = airportObj.convertToEnvAirport()
-                                
-                                ''' build the ground run '''
-                                totalGrounLegLengthMeters , trueAirSpeedMetersSecond = buildDepartureGroungRun( runwayObj , badaAircraft , airportObj )
-                                
-                                response_data = {
-                                                'aircraft'                : '{0}'.format( badaSynonymAircraft ), 
-                                                'aircraftReferenceMassKg' : '{0}'.format( acPerformance.getReferenceMassTons() * 1000.0 ),
-                                                'aircraftInitialMassKg'   : '{0}'.format( badaAircraft.getAircraftInitialMassKilograms() ),
-                                                'airport'                 : '{0}'.format( airportObj ) , 
-                                                'runway'                  : '{0}'.format( runwayObj ) , 
-                                                'runwayLengthMeters'      : '{0}'.format( round ( runwayObj.getLengthMeters() , 2 ) ),
-                                                'TakeOffStallSpeedCasKnots'       : '{0}'.format( round ( takeOffStallSpeedCasKnots , 2 ) ),
-                                                'TakeOffTrueAirSpeedMetersSecond' : '{0}'.format( round ( trueAirSpeedMetersSecond , 2 ) ),
-                                                'groundRunLengthMeters'   : '{0}'.format( round ( totalGrounLegLengthMeters , 2 ) )
-                                                }
-                                return JsonResponse(response_data)
+                            if ( runwayObj ):
+                                ''' convert to environment runway '''
+                                runwayObj = runwayObj.convertToEnvRunway()
                             
+                                #logger.info ( "Trajectory Environment RunWay = {0}".format ( runwayObj ) )
+                                
+                                maxTakeOffMassKg = acPerformance.getMaximumMassKilograms()
+                                minTakeOffMassKg = acPerformance.getMinimumMassKilograms()
+                                #logger.info ( "takeoff maximum mass kg = {0}".format ( maxTakeOffMassKg ) )
+                                
+                                if ( ( float ( mass ) * 1000.0 ) >= minTakeOffMassKg ) and  ( ( float ( mass ) * 1000.0 ) <= maxTakeOffMassKg ):
+                                    
+                                    badaAircraft.setAircraftMassKilograms( float ( mass ) * 1000.0 )
+                                    badaAircraft.setDepartureGroundRunConfiguration( 0.0 )
+                                    
+                                    takeOffStallSpeedCasKnots = badaAircraft.computeStallSpeedCasKnots()
+                                    logger.info ( "TakeOff Stall speed = {0} Kcas Knots".format( badaAircraft.computeStallSpeedCasKnots() ) )
+                                    
+                                    airportObj = airportObj.convertToEnvAirport()
+                                    
+                                    ''' build the ground run '''
+                                    totalGrounLegLengthMeters , trueAirSpeedMetersSecond = buildDepartureGroungRun( runwayObj , badaAircraft , airportObj )
+                                    
+                                    response_data = {
+                                                    'aircraft'                : '{0}'.format( badaSynonymAircraft ), 
+                                                    'aircraftReferenceMassKg' : '{0}'.format( acPerformance.getReferenceMassTons() * 1000.0 ),
+                                                    'aircraftInitialMassKg'   : '{0}'.format( badaAircraft.getAircraftInitialMassKilograms() ),
+                                                    'airport'                 : '{0}'.format( airportObj ) , 
+                                                    'runway'                  : '{0}'.format( runwayObj ) , 
+                                                    'runwayLengthMeters'      : '{0}'.format( round ( runwayObj.getLengthMeters() , 2 ) ),
+                                                    'TakeOffStallSpeedCasKnots'       : '{0}'.format( round ( takeOffStallSpeedCasKnots , 2 ) ),
+                                                    'TakeOffTrueAirSpeedMetersSecond' : '{0}'.format( round ( trueAirSpeedMetersSecond , 2 ) ),
+                                                    'groundRunLengthMeters'   : '{0}'.format( round ( totalGrounLegLengthMeters , 2 ) )
+                                                    }
+                                    return JsonResponse(response_data)
+                                
+                                else:
+                                    logger.info ('TakeOff mass must be greaterOrEqual to = {0} and lowerOrEqual to = {1}'.format(minTakeOffMassKg , maxTakeOffMassKg))
+                                    response_data = {'errors' : 'TakeOff mass must be greaterOrEqual to = {0} and lowerOrEqual to = {1}'.format(minTakeOffMassKg , maxTakeOffMassKg)}
+                                    return JsonResponse(response_data)
+                                
                             else:
-                                logger.info ('TakeOff mass must be greaterOrEqual to = {0} and lowerOrEqual to = {1}'.format(minTakeOffMassKg , maxTakeOffMassKg))
-                                response_data = {'errors' : 'TakeOff mass must be greaterOrEqual to = {0} and lowerOrEqual to = {1}'.format(minTakeOffMassKg , maxTakeOffMassKg)}
+                                logger.info ('Runway  not found = {0}'.format(runway))
+                                response_data = {'errors' : 'Runway not found = {0}'.format(runway)}
                                 return JsonResponse(response_data)
                             
                         else:
-                            logger.info ('Runway  not found = {0}'.format(runway))
-                            response_data = {'errors' : 'Runway not found = {0}'.format(runway)}
+                            logger.info ('Aircraft  not found = {0}'.format(aircraft))
+                            response_data = {'errors' : 'Aircraft not found = {0}'.format(aircraft)}
                             return JsonResponse(response_data)
                         
                     else:
-                        logger.info ('Aircraft  not found = {0}'.format(aircraft))
-                        response_data = {'errors' : 'Aircraft not found = {0}'.format(aircraft)}
+                        logger.info ('Airport  not found = {0}'.format(airport))
+                        response_data = {'errors' : 'Airport not found = {0}'.format(airport)}
                         return JsonResponse(response_data)
-                    
                 else:
-                    logger.info ('Airport  not found = {0}'.format(airport))
-                    response_data = {'errors' : 'Airport not found = {0}'.format(airport)}
+                    logger.info("Ac Performance read failed = {0}".format(badaSynonymAircraft.getAircraftPerformanceFile()))
+                    response_data = { 'errors' : "Ac Performance read failed = {0}".format(badaSynonymAircraft.getAircraftPerformanceFile())}
                     return JsonResponse(response_data)
+                                                                                           
             
             else:
                 logger.info ('Aircraft  not found = {0}'.format(aircraft))

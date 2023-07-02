@@ -1,0 +1,23 @@
+{
+	"type": "object",
+	"properties" : {
+		"aircraft" : {
+			"type" : "object",
+			"properties" : {
+				"name" : {"type" : "string"},
+				"manufacturer" : {"type" : "string"},
+				"variant": {"type" : "string"},
+				"ICAO": {"type" : "string"},
+				"engines" : {
+					"type" : "object",
+					"properties" : {
+						"number" : {"type" : "number" },
+						"type" : {"type" : "string"}
+					},
+					"required": ["number","type"]
+				}
+			},
+			"required": ["ICAO", "engines"]
+		}
+	}
+}

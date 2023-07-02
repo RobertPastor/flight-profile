@@ -18,6 +18,7 @@ class Test_Class(unittest.TestCase):
             print ( acBd.getAircraftFullName(aircraftICAOcode) )
             
             aircraftPerformance = AircraftPerformance(acBd.getAircraftPerformanceFile(aircraftICAOcode))
+            assert ( aircraftPerformance.read() , True )
             engine = Engine(aircraftPerformance)
             
             print ('engine is Jet= {0}'.format(engine.isJet()) )
@@ -40,6 +41,7 @@ class Test_Class(unittest.TestCase):
             print ( acBd.getAircraftFullName(aircraftICAOcode) )
             
             aircraftPerformance = AircraftPerformance(acBd.getAircraftPerformanceFile(aircraftICAOcode))
+            assert ( aircraftPerformance.read() , True )
             engine = Engine(aircraftPerformance)
             
             print ( 'engine fuel consumption coeff= {0}'.format(engine.getFuelConsumptionCoeff()) )
@@ -59,6 +61,7 @@ class Test_Class(unittest.TestCase):
             print ( acBd.getAircraftFullName(aircraftICAOcode) )
             
             aircraftPerformance = AircraftPerformance(acBd.getAircraftPerformanceFile(aircraftICAOcode))
+            assert ( aircraftPerformance.read() )
             engine = Engine(aircraftPerformance)
             
             for index in range(0,5):
@@ -79,6 +82,7 @@ class Test_Class(unittest.TestCase):
             print ( acBd.getAircraftFullName(aircraftICAOcode) )
             
             aircraftPerformance = AircraftPerformance(acBd.getAircraftPerformanceFile(aircraftICAOcode))
+            assert ( aircraftPerformance.read() , True )
             engine = Engine(aircraftPerformance)
             
             for index in range(0,5):

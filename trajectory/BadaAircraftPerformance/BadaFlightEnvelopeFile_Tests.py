@@ -24,11 +24,12 @@ class Test_Class(unittest.TestCase):
             print ( acBd.getAircraftFullName(aircraftICAOcode) )
             
             aircraftPerformance = AircraftPerformance(acBd.getAircraftPerformanceFile(aircraftICAOcode))
-            flightEnvelope = FlightEnvelope(aircraftPerformance = aircraftPerformance,
-                                            ICAOcode = aircraftICAOcode,
-                                            atmosphere = atmosphere,
-                                            earth = earth)
-            print ( flightEnvelope )
+            if ( aircraftPerformance.read() ):
+                flightEnvelope = FlightEnvelope(aircraftPerformance = aircraftPerformance,
+                                                ICAOcode = aircraftICAOcode,
+                                                atmosphere = atmosphere,
+                                                earth = earth)
+                print ( flightEnvelope )
         
         
         

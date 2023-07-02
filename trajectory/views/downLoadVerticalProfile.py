@@ -128,48 +128,56 @@ def createExcelVerticalProfile(request, airlineName):
                         routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                         logger.debug ( routeAsString )
                         acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-                        #logger.debug ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                        #logger.debug ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
-        
-                        flightPath = FlightPath(
-                                        route = routeAsString, 
-                                        aircraftICAOcode = aircraftICAOcode,
-                                        RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
-                                        cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                        takeOffMassKilograms = float(takeOffMassKg)  )
-        
-                        ret = flightPath.computeFlight(deltaTimeSeconds = 1.0)
-                        if ret:
-                            
-                            logger.debug ( "=========== Flight Plan create output files  =========== " )
-                
-                            ''' Robert - python2 to python 3 '''
-                            memoryFile = io.BytesIO() # create a file-like object 
+                        if ( acPerformance.read() ):
+                            #logger.debug ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                            #logger.debug ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
+            
+                            flightPath = FlightPath(
+                                            route = routeAsString, 
+                                            aircraftICAOcode = aircraftICAOcode,
+                                            RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
+                                            cruiseMach = acPerformance.getMaxOpMachNumber(), 
+                                            takeOffMassKilograms = float(takeOffMassKg)  )
+            
+                            ret = flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                            if ret:
+                                
+                                logger.debug ( "=========== Flight Plan create output files  =========== " )
                     
-                            # warning : we get strings from the URL query
-                            wb = createExcelWorkbook(memoryFile, request, airlineName)
-                            
-                            ''' create State vector output sheet using an existing workbook '''
-                            flightPath.createStateVectorOutputSheet(wb) 
-                            wb.close()
-                            
-                            filename = 'VerticalProfile-{}.xlsx'.format( datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") )
-                            #print filename
-                            
-                            response = HttpResponse( memoryFile.getvalue() )
-                            response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8'
-                            #response['Content-Type'] = 'application/vnd.ms-excel'
-                            response["Content-Transfer-Encoding"] = "binary"
-                            response['Set-Cookie'] = 'fileDownload=true; path=/'
-                            response['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=filename)
-                            response['Content-Length'] = memoryFile.tell()
-                            return response      
+                                ''' Robert - python2 to python 3 '''
+                                memoryFile = io.BytesIO() # create a file-like object 
+                        
+                                # warning : we get strings from the URL query
+                                wb = createExcelWorkbook(memoryFile, request, airlineName)
+                                
+                                ''' create State vector output sheet using an existing workbook '''
+                                flightPath.createStateVectorOutputSheet(wb) 
+                                wb.close()
+                                
+                                filename = 'VerticalProfile-{}.xlsx'.format( datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") )
+                                #print filename
+                                
+                                response = HttpResponse( memoryFile.getvalue() )
+                                response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8'
+                                #response['Content-Type'] = 'application/vnd.ms-excel'
+                                response["Content-Transfer-Encoding"] = "binary"
+                                response['Set-Cookie'] = 'fileDownload=true; path=/'
+                                response['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=filename)
+                                response['Content-Length'] = memoryFile.tell()
+                                return response    
+                              
+                            else:
+                                response_data = {'errors' : 'Trajectory compute failed'}
+                                return JsonResponse(response_data) 
+                        else:
+                            response_data = {'errors' : 'Aircraft Performance read failed - = {0}'.format(badaAircraft.getAircraftPerformanceFile())}
+                            return JsonResponse(response_data) 
                         
                 else:
-                        logger.debug ('airline route not found = {0}'.format(airlineRoute))
-                        response_data = {
+                    logger.debug ('airline route not found = {0}'.format(airlineRoute))
+                    response_data = {
                             'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
-                        return JsonResponse(response_data)                                                                   
+                    return JsonResponse(response_data)                                                                   
             else:
                 logger.debug ('bada aircraft not found = {0}'.format(airlineRoute))
                 response_data = {

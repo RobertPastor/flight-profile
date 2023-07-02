@@ -24,7 +24,7 @@ def getAirlineFleetFromDB(airline):
             #print ( badaAircraft )
             
             aircraftPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-            if ( aircraftPerformance ):
+            if ( aircraftPerformance.read() ):
             
                 #logger.debug ( str ( airlineAircraft ) )
                 airlineFleetList.append({

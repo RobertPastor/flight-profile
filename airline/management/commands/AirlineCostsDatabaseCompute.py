@@ -50,35 +50,37 @@ class Command(BaseCommand):
                         ''' 30th April 2023 - compute route with best runways '''
                         routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=adepRunway, AdesRunWayName=adesRunway)
                         logger.info ( routeAsString )
+                        
                         acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-                        #print ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                        #print ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
-                        
-                        flightPath = FlightPath(
-                                route = routeAsString, 
-                                aircraftICAOcode = aircraftICAOcode,
-                                RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
-                                cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                takeOffMassKilograms = acPerformance.getReferenceMassKilograms())
-
-                        abortedFlight = flightPath.computeFlight(deltaTimeSeconds = 1.0)
-                        if ( abortedFlight == False ):
-                            raise ValueError( "flight did not go to a normal end")
-                        
-                        airlineCosts = AirlineCosts(
-                                    airline = airline ,
-                                    airlineAircraft = airlineAircraft,
-                                    airlineRoute = airlineRoute,
-                                    isAborted = flightPath.abortedFlight,
-                                    flightDurationSeconds = flightPath.getFlightDurationSeconds(),
-                                    initialTakeOffMassKg = flightPath.aircraft.getAircraftInitialMassKilograms(),
-                                    targetCruiseLevelFeet = acPerformance.getMaxOpAltitudeFeet(),
-                                    adepRunway = adepRunway,
-                                    adesRunway = adesRunway,
-                                    finalMassKg =  flightPath.aircraft.getAircraftCurrentMassKilograms() ,
-                                    finalLengthMeters = flightPath.finalRoute.getLengthMeters()
-                                    )
-                        airlineCosts.save()
+                        if ( acPerformance.read() ):
+                            #print ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                            #print ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
+                            
+                            flightPath = FlightPath(
+                                    route = routeAsString, 
+                                    aircraftICAOcode = aircraftICAOcode,
+                                    RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
+                                    cruiseMach = acPerformance.getMaxOpMachNumber(), 
+                                    takeOffMassKilograms = acPerformance.getReferenceMassKilograms())
+    
+                            abortedFlight = flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                            if ( abortedFlight == False ):
+                                raise ValueError( "flight did not go to a normal end")
+                            
+                            airlineCosts = AirlineCosts(
+                                        airline = airline ,
+                                        airlineAircraft = airlineAircraft,
+                                        airlineRoute = airlineRoute,
+                                        isAborted = flightPath.abortedFlight,
+                                        flightDurationSeconds = flightPath.getFlightDurationSeconds(),
+                                        initialTakeOffMassKg = flightPath.aircraft.getAircraftInitialMassKilograms(),
+                                        targetCruiseLevelFeet = acPerformance.getMaxOpAltitudeFeet(),
+                                        adepRunway = adepRunway,
+                                        adesRunway = adesRunway,
+                                        finalMassKg =  flightPath.aircraft.getAircraftCurrentMassKilograms() ,
+                                        finalLengthMeters = flightPath.finalRoute.getLengthMeters()
+                                        )
+                            airlineCosts.save()
         
         end_time = time()
         seconds_elapsed = end_time - start_time

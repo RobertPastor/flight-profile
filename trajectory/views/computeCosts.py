@@ -75,42 +75,47 @@ def computeCosts(request, airlineName):
                     logger.debug ( routeAsString )
                     
                     acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-                    #logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                    #logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
-    
-                    flightPath = FlightPath(
-                                    route = routeAsString, 
-                                    aircraftICAOcode = aircraftICAOcode,
-                                    RequestedFlightLevel = float ( cruiseFLfeet )  / 100.0 , 
-                                    cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                    takeOffMassKilograms =  float(takeOffMassKg) )
-    
-                    flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                    if ( acPerformance.read() ):
+                        #logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                        #logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
         
-                    logger.debug ( "=========== Flight Plan computation is done  =========== " )
-                    
-                    fuelCostsUSdollars =  ( flightPath.aircraft.getAircraftInitialMassKilograms() - flightPath.aircraft.getAircraftCurrentMassKilograms() )  * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
-    
-                    airlineAircraft = AirlineAircraft.objects.filter(aircraftICAOcode=aircraftICAOcode).first()
-                    operationalFlyingCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
-                    #print ( airlineAircraft.getCostsFlyingPerHoursDollars() )
-                    #print ( flightPath.getFlightDurationSeconds() / 3600.0  )
-                    ''' 21st September 2022 - Crew Costs '''
-                    crewCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
-                       
-                    response_data = {
-                                    'seats' : airlineAircraft.getMaximumNumberOfPassengers(),
-                                    'isAborted': flightPath.abortedFlight ,
-                                    'initialMassKilograms' : flightPath.aircraft.getAircraftInitialMassKilograms(),
-                                    'finalMassKilograms' : round ( flightPath.aircraft.getAircraftCurrentMassKilograms() , 1),
-                                    'massLossFilograms' : round ( flightPath.aircraft.getAircraftInitialMassKilograms()-flightPath.aircraft.getAircraftCurrentMassKilograms() , 1 ),
-                                    'fuelCostsDollars' : round( fuelCostsUSdollars , 0),
-                                    'flightDurationHours' : round ( ( float(flightPath.getFlightDurationSeconds() ) / 3600.0 ), 4 ),
-                                    'operationalFlyingCostsDollars' : round ( operationalFlyingCostsUSdollars , 0),
-                                    'crewFlyingCostsDollars': round( crewCostsUSdollars , 0 ),
-                                    'totalCostsDollars' : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars , 0 )
-                                    }
-                    return JsonResponse(response_data)
+                        flightPath = FlightPath(
+                                        route = routeAsString, 
+                                        aircraftICAOcode = aircraftICAOcode,
+                                        RequestedFlightLevel = float ( cruiseFLfeet )  / 100.0 , 
+                                        cruiseMach = acPerformance.getMaxOpMachNumber(), 
+                                        takeOffMassKilograms =  float(takeOffMassKg) )
+        
+                        flightPath.computeFlight(deltaTimeSeconds = 1.0)
+            
+                        logger.debug ( "=========== Flight Plan computation is done  =========== " )
+                        
+                        fuelCostsUSdollars =  ( flightPath.aircraft.getAircraftInitialMassKilograms() - flightPath.aircraft.getAircraftCurrentMassKilograms() )  * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
+        
+                        airlineAircraft = AirlineAircraft.objects.filter(aircraftICAOcode=aircraftICAOcode).first()
+                        operationalFlyingCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
+                        #print ( airlineAircraft.getCostsFlyingPerHoursDollars() )
+                        #print ( flightPath.getFlightDurationSeconds() / 3600.0  )
+                        ''' 21st September 2022 - Crew Costs '''
+                        crewCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
+                           
+                        response_data = {
+                                        'seats' : airlineAircraft.getMaximumNumberOfPassengers(),
+                                        'isAborted': flightPath.abortedFlight ,
+                                        'initialMassKilograms' : flightPath.aircraft.getAircraftInitialMassKilograms(),
+                                        'finalMassKilograms' : round ( flightPath.aircraft.getAircraftCurrentMassKilograms() , 1),
+                                        'massLossFilograms' : round ( flightPath.aircraft.getAircraftInitialMassKilograms()-flightPath.aircraft.getAircraftCurrentMassKilograms() , 1 ),
+                                        'fuelCostsDollars' : round( fuelCostsUSdollars , 0),
+                                        'flightDurationHours' : round ( ( float(flightPath.getFlightDurationSeconds() ) / 3600.0 ), 4 ),
+                                        'operationalFlyingCostsDollars' : round ( operationalFlyingCostsUSdollars , 0),
+                                        'crewFlyingCostsDollars': round( crewCostsUSdollars , 0 ),
+                                        'totalCostsDollars' : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars , 0 )
+                                        }
+                        return JsonResponse(response_data)
+                    else:
+                        logger.info ('Error - acPerformance read failed = {0}'.format(badaAircraft.getAircraftPerformanceFile()))
+                        response_data = { 'errors' : 'acPerformance read failed = {0}'.format(badaAircraft.getAircraftPerformanceFile()) }
+                        return JsonResponse(response_data)
                     
                 else:
                     logger.info ('airline route not found = {0}'.format(airlineRoute))

@@ -18,7 +18,9 @@ class Test_Class(unittest.TestCase):
             print ( acBd.getAircraftFullName(aircraftICAOcode) )
             
             aircraftPerformance = AircraftPerformance(acBd.getAircraftPerformanceFile(aircraftICAOcode))
+            assert ( aircraftPerformance.read() , True)
             aircraftMass = AircraftMass(aircraftPerformance)
+            print ( aircraftMass )
             
 if __name__ == '__main__':
     unittest.main() 

@@ -163,6 +163,8 @@ class AircraftConfiguration(FlightEnvelope):
         
         self.badaPerformanceFilePath = badaPerformanceFilePath
         aircraftPerformance = AircraftPerformance(badaPerformanceFilePath)
+        assert ( aircraftPerformance.read() , True )
+        
         ''' initialize base class '''
         FlightEnvelope.__init__(self, aircraftPerformance, ICAOcode , atmosphere, earth)
 

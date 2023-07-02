@@ -69,45 +69,53 @@ def createKMLfile(request, airlineName):
                 
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 if (airlineRoute):
-                        logger.debug ( airlineRoute )
-                        '''  use run-ways defined in the web page '''
-                        routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
-                        logger.debug ( routeAsString )
-                        acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                    logger.debug ( airlineRoute )
+                    '''  use run-ways defined in the web page '''
+                    routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
+                    logger.debug ( routeAsString )
+                    acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                    if ( acPerformance.read() ):
         
                         flightPath = FlightPath(
-                                        route = routeAsString, 
-                                        aircraftICAOcode = aircraftICAOcode,
-                                        RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
-                                        cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                        takeOffMassKilograms = float(takeOffMassKg)  )
-
+                                            route = routeAsString, 
+                                            aircraftICAOcode = aircraftICAOcode,
+                                            RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
+                                            cruiseMach = acPerformance.getMaxOpMachNumber(), 
+                                            takeOffMassKilograms = float(takeOffMassKg)  )
+    
                         ret = flightPath.computeFlight(deltaTimeSeconds = 1.0)
-                        
+                            
                         if ret:
-                            
-                            logger.debug ( "=========== Flight Plan create output files  =========== " )
-                
-                            ''' Robert - python2 to python 3 '''
-                            memoryFile = io.StringIO()
-                            
-                            ''' create State vector output sheet using an existing workbook '''
-                            flightPath.createKMLfileLike(memoryFile)
+                                
+                                logger.debug ( "=========== Flight Plan create output files  =========== " )
                     
-                            filename = 'KMLfile-{}.kml'.format( datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") )
-                            #print filename
-                            
-                            response = HttpResponse( memoryFile.getvalue() )
-                            response['Content-Type'] = 'text/xml, application/xml; charset=utf-8'
-                            #response['Content-Type'] = 'application/vnd.ms-excel'
-                            response["Content-Transfer-Encoding"] = "binary"
-                            response['Set-Cookie'] = 'fileDownload=true; path=/'
-                            response['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=filename)
-                            response['Content-Length'] = memoryFile.tell()
-                            return response      
+                                ''' Robert - python2 to python 3 '''
+                                memoryFile = io.StringIO()
+                                
+                                ''' create State vector output sheet using an existing workbook '''
+                                flightPath.createKMLfileLike(memoryFile)
+                        
+                                filename = 'KMLfile-{}.kml'.format( datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") )
+                                #print filename
+                                
+                                response = HttpResponse( memoryFile.getvalue() )
+                                response['Content-Type'] = 'text/xml, application/xml; charset=utf-8'
+                                #response['Content-Type'] = 'application/vnd.ms-excel'
+                                response["Content-Transfer-Encoding"] = "binary"
+                                response['Set-Cookie'] = 'fileDownload=true; path=/'
+                                response['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=filename)
+                                response['Content-Length'] = memoryFile.tell()
+                                return response
+                        else:
+                            response_data = {'errors' : 'Trajectory compute failed '}
+                            return JsonResponse(response_data)
+                    else:
+                        response_data = {
+                            'errors' : 'Aircraft Performance read failed = {0}'.format(badaAircraft.getAircraftPerformanceFile())}
+                        return JsonResponse(response_data)   
                         
                 else:
-                        logger.debug ('airline route not found = {0}'.format(airlineRoute))
+                        logger.error('airline route not found = {0}'.format(airlineRoute))
                         response_data = {
                             'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
                         return JsonResponse(response_data)                                                                   

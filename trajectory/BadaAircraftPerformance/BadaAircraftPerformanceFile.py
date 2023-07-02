@@ -77,32 +77,36 @@ class AircraftPerformance(object):
         self.className = self.__class__.__name__
 
         self.filePath = aircraftPerformanceFilePath
-        if self.exists():
-            self.read()
+        
             
     def exists(self):
         if os.path.isfile(self.filePath):
             #logging.info self.className + ' : Performance file= ' + self.filePath + " exists"
             return True
         else:
-            raise ValueError(self.className +": BADA Performance File not found: "+self.filePath)
+            raise ValueError(self.className +": BADA Performance File not found: " + self.filePath)
         return False
     
     
     def read(self):
         try:
-            dataLineIndex = 0
-            f = open(self.filePath, "r")
-            for line in f:
-                line = line.strip()
-                ''' data lines are starting with 'CD' '''
-                if str(line).startswith('CD'):
-                    #logging.info line
-                    self.dataLines[dataLineIndex] = line.strip()
-                    dataLineIndex += 1
-            f.close()
+            if ( self.exists() ):
+                dataLineIndex = 0
+                f = open(self.filePath, "r")
+                for line in f:
+                    line = line.strip()
+                    ''' data lines are starting with 'CD' '''
+                    if str(line).startswith('CD'):
+                        #logging.info line
+                        self.dataLines[dataLineIndex] = line.strip()
+                        dataLineIndex += 1
+                f.close()
+                return True
+            else:
+                raise ValueError(self.className +": BADA Performance File not found: " + self.filePath)
         except:
             raise ValueError(self.className + ': error while reading file = ' + self.filePath)
+        
         
     def getNumberOfEngines(self):
         try:
@@ -112,6 +116,7 @@ class AircraftPerformance(object):
         except:
             raise ValueError(self.className + ': error while reading number of engines')
         return 0
+    
 
     def getStrEngineType(self):
         engineType = ''

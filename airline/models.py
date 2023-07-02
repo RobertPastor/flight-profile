@@ -193,7 +193,9 @@ class AirlineRoute(models.Model):
                 if AdesRunWay and ( len (AdesRunWay.Name ) > 0):
                     strRoute += "/" + AdesRunWay.Name 
             
+        strRoute = str(strRoute).replace("--", "-")
         logging.info ( strRoute )
+        
         return strRoute
   
     ''' best departure runway is the one with minimal distance between end of 5 nautic climb ramp and first point of the route '''

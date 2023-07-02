@@ -118,6 +118,21 @@ Installing collected packages: whitenoise
 Successfully installed whitenoise-6.4.0
 PS C:\Users\rober>
 
+## ============ install jsonschema -> used to validate the Aircraft Performance file in JSON schema
+
+PS C:\Users\rober\git\flight-profile> pip install jsonschema
+Collecting jsonschema
+  Downloading jsonschema-4.17.3-py3-none-any.whl (90 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90.4/90.4 kB ? eta 0:00:00
+Collecting attrs>=17.4.0 (from jsonschema)
+  Downloading attrs-23.1.0-py3-none-any.whl (61 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 61.2/61.2 kB ? eta 0:00:00
+Collecting pyrsistent!=0.17.0,!=0.17.1,!=0.17.2,>=0.14.0 (from jsonschema)
+  Downloading pyrsistent-0.19.3-cp311-cp311-win_amd64.whl (62 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.7/62.7 kB ? eta 0:00:00
+Installing collected packages: pyrsistent, attrs, jsonschema
+Successfully installed attrs-23.1.0 jsonschema-4.17.3 pyrsistent-0.19.3
+PS C:\Users\rober\git\flight-profile>
 
 ## =============== configure a database
 ## =============== create the tables 

@@ -362,6 +362,7 @@ def getAirlineCostsAsXlsx(request, airlineName):
         
 
 def getAirlineCosts(request, airlineName):
+    
     logger.setLevel(logging.INFO)
     logger.debug ("views Airline Costs")
     

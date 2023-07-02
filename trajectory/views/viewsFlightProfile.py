@@ -136,36 +136,40 @@ def computeFlightProfile(request, airlineName):
                     routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                     logger.debug ( routeAsString )
                     acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-                    #logger.debug ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                    #logger.debug ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
-    
-                    flightPath = FlightPath(
-                                    route = routeAsString, 
-                                    aircraftICAOcode = aircraftICAOcode,
-                                    RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
-                                    cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                    takeOffMassKilograms = float(takeOffMassKg)  )
-    
-                    flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                    if acPerformance.read():
+                        #logger.debug ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
+                        #logger.debug ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
         
-                    logger.debug ( "=========== Flight Plan create output files  =========== " )
-                    csvAltitudeMSLTimeGroundTrack = flightPath.createCsvAltitudeTimeProfile()
+                        flightPath = FlightPath(
+                                        route = routeAsString, 
+                                        aircraftICAOcode = aircraftICAOcode,
+                                        RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
+                                        cruiseMach = acPerformance.getMaxOpMachNumber(), 
+                                        takeOffMassKilograms = float(takeOffMassKg)  )
         
-                    kmlXmlDocument = flightPath.createKmlXmlDocument()
-                    if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack):
-                        logger.debug ( "=========== Flight Plan end  =========== "  )
-                                            
-                        response_data = {
-                                    'kmlXMLjson': xmltodict.parse( kmlXmlDocument ),
-                                    'placeMarks' : getPlaceMarks(kmlXmlDocument) ,
-                                    'csvAltitudeMSLtime' : csvAltitudeMSLTimeGroundTrack
-                                    }
-                        return JsonResponse(response_data)
+                        flightPath.computeFlight(deltaTimeSeconds = 1.0)
+            
+                        logger.debug ( "=========== Flight Plan create output files  =========== " )
+                        csvAltitudeMSLTimeGroundTrack = flightPath.createCsvAltitudeTimeProfile()
+            
+                        kmlXmlDocument = flightPath.createKmlXmlDocument()
+                        if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack):
+                            logger.debug ( "=========== Flight Plan end  =========== "  )
+                                                
+                            response_data = {
+                                        'kmlXMLjson': xmltodict.parse( kmlXmlDocument ),
+                                        'placeMarks' : getPlaceMarks(kmlXmlDocument) ,
+                                        'csvAltitudeMSLtime' : csvAltitudeMSLTimeGroundTrack
+                                        }
+                            return JsonResponse(response_data)
+                        else:
+                            logger.debug ('Error while retrieving the KML document')
+                            response_data = {'errors' : 'Error while retrieving the KML document'}
+                            return JsonResponse(response_data)
                     else:
-                        logger.debug ('Error while retrieving the KML document')
-                        response_data = {'errors' : 'Error while retrieving the KML document'}
+                        response_data = {'errors' : 'Error while reading aircraft performance file = {0}'.format(badaAircraft.getAircraftPerformanceFile())}
                         return JsonResponse(response_data)
-    
+                        
                 else:
                     logger.debug ('airline route not found = {0}'.format(airlineRoute))
                     response_data = {

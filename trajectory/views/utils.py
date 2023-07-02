@@ -170,7 +170,7 @@ def getAirlineTripPerformanceFromDB( airline ):
         badaAircraft = BadaSynonymAircraft.objects.all().filter( AircraftICAOcode=airlineAircraft.aircraftICAOcode ).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
             acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-            if acPerformance:
+            if acPerformance.read():
                 for airlineRoute in AirlineRoute.objects.filter(airline = airline):
                     pass
                     for airlineCosts in AirlineCosts.objects.filter( airline = airline, airlineAircraft = airlineAircraft, airlineRoute = airlineRoute):
@@ -235,7 +235,7 @@ def getAirlineAircraftsFromDB(airline):
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=airlineAircraft.aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
             acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
-            if acPerformance:
+            if acPerformance.read():
                 acMaxTakeOffWeightKg = acPerformance.getMaximumMassKilograms()
                 acMinTakeOffWeightKg = acPerformance.getMinimumMassKilograms()
                 acMaxOpAltitudeFeet  = acPerformance.getMaxOpAltitudeFeet()
