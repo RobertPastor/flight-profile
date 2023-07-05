@@ -197,7 +197,6 @@ class AircraftPerformance(object):
     def getVmoCasKnots(self):
         try:
             if len(self.dataLines)>0:
-                # mass data is in lines index 2 - reference mass has split index 1 (after CD)
                 return fortran_float(str(self.dataLines[self.flightEnvelopeLine]).split()[1])
         except:
             raise ValueError("BadaPerformanceFile: error while reading Vmo Cas Knots")

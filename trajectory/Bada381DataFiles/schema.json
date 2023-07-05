@@ -17,17 +17,47 @@
 					},
 					"required": ["number","type"]
 				},
-				"mass": {
-					"type": "object",
-					"properties": {
-						"minimal" : {
+				"envelope" : {
+					"type" : "object",
+					"properties" : {
+						"MaxOpSpeedCasKnots" : {
 							"type": "object",
 							"properties": {
 								"unit" : {"type" : "string"},
 								"value" : {"type" : "number" }
 							},
 							"required": ["unit","value"]
-							
+						},
+						"MaxOpMachNumber" : {
+							"type": "object",
+							"properties": {
+								"unit" : {"type" : "string"},
+								"value" : {"type" : "number" }
+							},
+							"required": ["unit","value"]
+						},
+						"MaxOpAltitudeFeet" : {
+							"type": "object",
+							"properties": {
+								"unit" : {"type" : "string"},
+								"value" : {"type" : "number" }
+							},
+							"required": ["unit","value"]
+						}
+					},
+					"required": ["MaxOpSpeedCasKnots" , "MaxOpMachNumber" , "MaxOpAltitudeFeet"]
+					
+				},
+				"mass": {
+					"type": "object",
+					"properties": {
+						"minimum" : {
+							"type": "object",
+							"properties": {
+								"unit" : {"type" : "string"},
+								"value" : {"type" : "number" }
+							},
+							"required": ["unit","value"]
 						},
 						"reference" : {
 							"type": "object",
@@ -36,12 +66,42 @@
 								"value" : {"type" : "number" }
 							},
 							"required": ["unit","value"]
-							
+						},
+						"maximum" : {
+							"type": "object",
+							"properties": {
+								"unit" : {"type" : "string"},
+								"value" : {"type" : "number" }
+							},
+							"required": ["unit","value"]
+						},
+						"maxpayload" : {
+							"type": "object",
+							"properties": {
+								"unit" : {"type" : "string"},
+								"value" : {"type" : "number" }
+							},
+							"required": ["unit","value"]
+						}
+					},
+					"required": ["minimum","reference","maximum","maxpayload"]
+				},
+				"aerodynamics": {
+					"type": "object",
+					"properties": {
+						"wingsurface" : {
+							"type": "object",
+							"properties": {
+								"unit": {"type" : "string"},
+								"value": {"type" : "number"}
+							},
+							"required": ["unit","value"]
+
 						}
 					}
 				}
 			},
-			"required": ["ICAO", "wakeTurbulence" , "engines" , "mass" ]
+			"required": ["ICAO", "wakeTurbulence" , "engines" ,"envelope", "mass" , "aerodynamics"]
 		}
 	}
 }

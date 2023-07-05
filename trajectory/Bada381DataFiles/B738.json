@@ -21,31 +21,54 @@
 			"unit": "square meters",
 			"value" : 361.612465
 		},
-		
+		"envelope": {
+				"MaxOpSpeedCasKnots" : {
+					"unit" : "knots",
+					"value": 340.0
+				},
+				"MaxOpMachNumber" : {
+					"unit" : "knots",
+					"value": 0.83
+				},
+				"MaxOpAltitudeFeet" : {
+					"unit" : "feet",
+					"value": 41000.0
+				}
+		},
+		"aerodynamics": {
+			"wingsurface": {
+					"unit" : "m²",
+					"value": 124.65	
+			}
+		},
 		"mass": {
-			"minimal": {
+			"minimum": {
 				"unit" : "kg",
-				"value": 39000
+				"value": 39000.0
 			},
 			"reference": {
 				"unit" : "kg",
-				"value": 64000
+				"value": 65300.0
+			},
+			"maximum": {
+				"unit" : "kg",
+				"value": 78300.0
 			},
 			"maxpayload": {
 				"unit" : "kg",
-				"value": 20540
+				"value": 20300.0
 			},
 			"maxtakeOff": {
 				"unit" : "kg",
-				"value": 79016
+				"value": 79016.0
 			},
 			"maxlanding": {
 				"unit" : "kg",
-				"value": 66361
+				"value": 66350.0
 			},
 			"fuelcapacity" : {
 				"unit" : "kg",
-				"value": 21000
+				"value": 22000.0
 			}
 		},
 		"phase": {
@@ -53,7 +76,6 @@
 				"name": "length",
 				"unit": "meters",
 				"value": 2310
-				
 			},
 			"cruise": {
 				"ceiling": {

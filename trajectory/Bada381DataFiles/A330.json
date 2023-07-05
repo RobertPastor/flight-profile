@@ -11,14 +11,42 @@
 				"number": 2,
 				"type": "TRENT 772B"
 			},
+			"envelope": {
+				"MaxOpSpeedCasKnots" : {
+					"unit" : "knots",
+					"value": 330.0
+				},
+				"MaxOpMachNumber" : {
+					"unit" : "knots",
+					"value": 0.86
+				},
+				"MaxOpAltitudeFeet" : {
+					"unit" : "feet",
+					"value": 41000.0
+				}
+			},
+			"aerodynamics": {
+				"wingsurface": {
+					"unit" : "m²",
+					"value": 361.6	
+				}
+			},
 			"mass": {
-				"minimal": {
+				"minimum": {
 					"unit" : "kg",
-					"value": 120600
+					"value": 120600.0
 				},
 				"reference": {
 					"unit" : "kg",
-					"value": 190000
+					"value": 190000.0
+				},
+				"maximum": {
+					"unit" : "kg",
+					"value": 230000.0
+				},
+				"maxpayload": {
+					"unit" : "kg",
+					"value": 47400.0
 				}
 			}
 	}

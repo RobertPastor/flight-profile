@@ -54,6 +54,7 @@ class AircraftJsonPerformance(AircraftPerformance):
                 print("File = {0} is validated against schema = {1}".format( self.filePath , self.schemaFilePath))
                 print ("============================================")
 
+                assert(  ( self.aircraftICAOcode == self.performanceJsonData["aircraft"]["ICAO"] ) , True )
                 return True
             
             else:
@@ -70,7 +71,6 @@ class AircraftJsonPerformance(AircraftPerformance):
         print ( acICAO.upper() )
         return acICAO.upper()
     
-    
     def getNumberOfEngines(self):
         try:
             nbEngines = int ( self.performanceJsonData["aircraft"]["engines"]["number"])
@@ -80,8 +80,36 @@ class AircraftJsonPerformance(AircraftPerformance):
             raise ValueError(self.className + ': error while reading number of engines')
         return 0
     
-    
     def getWakeTurbulenceCategory(self):
         return self.performanceJsonData["aircraft"]["wakeTurbulence"]
     
+    def getReferenceMassKilograms(self):
+        return self.performanceJsonData["aircraft"]["mass"]["reference"]["value"]
+    
+    def getMinimumMassKilograms(self):
+        return self.performanceJsonData["aircraft"]["mass"]["minimum"]["value"]
+
+    def getMaximumMassKilograms(self):
+        return self.performanceJsonData["aircraft"]["mass"]["maximum"]["value"]
+
+    def getMaximumPayLoadMassKilograms(self):
+        return self.performanceJsonData["aircraft"]["mass"]["maxpayload"]["value"]
+    
+    def getVmoCasKnots(self):
+        return self.performanceJsonData["aircraft"]["envelope"]["MaxOpSpeedCasKnots"]["value"]
+    
+    def getMaxOpSpeedCasKnots(self):
+        return self.getVmoCasKnots()
+    
+    def getMaxOpMachNumber(self):
+        return self.performanceJsonData["aircraft"]["envelope"]["MaxOpMachNumber"]["value"]
+    
+    def getMaxOpAltitudeFeet(self):
+        return self.performanceJsonData["aircraft"]["envelope"]["MaxOpAltitudeFeet"]["value"]
+    
+    def getWingAreaSurfaceSquareMeters(self):
+        return self.performanceJsonData["aircraft"]["aerodynamics"]["wingsurface"]["value"]
+
+
+
         

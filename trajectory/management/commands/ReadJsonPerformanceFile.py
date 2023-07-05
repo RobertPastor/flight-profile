@@ -31,5 +31,28 @@ class Command(BaseCommand):
             print( "Aircraft Performance read = {0} ".format( ret ) )
             
             print (aircraftJsonPerformance.getICAOcode())
-            print (aircraftJsonPerformance.getNumberOfEngines())
 
+            print ("---- nomber of engines ----")
+
+            print (aircraftJsonPerformance.getNumberOfEngines())
+            
+            print ("---- wake turbulence ----")
+
+            print ( aircraftJsonPerformance.getWakeTurbulenceCategory())
+            
+            print ("---- mass ----")
+
+            print ( aircraftJsonPerformance.getReferenceMassKilograms())
+            print ( aircraftJsonPerformance.getMinimumMassKilograms())
+            print ( aircraftJsonPerformance.getMaximumMassKilograms())
+            
+            print ( aircraftJsonPerformance.getMaximumPayLoadMassKilograms())
+            
+            print ("---- envelope ----")
+            print ( aircraftJsonPerformance.getMaxOpSpeedCasKnots())
+            print ( aircraftJsonPerformance.getMaxOpMachNumber())
+
+            print ( aircraftJsonPerformance.getMaxOpAltitudeFeet())
+            
+            print ("---- aerodynamics ----")
+            print ( aircraftJsonPerformance.getWingAreaSurfaceSquareMeters())

@@ -18,28 +18,56 @@
 			"source": "https://en.wikipedia.org/wiki/Airbus_A320_family",
 			"name": "Wing Area Surface",
 			"unit": "m*m",
-			"value" : 124 
+			"value" : 124.0
 		},
+		"envelope": {
+			"MaxOpSpeedCasKnots" : {
+				"unit" : "knots",
+				"value": 350.0
+			},
+			"MaxOpMachNumber" : {
+				"unit" : "knots",
+				"value": 0.82
+			},
+			"MaxOpAltitudeFeet" : {
+				"unit" : "feet",
+				"value": 39000.0
+			}
+			
+		},
+		"aerodynamics": {
+			"wingsurface": {
+				"unit" : "m²",
+				"value": 122.6
+				
+			}
+			
+		},
+		
 		"mass": {
-			"minimal": {
+			"minimum": {
 				"unit" : "kg",
-				"value": 39000
+				"value": 39000.0
 			},
 			"reference": {
 				"unit" : "kg",
-				"value": 64000
+				"value": 64000.0
+			},
+			"maximum": {
+				"unit" : "kg",
+				"value": 77000.0
 			},
 			"maxpayload": {
 				"unit" : "kg",
-				"value": 21500
+				"value": 21500.0
 			},
 			"maxtakeoff": {
 				"unit" : "kg",
-				"value": 77000
+				"value": 77000.0
 			},
 			"fuelcapacity" : {
 				"unit" : "kg",
-				"value": 21100
+				"value": 21100.0
 			}
 		},
 		"phase": {
@@ -47,7 +75,7 @@
 				"runway": {
 					"name": "length",
 					"unit": "meters",
-					"value": 2200
+					"value": 2200.0
 				},
 				"dragCDO": {
 					"name": "dragCoeffCD0",
