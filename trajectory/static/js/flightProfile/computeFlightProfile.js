@@ -109,7 +109,7 @@ class AirlineProfileCosts {
 		let airlineName = $("#airlineSelectId option:selected").val();
 		
 		// empty the selector
-		$('#airlineRouteId').empty()
+		$('#airlineRouteId').empty();
 
 		for (let index = 0; index < airlineRoutesArray.length; index++) {
 			let airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
@@ -190,6 +190,7 @@ class AirlineProfileCosts {
 
 	loadOneRay( rayLayer, placeMark ) {
 	
+		// @TODO get these constants from og
 		let ellipsoid = new og.Ellipsoid(6378137.0, 6356752.3142);
 		
 		let latitude = 0.0;
@@ -237,7 +238,7 @@ class AirlineProfileCosts {
 						}
 			}));
 		}
-		
+		// create a ray
 		rayLayer.add ( new og.Entity({
 				ray: {
 					startPosition: cart,
@@ -294,25 +295,34 @@ class AirlineProfileCosts {
 	/**
 	 * called when a new Ray Layer has to be created or a new layer with the same Adep Ades.
 	 */
-	deleteCreateRayLayer( globus , layerName ) {
+	deleteCreateRayLayer( globus , route ) {
 		
-		console.log ( layerName );
+		//console.log ( route );
 		let layerPrefix = SingletonProfileCosts.getInstance().getLayerPrefix();
 	
-		layerName = layerPrefix + "-" + layerName;
-		console.log( layerName );
+		// route format = "Adep"+"-"+"Ades"
+		let layerName = layerPrefix + "-" + route;
+		//console.log( layerName );
 		
-		// removeLayer to use Promise !!!
+		// @TODO removeLayer to use Promise !!!
 		// removeLayer defined in the main.js
 		let ogLayer = globus.planet.getLayerByName( layerName );
 		if ( ogLayer ) {
-			console.log( "layer with name = " + layerName + " is existing in OG");
+			//console.log( "layer with name = " + layerName + " is existing in OG");
 			removeLayer( globus , layerName );
 		}
 
 		//polygonOffsetUnits is needed to hide rays behind globe
 		let rayLayer = new og.layer.Vector( layerName , { polygonOffsetUnits: 0 });
 		rayLayer.addTo(globus.planet);
+		
+		// add layer to the House Keeping class
+		// get the name of the airline
+		let airlineName = $("#airlineSelectId option:selected").val();
+		airlineName = encodeURIComponent(airlineName);
+				
+		// add layer to the og Cleaner table
+		SingletonOgLayerCleaner.getInstance().addLayer( layerName , airlineName , route.split("-")[0] , route.split("-")[1]);
 		
 		return rayLayer;
 	}
@@ -337,9 +347,6 @@ class AirlineProfileCosts {
 			
 			let route = $("#airlineRouteId option:selected").val();
 			
-			//console.log(route)
-			//console.log( airlineRunWaysArray[index]["airlineAirport"] )
-			
 			if ( route.split("-")[0] == airlineRunWaysArray[index]["airlineAirport"]) {
 				
 				//console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
@@ -356,9 +363,6 @@ class AirlineProfileCosts {
 		for ( let index = 0 ; index < airlineRunWaysArray.length ; index++) {
 			
 			let route = $("#airlineRouteId option:selected").val();
-			
-			//console.log(route)
-			//console.log( airlineRunWaysArray[index]["airlineAirport"] )
 			
 			if ( route.split("-")[1] == airlineRunWaysArray[index]["airlineAirport"]) {
 				
@@ -383,12 +387,6 @@ class AirlineProfileCosts {
 			
 		}
 	}
-	
-	populateRayLayersReadyToRemove( route ) {
-		console.log( "populate table with layers ready to be removed ");
-		console.log( JSON.stringify(route ));
-		
-	}
 
 	launchFlightProfile(globus) {
 	
@@ -401,21 +399,6 @@ class AirlineProfileCosts {
 			}
 			stopBusyAnimation();
 		});
-		
-		//console.log( "compute flight profile ");
-		
-		/**
-		let layerFlightProfileWayPoints = new og.layer.Vector("FlightProfileWayPoints", {
-				billboard: { 
-					src: '/static/trajectory/images/marker.png', 
-					color: '#6689db' ,
-					width : 4,
-					height : 4
-					},
-				clampToGround: true,
-				});
-		layerFlightProfileWayPoints.addTo(globus.planet);
-		*/
 		
 		// listen to change to the aircraft Mass
 		document.getElementById("TakeOffMassKgId").addEventListener('change', function (evt) {
@@ -444,7 +427,7 @@ class AirlineProfileCosts {
 		});
 		
 		// listen to change to requested flight level
-		document.getElementById("requestedFlightLevelId").addEventListener('change', function (evt) {
+		document.getElementById("requestedFlightLevelId").addEventListener('change', function () {
 			let elemFL = document.getElementById('requestedFlightLevelId');
 			let FLvalue = elemFL.value;
 			//console.log(elemFL.value);
@@ -479,11 +462,10 @@ class AirlineProfileCosts {
 						method: 'get',
 						url :  "trajectory/launchFlightProfile/" + airlineName,
 						async : true,
-						success: function(data, status) {
+						success: function(data) {
 										
-							//alert("Data: " + data + "\nStatus: " + status);
 							let dataJson = eval(data);
-							// airlineAircrafts
+							// airlineRunWays
 							if ( dataJson.hasOwnProperty( "airlineRunWays" )) {
 								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
 							}
@@ -515,14 +497,11 @@ class AirlineProfileCosts {
 
 			if ( ! $('#flightProfileMainDivId').is(":visible") ) {
 				
-				// define in the main.js
+				// defined in the main.js
 				hideAllDiv(globus);
 				
 				$('#flightProfileMainDivId').show();
-				
-				// change name on the button
-				document.getElementById("btnLaunchFlightProfile").innerText = "Profile";
-				
+								
 				// get the name of the airline
 				let airlineName = $("#airlineSelectId option:selected").val();
 				airlineName = encodeURIComponent(airlineName);
@@ -532,7 +511,7 @@ class AirlineProfileCosts {
 						method: 'get',
 						url :  "trajectory/launchFlightProfile/" + airlineName,
 						async : true,
-						success: function(data, status) {
+						success: function(data) {
 										
 							//alert("Data: " + data + "\nStatus: " + status);
 							let dataJson = eval(data);
@@ -699,8 +678,6 @@ class AirlineProfileCosts {
 									showMessage("Information" , "Double Click in the vertical profile to return to the map");
 
 								}
-								// prepare for housekeeping when many rays layers to remove
-								SingletonProfileCosts.getInstance().populateRayLayersReadyToRemove( route );
 								
 							}
 						},

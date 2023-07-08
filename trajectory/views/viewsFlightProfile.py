@@ -153,7 +153,7 @@ def computeFlightProfile(request, airlineName):
                         csvAltitudeMSLTimeGroundTrack = flightPath.createCsvAltitudeTimeProfile()
             
                         kmlXmlDocument = flightPath.createKmlXmlDocument()
-                        if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack):
+                        if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack ):
                             logger.debug ( "=========== Flight Plan end  =========== "  )
                                                 
                             response_data = {

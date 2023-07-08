@@ -4,7 +4,6 @@ var worker = undefined;
 window.addEventListener('DOMContentLoaded', () => {
 	
 	//console.log(" DOM content loaded");
-	
 	window.addEventListener("load", ($) => {
 		
 		//console.log(" page is loaded");
@@ -95,8 +94,6 @@ function stopWorker() {
 		worker.terminate();
 	}
     worker = undefined;
-    // console.log("worker is stopped !!!");
-    // hide the progress bars
 }
 
 function initWorker() {
@@ -108,8 +105,6 @@ function initWorker() {
             worker = new Worker("/static/js/worker/worker.js");
             worker.onmessage = function (event) {
 				
-				//console.log(`message received - ${event.data}`);
-
                 let progressBar = document.getElementById('workerId');
 				if (progressBar) {
 					progressBar.style.width = event.data + '%';
@@ -185,10 +180,10 @@ function switchAirlines(globus) {
 		hideAllDiv(globus);
 		
 		stopBusyAnimation();
-		
+		// selector in the main menu bar
 		let airlineName = $("#airlineSelectId option:selected").val();
 		
-		// airlines is made available through template index-og.html
+		// airlines data is made available through template index-og.html
 		if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 
 			airlines.forEach ( function ( airline ) {
@@ -202,7 +197,7 @@ function switchAirlines(globus) {
 					let MaxLatitude  = airline["MaxLatitudeDegrees"];
 
 					let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
-					let NorthEast = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
+					let NorthEast = new og.LonLat( parseFloat(MaxLongitude) , parseFloat(MaxLatitude) , parseFloat("0.0") );
 					let viewExtent = new og.Extent( SouthWest , NorthEast );
 
 					globus.planet.viewExtent(viewExtent);
@@ -267,6 +262,7 @@ function initTools(globus, viewExtent) {
 		let airlineAirports = SingletonAirlineAirports.getInstance();
 		airlineAirports.initAirports(globus);
 		
+		// table alloing to see the Routes -> 
 		globus.planet.addControl(new AirlineRoutesControl());
 	
 		// load the airline routes waypoints
@@ -303,6 +299,7 @@ function initTools(globus, viewExtent) {
 		// airline CASM
 		globus.planet.addControl(new AirlineCasmControl());
 		let airlineCASM = SingletonAirlineCASM.getInstance();
+		// need to call this init function to listen to button
 		airlineCASM.initAirlineCASM();
 		
 		// airline CASM Optimization
@@ -320,7 +317,10 @@ function initTools(globus, viewExtent) {
 		fuelPlanner.initFuelPlanner(globus);
 		
 		// 1st July 2023 - add Layer Housekeeping
-		//globus.planet.addControl(new LayerHouseKeepingControl());
+		let ogLayerCleanerControl = new OgLayerCleanerControl();
+		globus.planet.addControl(ogLayerCleanerControl);
+		let ogLayerCleaner = SingletonOgLayerCleaner.getInstance();
+		ogLayerCleaner.init(globus, ogLayerCleanerControl);
 		
 		// init listener for downloading EXCEL Vertical Flight Profile
 		initDownloadVerticalProfile();

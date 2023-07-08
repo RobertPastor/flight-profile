@@ -118,7 +118,7 @@ th {
 
 .divOverlayClass {
 	position: fixed; /* Sit on top of the page content */
-	display: none; /* displayed by default */
+	display: none; /* not displayed by default */
 	z-index: 100; /* Specify a stack order in case you're using a different order for other elements */
 	cursor: pointer; /* Add a pointer on hover */
 }
@@ -127,6 +127,12 @@ th {
 	position: absolute;
 	top : 5px;
 	left : 5px;
+}
+
+.layerCleaner {
+	position: absolute;
+	top : 5px;
+	left : 500px;
 }
 
 .airlineFleetTableDiv {

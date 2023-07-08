@@ -9,12 +9,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
 const SingletonAirlineRoutes = (function () {
 	
 	let instance;
-
     function createInstance() {
         var object = new AirlineRoutes();
         return object;
     }
-
     return {
         getInstance: function () {
             if (!instance) {
@@ -42,6 +40,7 @@ function showSidStarRoute( elem ) {
 		// load a Sid Star route
 		//console.log( " layer " + layerName + " is not existing");
 		try {
+			// load a SID STAR from backend
 			SingletonSidStar.getInstance().queryServer ( elem.id );
 		} catch (err) {
 			console.error( JSON.stringify(err));
@@ -65,13 +64,21 @@ class AirlineRoutes {
 		return this.globus;
 	}
 	
-
 	loadOneRouteWayPoint( layerRouteWayPoints, waypoint ) {
 	
-		let longitude = parseFloat(waypoint.Longitude);
-		let latitude = parseFloat(waypoint.Latitude);
-		let name = waypoint.name;
-		
+		let longitude = 0.0;
+		if ( waypoint.hasOwnProperty("Longitude")) {
+			longitude = parseFloat(waypoint.Longitude);
+		}
+		let latitude = 0.0;
+		if ( waypoint.hasOwnProperty("Latitude")) {
+			latitude = parseFloat(waypoint.Latitude);
+		}
+		let name = "";
+		if ( waypoint.hasOwnProperty("name")) {
+			name = waypoint.name;
+		}
+		// add the waypoint
 		layerRouteWayPoints.add(new og.Entity({
 				lonlat: [longitude, latitude],
 				label: {
@@ -141,7 +148,7 @@ class AirlineRoutes {
 				method: 'get',
 				url :  "airline/wayPointsRoute/" + Adep +"/" + Ades,
 				async : true,
-				success: function(data, status) {
+				success: function(data) {
 											
 						//alert("Data: " + data + "\nStatus: " + status);
 						let dataJson = eval(data);		
@@ -193,7 +200,7 @@ class AirlineRoutes {
 			
 			document.getElementById(id).value = "Show";
 			try {
-				// remove Layer is defined in main.js
+				// @TODO remove Layer is defined in main.js
 				removeLayer( globus , layerName );
 			
 			} catch (err) {
@@ -203,7 +210,6 @@ class AirlineRoutes {
 		} else {
 			//console.log( " layer " + layerName + " is NOT existing");
 			document.getElementById(id).value = "Hide";
-			//document.getElementById(id).style.backgroundColor = "green";
 			
 			//console.log(id)
 			SingletonAirlineRoutes.getInstance().loadOneAirlineRoute( id );
@@ -231,9 +237,8 @@ class AirlineRoutes {
 		if (layer) {
 			// layer is existing -> hide -> show button as hidden
 			document.getElementById(elemButton.id).value = "Hide";
-			//document.getElementById(elemButton.id).style.backgroundColor = "green";
 			try {
-				// remove Layer is defined in main.js
+				// @TODO remove Layer as it is defined in main.js
 				removeLayer( globus , layerName );
 			
 			} catch (err) {

@@ -68,7 +68,7 @@ class FlighProfileControl extends og.Control {
 		input_1_1.hidden = false;
 		input_1_1.maxlength = "6";
 		input_1_1.size = "3";
-		input_1_1.title = "minimal TakeOff Mass (Kg)" ;
+		input_1_1.title = "min TakeOff Mass (Kg)" ;
 		input_1_1.readOnly = true;
 		div_1.appendChild(input_1_1);
 		
@@ -80,7 +80,7 @@ class FlighProfileControl extends og.Control {
 		input_1.id = "TakeOffMassKgId" ;
 		input_1.maxlength = "5";
 		input_1.size = "3";
-		input_1.title = "insert here the TakeOff mass (kg)" ;
+		input_1.title = "insert the TakeOff mass (kg)" ;
 		div_1.appendChild(input_1);
 		
 		let label_1_4 = document.createElement("label");
@@ -94,21 +94,21 @@ class FlighProfileControl extends og.Control {
 		input_1_2.hidden = false;
 		input_1_2.maxlength = "6";
 		input_1_2.size = "3";
-		input_1_2.title = "maximal TakeOff Mass (Kg)" ;
+		input_1_2.title = "max TakeOff Mass (Kg)" ;
 		input_1_2.readOnly = true;
 		div_1.appendChild(input_1_2);
 		
 		// ------------- Requested Flight Level
 		
 		let label_1_5 = document.createElement("label");
-		label_1_5.innerHTML = "Requested Flight Level (feet) ->" ;
+		label_1_5.innerHTML = " RFL (feet) ->" ;
 		div_1.appendChild(label_1_5);
 		
 		let input_2 = document.createElement("input");
 		input_2.id = "requestedFlightLevelId" ;
 		input_2.maxlength = "3";
 		input_2.size = "3";
-		input_2.title = "insert here the requested flight level (feet)";
+		input_2.title = "insert the Requested Flight Level (feet)";
 		div_1.appendChild(input_2);
 		
 		// hidden input with max fligh level
