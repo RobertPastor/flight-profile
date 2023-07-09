@@ -2,7 +2,6 @@ from django.db import models
 import logging
 from django.utils import timezone
 
-from django.utils.timezone import now
 # Create your models here.
 from trajectory.models import AirlineAirport, AirlineRunWay, AirlineStandardDepartureArrivalRoute
 
