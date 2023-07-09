@@ -2,6 +2,7 @@
 # import Http Response from django
 
 import json
+import logging
 from django.utils import timezone
 
 from django.shortcuts import render
@@ -11,7 +12,7 @@ from airline.models import Airline, User
 
 def get_ip(request):
     address = request.META.get('HTTP_X_FORWARDED_FOR')
-    print ( address )
+    logging.info ( address )
     if address:
         ip = address.split(".")[-1].strip()
     else:

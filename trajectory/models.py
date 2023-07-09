@@ -21,12 +21,10 @@ class BadaSynonymAircraft(models.Model):
     def __eq__(self, other):
         return models.Model.__eq__(self, other)
     
-    
     ''' 14 Juin 2023 '''
     ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
     def __hash__(self):
         return super().__hash__()
-    
     
     def __str__(self):
         return "{0}-{1}-{2}".format(self.AircraftICAOcode, self.Manufacturer, self.AircraftModel)
@@ -210,7 +208,6 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
     def __eq__(self, other):
         return models.Model.__eq__(self, other)
     
-    
     ''' 14 Juin 2023 '''
     ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
     def __hash__(self):
@@ -223,17 +220,14 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
     def getIsSTAR(self):
         return not self.isSID
     
-    
     def getDepartureArrivalAirport(self):
         return self.DepartureArrivalAirport
-    
     
     def getDepartureArrivalRunWay(self):
         return self.DepartureArrivalRunWay
     
     def getFirstLastRouteWayPoint(self):
         return self.FirstLastRouteWayPoint
-    
     
     def getWayPointsAsGeoPointsList(self):
         sidStarGeoPointsList = []
@@ -267,7 +261,7 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
                     if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
                         routeAsString += "-" + str(wayPoint.WayPointName).strip()
         
-        logging.info ( routeAsString )
+        #logging.info ( routeAsString )
         print ( routeAsString )
         return routeAsString
 
@@ -291,10 +285,8 @@ class AirlineSidStarWayPointsRoute(models.Model):
     def __hash__(self):
         return super().__hash__()
     
-    
     def __str__(self):
         return models.Model.__str__(self)
-    
     
     def getWayPointName(self):
         return self.WayPointName
@@ -304,7 +296,6 @@ class AirlineSidStarWayPointsRoute(models.Model):
     
     def getLongitudeDegrees(self):
         return self.LongitudeDegrees
-    
     
     def getWayPointsListAsString(self):
         routeAsString = ""
