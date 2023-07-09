@@ -10,6 +10,8 @@ from airline.views.viewsAirlineCASM import getAirlineCASM , getAirlineCasmXlsx
 from airline.views.viewsAirlineCasmOptimization import getAirlineCasmOptimization
 from airline.views.viewsAirlineSeatMilesMaximization import getAirlineSeatsMilesMaxXlsx
 
+from airline.views.viewsUsers import viewUsers
+
 app_name = "airline"
 
 ''' 10th April 2023 - retrieve Airline Costs as xlsx file to download  '''
@@ -25,9 +27,7 @@ urlpatterns = [
     
     path('airlineCostsOptimization/<slug:airlineName>' , getAirlineCostsOptimization , name = 'getAirlineCostsOptimization'),
 
-    
     path('getAirlineCostsXlsx/<slug:airlineName>' , getAirlineCostsAsXlsx , name = 'getAirlineCostsAsXlsx'),
-    
     
     path('getAirlineCASM/<slug:airlineName>' , getAirlineCASM , name = 'getAirlineCASM'),
     
@@ -35,7 +35,8 @@ urlpatterns = [
     
     path('getAirlineCasmOptimization/<slug:airlineName>' , getAirlineCasmOptimization , name = 'getAirlineCasmOptimization'),
     
-    path('getAirlineSeatMilesXlsx/<slug:airlineName>' , getAirlineSeatsMilesMaxXlsx , name = 'getAirlineSeatsMilesMaxXlsx')
+    path('getAirlineSeatMilesXlsx/<slug:airlineName>' , getAirlineSeatsMilesMaxXlsx , name = 'getAirlineSeatsMilesMaxXlsx'),
     
+    path('users' , viewUsers , name = 'viewUsers')
     
 ]

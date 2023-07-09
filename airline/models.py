@@ -1,5 +1,6 @@
 from django.db import models
 import logging
+from datetime import datetime
 # Create your models here.
 from trajectory.models import AirlineAirport, AirlineRunWay, AirlineStandardDepartureArrivalRoute
 
@@ -19,7 +20,6 @@ class Airline(models.Model):
 
     def __str__(self):
         return "{0}".format(self.Name)
-    
     
     ''' used to compare objects '''
     def __eq__(self, other):
@@ -474,4 +474,45 @@ class AirlineCosts(models.Model):
     
     def getFlightLegFuelBurnKg(self):
         return ( self.initialTakeOffMassKg - self.finalMassKg)
+    
+    
+''' add user to track IP guests '''
+class User(models.Model):
+    userIp = models.CharField( max_length = 150 , default=None , primary_key = True)
+    firstCnxDateTime = models.DateTimeField( default = datetime.now() )
+    lastCnxDateTime = models.DateTimeField( default = datetime.now() )
+    connexions = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return str(self.userIp)
+    
+    ''' used to compare objects '''
+    def __eq__(self, other):
+        return models.Model.__eq__(self, other)
+    
+    ''' 14 Juin 2023 '''
+    ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
+    def __hash__(self):
+        return super().__hash__()
+    
+    def getUserIpAddress(self):
+        return self.userIp
+    
+    def getNbConnexions(self):
+        return self.connexions
+    
+    def setConnexions(self, nbCnx):
+        self.connexions = nbCnx
+        
+    def getFirstCnxDateTime(self):
+        return self.firstCnxDateTime
+    
+    def setFirstCnxDateTime(self, dateTimeNow):
+        self.firstCnxDateTime = dateTimeNow
+        
+    def getLastCnxDateTime(self):
+        return self.lastCnxDateTime
+        
+    def setLastCnxDateTime(self, dateTimeNow):
+        self.lastCnxDateTime = dateTimeNow
     

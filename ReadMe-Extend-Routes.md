@@ -91,9 +91,7 @@ the same command is loading also the SID STAR waypoints
 using PgAdmin check the SID STAR waypoints database table
 
 
-
 ## update the costs database as it updates the Django database
 
 python manage.py AirlineCostsDatabaseCompute
-
 

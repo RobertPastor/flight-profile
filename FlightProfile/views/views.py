@@ -2,15 +2,56 @@
 # import Http Response from django
 
 import json
+from datetime import datetime
 from django.shortcuts import render
+from django.db.models import Q
+from airline.models import Airline, User
 
-from airline.models import Airline
 
+def get_ip(request):
+    address = request.META.get('HTTP_X_FORWARDED_FOR')
+    if address:
+        ip = address.split(".")[-1].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
+def save_user(request):
+    userIp = get_ip(request)
+    #print ( "IP address of user = {0}".format(userIp) )
+    ''' count number of users '''
+    userCount = User.objects.filter(Q(userIp=userIp)).count()
+    #print ( userCount )
+    if userCount == 0:
+        ''' user does not exists '''
+        #now().date() may be different from current date, since it uses UTC
+        user = User(userIp=userIp)
+        user.save()
+        if user:
+            user.setConnexions(1)
+            user.save()
+    else:
+        #print ( "user is existing ")
+        user = User.objects.filter(userIp=userIp).first()
+        if user:
+            cnxCount = user.getNbConnexions()
+            #print ( cnxCount )
+            cnxCount = cnxCount + 1
+            #print ( cnxCount )
+            #print ( "user has several connexions = {0}".format(cnxCount) )
+            user.setConnexions(cnxCount)
+            user.setLastCnxDateTime(datetime.now())
+            user.save()
 
 def index(request):
     # create a function
     # create a dictionary to pass
     # data to the template
+    
+    ''' save anonymous user's IP address '''
+    save_user(request)
+    
     ''' send the list of airlines to populate the dropdown list in the navigation bar '''
     airlineList = []
     for airline in Airline.objects.all():

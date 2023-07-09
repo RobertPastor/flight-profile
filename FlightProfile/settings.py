@@ -74,7 +74,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'FlightProfile.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 ''' you need to create the database before in pgAdmin4 '''
@@ -144,7 +143,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_L10N = True
-
+#When you set USE_TZ = True in your settings, Django stores date and time information in UTC in the database
 USE_TZ = True
 
 

@@ -5,6 +5,7 @@ Created on 10 déc. 2022
 '''
 
 """
+
 WSGI config for gettingstarted project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
@@ -21,5 +22,3 @@ from django.core.wsgi import get_wsgi_application
 
 application = get_wsgi_application()
 
-#PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-#application = WhiteNoise(application)

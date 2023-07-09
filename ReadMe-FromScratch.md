@@ -24,7 +24,7 @@ Successfully installed asgiref-3.7.1 django-3.2 pytz-2023.3 sqlparse-0.4.4
 [notice] To update, run: python.exe -m pip install --upgrade pip
 PS C:\Users\rober>
 
-## ================== install xlrd !!! need to replace with openpyxl / pandas
+## ================== install xlrd !!! need to replace by openpyxl / pandas
 
 PS C:\Users\rober> pip install xlrd
 Collecting xlrd
@@ -119,6 +119,7 @@ Successfully installed whitenoise-6.4.0
 PS C:\Users\rober>
 
 ## ============ install jsonschema -> used to validate the Aircraft Performance file in JSON schema
+## ============ not used in operations
 
 PS C:\Users\rober\git\flight-profile> pip install jsonschema
 Collecting jsonschema

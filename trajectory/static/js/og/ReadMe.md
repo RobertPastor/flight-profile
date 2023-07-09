@@ -47,7 +47,7 @@ Browserslist: caniuse-lite is outdated. Please run:
 created dist/@openglobus/og.css in 686ms
 PS D:\Node.js\openglobus.0.13.7>
 
-#=================================================
+#================== build ===============================
 
 PS D:\Node.js\openglobus> npm run build
 
@@ -79,14 +79,10 @@ Browserslist: caniuse-lite is outdated. Please run:
 created dist/@openglobus/og.css in 665ms
 PS D:\Node.js\openglobus>
 
-#=================================
-copy from D:\Node.js\openglobus\dist\@openglobus
-1) og.umd.js
-2) og.umd.js.map
 
-to the project static js folder : /flight-profile/trajectory/static/js/og
 
-#=========== avoid compressing ======================
+#=========== avoid minifying ======================
+
 to avoid compressing minifying 
 
 in file rollup.config.js suppress terser in the 1st plugin before the json() plugin
@@ -102,11 +98,30 @@ export default [
                 sourcemap: true
             }
         ],
-        plugins: [json()]
+        plugins: [json() ]
+        
+        
+in order to avoid minifying og.css , change minimize: true with minimize: false in og.css section
 
-# apply patches
+minimize: false
+
+##================== build again ===============================
+
+npm run build
+
+#=================== copy files to the flight profile folder ==============
+
+copy from D:\Node.js\openglobus\dist\@openglobus
+1) og.umd.js
+2) og.umd.js.map
+
+to the project static js folder : /flight-profile/trajectory/static/js/og
+
+
+## ====================== apply patches
 
 ## add function to KML layer
+
 layerKML.addKmlFromXml(  xmlDoc ,  null ,  null );
 
 /**
@@ -133,7 +148,7 @@ layerKML.addKmlFromXml(  xmlDoc ,  null ,  null );
 ## in GlobusTerrain _createHeights
 
 /**
-     * Converts loaded data to segment elevation data type(columr major elevation data array in meters)
+     * Converts loaded data to segment elevation data type(colum major elevation data array in meters)
      * @public
      * @virtual
      * @param {*} data - Loaded elevation data.
