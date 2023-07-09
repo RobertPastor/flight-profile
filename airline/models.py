@@ -1,6 +1,8 @@
 from django.db import models
 import logging
 from datetime import datetime
+
+from django.utils.timezone import now
 # Create your models here.
 from trajectory.models import AirlineAirport, AirlineRunWay, AirlineStandardDepartureArrivalRoute
 
@@ -479,8 +481,8 @@ class AirlineCosts(models.Model):
 ''' add user to track IP guests '''
 class User(models.Model):
     userIp = models.CharField( max_length = 150 , default=None , primary_key = True)
-    firstCnxDateTime = models.DateTimeField( default = datetime.now() )
-    lastCnxDateTime = models.DateTimeField( default = datetime.now() )
+    firstCnxDateTime = models.DateTimeField( default = now() )
+    lastCnxDateTime = models.DateTimeField( default = now() )
     connexions = models.IntegerField(default=0)
     
     def __str__(self):
