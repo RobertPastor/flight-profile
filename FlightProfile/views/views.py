@@ -44,7 +44,7 @@ def save_user(request):
             #print ( cnxCount )
             #print ( "user has several connexions = {0}".format(cnxCount) )
             user.setConnexions(cnxCount)
-            user.setLastCnxDateTime(timezone.now().date())
+            user.setLastCnxDateTime(timezone.now().datetime())
             user.save()
 
 def index(request):
