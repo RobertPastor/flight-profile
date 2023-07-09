@@ -2,7 +2,8 @@
 # import Http Response from django
 
 import json
-from datetime import datetime
+from django.utils import timezone
+
 from django.shortcuts import render
 from django.db.models import Q
 from airline.models import Airline, User
@@ -41,7 +42,7 @@ def save_user(request):
             #print ( cnxCount )
             #print ( "user has several connexions = {0}".format(cnxCount) )
             user.setConnexions(cnxCount)
-            user.setLastCnxDateTime(datetime.now())
+            user.setLastCnxDateTime(timezone.now().date())
             user.save()
 
 def index(request):
