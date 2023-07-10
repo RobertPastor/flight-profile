@@ -2,17 +2,14 @@
 # import Http Response from django
 
 import json
-import logging
 from django.utils import timezone
 
 from django.shortcuts import render
-from django.db.models import Q
 from airline.models import Airline, User
 
 
 def get_ip(request):
     address = request.META.get('HTTP_X_FORWARDED_FOR')
-    logging.info ( address )
     if address:
         ip = address
     else:
@@ -22,9 +19,8 @@ def get_ip(request):
 
 def save_user(request):
     userIp = get_ip(request)
-    #print ( "IP address of user = {0}".format(userIp) )
     ''' count number of users '''
-    userCount = User.objects.filter(Q(userIp=userIp)).count()
+    userCount = User.objects.filter(userIp=userIp).count()
     #print ( userCount )
     if userCount == 0:
         ''' user does not exists '''
@@ -44,7 +40,7 @@ def save_user(request):
             #print ( cnxCount )
             #print ( "user has several connexions = {0}".format(cnxCount) )
             user.setConnexions(cnxCount)
-            user.setLastCnxDateTime(timezone.now().date())
+            user.setLastCnxDateTime(timezone.now())
             user.save()
 
 def index(request):

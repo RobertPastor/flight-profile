@@ -1,6 +1,4 @@
 from django.db import models
-import logging
-from django.utils import timezone
 
 # Create your models here.
 from trajectory.models import AirlineAirport, AirlineRunWay, AirlineStandardDepartureArrivalRoute
@@ -25,7 +23,6 @@ class Airline(models.Model):
     ''' used to compare objects '''
     def __eq__(self, other):
         return models.Model.__eq__(self, other)
-    
     
     ''' 14 Juin 2023 '''
     ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
@@ -70,18 +67,15 @@ class AirlineRoute(models.Model):
     def __hash__(self):
         return super().__hash__()
     
-    
     def getAirportsList(self):
         airlineRoutes = AirlineRoute.objects.all()
         airportsICAOcodeList = []
         for airlineRoute in airlineRoutes:
             adep = airlineRoute.DepartureAirportICAOCode
             if ( adep in airportsICAOcodeList ) == False :
-                #logging.info ( adep )
                 airportsICAOcodeList.append(adep)
             ades = airlineRoute.ArrivalAirportICAOCode
             if ( ades in airportsICAOcodeList ) == False :
-                #logging.info ( ades )
                 airportsICAOcodeList.append(ades)
             
         return airportsICAOcodeList
@@ -111,13 +105,13 @@ class AirlineRoute(models.Model):
         assert ( isinstance ( lastWayPointInRoute , AirlineWayPoint ))
         
         AdesRunWay = AirlineRunWay.objects.filter  ( Name = AdesRunWayName , Airport = Ades ).first()
-        if ( AdesRunWay ):
+        if AdesRunWay:
             isSID = False
             sidStar = AirlineStandardDepartureArrivalRoute.objects.filter ( isSID = isSID , 
                                                                             DepartureArrivalAirport = Ades,
                                                                             DepartureArrivalRunWay  = AdesRunWay ,
                                                                             FirstLastRouteWayPoint = lastWayPointInRoute).first()
-            if ( sidStar ):
+            if sidStar:
                 return sidStar.getWayPointsListAsString(isSID)
         
         return ""
@@ -126,29 +120,25 @@ class AirlineRoute(models.Model):
     def getfirstRouteWayPoint(self):
         airlineRouteWayPoint = AirlineRouteWayPoints.objects.filter(Route=self).distinct().order_by("Order").first()
         if ( airlineRouteWayPoint ):
-            #print ( airlineRouteWayPoint )
             airlineWayPoint = AirlineWayPoint.objects.filter ( WayPointName = airlineRouteWayPoint.getWayPointName() ).first()
             if ( airlineWayPoint ):
                 return airlineWayPoint
         else:
             raise ValueError("first way point in Route not found ")
         return None
-    
     
     def getLastRouteWayPoint(self):
         airlineRouteWayPoint = AirlineRouteWayPoints.objects.filter(Route=self).distinct().order_by("Order").last()
         if ( airlineRouteWayPoint ):
-            #print ( airlineRouteWayPoint )
+            
             airlineWayPoint = AirlineWayPoint.objects.filter ( WayPointName = airlineRouteWayPoint.getWayPointName() ).first()
             if ( airlineWayPoint ):
                 return airlineWayPoint
         else:
             raise ValueError("first way point in Route not found ")
         return None
-        
     
     def getRouteAsString(self, AdepRunWayName = None, AdesRunWayName = None):
-        
         strRoute = "ADEP/" + self.DepartureAirportICAOCode 
         Adep = AirlineAirport.objects.all().filter(AirportICAOcode=self.DepartureAirportICAOCode).first()
         if ( Adep ):
@@ -156,9 +146,9 @@ class AirlineRoute(models.Model):
                 strRoute += "/" + AdepRunWayName
                 ''' 3th June 2023 - extend with SID when available '''
                 strRoute += self.extendRouteWithSID( Adep , AdepRunWayName , self.getfirstRouteWayPoint() )
-                print ( strRoute )
+                
             else:
-                print ( "Best Departure Runway = {0}".format(self.computeBestDepartureRunWay()))
+                #print ( "Best Departure Runway = {0}".format(self.computeBestDepartureRunWay()))
                 AdepRunway = AirlineRunWay.objects.all().filter(Airport=Adep).first()
                 if AdepRunway  and ( len ( AdepRunway.Name ) > 0):
                     strRoute += "/" + AdepRunway.Name
@@ -175,47 +165,39 @@ class AirlineRoute(models.Model):
                 strRoute += airlineRouteWayPoint.WayPoint
                 strRoute += "-"
         
-        
         Ades = AirlineAirport.objects.all().filter(AirportICAOcode=self.ArrivalAirportICAOCode).first()
         if ( Ades ):
             if (AdesRunWayName):
-                
-                ''' 6th June 2°23 - extend with STAR when available '''
+                ''' 6th June 2023 - extend with STAR when available '''
                 strRoute += self.extendRouteWithSTAR(Ades, AdesRunWayName, self.getLastRouteWayPoint() )
-                print ( strRoute )
+                #print ( strRoute )
                 strRoute += "-"
                 strRoute += "ADES/" + self.ArrivalAirportICAOCode
                 strRoute += "/" + AdesRunWayName
-                print ( strRoute )
                 
             else:
-                print ( "Best arrival RunWay = {0}".format(self.computeBestArrivalRunWay()))
                 AdesRunWay = AirlineRunWay.objects.all().filter(Airport=Ades).first()
                 if AdesRunWay and ( len (AdesRunWay.Name ) > 0):
                     strRoute += "/" + AdesRunWay.Name 
             
-        strRoute = str(strRoute).replace("--", "-")
-        logging.info ( strRoute )
-        
+        # clean
+        strRoute = str(strRoute).replace("--", "-")        
         return strRoute
   
-    ''' best departure runway is the one with minimal distance between end of 5 nautic climb ramp and first point of the route '''
+    ''' best departure run-way is the one with minimal distance between end of 5 nautical climb ramp and first point of the route '''
     def computeBestDepartureRunWay(self):
         
         firstRouteWayPoint = AirlineRouteWayPoints.objects.all().filter(Route=self).distinct().order_by("Order").first()
         if ( firstRouteWayPoint ):
             wayPoint = AirlineWayPoint.objects.all().filter( WayPointName = firstRouteWayPoint.WayPoint ).first()
             if (wayPoint):
-                #print ( wayPoint )
                 firstRouteWayPoint = GeographicalPoint(wayPoint.Latitude , wayPoint.Longitude , EarthRadiusMeters)
-                #print ( "first route way Point -> {0}".format( firstRouteWayPoint ))
                 
                 Adep = self.DepartureAirportICAOCode
                 minimalDistanceMeters = 0.0
                 bestRunWay = None
                 first = True
                 for rwy in AirlineRunWay.objects.all().filter(Airport=Adep):
-                    #print (rwy)
                     runWay = RunWay(Name               = rwy.Name ,
                                     airportICAOcode    = Adep,
                                     LengthFeet         = rwy.LengthFeet,
@@ -223,13 +205,11 @@ class AirlineRoute(models.Model):
                                     LatitudeDegrees    = rwy.LatitudeDegrees,
                                     LongitudeDegrees   = rwy.LongitudeDegrees)
                     rwyEnd = runWay.getEndOfRunWay()
-                    ''' 5 nautical miles after end of runway '''
+                    ''' 5 nautical miles after end of run-way '''
                     latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading( 5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
                     pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
-                    #print ( "end of runway extended path = {0}".format(pathEnd) )
         
                     distanceMeters = pathEnd.computeDistanceMetersTo(firstRouteWayPoint)
-                    #print ( "distance between end of path and first way Point = {0} meters".format( distanceMeters ))
                     if first:
                         first = False
                         bestRunWay = rwy
@@ -239,7 +219,6 @@ class AirlineRoute(models.Model):
                             bestRunWay = rwy
                             minimalDistanceMeters = distanceMeters
                         
-                #print ("best departure runway = {0}".format(bestRunWay.Name))
                 return bestRunWay.Name if (bestRunWay) else ""
             else:
                 return "Error"
@@ -247,24 +226,21 @@ class AirlineRoute(models.Model):
             return "Error"
   
   
-    ''' best arrival runway is the one with minimal distance between start of 5 nautic descent ramp and last point of the route '''
+    ''' best arrival run-way is the one with minimal distance between start of 5 nautic descent ramp and last point of the route '''
     def computeBestArrivalRunWay(self):
         
         lastRouteWayPoint = AirlineRouteWayPoints.objects.all().filter(Route=self).distinct().order_by("Order").last()
         if ( lastRouteWayPoint ):
             wayPoint = AirlineWayPoint.objects.all().filter( WayPointName = lastRouteWayPoint.WayPoint ).first()
             if ( wayPoint ):
-                #print ( wayPoint )
         
                 lastRouteWayPoint = GeographicalPoint(wayPoint.Latitude , wayPoint.Longitude , EarthRadiusMeters)
-                #print ( "last route way Point -> {0}".format( lastRouteWayPoint ))
         
                 Ades =  self.ArrivalAirportICAOCode
                 minimalDistanceMeters = 0.0
                 bestRunWay = None
                 first = True
                 for rwy in AirlineRunWay.objects.all().filter(Airport=Ades):
-                    #print (rwy)
                     runWay = RunWay(Name               = rwy.Name ,
                                     airportICAOcode    = Ades,
                                     LengthFeet         = rwy.LengthFeet,
@@ -275,10 +251,8 @@ class AirlineRoute(models.Model):
                     ''' 5 nautical miles after end of runway '''
                     latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading(5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
                     pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
-                    #print ( "end of runway extended path = {0}".format( pathEnd ) )
                     
                     distanceMeters = pathEnd.computeDistanceMetersTo(lastRouteWayPoint)
-                    #print ( "distance between end of path and last way Point = {0} meters".format( distanceMeters ))
         
                     if first:
                         first = False
@@ -289,7 +263,6 @@ class AirlineRoute(models.Model):
                             bestRunWay = rwy
                             minimalDistanceMeters = distanceMeters
                         
-                #print ("best arrival runway = {0}".format(bestRunWay.Name))
                 return bestRunWay.Name if (bestRunWay) else ""
             else:
                 return "Error"
@@ -304,18 +277,15 @@ class AirlineRouteWayPoints(models.Model):
     # linked to the WayPoint class in the trajectory
     WayPoint = models.CharField(max_length = 100)
     
-    
     ''' used to compare objects '''
     def __eq__(self, other):
         return models.Model.__eq__(self, other)
-    
     
     ''' 14 Juin 2023 '''
     ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
     def __hash__(self):
         return super().__hash__()
     
-            
     def getWayPointsListAsString(self):
         routeAsString = ""
         first = True
@@ -325,52 +295,43 @@ class AirlineRouteWayPoints(models.Model):
                 first = False
             else:
                 routeAsString += "-" + str(wayPoint.WayPoint).strip()
-        logging.info ( routeAsString )
         return routeAsString
-    
     
     def getWayPointName(self):
         return self.WayPoint
         
 
 class AirlineAircraftInstances(object):
-    pass
 
     ''' compute a list of aircraft instances to reach the same number of aircraft instances as the number of flight legs '''
     def computeAirlineAircraftInstances(self, airlineName, nbFlightLegs):
-        pass
         aircraftInstanceList = []
         airline = Airline.objects.all().filter(Name=airlineName).first()
         if airline:
-            
             nbAircrafts = AirlineAircraft.objects.filter(airline=airline).count()
             if ( nbAircrafts >= nbFlightLegs ):
                 index = 0
                 for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
-                    #print (str(index).zfill(3))
                     aircraftInstanceList.append(airlineAircraft.aircraftICAOcode + "-" + str(index).zfill(3))
                     index = index + 1
                 return aircraftInstanceList
             
             else:
-                pass
                 index = 0
                 while index < nbFlightLegs:
                     for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
-                        pass
                         aircraftInstanceList.append(airlineAircraft.aircraftICAOcode + "-" + str(index).zfill(3))
                         index = index + 1
                         if ( index >= nbFlightLegs ):
                             break
                         
-                return aircraftInstanceList
-                    
+                return aircraftInstanceList       
         else:
             return []
         
+    ''' aircraft instance = ICAO code + "-" + instance as xxx 3 digits '''
     def getAircraftInstanceICAOcode(self, acInstance):
         return str(acInstance).split("-")[0]
-    
     
 
 class AirlineAircraft(models.Model):
@@ -383,7 +344,6 @@ class AirlineAircraft(models.Model):
     
     ''' 3rd May 2023 - add turn around times '''
     turnAroundTimesMinutes = models.FloatField(default = 0)
-    
     landingLengthMeters = models.FloatField(default = 0)
     ''' Max TakeOff Weight '''
     takeOffMTOWLengthMeters = models.FloatField(default = 0)
@@ -444,7 +404,7 @@ class AirlineAircraft(models.Model):
         return self.turnAroundTimesMinutes
     
 
-''' 29th April 2023 - add target cruise level - departure runway and arrival runway '''
+''' 29th April 2023 - add target cruise level - departure run-way and arrival run-way '''
 class AirlineCosts(models.Model):
     airline               = models.ForeignKey( Airline, on_delete=models.CASCADE , default=None )
     airlineAircraft       = models.ForeignKey( AirlineAircraft, on_delete=models.CASCADE , default=None )
@@ -477,11 +437,11 @@ class AirlineCosts(models.Model):
         return ( self.initialTakeOffMassKg - self.finalMassKg)
     
     
-''' add user to track IP guests '''
+''' add user to track IP address of the anonymous guests '''
 class User(models.Model):
     userIp = models.CharField( max_length = 150 , default=None , primary_key = True)
-    firstCnxDateTime = models.DateTimeField( default = timezone.now().date() )
-    lastCnxDateTime = models.DateTimeField( default = timezone.now().date() )
+    firstCnxDateTime = models.DateTimeField( auto_now_add=True )
+    lastCnxDateTime = models.DateTimeField( auto_now_add=True )
     connexions = models.IntegerField(default=0)
     
     def __str__(self):

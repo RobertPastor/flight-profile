@@ -1,5 +1,4 @@
 import os
-import logging
 from django.db import models
 
 from trajectory.Environment.RunWayFile import RunWay
@@ -246,14 +245,13 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
         sidStarWayPointsRoute = AirlineSidStarWayPointsRoute.objects.filter( Route = self ).order_by("Order")
         for wayPoint in sidStarWayPointsRoute:
             if (first):
+                first = False
                 if ( isSID ):
                     if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
                         routeAsString += str(wayPoint.WayPointName).strip()
-                    first = False
                 else:
                     if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
                         routeAsString += str(wayPoint.WayPointName).strip()
-                    first = False
             else:
                 if ( isSID ):
                     routeAsString += "-" + str(wayPoint.WayPointName).strip()
@@ -261,8 +259,6 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
                     if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
                         routeAsString += "-" + str(wayPoint.WayPointName).strip()
         
-        #logging.info ( routeAsString )
-        print ( routeAsString )
         return routeAsString
 
     
@@ -306,7 +302,7 @@ class AirlineSidStarWayPointsRoute(models.Model):
                 first = False
             else:
                 routeAsString += "-" + str(wayPoint.WayPoint).strip()
-        logging.info ( routeAsString )
+        #logging.info ( routeAsString )
         return routeAsString
     
     
