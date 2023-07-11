@@ -265,3 +265,18 @@ th {
 .mainAirwaysSubMenuDiv:hover + mainAirwaysSubMenuDivIdHide {
 	display: block;
 }
+
+.horizontal-align-right {
+	display: inline-block;
+	text-align: right;
+}
+
+.horizontal-align-center {
+	display: inline-block;
+}
+
+.horizontal-align-left {
+	display: inline-block;
+	text-align: left;
+}
+

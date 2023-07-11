@@ -25,6 +25,7 @@ from django.http import JsonResponse
 from airline.models import Airline, AirlineRoute, AirlineAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
+from trajectory.models import AirlineAirport
 
 from trajectory.models import BadaSynonymAircraft
 
@@ -53,25 +54,36 @@ def writeReadMe(workbook, request, airlineName):
         wsReadMe.write(row, 1 , aircraft.getAircraftFullName(), styleEntete)
     
     row = row + 1
-    wsReadMe.write(row, 0 , "Departure ICAO code", styleLavender)
+    wsReadMe.write(row, 0 , "Departure Airport ICAO code", styleLavender)
     Adep = str(request.GET['route']).split("-")[0]
     wsReadMe.write(row, 1 , Adep, styleEntete)
+    
+    airport = AirlineAirport.objects.filter(AirportICAOcode = Adep).first()
+    if airport:
+        row = row + 1
+        wsReadMe.write(row, 0 , "Departure Airport", styleLavender)
+        wsReadMe.write(row, 1 , airport.getAirportName(), styleEntete)
+        
+    row = row + 1
+    wsReadMe.write(row, 0 , "Departure Airport Runway", styleLavender)
+    wsReadMe.write(row, 1 , request.GET['adepRwy'], styleEntete)
 
     row = row + 1
-    wsReadMe.write(row, 0 , "Destination ICAO code", styleLavender)
+    wsReadMe.write(row, 0 , "Destination Airport ICAO code", styleLavender)
     Ades = str(request.GET['route']).split("-")[1]
     wsReadMe.write(row, 1 , Ades, styleEntete)
-
-    row = row + 1
-    wsReadMe.write(row, 0 , "Departure Runway", styleLavender)
-    wsReadMe.write(row, 1 , request.GET['adepRwy'], styleEntete)
+    
+    airport = AirlineAirport.objects.filter(AirportICAOcode = Ades).first()
+    if airport:
+        row = row + 1
+        wsReadMe.write(row, 0 , "Destination Airport", styleLavender)
+        wsReadMe.write(row, 1 , airport.getAirportName(), styleEntete)
     
     row = row + 1
-    wsReadMe.write(row, 0 , "Destination Runway", styleLavender)
+    wsReadMe.write(row, 0 , "Destination Airport Runway", styleLavender)
     wsReadMe.write(row, 1 , request.GET['adesRwy'], styleEntete)
     
-    ''' set width of each column '''
-    wsReadMe.set_column(0 , 1 , len("Vertical Flight Profile"))
+    wsReadMe.autofit()
     
 
 def createExcelWorkbook(memoryFile, request, airlineName):
@@ -90,7 +102,7 @@ def createExcelVerticalProfile(request, airlineName):
     locale.setlocale(locale.LC_TIME, French_Locale)
     
     logger.setLevel(logging.DEBUG)
-    logging.info ("compute Flight Profile - for airline = {0}".format(airlineName))
+    logger.info ("compute Flight Profile - for airline = {0}".format(airlineName))
     
     if request.method == 'GET':
         
@@ -101,7 +113,7 @@ def createExcelVerticalProfile(request, airlineName):
             badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
             if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
                 
-                logger.debug ("selected aircraft = {0}".format( aircraftICAOcode ) )
+                logger.info ("selected aircraft = {0}".format( aircraftICAOcode ) )
             
                 airlineRoute = request.GET['route']
                 
@@ -117,16 +129,16 @@ def createExcelVerticalProfile(request, airlineName):
                 arrivalAirportRunWayName = request.GET['adesRwy']
                 
                 takeOffMassKg = request.GET['mass']
-                logger.debug( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
+                #logger.debug( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
                 cruiseFLfeet = request.GET['fl'] 
-                logger.debug( "cruise FL feet = {0}".format( cruiseFLfeet ) )
+                #logger.debug( "cruise FL feet = {0}".format( cruiseFLfeet ) )
                 
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 if (airlineRoute):
-                        logger.debug ( airlineRoute )
+                        #logger.debug ( airlineRoute )
                         '''  use run-ways defined in the web page '''
                         routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
-                        logger.debug ( routeAsString )
+                        #logger.debug ( routeAsString )
                         acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
                         if ( acPerformance.read() ):
                             #logger.debug ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   

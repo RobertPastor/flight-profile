@@ -104,9 +104,11 @@ class AirlineAirport(models.Model):
     def __str__(self):
         return "{0}-{1}".format(self.AirportICAOcode, self.AirportName)
     
+    def getAirportName(self):
+        return self.AirportName
+    
     def getAsJson(self):
         return { "AirportICAO" : self.AirportICAOcode, "LatitudeDegress": self.Latitude, "LongitudeDegrees": self.Longitude}
-    
     
     def getICAOcode(self):
         return self.AirportICAOcode
