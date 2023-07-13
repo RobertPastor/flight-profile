@@ -2,7 +2,7 @@
 
 
 //Define custom control class
-class FlighProfileControl extends og.Control {
+class FlightProfileControl extends og.Control {
 	constructor(options) {
 		super(options);
 	}
@@ -16,14 +16,15 @@ class FlighProfileControl extends og.Control {
 		
 		let row = document.createElement('tr');
 		let td = document.createElement('td');
-		td.style.colspan = "2";
+		td.colSpan = "2";
 		
 		let div_1 = document.createElement('div');
 		div_1.id = "aircraftSelectionId";
+		div_1.style.textAlign = "center";
 		div_1.classList.add("aircraftSelectionClass");
 		
 		let label_1_1 = document.createElement("label");
-		label_1_1.innerHTML = "Aircraft ->" ;
+		label_1_1.innerHTML = "Select the aircraft ->" ;
 		div_1.appendChild(label_1_1);
 		
 		let select_1 = document.createElement("select");
@@ -49,7 +50,7 @@ class FlighProfileControl extends og.Control {
 		
 		let label_1_2 = document.createElement("label");
 		//label_1_2.innerHTML = " Min TakeOff Mass (kg) ->" ;
-		label_1_2.innerHTML = " ->" ;
+		label_1_2.innerHTML = " min ->" ;
 		div_1.appendChild(label_1_2);
 		
 		// hidden input with min take off weight KG
@@ -78,10 +79,11 @@ class FlighProfileControl extends og.Control {
 		input_1.maxlength = "5";
 		input_1.size = "3";
 		input_1.title = "insert the TakeOff mass (kg)" ;
+		input_1.style.backgroundColor = '#B2BEB5';
+
 		div_2.appendChild(input_1);
 		
 		td_1.appendChild(div_2);
-		//========================
 		
 		// ---------- label take off weight
 		let div_3 = document.createElement('div');
@@ -89,7 +91,7 @@ class FlighProfileControl extends og.Control {
 		
 		let label_1_4 = document.createElement("label");
 		//label_1_4.innerHTML = " MaxTakeOff Mass (kg) ->" ;
-		label_1_4.innerHTML = " ->" ;
+		label_1_4.innerHTML = " max ->" ;
 		div_3.appendChild(label_1_4);
 		
 		// hidden input with max take off weight KG
@@ -100,13 +102,12 @@ class FlighProfileControl extends og.Control {
 		input_1_2.size = "3";
 		input_1_2.title = "max TakeOff Mass (Kg)" ;
 		input_1_2.style.backgroundColor = 'yellow';
-
 		input_1_2.readOnly = true;
+		
 		div_3.appendChild(input_1_2);
 		
 		td_1.appendChild(div_3);
 		row.appendChild(td_1);
-
 		
 		// ------------- Requested Flight Level
 		let td_2 = document.createElement('td');
@@ -115,7 +116,7 @@ class FlighProfileControl extends og.Control {
 		div_4.classList.add("horizontal-align-left");
 		
 		let label_1_5 = document.createElement("label");
-		label_1_5.innerHTML = " RFL (feet) ->" ;
+		label_1_5.innerHTML = " Requested Flight Level (feet) ->" ;
 		div_4.appendChild(label_1_5);
 		
 		let input_2 = document.createElement("input");
@@ -123,6 +124,8 @@ class FlighProfileControl extends og.Control {
 		input_2.maxlength = "3";
 		input_2.size = "3";
 		input_2.title = "insert the Requested Flight Level (feet)";
+		input_2.style.backgroundColor = '#B2BEB5';
+
 		div_4.appendChild(input_2);
 		
 		td_2.appendChild(div_4);
@@ -133,7 +136,7 @@ class FlighProfileControl extends og.Control {
 		// hidden input with max fligh level
 		
 		let label_1_6 = document.createElement("label");
-		label_1_6.innerHTML = " ->" ;
+		label_1_6.innerHTML = " max ->" ;
 		div_5.appendChild(label_1_6);
 		
 		let input_2_1 = document.createElement("input");
@@ -143,7 +146,6 @@ class FlighProfileControl extends og.Control {
 		input_2_1.size = "3";
 		input_2_1.title = "max Flight Level (feet)";
 		input_2_1.style.backgroundColor = 'yellow';
-
 		input_2_1.readOnly = true;
 		div_5.appendChild(input_2_1);
 		
@@ -151,30 +153,76 @@ class FlighProfileControl extends og.Control {
 		
 		row.appendChild(td_2);
 		return row;
-		
+	}
+	
+	getAdepICAOcodeInputId() {
+		return "fligthProfileControlAdepICAOInputId";
+	}
+	
+	getAdesICAOcodeInputId() {
+		return "fligthProfileControlAdesICAOInputId";
 	}
 	
 	createRowWithRouteSelector() {
 		
 		let row = document.createElement('tr');
-		let td = document.createElement('td');
 		
+		let td = document.createElement('td');
+		td.colSpan = "2";
+		
+		let div_1 = document.createElement('div');
+		div_1.classList.add("horizontal-align-left");
+		
+		// input to store ICAO code of the Adep
+		let input_1 = document.createElement("input");
+		input_1.id = this.getAdepICAOcodeInputId();
+		input_1.hidden = false;
+		input_1.maxlength = "5";
+		input_1.size = "5";
+		input_1.title = "Adep ICAO";
+		input_1.style.backgroundColor = 'yellow';
+		input_1.readOnly = true;
+		
+		div_1.appendChild(input_1);
+		td.appendChild(div_1);
+		
+		// route selector
+
 		let div_2 = document.createElement('div');
 		div_2.id = "routesSelectionId";
 		div_2.classList.add("routesSelectionClass");
-		
+		div_2.classList.add("horizontal-align-left");
+
 		let label_2 = document.createElement("label");
-		label_2.innerHTML = "Route ->" ;
+		label_2.innerHTML = "Route Selector ->" ;
 		div_2.appendChild(label_2);
 		
 		// route selector
 		let select_2 = document.createElement("select");
 		select_2.id = "airlineRouteId";
 		select_2.name = "airlineRouteName";
+		select_2.title = "click to select the route";
 
 		div_2.appendChild(select_2);
-		
 		td.appendChild(div_2);
+		
+		// Ades ICAO code
+		let div_3 = document.createElement('div');
+		div_3.classList.add("horizontal-align-right");
+
+		// input to store ICAO code of the Adep
+		let input_2 = document.createElement("input");
+		input_2.id = this.getAdesICAOcodeInputId();
+		input_2.hidden = false;
+		input_2.maxlength = "5";
+		input_2.size = "5";
+		input_2.title = "Ades ICAO";
+		input_2.style.backgroundColor = 'yellow';
+		input_2.readOnly = true;
+		
+		div_3.appendChild(input_2);
+		td.appendChild(div_3);
+		
 		row.appendChild(td);
 		return row;
 	}
@@ -229,11 +277,13 @@ class FlighProfileControl extends og.Control {
 		let row = document.createElement('tr');
 		let td_1 = document.createElement('td');
 		
-		// --------------------
-
+		let firstMainDiv = document.createElement('div');
+		firstMainDiv.classList.add("rowClass");
+		
 		let div_5 = document.createElement('div');
 		div_5.id = "launchComputeProfileId";
 		div_5.classList.add("launchComputeProfileClass");
+		div_5.classList.add("colClass");
 
 		// -------------------------------------------
 		// first button  - all button added to the same div
@@ -241,23 +291,38 @@ class FlighProfileControl extends og.Control {
 		let button_5 = document.createElement("button");
 		button_5.id = "btnComputeFlightProfileId";
 		button_5.innerHTML = "Compute Flight Profile";
+		button_5.classList.add("buttonWidth");
 		div_5.appendChild(button_5);
-
-		// --------------------
 		
+		firstMainDiv.appendChild(div_5);
+		
+		// --------------------
+		let div_6 = document.createElement('div');
+		div_6.classList.add("horizontal-align-right");
+		div_6.classList.add("colClass");
+
 		let button_6 = document.createElement("button");
 		button_6.id = "btnComputeCostsId";
 		button_6.innerHTML = "Compute Costs";
-		div_5.appendChild(button_6);
+		button_6.classList.add("buttonWidth");
+
+		div_6.appendChild(button_6);
 		
-		td_1.appendChild(div_5)
+		firstMainDiv.appendChild(div_6);
+
+		td_1.appendChild(firstMainDiv);
 		row.appendChild(td_1);
-		
+				
 		// ---- second td
 		
 		let td_2 = document.createElement('td');
 		
-		let div_6 = document.createElement('div');
+		let secondMainDiv = document.createElement('div');
+		secondMainDiv.classList.add("rowClass");
+
+		let div_7 = document.createElement('div');
+		div_7.classList.add("horizontal-align-left");
+		div_7.classList.add("colClass");
 
 		// --------------------
 		// button down load state vector
@@ -265,19 +330,30 @@ class FlighProfileControl extends og.Control {
 		let button_7 = document.createElement("button");
 		button_7.id = "btnDownLoadVerticalProfileId";
 		button_7.innerHTML = "Download Vertical Profile";
-		div_6.appendChild(button_7);
+		button_7.classList.add("buttonWidth");
+
+		div_7.appendChild(button_7);
 		
+		secondMainDiv.appendChild( div_7 );
+
 		// --------------------
 		// button download XML file
+		
+		let div_8 = document.createElement('div');
+		div_8.classList.add("horizontal-align-right");
+		div_8.classList.add("colClass");
 		
 		let button_8 = document.createElement("button");
 		button_8.id = "btnDownLoadKMLfileId";
 		button_8.innerHTML = "Download KML";
-		div_6.appendChild(button_8);
+		button_8.classList.add("buttonWidth");
+
+		div_8.appendChild(button_8);
+		
+		secondMainDiv.appendChild(div_8);
 
 		// add div with all buttons to the TD
-		td_2.appendChild(div_6);
-		
+		td_2.appendChild( secondMainDiv )
 		// --------------------
 		
 		row.appendChild(td_2);

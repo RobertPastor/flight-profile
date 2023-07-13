@@ -7,7 +7,6 @@ from django.utils import timezone
 from django.shortcuts import render
 from airline.models import Airline, User
 
-
 def get_ip(request):
     address = request.META.get('HTTP_X_FORWARDED_FOR')
     if address:
@@ -15,7 +14,6 @@ def get_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
-
 
 def save_user(request):
     userIp = get_ip(request)

@@ -13,12 +13,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
 const SingletonProfileCosts = (function () {
 	
 	let instance;
-
     function createInstance() {
         let object = new AirlineProfileCosts();
         return object;
     }
-
     return {
         getInstance: function () {
             if (!instance) {
@@ -96,12 +94,27 @@ class AirlineProfileCosts {
 			}
 		}
 	}
+	
+	setAirportsICAOcode() {
+		
+		let selectedRoute = $("#airlineRouteId option:selected").val();
+
+		// get Input Id
+		let inputId = this.flightProfileControl.getAdepICAOcodeInputId();
+		let inputElement = document.getElementById(inputId);
+		inputElement.value = selectedRoute.split("-")[0];
+			
+		inputId = this.flightProfileControl.getAdesICAOcodeInputId();
+		inputElement = document.getElementById(inputId);
+		inputElement.value = selectedRoute.split("-")[1];
+		
+	}
 
 	populateAirlineRoutesFlightProfileSelector( airlineRoutesArray ) {
 	
 		// trComputeFlightProfileId
 		$("#trComputeFlightProfileId").show();
-		// routesSelectionId
+		// routesSelectionId defined in FlightProfileControl
 		$("#routesSelectionId").show();
 		
 		// 18th June 2023 - create a list of departure and arrival airports
@@ -112,6 +125,7 @@ class AirlineProfileCosts {
 		$('#airlineRouteId').empty();
 
 		for (let index = 0; index < airlineRoutesArray.length; index++) {
+			
 			let airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
 			let airlineRouteKey = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
 			$('#airlineRouteId').append('<option value="' + airlineRouteKey + '">' + airlineRouteName + '</option>');
@@ -120,7 +134,10 @@ class AirlineProfileCosts {
 								"aDep"   : airlineRoutesArray[index]["DepartureAirportICAOCode"] , 
 								"aDes"   : airlineRoutesArray[index]["ArrivalAirportICAOCode"]
 								});
+			
 		}
+		// the next function is using this.routes
+		this.setAirportsICAOcode();
 	}
 
 	loadOneFlightProfileWayPoint( layerWayPoints, waypoint ) {
@@ -225,7 +242,6 @@ class AirlineProfileCosts {
 			if ( placeMark["name"].includes("ground") || placeMark["name"].includes("slope") || placeMark["name"].includes("takeOff") ) {
 				offset = [10, +20];
 			}
-			
 			rayLayer.add(new og.Entity({
 				cartesian : cartAir,
 				label: {
@@ -288,7 +304,6 @@ class AirlineProfileCosts {
 		// get the name of the airline
 		let airlineName = $("#airlineSelectId option:selected").val();
 		airlineName = encodeURIComponent(airlineName);
-		
 		return "Rays" + "-" + airlineName;
 	}
 	
@@ -348,11 +363,9 @@ class AirlineProfileCosts {
 			let route = $("#airlineRouteId option:selected").val();
 			
 			if ( route.split("-")[0] == airlineRunWaysArray[index]["airlineAirport"]) {
-				
-				//console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
-			
-				let airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
-				let airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
+							
+				let airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"];
+				let airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading";
 				$('#airlineDepartureRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
 			}
 		}
@@ -366,10 +379,8 @@ class AirlineProfileCosts {
 			
 			if ( route.split("-")[1] == airlineRunWaysArray[index]["airlineAirport"]) {
 				
-				//console.log( "runway -> " + airlineRunWaysArray[index]["airlineRunWayName"] + " ---> for airport -> " + airlineRunWaysArray[index]["airlineAirport"] )
-
-				let airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"]
-				let airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading"
+				let airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"];
+				let airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading";
 				$('#airlineArrivalRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
 			}
 		}
@@ -380,20 +391,15 @@ class AirlineProfileCosts {
 		if ( $('#flightProfileMainDivId').is(":visible") ) {
 			
 			$("#flightProfileMainDivId").hide();
-			
-			//document.getElementById("btnLaunchFlightProfile").disabled = true
-			document.getElementById("btnLaunchFlightProfile").innerText = "Profile";
-			//document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
-			
 		}
 	}
 
-	launchFlightProfile(globus) {
+	launchFlightProfile(globus , flightProfileControl) {
 	
 		this.globus = globus ;
+		this.flightProfileControl = flightProfileControl;
 		globus.planet.events.on("layeradd", function (e) {
 			
-			//console.log("layeradd event");
 			if (e.pickingObject instanceof og.Layer) {
 				console.log(e.pickingObject.name);
 			}
@@ -401,7 +407,7 @@ class AirlineProfileCosts {
 		});
 		
 		// listen to change to the aircraft Mass
-		document.getElementById("TakeOffMassKgId").addEventListener('change', function (evt) {
+		document.getElementById("TakeOffMassKgId").addEventListener('change', function () {
 			
 			let elemTOMassKg = document.getElementById('TakeOffMassKgId');
 			//console.log(elemTOMassKg.value);
@@ -449,7 +455,6 @@ class AirlineProfileCosts {
 				}
 		});
 		
-				
 		// listen to select route change
 		$( "#airlineRouteId" ).change(function() {
 			
@@ -469,6 +474,8 @@ class AirlineProfileCosts {
 							if ( dataJson.hasOwnProperty( "airlineRunWays" )) {
 								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
 							}
+							// each time the route selector changes, it is needed to update the inputs with the ICAO codes
+							SingletonProfileCosts.getInstance().setAirportsICAOcode();
 							$("#btnLaunchCosts").show();
 							
 						},

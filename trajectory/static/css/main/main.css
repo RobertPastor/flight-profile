@@ -96,22 +96,22 @@ th {
 
 .arrow-left {
 	background:         url('/static/images/arrow-left.png');
-    background-color:	#60D6A7;
+    background-color:	white;
     background-repeat:  no-repeat;
     cursor:             pointer;
-    height:             32px;
-    width:              32px;
+    height:             16px;
+    width:              16px;
     margin:             0 auto 0 auto;
     display:			block;
 }
 
 .arrow-right {
 	background:         url('/static/images/arrow-right.png');
-    background-color:	#60D6A7;
+    background-color:	white;
     background-repeat:  no-repeat;
     cursor:             pointer;
-    height:             32px;
-    width:              32px;
+    height:             16px;
+    width:              16px;
     margin:             0 auto 0 auto;
     display:			block;
 }
@@ -280,3 +280,15 @@ th {
 	text-align: left;
 }
 
+.rowClass {
+	display: flex; /* equal height of the children */
+}
+
+.colClass {
+  	flex: 1; /* additionally, equal width */
+  	width: 100%;
+}
+
+.buttonWidth {
+	width : 100%;
+}

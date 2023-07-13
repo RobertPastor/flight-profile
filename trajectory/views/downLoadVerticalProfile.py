@@ -84,7 +84,6 @@ def writeReadMe(workbook, request, airlineName):
     wsReadMe.write(row, 1 , request.GET['adesRwy'], styleEntete)
     
     wsReadMe.autofit()
-    
 
 def createExcelWorkbook(memoryFile, request, airlineName):
     ''' create the EXCEL workbook '''

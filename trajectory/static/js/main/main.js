@@ -3,14 +3,10 @@ var worker = undefined;
 
 window.addEventListener('DOMContentLoaded', () => {
 	
-	//console.log(" DOM content loaded");
 	window.addEventListener("load", ($) => {
-		
-		//console.log(" page is loaded");
-			
+					
 			setTimeout( function() {
 				
-				//console.log(" all is ready to start" );
 				init();
 				
 			} , 500 );
@@ -50,28 +46,37 @@ function showMessage ( title, message ) {
  * currently there are two methodes to delete a layer in og
  * this recommandation has been received directly from open globus
  */
-function removeLayer( globus , layerName ) {
+//function removeLayer( globus , layerName ) : Promise<boolean> {
+function removeLayer( globus , layerName )  {
 	
-	try {
-		let layerOne = globus.planet.getLayerByName( layerName );
-		if (layerOne) {
-			//console.log("layerOne is probably existing ...");
-			let entities = layerOne.getEntities();
-			layerOne.removeEntities(entities);
-			layerOne.remove();
+	return new Promise ( (resolve, reject) => {
+		try {
+			let layerTwo = globus.planet.getLayerByName( layerName );
+			if (layerTwo) {
+				//console.log("layerTwo is probably existing ...");
+				layerTwo._entityCollectionsTree.entityCollection.clear();
+				console.log("entity collections cleared !!!");
+				resolve(true);
+			}
+		} catch (err) {
+			console.error("2nd method to delete a lyer - err = "+ JSON.stringify(err));
+			reject(err);
 		}
-	} catch (err) {
-		console.error("1st method to delete og layer - err = "+ JSON.stringify(err));
-	}
-	try {
-		let layerTwo = globus.planet.getLayerByName( layerName );
-		if (layerTwo) {
-			//console.log("layerTwo is probably existing ...");
-			layerTwo._entityCollectionsTree.entityCollection.clear();
+		try {
+			let layerOne = globus.planet.getLayerByName( layerName );
+			if (layerOne) {
+				//console.log("layerOne is probably existing ...");
+				let entities = layerOne.getEntities();
+				layerOne.removeEntities(entities);
+				console.log("entity removed !!!");
+				layerOne.remove();
+				resolve(true);
+			}
+		} catch (err) {
+			console.error("1st method to delete og layer - err = "+ JSON.stringify(err));
+			reject(err);
 		}
-	} catch (err) {
-		console.error("2nd method to delete a lyer - err = "+ JSON.stringify(err));
-	}
+	})
 }
 
 function stopBusyAnimation(){
@@ -254,7 +259,6 @@ function initTools(globus, viewExtent) {
 		let airlineFleet = SingletonAirlineFleet.getInstance();
 		airlineFleet.initAirlineFleet();
 		
-		//console.log("init other tools");
 		// contextual menu to show the routes from one right click selected airport 
 		globus.planet.addControl(new AirlineAirportsRoutesControl());
 		
@@ -273,11 +277,12 @@ function initTools(globus, viewExtent) {
 		airlineWayPoints.initWayPoints(globus, viewExtent);
 		
 		// compute Flight Profile
-		globus.planet.addControl(new FlighProfileControl());
+		let flightProfileControl = new FlightProfileControl();
+		globus.planet.addControl(flightProfileControl);
 		
-		// costs for each profile
+		// compute profiel and costs for each route and runways selection
 		let airlineProfileCosts = SingletonProfileCosts.getInstance();
-		airlineProfileCosts.launchFlightProfile(globus);
+		airlineProfileCosts.launchFlightProfile(globus, flightProfileControl);
 		
 		// compute costs
 		// flight profile inputs are shared with flight leg cost controls inputs

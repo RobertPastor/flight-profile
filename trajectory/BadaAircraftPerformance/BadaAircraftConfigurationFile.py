@@ -418,7 +418,7 @@ class AircraftConfiguration(FlightEnvelope):
         '''  Qinf = 0.5 * rho * (aircraftSpeed ** 2) '''
         '''  Lift = Qinf * aircraft.WingPlanformAreaSquareMeters * CL '''
         ''' @todo '''
-        #logger.info 'to be fixed... aircraft mass ... depends upon flight path range in Kilometers + reserve'
+        #@TODO logger.info 'to be fixed... aircraft mass ... depends upon flight path range in Kilometers + reserve'
         liftCoeff = self.computeLiftCoeff(  aircraftMassKilograms, 
                                                        altitudeMeanSeaLevelMeters, 
                                                        TrueAirSpeedMetersSecond,
@@ -428,6 +428,13 @@ class AircraftConfiguration(FlightEnvelope):
         liftNewtons = liftNewtons * self.WingAreaSurfaceSquareMeters * liftCoeff
         return liftNewtons
     
+    def computeBaseThrustNewtons(self, geopotentialPressureAltitudeFeet):
+        ''' following computation is true only for a jet aircraft '''
+        thrustNewtons = (1 - (geopotentialPressureAltitudeFeet / self.engine.getMaxClimbThrustCoeff(1) ))
+        thrustNewtons += (self.engine.getMaxClimbThrustCoeff(2) * geopotentialPressureAltitudeFeet * geopotentialPressureAltitudeFeet)
+        thrustNewtons = self.engine.getMaxClimbThrustCoeff(0) * thrustNewtons
+        return thrustNewtons
+        
     
     def computeThrustNewtons(self, geopotentialPressureAltitudeFeet ):
 
@@ -439,14 +446,12 @@ class AircraftConfiguration(FlightEnvelope):
             if self.isDepartureGroundRun() or self.isTakeOff() or self.isInitialClimb() :
                 
                 ''' following computation is true only for a jet aircraft '''
-                thrustNewtons = (1 - (geopotentialPressureAltitudeFeet / self.engine.getMaxClimbThrustCoeff(1) ))
-                thrustNewtons += (self.engine.getMaxClimbThrustCoeff(2) * geopotentialPressureAltitudeFeet * geopotentialPressureAltitudeFeet)
-                thrustNewtons = self.engine.getMaxClimbThrustCoeff(0) * thrustNewtons
+                thrustNewtons = self.computeBaseThrustNewtons(geopotentialPressureAltitudeFeet)
+                #print ( "departure / takeoff / initial Climb thrust = {} newtons".format( thrustNewtons ) )
                 
             
             elif self.isClimb() or self.isCruise():
-                ''' reduce thrust in proportion to altitude difference '''
-                pass
+                ''' @TODO reduce thrust in proportion to altitude difference '''
             
                 '''
                 In cruise at cruise level - The normal cruise thrust is by definition set equal to drag (THR = D).
@@ -458,9 +463,7 @@ class AircraftConfiguration(FlightEnvelope):
                 '''
             
                 ''' following computation is true only for a jet aircraft '''
-                thrustNewtons = (1 - (geopotentialPressureAltitudeFeet / self.engine.getMaxClimbThrustCoeff(1) ))
-                thrustNewtons += (self.engine.getMaxClimbThrustCoeff(2) * geopotentialPressureAltitudeFeet * geopotentialPressureAltitudeFeet)
-                thrustNewtons = self.engine.getMaxClimbThrustCoeff(0) * thrustNewtons
+                thrustNewtons = self.computeBaseThrustNewtons(geopotentialPressureAltitudeFeet)
                 
                 ''' correction due to altitude difference '''
                 #altitudeDifferenceMeters = self.getTargetCruiseFlightLevelMeters() - ( geopotentialPressureAltitudeFeet * feet2Meters)
@@ -472,14 +475,16 @@ class AircraftConfiguration(FlightEnvelope):
                 ''' apply cruise factor '''
                 if self.isCruiseSpeedReached():
                     thrustNewtons = 0.95 * thrustNewtons
+                    
+                #print ( "climb / cruise thrust = {} newtons".format( thrustNewtons ) )
+
                 
             elif self.isDescent():
                 '''
                 first descent phase is performed at constant Mach until transition altitude 
-                second descent phase is performed at constance CAS until approach configuration '''
-                thrustNewtons = (1 - (geopotentialPressureAltitudeFeet / self.engine.getMaxClimbThrustCoeff(1) ))
-                thrustNewtons += (self.engine.getMaxClimbThrustCoeff(2) * geopotentialPressureAltitudeFeet * geopotentialPressureAltitudeFeet)
-                thrustNewtons = self.engine.getMaxClimbThrustCoeff(0) * thrustNewtons
+                second descent phase is performed at constant CAS until approach configuration '''
+                thrustNewtons = self.computeBaseThrustNewtons(geopotentialPressureAltitudeFeet)
+
                 ''' apply high descent factor '''
                 ''' transition altitude for calculation of descent thrust '''
                 index = 2
@@ -494,19 +499,21 @@ class AircraftConfiguration(FlightEnvelope):
                     index = 0 
                     thrustNewtons = self.engine.getDescentThrustCoeff(index) * thrustNewtons
 
+                #print ( "Descent thrust = {} newtons".format( thrustNewtons ) )
+
                 #logger.info self.className + ': descent thrust= {0} newtons'.format(thrustNewtons)
             
             elif self.isApproach():
                 '''
-                Note that the CTdes,app and CTdes,ld coefficients are determined in order to obtain a 3° descent
+                Note that the CTdes, app and CTdes, landing coefficients are determined in order to obtain a 3° descent
                 gradient during approach and landing
                 '''
-                thrustNewtons = (1 - (geopotentialPressureAltitudeFeet / self.engine.getMaxClimbThrustCoeff(1) ))
-                thrustNewtons += (self.engine.getMaxClimbThrustCoeff(2) * geopotentialPressureAltitudeFeet * geopotentialPressureAltitudeFeet)
-                thrustNewtons = self.engine.getMaxClimbThrustCoeff(0) * thrustNewtons
+                thrustNewtons = self.computeBaseThrustNewtons(geopotentialPressureAltitudeFeet)
                 ''' apply approach factor '''
                 #logger.info self.className + ': approach descent thrust coeff= ' + str(self.engine.getDescentThrustCoeff(3))
                 thrustNewtons = self.engine.getDescentThrustCoeff(3) * thrustNewtons
+                #print ( "approach thrust = {} newtons".format( thrustNewtons ) )
+                
                 
             elif self.isLanding():
                 '''
@@ -516,15 +523,17 @@ class AircraftConfiguration(FlightEnvelope):
                 The value of CD0, DLDG represents drag increase due to the landing gear. The values of CD0, LD in
                 the OPF files were all determined for the landing flap setting mentioned in the OPF file.
                 '''
-                thrustNewtons = (1 - (geopotentialPressureAltitudeFeet / self.engine.getMaxClimbThrustCoeff(1) ))
-                thrustNewtons += (self.engine.getMaxClimbThrustCoeff(2) * geopotentialPressureAltitudeFeet * geopotentialPressureAltitudeFeet)
-                thrustNewtons = self.engine.getMaxClimbThrustCoeff(0) * thrustNewtons
+                thrustNewtons = self.computeBaseThrustNewtons(geopotentialPressureAltitudeFeet)
+
                 ''' apply landing factor '''
                 #logger.info self.className + ': landing descent thrust coeff= ' + str(self.engine.getDescentThrustCoeff(4))
                 thrustNewtons = self.engine.getDescentThrustCoeff(4) * thrustNewtons
+                #print ( "landing thrust = {} newtons".format( thrustNewtons ) )
 
             elif self.isArrivalGroundRun():
-                thrustNewtons = 0.0
+                # @TODO use idle thrust here
+                thrustNewtons = self.computeBaseThrustNewtons(geopotentialPressureAltitudeFeet)
+                thrustNewtons = 0.1 * thrustNewtons
 
             else:
                 raise ValueError ('not yet implemented {0}'.format(self.getAircraftConfiguration()))
