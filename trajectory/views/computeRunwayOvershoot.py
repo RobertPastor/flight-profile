@@ -73,10 +73,9 @@ def buildDepartureGroungRun(departureRunway , aircraft , departureAirport):
 
 
 def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
-    pass
-    logger.info ( "aircraft = {0} - airport = {1} - runway name = {2} - mass ={3} tons".format( aircraft , airport , runway , mass) )
-    
+
     logger.setLevel(logging.DEBUG)
+    logger.info ( "aircraft = {0} - airport = {1} - runway name = {2} - mass ={3} tons".format( aircraft , airport , runway , mass) )
 
     if request.method == 'GET':
 
@@ -105,9 +104,7 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                             if ( runwayObj ):
                                 ''' convert to environment runway '''
                                 runwayObj = runwayObj.convertToEnvRunway()
-                            
-                                #logger.info ( "Trajectory Environment RunWay = {0}".format ( runwayObj ) )
-                                
+                                                            
                                 maxTakeOffMassKg = acPerformance.getMaximumMassKilograms()
                                 minTakeOffMassKg = acPerformance.getMinimumMassKilograms()
                                 #logger.info ( "takeoff maximum mass kg = {0}".format ( maxTakeOffMassKg ) )
@@ -123,7 +120,8 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                                     airportObj = airportObj.convertToEnvAirport()
                                     
                                     ''' build the ground run '''
-                                    totalGrounLegLengthMeters , trueAirSpeedMetersSecond = buildDepartureGroungRun( runwayObj , badaAircraft , airportObj )
+                                    totalGroundLegLengthMeters , trueAirSpeedMetersSecond = buildDepartureGroungRun( runwayObj , badaAircraft , airportObj )
+                                    overshoot = ( totalGroundLegLengthMeters > runwayObj.getLengthMeters() )
                                     
                                     response_data = {
                                                     'aircraft'                : '{0}'.format( badaSynonymAircraft ), 
@@ -134,7 +132,8 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                                                     'runwayLengthMeters'      : '{0}'.format( round ( runwayObj.getLengthMeters() , 2 ) ),
                                                     'TakeOffStallSpeedCasKnots'       : '{0}'.format( round ( takeOffStallSpeedCasKnots , 2 ) ),
                                                     'TakeOffTrueAirSpeedMetersSecond' : '{0}'.format( round ( trueAirSpeedMetersSecond , 2 ) ),
-                                                    'groundRunLengthMeters'   : '{0}'.format( round ( totalGrounLegLengthMeters , 2 ) )
+                                                    'groundRunLengthMeters'   : '{0}'.format( round ( totalGroundLegLengthMeters , 2 ) ),
+                                                    'overshoot'               : str(overshoot)
                                                     }
                                     return JsonResponse(response_data)
                                 
@@ -162,7 +161,6 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                     response_data = { 'errors' : "Ac Performance read failed = {0}".format(badaSynonymAircraft.getAircraftPerformanceFile())}
                     return JsonResponse(response_data)
                                                                                            
-            
             else:
                 logger.info ('Aircraft  not found = {0}'.format(aircraft))
                 response_data = {'errors' : 'Aircraft not found = {0}'.format(aircraft)}

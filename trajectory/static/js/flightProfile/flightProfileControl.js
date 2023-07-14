@@ -58,7 +58,7 @@ class FlightProfileControl extends og.Control {
 		input_1_1.id = "minTakeOffMassKgId" ;
 		input_1_1.hidden = false;
 		input_1_1.maxlength = "6";
-		input_1_1.size = "3";
+		input_1_1.size = "5";
 		input_1_1.title = "min TakeOff Mass (Kg)" ;
 		input_1_1.style.backgroundColor = 'yellow';
 		input_1_1.readOnly = true;
@@ -76,9 +76,9 @@ class FlightProfileControl extends og.Control {
 		
 		let input_1 = document.createElement("input");
 		input_1.id = "TakeOffMassKgId" ;
-		input_1.maxlength = "5";
-		input_1.size = "3";
-		input_1.title = "insert the TakeOff mass (kg)" ;
+		input_1.maxlength = "6";
+		input_1.size = "5";
+		input_1.title = "enter the TakeOff mass (kg)" ;
 		input_1.style.backgroundColor = '#B2BEB5';
 
 		div_2.appendChild(input_1);
@@ -99,7 +99,7 @@ class FlightProfileControl extends og.Control {
 		input_1_2.id = "maxTakeOffMassKgId" ;
 		input_1_2.hidden = false;
 		input_1_2.maxlength = "6";
-		input_1_2.size = "3";
+		input_1_2.size = "5";
 		input_1_2.title = "max TakeOff Mass (Kg)" ;
 		input_1_2.style.backgroundColor = 'yellow';
 		input_1_2.readOnly = true;
@@ -121,9 +121,9 @@ class FlightProfileControl extends og.Control {
 		
 		let input_2 = document.createElement("input");
 		input_2.id = "requestedFlightLevelId" ;
-		input_2.maxlength = "3";
-		input_2.size = "3";
-		input_2.title = "insert the Requested Flight Level (feet)";
+		input_2.maxlength = "6";
+		input_2.size = "5";
+		input_2.title = "enter the Requested Flight Level (feet)";
 		input_2.style.backgroundColor = '#B2BEB5';
 
 		div_4.appendChild(input_2);
@@ -142,8 +142,8 @@ class FlightProfileControl extends og.Control {
 		let input_2_1 = document.createElement("input");
 		input_2_1.id = "maxFlightLevelId" ;
 		input_2_1.hidden = false;
-		input_2_1.maxlength = "3";
-		input_2_1.size = "3";
+		input_2_1.maxlength = "6";
+		input_2_1.size = "5";
 		input_2_1.title = "max Flight Level (feet)";
 		input_2_1.style.backgroundColor = 'yellow';
 		input_2_1.readOnly = true;
@@ -179,7 +179,7 @@ class FlightProfileControl extends og.Control {
 		input_1.hidden = false;
 		input_1.maxlength = "5";
 		input_1.size = "5";
-		input_1.title = "Adep ICAO";
+		input_1.title = "Departure ICAO";
 		input_1.style.backgroundColor = 'yellow';
 		input_1.readOnly = true;
 		
@@ -216,7 +216,7 @@ class FlightProfileControl extends og.Control {
 		input_2.hidden = false;
 		input_2.maxlength = "5";
 		input_2.size = "5";
-		input_2.title = "Ades ICAO";
+		input_2.title = "Arrival ICAO";
 		input_2.style.backgroundColor = 'yellow';
 		input_2.readOnly = true;
 		
@@ -243,6 +243,7 @@ class FlightProfileControl extends og.Control {
 		let select_3 = document.createElement("select");
 		select_3.id = "airlineDepartureRunWayFlightProfileId";
 		select_3.name = "airlineDepartureRunWayFlightProfileName";
+		select_3.title = "click to select the Departure runway";
 
 		div_3.appendChild(select_3);
 		td_1.appendChild(div_3);
@@ -262,6 +263,7 @@ class FlightProfileControl extends og.Control {
 		let select_4 = document.createElement("select");
 		select_4.id = "airlineArrivalRunWayFlightProfileId";
 		select_4.name = "airlineArrivalRunWayFlightProfileName";
+		select_4.title = "click to select the Arrival runway";
 
 		div_4.appendChild(select_4);
 		
@@ -292,6 +294,7 @@ class FlightProfileControl extends og.Control {
 		button_5.id = "btnComputeFlightProfileId";
 		button_5.innerHTML = "Compute Flight Profile";
 		button_5.classList.add("buttonWidth");
+		button_5.title = "click to compute the Flight Profile";
 		div_5.appendChild(button_5);
 		
 		firstMainDiv.appendChild(div_5);
@@ -305,6 +308,7 @@ class FlightProfileControl extends og.Control {
 		button_6.id = "btnComputeCostsId";
 		button_6.innerHTML = "Compute Costs";
 		button_6.classList.add("buttonWidth");
+		button_6.title = "click to compute the Flight leg costs";
 
 		div_6.appendChild(button_6);
 		
@@ -331,6 +335,7 @@ class FlightProfileControl extends og.Control {
 		button_7.id = "btnDownLoadVerticalProfileId";
 		button_7.innerHTML = "Download Vertical Profile";
 		button_7.classList.add("buttonWidth");
+		button_7.title = "click to download an EXCEL file with the Vertical Profile";
 
 		div_7.appendChild(button_7);
 		
@@ -347,6 +352,7 @@ class FlightProfileControl extends og.Control {
 		button_8.id = "btnDownLoadKMLfileId";
 		button_8.innerHTML = "Download KML";
 		button_8.classList.add("buttonWidth");
+		button_8.title = "click to download a Keyhole Markup Language file";
 
 		div_8.appendChild(button_8);
 		
