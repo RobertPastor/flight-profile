@@ -107,7 +107,7 @@ def createKMLfile(request, airlineName):
                                 response['Content-Length'] = memoryFile.tell()
                                 return response
                         else:
-                            response_data = {'errors' : 'Trajectory compute failed '}
+                            response_data = {'errors' : 'Trajectory computation failed '}
                             return JsonResponse(response_data)
                     else:
                         response_data = {

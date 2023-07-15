@@ -65,8 +65,9 @@ class GroundRunLeg(Graph):
         ''' base class init '''
         Graph.__init__(self)
         self.className = self.__class__.__name__
-        
+        # @TODO - unify RunWay from Envifonment and AirlineRunway
         assert (isinstance(runway, RunWay) and not(runway is None))
+        
         self.runway = runway
         logging.info ( self.className + ': ground run - run-way true heading= ' + str(self.runway.getTrueHeadingDegrees()) + ' degrees' )
         
@@ -181,11 +182,9 @@ class GroundRunLeg(Graph):
                                 elapsedTimeSeconds,
                                 distanceStillToFlyMeters,
                                 distanceToLastFixMeters):
-        ''' build the departure ground run
-        '''
         
         ''' elapsedTimeSeconds in seconds '''
-        elapsedTimeSeconds = elapsedTimeSeconds
+        # -> @TODO to be suppressed -> elapsedTimeSeconds = elapsedTimeSeconds
 
         ''' run-way end point '''
         strRunWayEndPointName =  self.runway.getName() + '-' + self.airport.getName()  
@@ -261,7 +260,7 @@ class GroundRunLeg(Graph):
             newIntermediateWayPoint.setElapsedTimeSeconds(elapsedTimeSeconds)
             self.elapsedTimeSeconds = elapsedTimeSeconds
  
-            ''' insert in the route '''
+            ''' insert in the as-is computed trajectory '''
             self.addVertex(newIntermediateWayPoint)
             
             ''' copy the intermediate way-point '''
@@ -273,7 +272,7 @@ class GroundRunLeg(Graph):
         intermediateWayPoint.setName(Name = 'takeOff-{0:.1f}-m'.format(self.totalLegDistanceMeters))
         # keep the last true airspeed
         self.lastTrueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
-   
+        
    
     def getElapsedTimeSeconds(self):
         return self.elapsedTimeSeconds

@@ -74,9 +74,7 @@ class BadaAircraftDatabase(object):
         
         self.FilesFolder = os.path.dirname(__file__)
             
-        logging.info ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
         self.BadaSynonymFilePath = (self.FilesFolder + os.path.sep + self.BadaSynonymFilePath)
-        logging.info ( self.className + ': file path= {0}'.format(self.BadaSynonymFilePath) )
 
         self.aircraftFilesFolder = BADA_381_DATA_FILES
         self.aircraftFilesFolder = (os.path.dirname(__file__) + os.path.sep   + self.aircraftFilesFolder)
@@ -90,7 +88,6 @@ class BadaAircraftDatabase(object):
         return self.BadaSynonymFilePath
     
     def read(self):
-        logging.info ( self.className + ': opening file= {0}'.format( self.BadaSynonymFilePath ) )
         try:
             f = open(self.BadaSynonymFilePath, "r")
             for line in f:

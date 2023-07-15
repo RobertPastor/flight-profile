@@ -33,7 +33,7 @@ def computeDurationHours( durationSeconds ):
 def computeCosts(request, airlineName):
     
     logger.setLevel(logging.DEBUG)
-    logger.debug ("compute Flight Profile")
+    logger.debug ("compute Flight leg related costs")
     
     #routeWayPointsList = []
     if (request.method == 'GET'):

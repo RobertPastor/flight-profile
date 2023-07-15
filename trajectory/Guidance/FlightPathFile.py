@@ -59,6 +59,8 @@ from trajectory.Environment.Constants import Meter2Feet # = 3.2808 # one meter e
 from trajectory.Environment.Constants import gravityMetersPerSquareSeconds 
 from trajectory.Environment.Constants import Meter2NauticalMiles #= 0.000539956803 # One Meter = 0.0005 nautical miles
 from trajectory.Environment.Constants import Kilogram2Pounds # = 2.20462262 # 1 kilogram = 2.204 lbs
+from django.conf.locale import fa
+from pickle import FALSE
 
 class FlightPath(FlightPlan):
     
@@ -110,7 +112,6 @@ class FlightPath(FlightPlan):
         
     def getAircraft(self):
         
-        logging.info ( self.className + ': ================ get aircraft =================' )
         atmosphere = Atmosphere()
         earth = Earth()
         acBd = BadaAircraftDatabase()
@@ -309,37 +310,49 @@ class FlightPath(FlightPlan):
                                                 distanceStillToFlyMeters = distanceStillToFlyMeters,
                                                 distanceToLastFixMeters = distanceToLastFixMeters)
         distanceStillToFlyMeters = self.flightLengthMeters - self.finalRoute.getLengthMeters()
-
-        #logging.info '==================== end of ground run ==================== '
-        initialWayPoint = self.finalRoute.getLastVertex().getWeight()
-        distanceToFirstFixNautics = initialWayPoint.getDistanceMetersTo(self.getFirstWayPoint()) * Meter2NauticalMiles
-        #logging.info '==================== Initial Climb Ramp ==================== '
-
-        climbRamp = ClimbRamp(  initialWayPoint = initialWayPoint,
-                                    runway = self.departureRunway, 
-                                    aircraft = self.aircraft, 
-                                    departureAirport = self.departureAirport)
-        ''' climb ramp of 5.0 nautics is not possible if first fix placed in between '''
-        climbRampLengthNautics = min(distanceToFirstFixNautics / 2.0 , 5.0)
-        climbRamp.buildClimbRamp(deltaTimeSeconds = self.deltaTimeSeconds,
-                                 elapsedTimeSeconds = initialWayPoint.getElapsedTimeSeconds(),
-                                 distanceStillToFlyMeters = distanceStillToFlyMeters ,
-                                 distanceToLastFixMeters = distanceToLastFixMeters,
-                                 climbRampLengthNautics = climbRampLengthNautics )
-        self.finalRoute.addGraph(climbRamp)
-            
-        #logging.info '============= initial condition for the route =================' 
-            
-        initialWayPoint = self.finalRoute.getLastVertex().getWeight()
+        
+        ''' return values as expected at the end of this take off phase ( ground run PLUS climb ramp) '''
         lastLeg = self.finalRoute.getLastEdge()
         initialHeadingDegrees = lastLeg.getBearingTailHeadDegrees()
-        logging.info ( self.className + ': last leg orientation= {0:.2f} degrees'.format(initialHeadingDegrees) )
-            
-        #'''============= add way point in the fix list =============== '''
-        self.insert(position = 'begin', wayPoint= initialWayPoint )
-        #logging.info self.className + ': fix list= {0}'.format(self.fixList)
+        initialWayPoint = self.finalRoute.getLastVertex().getWeight()
+        self.endOfSimulation = False
         
-        return initialHeadingDegrees , initialWayPoint
+        ''' check if runway overshoot '''
+        if ( self.finalRoute.getTotalLegDistanceMeters() > self.departureRunway.getLengthMeters()):
+            print ("ground run length = {0:.2f} meters - runway length = {0:.2f} meters".format( self.finalRoute.getTotalLegDistanceMeters() , self.departureRunway.getLengthMeters()))
+            print ( "-----> runway overshoot---------")
+            self.endOfSimulation = True
+            
+        else:
+                        
+            distanceToFirstFixNautics = initialWayPoint.getDistanceMetersTo(self.getFirstWayPoint()) * Meter2NauticalMiles
+            #logging.info '==================== Initial Climb Ramp ==================== '
+    
+            climbRamp = ClimbRamp(  initialWayPoint = initialWayPoint,
+                                        runway = self.departureRunway, 
+                                        aircraft = self.aircraft, 
+                                        departureAirport = self.departureAirport)
+            ''' climb ramp of 5.0 nautical miles is not possible if first fix placed in between '''
+            climbRampLengthNautics = min(distanceToFirstFixNautics / 2.0 , 5.0)
+            climbRamp.buildClimbRamp(deltaTimeSeconds = self.deltaTimeSeconds,
+                                     elapsedTimeSeconds = initialWayPoint.getElapsedTimeSeconds(),
+                                     distanceStillToFlyMeters = distanceStillToFlyMeters ,
+                                     distanceToLastFixMeters = distanceToLastFixMeters,
+                                     climbRampLengthNautics = climbRampLengthNautics )
+            self.finalRoute.addGraph(climbRamp)
+                
+            #logging.info '============= initial condition for the route =================' 
+                
+            initialWayPoint = self.finalRoute.getLastVertex().getWeight()
+            lastLeg = self.finalRoute.getLastEdge()
+            initialHeadingDegrees = lastLeg.getBearingTailHeadDegrees()
+            logging.info ( self.className + ': last leg orientation= {0:.2f} degrees'.format(initialHeadingDegrees) )
+                
+            #'''============= add way point in the fix list =============== '''
+            self.insert(position = 'begin', wayPoint= initialWayPoint )
+            #logging.info self.className + ': fix list= {0}'.format(self.fixList)
+            
+        return self.endOfSimulation , initialHeadingDegrees , initialWayPoint
         
         
     def buildSimulatedArrivalPhase(self):
@@ -511,32 +524,37 @@ class FlightPath(FlightPlan):
         
         try:
             if self.isDomestic() or self.isOutBound():
-                initialHeadingDegrees , initialWayPoint = self.buildDeparturePhase()
+                self.endOfSimulation, initialHeadingDegrees , initialWayPoint = self.buildDeparturePhase()
           
-            if self.isDomestic() or self.isInBound():
+            if ( self.endOfSimulation == False ) and ( self.isDomestic() or self.isInBound() ):
                 assert not(self.arrivalAirport is None)
                 finalRadiusOfTurnMeters = self.buildSimulatedArrivalPhase()
                 logging.info ( "final radius of turn = {0} meters".format(finalRadiusOfTurnMeters))
                 #sys.exit()
             
             #logging.info '==================== Loop over the fix list ==================== '
-            
-            self.endOfSimulation, initialHeadingDegrees = self.loopThroughFixList(initialHeadingDegrees = initialHeadingDegrees,
-                                                            elapsedTimeSeconds = initialWayPoint.getElapsedTimeSeconds())
+            if (self.endOfSimulation == False):
+                self.endOfSimulation, initialHeadingDegrees = self.loopThroughFixList(initialHeadingDegrees = initialHeadingDegrees,
+                                                                                      elapsedTimeSeconds = initialWayPoint.getElapsedTimeSeconds())
             
             if (self.endOfSimulation == False):
                 #logging.info '=========== build arrival phase =============='
                 self.buildArrivalPhase(initialHeadingDegrees, finalRadiusOfTurnMeters)
                 
-    
-            logging.info ( self.className + ' ========== delta mass status ==============' )
-            logging.info ( self.className + ': initial mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getAircraftInitialMassKilograms(),
-                                                                                               self.aircraft.getAircraftInitialMassKilograms()*Kilogram2Pounds) )
-            logging.info ( self.className + ': final mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getAircraftCurrentMassKilograms(),
-                                                                                             self.aircraft.getAircraftCurrentMassKilograms()*Kilogram2Pounds) )
-            logging.info ( self.className + ': diff mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getAircraftInitialMassKilograms()-self.aircraft.getAircraftCurrentMassKilograms(),
-                                                                                            (self.aircraft.getAircraftInitialMassKilograms()-self.aircraft.getAircraftCurrentMassKilograms())*Kilogram2Pounds) )
-            logging.info ( self.className + ' ========== delta mass status ==============' )
+            if (self.endOfSimulation == False):
+                logging.info ( self.className + ' ========== delta mass status ==============' )
+                logging.info ( self.className + ': initial mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getAircraftInitialMassKilograms(),
+                                                                                                   self.aircraft.getAircraftInitialMassKilograms()*Kilogram2Pounds) )
+                logging.info ( self.className + ': final mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getAircraftCurrentMassKilograms(),
+                                                                                                 self.aircraft.getAircraftCurrentMassKilograms()*Kilogram2Pounds) )
+                logging.info ( self.className + ': diff mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getAircraftInitialMassKilograms()-self.aircraft.getAircraftCurrentMassKilograms(),
+                                                                                                (self.aircraft.getAircraftInitialMassKilograms()-self.aircraft.getAircraftCurrentMassKilograms())*Kilogram2Pounds) )
+                logging.info ( self.className + ' ========== delta mass status ==============' )
+                
+            if ( self.endOfSimulation ==  True ):
+                self.abortedFlight = True
+                return False
+            
             return True
         
         except Exception as e:

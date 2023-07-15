@@ -31,7 +31,6 @@ class BadaSynonymAircraft(models.Model):
     def getAircraftPerformanceFile(self):
         OPFfilePrefix = self.AircraftFile    
         filePath = os.path.join ( os.path.dirname(__file__) , BADA_381_DATA_FILES , OPFfilePrefix + OPFfileExtension )
-        #logging.info ( filePath )
         return filePath
         
     def aircraftPerformanceFileExists(self):
@@ -67,16 +66,13 @@ class AirlineWayPoint(models.Model):
     def __eq__(self, other):
         return models.Model.__eq__(self, other)
     
-    
     ''' 14 Juin 2023 '''
     ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
     def __hash__(self):
         return super().__hash__()
     
-    
     def __str__(self):
         return "wayPoint name = {0} - Latitude {1:.2f} - Longitude = {2:.2f}".format(self.WayPointName , self.Latitude , self.Longitude ) 
-
 
     def getWayPointName(self):
         return self.WayPointName
@@ -99,7 +95,6 @@ class AirlineAirport(models.Model):
     ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
     def __hash__(self):
         return super().__hash__()
-    
     
     def __str__(self):
         return "{0}-{1}".format(self.AirportICAOcode, self.AirportName)
@@ -162,12 +157,10 @@ class AirlineRunWay(models.Model):
     def __eq__(self, other):
         return models.Model.__eq__(self, other)
     
-    
     ''' 14 Juin 2023 '''
     ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
     def __hash__(self):
         return super().__hash__()
-    
     
     def __str__(self):
         return "{0}/{1}".format(self.Airport.AirportICAOcode, self.Name)

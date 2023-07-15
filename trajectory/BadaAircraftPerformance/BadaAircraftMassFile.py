@@ -24,7 +24,6 @@
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
-from trajectory.BadaAircraftPerformance.BadaAircraftDatabaseFile import BadaAircraftDatabase
 
 Kilogram2Pounds = 2.20462262 # 1 kilogram = 2.204 lbs
 

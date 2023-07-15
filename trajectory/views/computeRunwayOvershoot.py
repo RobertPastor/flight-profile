@@ -48,10 +48,11 @@ def buildDepartureGroungRun(departureRunway , aircraft , departureAirport):
     ''' 
         this function manages the departure phases with a ground run 
     '''
-        
-    logger.info (  ' ============== build the departure ground run =========== '  )
+    
+    logger.info ( '================ build Departure Ground Run =================' )
+
     groundRun = GroundRunLeg(runway = departureRunway, aircraft = aircraft, airport = departureAirport)
-        
+    # default values not used here
     distanceToLastFixMeters = 10000.0
     distanceStillToFlyMeters = 10000.0
     flightLengthMeters = 10000.0
@@ -66,7 +67,6 @@ def buildDepartureGroungRun(departureRunway , aircraft , departureAirport):
     
     distanceStillToFlyMeters = flightLengthMeters - groundRun.getLengthMeters()
 
-    #logging.info '==================== end of ground run ==================== '
     initialWayPoint = groundRun.getLastVertex().getWeight()
     logger.info ( initialWayPoint )
     return groundRun.getTotalLegDistanceMeters() , groundRun.getLastTrueAirSpeedMetersSecond()
@@ -74,32 +74,24 @@ def buildDepartureGroungRun(departureRunway , aircraft , departureAirport):
 
 def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
 
-    logger.setLevel(logging.DEBUG)
-    logger.info ( "aircraft = {0} - airport = {1} - runway name = {2} - mass ={3} tons".format( aircraft , airport , runway , mass) )
-
     if request.method == 'GET':
 
         airline = Airline.objects.first()
         if ( airline ):
-            logger.info ( airline )
                 
-            badaSynonymAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraft).first()
+            badaSynonymAircraft = BadaSynonymAircraft.objects.filter(AircraftICAOcode=aircraft).first()
             if ( badaSynonymAircraft and badaSynonymAircraft.aircraftPerformanceFileExists()):
                 
                 acPerformance = AircraftPerformance(badaSynonymAircraft.getAircraftPerformanceFile()) 
                 if ( acPerformance.read() ):
-
-                    logger.info ("selected aircraft = {0}".format( badaSynonymAircraft ) )
                     
                     airportObj = AirlineAirport.objects.filter(AirportICAOcode = airport).first()
                     if ( airportObj ):
-                        logger.info (airportObj)
                         
                         badaAircraft = getBadaAircraft ( aircraft )
                         if ( badaAircraft ):
                             
                             runwayObj = AirlineRunWay.objects.filter( Airport = airportObj, Name = runway ).first()
-                            logger.info ( "Airline runway = {0}".format ( runway ) )
                             
                             if ( runwayObj ):
                                 ''' convert to environment runway '''
@@ -107,7 +99,6 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                                                             
                                 maxTakeOffMassKg = acPerformance.getMaximumMassKilograms()
                                 minTakeOffMassKg = acPerformance.getMinimumMassKilograms()
-                                #logger.info ( "takeoff maximum mass kg = {0}".format ( maxTakeOffMassKg ) )
                                 
                                 if ( ( float ( mass ) * 1000.0 ) >= minTakeOffMassKg ) and  ( ( float ( mass ) * 1000.0 ) <= maxTakeOffMassKg ):
                                     
@@ -124,16 +115,16 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                                     overshoot = ( totalGroundLegLengthMeters > runwayObj.getLengthMeters() )
                                     
                                     response_data = {
-                                                    'aircraft'                : '{0}'.format( badaSynonymAircraft ), 
-                                                    'aircraftReferenceMassKg' : '{0}'.format( acPerformance.getReferenceMassTons() * 1000.0 ),
-                                                    'aircraftInitialMassKg'   : '{0}'.format( badaAircraft.getAircraftInitialMassKilograms() ),
-                                                    'airport'                 : '{0}'.format( airportObj ) , 
-                                                    'runway'                  : '{0}'.format( runwayObj ) , 
-                                                    'runwayLengthMeters'      : '{0}'.format( round ( runwayObj.getLengthMeters() , 2 ) ),
-                                                    'TakeOffStallSpeedCasKnots'       : '{0}'.format( round ( takeOffStallSpeedCasKnots , 2 ) ),
-                                                    'TakeOffTrueAirSpeedMetersSecond' : '{0}'.format( round ( trueAirSpeedMetersSecond , 2 ) ),
-                                                    'groundRunLengthMeters'   : '{0}'.format( round ( totalGroundLegLengthMeters , 2 ) ),
-                                                    'overshoot'               : str(overshoot)
+                                                    'aircraft ICAO'           : '{0}'.format( badaSynonymAircraft.getICAOcode() ), 
+                                                    'aircraft'                : '{0}'.format( badaSynonymAircraft.getAircraftFullName() ), 
+                                                    'aircraft TakeOff Mass Kg'   : '{0}'.format( badaAircraft.getAircraftInitialMassKilograms() ),
+                                                    'airport'                    : '{0}'.format( airportObj ) , 
+                                                    'runway'                     : '{0}'.format( runwayObj ) , 
+                                                    'runway Length Meters'                  : '{0:.2f}'.format( runwayObj.getLengthMeters() ) ,
+                                                    'TakeOff Stall Speed Cas Knots'         : '{0:.2f}'.format( takeOffStallSpeedCasKnots ),
+                                                    'TakeOff True AirSpeed MetersPerSecond' : '{0:.2f}'.format( trueAirSpeedMetersSecond ) ,
+                                                    'ground Run Length Meters'              : '{0:.2f}'.format( totalGroundLegLengthMeters ) ,
+                                                    'overshoot'                  : str(overshoot)
                                                     }
                                     return JsonResponse(response_data)
                                 
