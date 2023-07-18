@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from trajectory.models import   BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 
-def getAircraft(request):
+def getAircraft(request, airlineName):
     
     if (request.method == 'GET'):
         
