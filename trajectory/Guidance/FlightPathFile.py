@@ -23,7 +23,7 @@ Created on 3 february 2015
         You should have received a copy of the GNU General Public License
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-@ TODO: create a flight list class (with only fixes) , a flight plan with Lat-Long and the flight Path
+@TODO: create a flight list class (with only fixes) , a flight plan with Lat-Long and the flight Path
 
 manage a flight path built from a flight plan
 ensure a decoupling between the lateral path and the vertical path.
@@ -59,21 +59,23 @@ from trajectory.Environment.Constants import Meter2Feet # = 3.2808 # one meter e
 from trajectory.Environment.Constants import gravityMetersPerSquareSeconds 
 from trajectory.Environment.Constants import Meter2NauticalMiles #= 0.000539956803 # One Meter = 0.0005 nautical miles
 from trajectory.Environment.Constants import Kilogram2Pounds # = 2.20462262 # 1 kilogram = 2.204 lbs
-from django.conf.locale import fa
-from pickle import FALSE
+from trajectory.Environment.Constants import minFlightLevel, maxFlightLevel 
+
 
 class FlightPath(FlightPlan):
     
     flightPlan = None
     aircraftICAOcode = ''
     abortedFlight = False
+    reducedClimbPowerCoeff = 0.0
     
     def __init__(self, 
                  route, 
                  aircraftICAOcode = 'A320', 
                  RequestedFlightLevel = 330.0, 
                  cruiseMach = 0.8, 
-                 takeOffMassKilograms = 62000.0):
+                 takeOffMassKilograms = 62000.0,
+                 reducedClimbPowerCoeff = 0.0):
         
         ''' The root logger always defaults to WARNING level. '''
         logging.getLogger().setLevel(logging.INFO)
@@ -89,17 +91,19 @@ class FlightPath(FlightPlan):
         self.flightLengthMeters = self.computeLengthMeters() 
         
         self.aircraftICAOcode = aircraftICAOcode
-
+        ''' aircraft object '''
         self.aircraft = None
         self.getAircraft()
         
         assert isinstance(self.aircraft, BadaAircraft) and not(self.aircraft is None)
         self.aircraft.setAircraftMassKilograms(takeOffMassKilograms)
         
-        assert RequestedFlightLevel >= 15.0 and RequestedFlightLevel <= 450.0
+        assert RequestedFlightLevel >= minFlightLevel and RequestedFlightLevel <= maxFlightLevel
         self.aircraft.setTargetCruiseFlightLevel(RequestedFlightLevel = RequestedFlightLevel, 
                                                  departureAirportAltitudeMSLmeters = self.getDepartureAirport().getFieldElevationAboveSeaLevelMeters())
         self.aircraft.setTargetCruiseMach(cruiseMachNumber = cruiseMach)
+        # 17th july 2023
+        self.reducedClimbPowerCoeff = reducedClimbPowerCoeff
         
         self.arrivalAirport = self.getArrivalAirport()
         if (self.arrivalAirport is None):
@@ -184,9 +188,9 @@ class FlightPath(FlightPlan):
             anticipatedTurnWayPoint = None
             if (self.flightListIndex + 2) < len(self.fixList):
                 ''' still another fix in the list '''
-                firstAngleDegrees = endOfTurnLegWayPoint.getBearingDegreesTo(headWayPoint)
+                firstAngleDegrees  = endOfTurnLegWayPoint.getBearingDegreesTo(headWayPoint)
                 secondAngleDegrees = headWayPoint.getBearingDegreesTo(self.wayPointsDict[self.fixList[self.flightListIndex+2]])
-                firstAngleRadians = math.radians(firstAngleDegrees)
+                firstAngleRadians  = math.radians(firstAngleDegrees)
                 secondAngleRadians = math.radians(secondAngleDegrees)
     
                 angleDifferenceDegrees = math.degrees(math.atan2(math.sin(secondAngleRadians-firstAngleRadians), math.cos(secondAngleRadians-firstAngleRadians)))
@@ -319,8 +323,8 @@ class FlightPath(FlightPlan):
         
         ''' check if runway overshoot '''
         if ( self.finalRoute.getTotalLegDistanceMeters() > self.departureRunway.getLengthMeters()):
-            print ("ground run length = {0:.2f} meters - runway length = {0:.2f} meters".format( self.finalRoute.getTotalLegDistanceMeters() , self.departureRunway.getLengthMeters()))
-            print ( "-----> runway overshoot---------")
+            #print ("ground run length = {0:.2f} meters - runway length = {1:.2f} meters".format( self.finalRoute.getTotalLegDistanceMeters() , self.departureRunway.getLengthMeters()))
+            #print ( "-----> runway overshoot---------")
             self.endOfSimulation = True
             
         else:

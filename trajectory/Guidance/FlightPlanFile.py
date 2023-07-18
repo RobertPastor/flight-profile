@@ -204,14 +204,6 @@ class FlightPlan(FixList):
         from the route build a fix list and from the fix list build a way point list
         '''
         self.wayPointsDict = {}
-        #wayPointsDb = WayPointsDatabase()
-        #assert (wayPointsDb.read())
-        
-        #airportsDb = AirportsDatabase()
-        #assert airportsDb.read()
-        
-        #runwaysDb = RunWayDataBase()
-        #assert runwaysDb.read()
         
         self.createFixList()
         for fix in self.getFix():

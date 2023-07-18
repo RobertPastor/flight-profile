@@ -156,7 +156,9 @@ def getAirlineRoutesFromDB(airline):
                 "ArrivalAirport"           : airlineRoute.ArrivalAirport,
                 "ArrivalAirportICAOCode"   : airlineRoute.ArrivalAirportICAOCode,
                 "STAR"                     : computeListOfArrivalRunWaysWithSTAR(airlineRoute),
-                "RouteLengthMiles"         : round ( computeRouteLengthMiles(airlineRoute.DepartureAirportICAOCode , airlineRoute.ArrivalAirportICAOCode) , 2 )
+                "RouteLengthMiles"         : round ( computeRouteLengthMiles(airlineRoute.DepartureAirportICAOCode , airlineRoute.ArrivalAirportICAOCode) , 2 ),
+                "BestDepartureRunway"      : airlineRoute.computeBestDepartureRunWay(),
+                "BestArrivalRunway"        : airlineRoute.computeBestArrivalRunWay()
                 } )
     return airlineRoutesList
 

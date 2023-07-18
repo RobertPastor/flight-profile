@@ -32,7 +32,7 @@ urlpatterns = [
     
 ]
 
-''' view to download a Pdf Presentation file '''
+''' view to download a pdf Presentation file '''
 urlpatterns += [
     
     path('pdf/downloadPresentation/', downloadPdfPresentation , name='downloadPdfPresentation'),

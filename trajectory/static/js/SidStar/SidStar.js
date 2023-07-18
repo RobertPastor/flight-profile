@@ -72,7 +72,6 @@ class SidStar {
 		} catch (err) {
 			console.error(JSON.stringify(err));
 		}
-		
 	}
 	
 	loadSidStarOneRouteWayPoint( layerSidStarGlobusLayer , wayPoint) {

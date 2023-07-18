@@ -12,20 +12,28 @@ class FlightProfileControl extends og.Control {
 		return this.mainDivId;
 	}
 	
+	getReducedClimbPowerCoeffInputId() {
+		return "ReducedClimbPowerPercentageInputId";
+	}
+	
+	getReducedClimPowerCoeffInputDefaultValue() {
+		//return "15";
+		return "0";
+	}
+	
 	createRowWithAircraftSelector() {
 		
 		let row = document.createElement('tr');
-		let td = document.createElement('td');
-		td.colSpan = "2";
+		let td_1 = document.createElement('td');
 		
 		let div_1 = document.createElement('div');
 		div_1.id = "aircraftSelectionId";
 		div_1.style.textAlign = "center";
 		div_1.classList.add("aircraftSelectionClass");
 		
-		let label_1_1 = document.createElement("label");
-		label_1_1.innerHTML = "Select the aircraft ->" ;
-		div_1.appendChild(label_1_1);
+		let label_1 = document.createElement("label");
+		label_1.innerHTML = "Select the aircraft ->" ;
+		div_1.appendChild(label_1);
 		
 		let select_1 = document.createElement("select");
 		select_1.id = "airlineAircraftId";
@@ -33,10 +41,39 @@ class FlightProfileControl extends og.Control {
 		select_1.title = "click to change the aircraft";
 		div_1.appendChild(select_1);
 		
-		td.appendChild(div_1);
-		row.appendChild(td);
-		return row;
+		td_1.appendChild(div_1);
+		row.appendChild(td_1);
 		
+		// reduced climb power settings
+		let td_2 = document.createElement('td');
+		
+		let div_2 = document.createElement('div');
+		div_2.id = "reducedClimbPowerSettingsId";
+		div_2.style.textAlign = "center";
+		
+		let label_2 = document.createElement("label");
+		label_2.innerHTML = "Enter Reduced Climb Power % ->" ;
+		div_2.appendChild(label_2);
+		
+		let input_1 = document.createElement("input");
+		input_1.id = this.getReducedClimbPowerCoeffInputId();
+		input_1.maxlength = "6";
+		input_1.size = "5";
+		input_1.title = "enter a float between 0% reduction to a max of 15% reduction" ;
+		input_1.value = this.getReducedClimPowerCoeffInputDefaultValue();
+		input_1.style.backgroundColor = '#B2BEB5';
+		
+		/**
+		 * @todo - temporarily
+		 */
+		input_1.readOnly = true;
+
+		div_2.appendChild(input_1);
+
+		td_2.appendChild(div_2);
+		row.appendChild(td_2);
+		
+		return row;
 	}
 	
 	createRowWithMass() {

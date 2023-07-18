@@ -5,25 +5,22 @@ Created on 4 sept. 2022
 '''
 
 from django.http import  JsonResponse
-
 from airline.models import Airline
-
-from trajectory.views.utils import  getAirlineRoutesFromDB
-
+from trajectory.views.utils import getAirlineRoutesFromDB
 
 def getAirlineRoutes(request , airlineName):
     
     if (request.method == 'GET'):
         
         airline = Airline.objects.filter(Name=airlineName).first()
-        if (airline):
+        if airline:
             
             response_data = { 'airlineRoutes' : getAirlineRoutesFromDB(airline) }
             return JsonResponse( response_data )
         else:
-            return JsonResponse({'errors': "airline with name {0} not found".format(airlineName)})
+            response_data = {'errors': "airline with name {0} not found".format(airlineName)}
+            return JsonResponse(response_data)
 
     else:
-        return JsonResponse({'errors': "expecting GET method"})
-    
-    
+        response_data = {'errors': "expecting GET method - received = {0}".format(request.method)}
+        return JsonResponse(response_data)

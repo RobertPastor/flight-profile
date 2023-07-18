@@ -10,31 +10,37 @@ from django.http import JsonResponse
 from trajectory.models import   BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 
-def getAircraft(request, airlineName):
-    logger.debug ("get Airports")
+def getAircraft(request):
+    
     if (request.method == 'GET'):
         
         acMaxTakeOffWeightKg = 0.0
         acMinTakeOffWeightKg = 0.0
+        acReferenceTakeOffWeightKg = 0.0
         acMaxOpAltitudeFeet = 0.0
         
         aircraftICAOcode = request.GET['aircraft']
-        badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
+        badaAircraft = BadaSynonymAircraft.objects.filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
             acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
             if acPerformance.read():
+                
                 acMaxTakeOffWeightKg = acPerformance.getMaximumMassKilograms()
                 acMinTakeOffWeightKg = acPerformance.getMinimumMassKilograms()
+                acReferenceTakeOffWeightKg = acPerformance.getReferenceMassKilograms()
                 acMaxOpAltitudeFeet = acPerformance.getMaxOpAltitudeFeet()
-                
+                ''' @TODO warning : keys must be identical to those defined in utils.getAirlineAircraftsFromDB '''
                 response_data = {
                                     'aircraftICAOcode': aircraftICAOcode,
-                                    'acMaxTakeOffWeightKg' : acMaxTakeOffWeightKg ,
-                                    'acMinTakeOffWeightKg' : acMinTakeOffWeightKg ,
+                                    'acMaxTakeOffWeightKg'       : acMaxTakeOffWeightKg ,
+                                    'acMinTakeOffWeightKg'       : acMinTakeOffWeightKg ,
+                                    'acReferenceTakeOffWeightKg' : acReferenceTakeOffWeightKg ,
                                     'acMaxOpAltitudeFeet' : acMaxOpAltitudeFeet
                                     }
                 return JsonResponse(response_data)
-            
+            else:
+                response_data = { "errors" : "Aircraft performance data not read correctly = {0}".format(request.GET['aircraft'])}
+                return JsonResponse(response_data)
         else:
             response_data = { "errors" : "Aircraft not found = {0}".format(request.GET['aircraft'])}
             return JsonResponse(response_data)

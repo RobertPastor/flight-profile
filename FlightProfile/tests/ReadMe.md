@@ -1,11 +1,11 @@
-## 2nd July 2023 - chaining tests
-## these tests can be run while the site is running
+### 2nd July 2023 - chaining tests
+### these tests can be run while the site is running
 
-## open a GitBash
-## locate to /flight-profile/FlightProfile/tests
+### open a GitBash
+### locate to /flight-profile/FlightProfile/tests
 
-## launch
+### launch
 
 . ./curl-tests.sh
 
-## check the created json output files
+### check the created json output files

@@ -1,11 +1,5 @@
 
 
-document.addEventListener('DOMContentLoaded', (event) => { 
-       
-	//console.log("Airline Routes.js is loaded");
-
-});
-
 const SingletonAirlineRoutes = (function () {
 	
 	let instance;
@@ -28,17 +22,17 @@ function showSidStarRoute( elem ) {
 	
 	let globus = SingletonAirlineRoutes.getInstance().getGlobus();
 	
-	//console.log( elem.id );
 	let layerName = elem.id ;
 	let layer = globus.planet.getLayerByName( layerName );
 	if (layer) {
 		
-		// remove Layer is defined in main.js
+		/**
+		 * @todo remove Layer is defined in main.js
+		 *  */ 
 		removeLayer( globus , layerName );
 			
 	} else {
 		// load a Sid Star route
-		//console.log( " layer " + layerName + " is not existing");
 		try {
 			// load a SID STAR from backend
 			SingletonSidStar.getInstance().queryServer ( elem.id );
@@ -54,7 +48,9 @@ class AirlineRoutes {
 	
 	constructor( ) {
 		//console.log("Airline Routes constructor");
-		// this is the same prefix as in the AirlineAirports constructor
+		/**
+		 * @todo this is the same prefix as in the AirlineAirports constructor
+		 * */
 		this.LayerNamePrefix = "WayPoints-";
 		this.LayerSidPrefix = "Sid-";
 		this.LayerStarPrefix = "Star-";
@@ -140,10 +136,8 @@ class AirlineRoutes {
 		
 		let arr = id.split("-");
 		let Adep = arr[1];
-		//console.log(Adep)
 		let Ades = arr[2];
-		//console.log(Ades)
-		// use ajax to get the data 
+		
 		$.ajax( {
 				method: 'get',
 				url :  "airline/wayPointsRoute/" + Adep +"/" + Ades,
@@ -200,7 +194,9 @@ class AirlineRoutes {
 			
 			document.getElementById(id).value = "Show";
 			try {
-				// @TODO remove Layer is defined in main.js
+				/**
+				 * @todo remove Layer is defined in main.js
+				 *  */ 
 				removeLayer( globus , layerName );
 			
 			} catch (err) {
@@ -238,7 +234,9 @@ class AirlineRoutes {
 			// layer is existing -> hide -> show button as hidden
 			document.getElementById(elemButton.id).value = "Hide";
 			try {
-				// @TODO remove Layer as it is defined in main.js
+				/**
+				 * @todo remove Layer as it is defined in main.js
+				 *  */ 
 				removeLayer( globus , layerName );
 			
 			} catch (err) {
@@ -257,7 +255,7 @@ class AirlineRoutes {
 	
 	configureSidStarLink( oneAirlineRoute ) {
 		
-		// correct the SID ID
+		// correct the SID Id on the fly
 		if ( oneAirlineRoute["SID"] && (oneAirlineRoute["SID"].length > 0 )) {
 			let elemTdSid = document.getElementById( 'tdSidId-' + oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"] );
 		
@@ -266,8 +264,7 @@ class AirlineRoutes {
 			elemTdSid.innerHTML = '<span> <a id="' +  id + '" href="#" onclick="showSidStarRoute(this);" >' + oneAirlineRoute["SID"] + '</a> </span>'  
 			elemTdSid.title = "click me";
 		}
-		
-		// correct the STAR ID
+		// correct the STAR Id on the fly
 		if ( oneAirlineRoute["STAR"] && (oneAirlineRoute["STAR"].length > 0 )) {
 			let elemTdStar = document.getElementById( 'tdStarId-' + oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"] );
 		
@@ -278,8 +275,8 @@ class AirlineRoutes {
 		}
 	}
 	
-	
 	getSidStarLayerNamePrefix() {
+		// openglobus global layer name prefix
 		return "SidStar-";
 	}
 
@@ -295,42 +292,36 @@ class AirlineRoutes {
 			.append($('<td>')
 				.append( oneAirlineRoute["Airline"] )
 			)
-			
 			.append($('<td>')
 				.append( oneAirlineRoute["DepartureAirport"] )
 			)
-			
 			.append($('<td>')
 				.append( oneAirlineRoute["DepartureAirportICAOCode"] )
 			)
-			
 			.append($('<td id="tdSidId-' + sidId + '" >')
 				.append( oneAirlineRoute["SID"] )
 			)
-			
-			.append($('<td id="tdAdepRwyId" >'))
-			
+			.append($('<td id="tdAdepRwyId" >')
+				.append( oneAirlineRoute["BestDepartureRunway"] )
+			)
 			.append($('<td>')
 				.append( oneAirlineRoute["ArrivalAirport"] )
 			)
-			
 			.append($('<td>')
 				.append( oneAirlineRoute["ArrivalAirportICAOCode"] )
 			)
-			
 			.append($('<td id="tdStarId-' + starId + '" >')
 				.append( oneAirlineRoute["STAR"] )
 			)
-			
-			.append($('<td id="tdAdesRwyId" >'))
-			
+			.append($('<td id="tdAdesRwyId" >')
+				.append( oneAirlineRoute["BestArrivalRunway"] )
+			)
 			.append($('<td id="tdButtonId" >')
 				.append ( " <input type='button' id='buttonRouteId' style='width:100%; height:100%;' value='Show'  /> " )
 			)
 		);
 		
 		SingletonAirlineRoutes.getInstance().configureRoutesWayPointsButton( oneAirlineRoute );
-		
 		SingletonAirlineRoutes.getInstance().configureSidStarLink( oneAirlineRoute );
 		
 	}
@@ -355,7 +346,9 @@ class AirlineRoutes {
 		let Ades = oneAirlineRoute["ArrivalAirportICAOCode"];
 		try {
 			let layerName = this.LayerNamePrefix + Adep + "-" + Ades;
-			// remove Layer is defined in main.js
+			/**
+			 * @todo remove layer is defined in main.js
+			 * */ 
 			removeLayer( globus , layerName );
 			
 		} catch (err) {
@@ -374,19 +367,13 @@ class AirlineRoutes {
 	hideAirlineRoutesDiv() {
 	
 		if ( $('#airlineRoutesDivId').is(":visible") ) {
-			
 			$("#airlineRoutesDivId").hide();
-			
-			document.getElementById("btnAirlineRoutes").innerText = "Routes";
-			//document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
-
 		}
 	}
 
 	initAirlineRoutes(globus) {
 	
 		this.globus = globus;
-		
 		$("#airlineRoutesDivId").hide();
 
 		if ( ! document.getElementById("btnAirlineRoutes") ) {
@@ -396,20 +383,15 @@ class AirlineRoutes {
 		document.getElementById("btnAirlineRoutes").onclick = function () {
 			
 			if ( ! $('#airlineRoutesDivId').is(":visible") ) {
-				
-				// global function defined in main.js
-				//hideAllDiv(globus);
-				
+								
 				$("#airlineRoutesDivId").show();
-
-				// change name on the button
-				document.getElementById("btnAirlineRoutes").innerText = "Routes";
-				//document.getElementById("btnAirlineRoutes").style.backgroundColor = "green";
-				
 				// disable the button 
 				document.getElementById("btnAirlineRoutes").disabled = true;
 				
-				// get the name of the airline
+				/**
+				 * @todo - encapsulate in the MainSingleton class
+				 * get the name of the airline
+				 **/ 
 				let airlineName = $("#airlineSelectId option:selected").val();
 				airlineName = encodeURIComponent(airlineName);
 
@@ -418,7 +400,7 @@ class AirlineRoutes {
 						method: 'get',
 						url :  "airline/airlineRoutes/" + airlineName,
 						async : true,
-						success: function(data, status) {
+						success: function(data) {
 										
 							//alert("Data: " + data + "\nStatus: " + status);
 							let dataJson = eval(data);		
@@ -440,9 +422,6 @@ class AirlineRoutes {
 				});
 
 			} else {
-
-				document.getElementById("btnAirlineRoutes").innerText = "Routes";
-				//document.getElementById("btnAirlineRoutes").style.backgroundColor = "yellow";
 				
 				// get the name of the airline
 				let airlineName = $("#airlineSelectId option:selected").val();

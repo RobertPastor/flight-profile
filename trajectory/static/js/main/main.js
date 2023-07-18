@@ -23,27 +23,30 @@ function removeAllChilds (parent) {
 function showMessage ( title, message ) {
 	
 	const dialog = document.getElementById("dialogId");
-	removeAllChilds(dialog);
-	$("#dialogId")
-			.dialog({
-				autoOpen: false,
-				title: ( typeof title === 'string' ? title : JSON.stringify(title)),
-				modal: true,
-				hide: "puff",
-				show : "slide",
-				height: 200 ,
-				buttons: {
-					OK: function() {
-					  $( this ).dialog( "close" );
-					}
-				  }			   
-            })
-			.html(typeof message === 'string' ? message : JSON.stringify(message))
-			.dialog('open'); 
+	if (dialog) {
+		
+		removeAllChilds(dialog);
+		$("#dialogId")
+				.dialog({
+					autoOpen: false,
+					title: ( typeof title === 'string' ? title : JSON.stringify(title)),
+					modal: true,
+					hide: "puff",
+					show : "slide",
+					height: 200 ,
+					buttons: {
+						OK: function() {
+						  $( this ).dialog( "close" );
+						}
+					  }			   
+	            })
+				.html(typeof message === 'string' ? message : JSON.stringify(message))
+				.dialog('open'); 
+	}
 }
 
 /**
- * currently there are two methodes to delete a layer in og
+ * @TODO currently there are two methodes to delete a layer in og
  * this recommandation has been received directly from open globus
  */
 //function removeLayer( globus , layerName ) : Promise<boolean> {
@@ -105,7 +108,6 @@ function initWorker() {
 	
 	if (typeof (Worker) !== "undefined") {
         //console.log("Yes! Web worker is supported !");
-        // Some code.....
         if (typeof (worker) == "undefined") {
             worker = new Worker("/static/js/worker/worker.js");
             worker.onmessage = function (event) {
@@ -113,12 +115,10 @@ function initWorker() {
                 let progressBar = document.getElementById('workerId');
 				if (progressBar) {
 					progressBar.style.width = event.data + '%';
-					//progressBar.innerText = event.data + '%';
 				}
             };
         }
     } else {
-        // Sorry! No Web Worker support..
 		console.error("Sorry! no web worker support ...");
     }
 }
@@ -173,7 +173,6 @@ function hideAllDiv(globus) {
 	let sidStar = SingletonSidStar.getInstance();
 	// to hide a sidStar layer we remove it from open globus
 	sidStar.removeLayer();
-	
 }
 
 
@@ -188,7 +187,10 @@ function switchAirlines(globus) {
 		// selector in the main menu bar
 		let airlineName = $("#airlineSelectId option:selected").val();
 		
-		// airlines data is made available through template index-og.html
+		/**
+		 * airlines data is made available through template index-og.html
+		 * @TODO : compute viewport based upon Lat Long of airports
+		 * */ 
 		if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 
 			airlines.forEach ( function ( airline ) {
@@ -266,7 +268,7 @@ function initTools(globus, viewExtent) {
 		let airlineAirports = SingletonAirlineAirports.getInstance();
 		airlineAirports.initAirports(globus);
 		
-		// table alloing to see the Routes -> 
+		// table allowing to see the Routes 
 		globus.planet.addControl(new AirlineRoutesControl());
 	
 		// load the airline routes waypoints

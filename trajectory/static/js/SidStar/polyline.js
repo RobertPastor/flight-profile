@@ -145,5 +145,4 @@ class PolyLine {
                 colors: colors
          };
      }
-	
 }

@@ -97,7 +97,7 @@ def getAirport(airportICAOcode):
     
 def computeFlightProfile(request, airlineName):
     
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     logging.info ("compute Flight Profile - for airline = {0}".format(airlineName))
     
     #routeWayPointsList = []
@@ -105,16 +105,9 @@ def computeFlightProfile(request, airlineName):
         aircraftICAOcode = request.GET['aircraft']
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
-
-            logger.debug ("selected aircraft = {0}".format( aircraftICAOcode ) )
             
             airlineRoute = request.GET['route']
-            
-            logger.debug(airlineRoute)
-            
-            logger.debug ( str(airlineRoute).split("-")[0] )
-            logger.debug ( str(airlineRoute).split("-")[1] )
-            
+                                    
             departureAirportICAOcode = str(airlineRoute).split("-")[0]
             departureAirportRunWayName = request.GET['AdepRwy']
             
@@ -122,9 +115,13 @@ def computeFlightProfile(request, airlineName):
             arrivalAirportRunWayName = request.GET['AdesRwy']
             
             takeOffMassKg = request.GET['mass']
-            logger.debug( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
-            cruiseFLfeet = request.GET['fl'] 
-            logger.debug( "cruise FL feet = {0}".format( cruiseFLfeet ) )
+            cruiseFLfeet = request.GET['fl']
+            
+            reducedClimbPowerCoeff = 0.0
+            try:
+                reducedClimbPowerCoeff = request.GET['reduc']
+            except:
+                reducedClimbPowerCoeff = 0.0
             
             airline = Airline.objects.filter(Name=airlineName).first()
             if (airline):
@@ -132,20 +129,18 @@ def computeFlightProfile(request, airlineName):
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 if (airlineRoute):
                     logger.debug( airlineRoute )
-                    '''  use run-ways defined in the web page '''
+                    '''  use run-ways defined in the page '''
                     routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
-                    logger.debug ( routeAsString )
                     acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
                     if acPerformance.read():
-                        #logger.debug ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                        #logger.debug ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
         
                         flightPath = FlightPath(
-                                        route = routeAsString, 
-                                        aircraftICAOcode = aircraftICAOcode,
-                                        RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
-                                        cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                        takeOffMassKilograms = float(takeOffMassKg)  )
+                                        route                  = routeAsString, 
+                                        aircraftICAOcode       = aircraftICAOcode,
+                                        RequestedFlightLevel   = float ( cruiseFLfeet ) / 100., 
+                                        cruiseMach             = acPerformance.getMaxOpMachNumber(), 
+                                        takeOffMassKilograms   = float(takeOffMassKg) ,
+                                        reducedClimbPowerCoeff = float(reducedClimbPowerCoeff) )
         
                         flightPath.computeFlight(deltaTimeSeconds = 1.0)
             
@@ -169,7 +164,6 @@ def computeFlightProfile(request, airlineName):
                     else:
                         response_data = {'errors' : 'Error while reading aircraft performance file = {0}'.format(badaAircraft.getAircraftPerformanceFile())}
                         return JsonResponse(response_data)
-                        
                 else:
                     logger.debug ('airline route not found = {0}'.format(airlineRoute))
                     response_data = {
@@ -179,13 +173,11 @@ def computeFlightProfile(request, airlineName):
                 response_data = {
                     'errors' : 'Airline not found = {0}'.format(airlineName)}
                 return JsonResponse(response_data)
-                
         else:
             logger.debug ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))
             logger.debug ("or aircraft performance file = {0} not found".format(badaAircraft))
             response_data = {
                 'errors' : 'Aircraft performance file {0} not found - please select another aircraft'.format(aircraftICAOcode)}
             return JsonResponse(response_data)
-            
     else:
         return JsonResponse({'errors': "expecting GET method"})

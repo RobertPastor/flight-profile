@@ -77,7 +77,6 @@ class AircraftPerformance(object):
         self.className = self.__class__.__name__
 
         self.filePath = aircraftPerformanceFilePath
-        
             
     def exists(self):
         if os.path.isfile(self.filePath):
@@ -86,7 +85,6 @@ class AircraftPerformance(object):
         else:
             raise ValueError(self.className +": BADA Performance File not found: " + self.filePath)
         return False
-    
     
     def read(self):
         try:
@@ -107,7 +105,6 @@ class AircraftPerformance(object):
         except:
             raise ValueError(self.className + ': error while reading file = ' + self.filePath)
         
-        
     def getNumberOfEngines(self):
         try:
             if len(self.dataLines)>0:
@@ -117,7 +114,6 @@ class AircraftPerformance(object):
             raise ValueError(self.className + ': error while reading number of engines')
         return 0
     
-
     def getStrEngineType(self):
         engineType = ''
         try:
@@ -129,7 +125,6 @@ class AircraftPerformance(object):
         except:
             raise ValueError("BadaPerformanceFile: error while reading engine type")
         return engineType
-    
     
     def getWakeTurbulenceCategory(self):
         wakeTurbulenceCategory = ''
@@ -144,7 +139,6 @@ class AircraftPerformance(object):
             raise ValueError('BadaPerformanceFile: error while reading wake turbulence category')
         return wakeTurbulenceCategory      
     
-    
     def getReferenceMassTons(self):
         try:
             if len(self.dataLines)>0:
@@ -154,10 +148,8 @@ class AircraftPerformance(object):
             raise ValueError("BadaPerformanceFile: error while reading reference mass in Tons")
         return 0.0
     
-    
     def getReferenceMassKilograms(self):
         return self.getReferenceMassTons() * 1000.0
-    
     
     def getMinimumMassTons(self):
         try:

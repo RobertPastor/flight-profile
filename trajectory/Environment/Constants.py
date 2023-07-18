@@ -38,3 +38,6 @@ kerosene_kilo_to_US_gallons = 0.33
 US_gallon_to_US_dollars = 3.25
 
 gravityMetersPerSquareSeconds = 9.81
+
+minFlightLevel = 15.0
+maxFlightLevel = 450.0

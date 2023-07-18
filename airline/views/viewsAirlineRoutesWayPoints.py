@@ -65,14 +65,11 @@ def getWayPointsOfRoute(routeWayPoints , adepRunWayObject, adesRunWayObject):
     
     
 def getRouteWayPoints(request, Adep, Ades):
-    logger.debug ( "URL WayPoints for Route")
+
     if (request.method == 'GET'):
-        logger.debug( "Received Get for Route WayPoints")
-        logger.debug ( Adep )
-        logger.debug  ( Ades )
+        
         airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode=Adep, ArrivalAirportICAOCode=Ades).first()
         if airlineRoute :
-            logging.debug ( str(airlineRoute) )
             
             departureAirport = AirlineAirport.objects.filter(AirportICAOcode=Adep).first()
             arrivalAirport   = AirlineAirport.objects.filter(AirportICAOcode=Ades).first()
@@ -80,21 +77,25 @@ def getRouteWayPoints(request, Adep, Ades):
             ''' May 2023 - runways here are only strings '''
             adepRunWayStr = airlineRoute.computeBestDepartureRunWay()
             adepRunWayObject = AirlineRunWay.objects.filter( Name = adepRunWayStr , Airport = departureAirport ).first()
+            
             #print ( "best departure runway = {0}".format( AdepRunWay ) )
             adesRunWayStr = airlineRoute.computeBestArrivalRunWay()
             adesRunWayObject = AirlineRunWay.objects.filter( Name = adesRunWayStr , Airport = arrivalAirport ).first()
+            
+            if adepRunWayObject and adesRunWayObject:
 
-            #print ( "best arrival runway = {0}".format( AdesRunWay ) )
-
-            routeWayPoints = AirlineRouteWayPoints.objects.filter(Route=airlineRoute)
-            response_data = {
-                'departureAirport'      : Adep,
-                'arrivalAirport'        : Ades,
-                'airlineRouteWayPoints' : getWayPointsOfRoute(routeWayPoints , adepRunWayObject , adesRunWayObject),
-                'bestAdepRunway'        : adepRunWayStr,
-                'bestAdesRunway'        : adesRunWayStr
-                }
-            return JsonResponse(response_data)
+                routeWayPoints = AirlineRouteWayPoints.objects.filter(Route=airlineRoute)
+                response_data = {
+                    'departureAirport'      : Adep,
+                    'arrivalAirport'        : Ades,
+                    'airlineRouteWayPoints' : getWayPointsOfRoute(routeWayPoints , adepRunWayObject , adesRunWayObject),
+                    'bestAdepRunway'        : adepRunWayStr,
+                    'bestAdesRunway'        : adesRunWayStr
+                    }
+                return JsonResponse(response_data)
+            else:
+                response_data = { "errors" : "runway not found = AdepRwy= {0} - AdesRwy= {1}".format(adepRunWayStr,adesRunWayStr) }
+                return JsonResponse(response_data)
              
         else:
             response_data = { "errors" : "route not found = Adep= {0} - Ades= {1}".format(Adep,Ades) }

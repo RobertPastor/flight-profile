@@ -28,6 +28,7 @@ const SingletonProfileCosts = (function () {
 })();
 
 
+// Profile and Costs
 class AirlineProfileCosts {
 	
 	constructor() {
@@ -40,9 +41,19 @@ class AirlineProfileCosts {
 		let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
 		let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
 		
-		elemTOMassKg.value    = aircraftPerformanceData["acMaxTakeOffWeightKg"];
-		elemMinTOMassKg.value = aircraftPerformanceData["acMinTakeOffWeightKg"];
-		elemMaxTOMassKg.value = aircraftPerformanceData["acMaxTakeOffWeightKg"];
+		// 16th July 2023 - initial default mass = reference mass
+		elemTOMassKg.value = "0";
+		if ( aircraftPerformanceData.hasOwnProperty("acReferenceTakeOffWeightKg")) {
+			elemTOMassKg.value = aircraftPerformanceData["acReferenceTakeOffWeightKg"];
+		}
+		elemMinTOMassKg.value = "0";
+		if ( aircraftPerformanceData.hasOwnProperty("acMinTakeOffWeightKg")) {
+			elemMinTOMassKg.value = aircraftPerformanceData["acMinTakeOffWeightKg"];
+		}
+		elemMaxTOMassKg.value = "0";
+		if ( aircraftPerformanceData.hasOwnProperty("acMaxTakeOffWeightKg")) {
+			elemMaxTOMassKg.value = aircraftPerformanceData["acMaxTakeOffWeightKg"];
+		}
 		
 		let elemFL = document.getElementById('requestedFlightLevelId');
 		elemFL.value = aircraftPerformanceData["acMaxOpAltitudeFeet"];
@@ -71,7 +82,6 @@ class AirlineProfileCosts {
 		let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
 		
 		let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
-		//console.log(aircraftICAOcode);
 		
 		// set Max TakeOff Mass
 		for (let index = 0; index < airlineAircraftsArray.length; index++) {
@@ -130,6 +140,7 @@ class AirlineProfileCosts {
 			let airlineRouteKey = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
 			$('#airlineRouteId').append('<option value="' + airlineRouteKey + '">' + airlineRouteName + '</option>');
 			
+			// this.routes is used further ... please see below
 			this.routes.push({ "airline" : airlineName , 
 								"aDep"   : airlineRoutesArray[index]["DepartureAirportICAOCode"] , 
 								"aDes"   : airlineRoutesArray[index]["ArrivalAirportICAOCode"]
@@ -280,6 +291,7 @@ class AirlineProfileCosts {
 	deleteCreateKMLLayer(globus , layerName ) {
 	
 		let finalLayerName = "FlightProfile-" + layerName ;
+		// @TODO removeLayer defined in the main.js
 		removeLayer( globus , finalLayerName );
 		
 		let layerKML = new og.layer.KML( finalLayerName , {
@@ -297,7 +309,7 @@ class AirlineProfileCosts {
 	
 	/**
 	 * unique way to define a global layer name for all airlines
-	 * warning = not applicable if several Adep Ades routes for one airline
+	 * @TODO warning = not applicable if several identical Adep Ades routes for one airline
 	 */
 	getLayerPrefix() {
 		
@@ -319,11 +331,12 @@ class AirlineProfileCosts {
 		let layerName = layerPrefix + "-" + route;
 		//console.log( layerName );
 		
-		// @TODO removeLayer to use Promise !!!
-		// removeLayer defined in the main.js
+		/**
+		 * @TODO removeLayer to use Promise !!!
+		 * removeLayer defined in the main.js
+		 */
 		let ogLayer = globus.planet.getLayerByName( layerName );
 		if ( ogLayer ) {
-			//console.log( "layer with name = " + layerName + " is existing in OG");
 			removeLayer( globus , layerName );
 		}
 
@@ -356,7 +369,7 @@ class AirlineProfileCosts {
 		$("#trComputeFlightProfileId").show();
 		
 		// empty the selector
-		$('#airlineDepartureRunWayFlightProfileId').empty()
+		$('#airlineDepartureRunWayFlightProfileId').empty();
 		
 		for ( let index = 0 ; index < airlineRunWaysArray.length ; index++) {
 			
@@ -389,7 +402,6 @@ class AirlineProfileCosts {
 	hideFlightProfileDiv() {
 	
 		if ( $('#flightProfileMainDivId').is(":visible") ) {
-			
 			$("#flightProfileMainDivId").hide();
 		}
 	}
@@ -398,12 +410,38 @@ class AirlineProfileCosts {
 	
 		this.globus = globus ;
 		this.flightProfileControl = flightProfileControl;
+		
 		globus.planet.events.on("layeradd", function (e) {
 			
 			if (e.pickingObject instanceof og.Layer) {
 				console.log(e.pickingObject.name);
 			}
 			stopBusyAnimation();
+		});
+		
+		// 16th July 2023 - listen to Reduced Climb Power settings changes
+		let reducedClimbPowerCoeffInputId = this.flightProfileControl.getReducedClimbPowerCoeffInputId();
+		document.getElementById(reducedClimbPowerCoeffInputId).addEventListener('change', function () {
+			
+			// Warning : cannot use this inside a call-back
+			let elemDefaultMaxValue = flightProfileControl.getReducedClimPowerCoeffInputDefaultValue();
+			
+			let elemReducedClimbPowerCoeffInput = document.getElementById(reducedClimbPowerCoeffInputId);
+			let elemValue = elemReducedClimbPowerCoeffInput.value;
+			if ( ! Number.isInteger(+(elemValue)) ) {
+				showMessage("Reduced Climb Power Error" , "Reduced Climb must be an integer");
+				elemReducedClimbPowerCoeffInput.value = elemDefaultMaxValue;
+			} else {
+				if ( elemValue > parseInt( elemDefaultMaxValue ) ) {
+					showMessage ("Reduced Climb Power Percentage Error" , "Reduced Climb Power Percentage must be lower or equal to " + elemDefaultMaxValue )
+					elemReducedClimbPowerCoeffInput.value = elemDefaultMaxValue;
+				} else {
+					if ( elemValue < parseInt ( 0.0 ) ) {
+						showMessage ("Reduced Climb Power Percentage Error" , "Reduced Climb Power Percentage must be greater or equal to 0.0" )
+						elemReducedClimbPowerCoeffInput.value = elemDefaultMaxValue;
+					}
+				}
+			}
 		});
 		
 		// listen to change to the aircraft Mass
@@ -492,7 +530,6 @@ class AirlineProfileCosts {
 		});
 		
 		$("#flightProfileMainDivId").hide();
-
 		/**
 		* monitor the button used to show the table with the inputs
 		* it allows only to choose the aircraft, the route before clicking to launch the profile computation
@@ -504,7 +541,9 @@ class AirlineProfileCosts {
 
 			if ( ! $('#flightProfileMainDivId').is(":visible") ) {
 				
-				// defined in the main.js
+				/**
+				 * @todo defined in the main.js
+				 *  */ 
 				hideAllDiv(globus);
 				
 				$('#flightProfileMainDivId').show();
@@ -533,7 +572,6 @@ class AirlineProfileCosts {
 	
 								$("#launchComputeId").show();
 							}
-							
 						},
 						error: function(data, status) {
 							console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
@@ -544,13 +582,7 @@ class AirlineProfileCosts {
 							document.getElementById("btnLaunchFlightProfile").disabled = false;
 						},
 				});
-				
 			} else {
-
-				//document.getElementById("btnLaunchFlightProfile").disabled = true
-				document.getElementById("btnLaunchFlightProfile").innerText = "Profile";
-				//document.getElementById("btnLaunchFlightProfile").style.backgroundColor = "yellow";
-
 				$('#flightProfileMainDivId').hide();
 			}
 		} 
@@ -560,9 +592,7 @@ class AirlineProfileCosts {
 		**/
 		document.getElementById("airlineAircraftId").onchange = function () {
 			
-			console.log ("select aircraft changed");
 			let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
-			console.log(aircraftICAOcode);
 			
 			// get the name of the airline
 			let airlineName = $("#airlineSelectId option:selected").val();
@@ -577,7 +607,7 @@ class AirlineProfileCosts {
 						url :  "trajectory/getAircraft/" + airlineName,
 						async : true,
 						data: 'aircraft=' + aircraftICAOcode,
-						success: function(data, status) {
+						success: function(data) {
 							
 							let dataJson = eval(data);
 							if ( dataJson.hasOwnProperty("errors") ) {
@@ -585,7 +615,6 @@ class AirlineProfileCosts {
 								showMessage( "Error" , dataJson["errors"] );
 								
 							} else {
-								
 								//alert("Data: " + data + "\nStatus: " + status);
 								let dataJson = eval(data);
 								// airlineAircrafts
@@ -610,9 +639,7 @@ class AirlineProfileCosts {
 		
 		//document.getElementById("btnComputeFlightProfileId").disabled = true
 		document.getElementById("btnComputeFlightProfileId").onclick = function () {
-		
-			//console.log ("button compte flight profile pressed");
-		
+				
 			document.getElementById("btnComputeFlightProfileId").disabled = true;
 			
 			let aircraft = $("#airlineAircraftId option:selected").val();
@@ -624,6 +651,10 @@ class AirlineProfileCosts {
 			let elemTOMassKg = document.getElementById('TakeOffMassKgId');
 			let elemFL = document.getElementById('requestedFlightLevelId');
 			
+			// cannot used this keyword in call back
+			let reducedClimbPowerCoeffInputId = flightProfileControl.getReducedClimbPowerCoeffInputId();
+			let elemReduced = document.getElementById(reducedClimbPowerCoeffInputId);
+			
 			// get the name of the airline
 			let airlineName = $("#airlineSelectId option:selected").val();
 			airlineName = encodeURIComponent(airlineName);
@@ -634,6 +665,8 @@ class AirlineProfileCosts {
 			data += '&AdesRwy=' + arrivalRunWay;
 			data += '&mass=' + elemTOMassKg.value;
 			data += '&fl=' + elemFL.value;
+			// 17th July 2023 - add reduced climb power coefficient
+			data += '&reduc=' + elemReduced.value;
 			
 			// init progress bar.
 			initProgressBar();
@@ -644,7 +677,7 @@ class AirlineProfileCosts {
 						url   :  "trajectory/computeFlightProfile/" + airlineName,
 						async :  true,
 						data  :  data ,
-						success: function(data, status) {
+						success: function(data) {
 							
 							let dataJson = eval(data);
 							if ( dataJson.hasOwnProperty("errors") ) {
