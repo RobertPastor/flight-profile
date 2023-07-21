@@ -21,9 +21,11 @@ class PolyLine {
 		//globus.planet.renderer.handler.defaultClock.clearInterval();
 		
 		let layerName = this.getLayerName();
-		// removeLayer defined in main.js
-		removeLayer( globus , layerName );
-		
+		let layer = globus.planet.getLayerByName( layerName );
+		if (layer && (layer.getVisibility() ==  true)) {
+			
+			layer.setVisibility( false );
+		}
 	}
 	
 	init( globus, wayPointsArr ) {
@@ -34,25 +36,26 @@ class PolyLine {
         this.colors = [];
         this.animIndex = [];
 		
-		for ( let wayPointId  = 0; wayPointId < wayPointsArr.length; wayPointId++ ) {
+		if ( Array.isArray(wayPointsArr)) {
 		
-			let srcWayPoint = wayPointsArr[wayPointId]["src"];
-			let dstWayPoint = wayPointsArr[wayPointId]["dst"];
+			for ( let wayPointId  = 0; wayPointId < wayPointsArr.length; wayPointId++ ) {
 			
-			if ( srcWayPoint.hasOwnProperty("longitudeDegrees") && srcWayPoint.hasOwnProperty("latitudeDegrees") && 
-				dstWayPoint.hasOwnProperty("longitudeDegrees") && dstWayPoint.hasOwnProperty("latitudeDegrees") )  {
+				let srcWayPoint = wayPointsArr[wayPointId]["src"];
+				let dstWayPoint = wayPointsArr[wayPointId]["dst"];
+				
+				if ( srcWayPoint.hasOwnProperty("Longitude") && srcWayPoint.hasOwnProperty("Latitude") && 
+					dstWayPoint.hasOwnProperty("Longitude") && dstWayPoint.hasOwnProperty("Latitude") )  {
+										
+					let src = new og.LonLat( Number(srcWayPoint["Longitude"] ), Number( srcWayPoint["Latitude"] ) );
+					let dst = new og.LonLat( Number(dstWayPoint["Longitude"] ), Number( dstWayPoint["Latitude"] ) );
 					
-				//console.log( " source and destination wayPoints are created ");
-				
-				let src = new og.LonLat( Number(srcWayPoint["longitudeDegrees"] ), Number( srcWayPoint["latitudeDegrees"] ) );
-				let dst = new og.LonLat( Number(dstWayPoint["longitudeDegrees"] ), Number( dstWayPoint["latitudeDegrees"] ) );
-				
-				let path = this.getPath( globus.planet.ellipsoid, src, dst );
-				
-				this.paths.push(path.path);
-        		this.colors.push(path.colors);
-            
-        		this.animIndex.push(og.math.randomi(0, POINTS_NUMBER));
+					let path = this.getPath( globus.planet.ellipsoid, src, dst );
+					
+					this.paths.push(path.path);
+	        		this.colors.push(path.colors);
+	            
+	        		this.animIndex.push(og.math.randomi(0, POINTS_NUMBER));
+				}
 			}
 		}
 	}

@@ -40,9 +40,7 @@ class AirlineAirportsRoutesControl extends og.Control {
 		let tbody = document.createElement('tbody');
 		table.appendChild(tbody);
 		mainDiv.appendChild(table);
-		
-		// --------------------
-		
+				
 		this.renderer.div.appendChild(mainDiv);
 	}
 	

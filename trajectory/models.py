@@ -207,7 +207,6 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
     def __hash__(self):
         return super().__hash__()
     
-    
     def getIsSID(self):
         return self.isSID
     
@@ -227,9 +226,9 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
         sidStarGeoPointsList = []
         sidStarWayPointsRoute = AirlineSidStarWayPointsRoute.objects.filter( Route = self ).order_by("Order")
         for wayPoint in sidStarWayPointsRoute:
-            sidStarGeoPointsList.append({ "wayPointName" : wayPoint.getWayPointName(),
-                                          "latitudeDegrees" : wayPoint.getLatitudeDegrees() ,
-                                          "longitudeDegrees" : wayPoint.getLongitudeDegrees()})
+            sidStarGeoPointsList.append({ "name" : wayPoint.getWayPointName(),
+                                          "Latitude" : wayPoint.getLatitudeDegrees() ,
+                                          "Longitude" : wayPoint.getLongitudeDegrees()})
         return sidStarGeoPointsList
             
     

@@ -27,7 +27,9 @@ function deleteLayer( element ) {
 		let ogLayer = globus.planet.getLayerByName( layerName );
 		if ( ogLayer ) {
 			//console.log( "layer with name = " + layerName + " is existing in OG");
-			// @TODO remain -> following global function defined in main.js
+			/**
+			 * @TODO remain -> following global function defined in main.js
+			 **/ 
 			removeLayer( globus , layerName );
 			//console.log( "layer is now removed");
 			SingletonOgLayerCleaner.getInstance().cleanTableRow( element );

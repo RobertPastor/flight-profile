@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from trajectory.models import   BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 
-def getAircraft(request, airlineName):
+def getAircraft(request):
     
     if (request.method == 'GET'):
         
@@ -20,6 +20,7 @@ def getAircraft(request, airlineName):
         acMaxOpAltitudeFeet = 0.0
         
         aircraftICAOcode = request.GET['aircraft']
+        
         badaAircraft = BadaSynonymAircraft.objects.filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
             acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
@@ -35,7 +36,7 @@ def getAircraft(request, airlineName):
                                     'acMaxTakeOffWeightKg'       : acMaxTakeOffWeightKg ,
                                     'acMinTakeOffWeightKg'       : acMinTakeOffWeightKg ,
                                     'acReferenceTakeOffWeightKg' : acReferenceTakeOffWeightKg ,
-                                    'acMaxOpAltitudeFeet' : acMaxOpAltitudeFeet
+                                    'acMaxOpAltitudeFeet'        : acMaxOpAltitudeFeet
                                     }
                 return JsonResponse(response_data)
             else:
@@ -44,7 +45,6 @@ def getAircraft(request, airlineName):
         else:
             response_data = { "errors" : "Aircraft not found = {0}".format(request.GET['aircraft'])}
             return JsonResponse(response_data)
-        
     else:
         response_data = { "errors" : "Expecting a GET - received something else = {0}".format(request.method)}
         return JsonResponse(response_data)

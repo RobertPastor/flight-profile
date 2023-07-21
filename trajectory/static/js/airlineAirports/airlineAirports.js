@@ -20,7 +20,6 @@ const SingletonAirlineAirports = (function () {
 })();
 
 
-
 function showRoute( elem ) {
 	
 	let globus = SingletonAirlineAirports.getInstance().getGlobus();
@@ -28,11 +27,10 @@ function showRoute( elem ) {
 	//console.log( elem.id );
 	let layerName = elem.id ;
 	let layer = globus.planet.getLayerByName( layerName );
-	if (layer) {
+	if (layer && (layer.getVisibility() == true )) {
 		// layer is existing -> hide -> show button as hidden
 		
-		// remove Layer is defined in main.js
-		removeLayer( globus , layerName );
+		layer.setVisibility( false );
 			
 	} else {
 		// load a route
@@ -46,7 +44,10 @@ function showRoute( elem ) {
 class AirlineAirports {
 	
 	constructor() {
-		//console.log("Airline Airports constructor");
+		/**
+		 * @todo warning this is the same prefix as in airlineRoutes
+		 * @todo move this prefix in mainClass.
+		 */
 		this.LayerNamePrefix = "WayPoints-";
 	}
 	
@@ -54,7 +55,7 @@ class AirlineAirports {
 		return this.globus;
 	}
 	
-	removeLayer( routeId ) {
+	hideLayer( routeId ) {
 		
 		let globus = this.globus;
 		
@@ -65,15 +66,30 @@ class AirlineAirports {
 		//console.log(Ades);
 			
 		let layerName =  this.LayerNamePrefix + Adep + "-" + Ades;
-		// function defined in main.js
-		removeLayer( globus , layerName );
+		let layer = globus.planet.getLayerByName( layerName );
+		if (layer && (layer.getVisibility() ==  true)) {
+			
+			layer.setVisibility( false );
+		}
 	}
 	
+	/**
+	 * @todo - same function as in airlineairports
+	 */
 	loadOneRouteWayPoint( layerRouteWayPoints, waypoint ) {
 	
-		let longitude = parseFloat(waypoint.Longitude);
-		let latitude = parseFloat(waypoint.Latitude);
-		let name = waypoint.name;
+		let longitude = 0.0;
+		if ( waypoint.hasOwnProperty("Longitude")) {
+			longitude = parseFloat(waypoint.Longitude);
+		}
+		let latitude = 0.0;
+		if ( waypoint.hasOwnProperty("Latitude")) {
+			latitude = parseFloat(waypoint.Latitude);
+		}
+		let name = "";
+		if ( waypoint.hasOwnProperty("name")) {
+			name = waypoint.name;
+		}
 		
 		layerRouteWayPoints.add(new og.Entity({
 				lonlat: [longitude, latitude],
@@ -115,6 +131,8 @@ class AirlineAirports {
 			// insert one waypoint
 			SingletonAirlineAirports.getInstance().loadOneRouteWayPoint( layerRouteWayPoints, airlineRoutesWaypointsArray[wayPointId] );
 		}
+		// set viewport extent
+		SingletonMainClass.getInstance().setExtent( airlineRoutesWaypointsArray );
 	}
 	
 	writeRoutesTableFromToAirport(  departureAirportICAOcode , airlineRoutesArray , position ) {
@@ -146,7 +164,7 @@ class AirlineAirports {
 							.append( oneAirlineRoute["Airline"] )
 						)
 					);
-					
+				// arrow to show direction of the flight
 				if ( oneAirlineRoute["DepartureAirportICAOCode"] == departureAirportICAOcode ) {
 					$("#airlineAirportsRoutesMainDivId").find('tbody').find("tr").last()
 							.append($('<td>')
@@ -160,23 +178,21 @@ class AirlineAirports {
 				}
 					
 				$("#airlineAirportsRoutesMainDivId").find('tbody').find("tr").last()
-					
-						.append($('<td>')
+					.append($('<td>')
 							.append( '<span> <a id="' + this.LayerNamePrefix + id + '" href="#" onclick="showRoute(this);" >show / hide route</a> </span>'  )
-						)
-						.append($('<td>')
+					)
+					.append($('<td>')
 							.append( oneAirlineRoute["DepartureAirport"] )
-						)
-						.append($('<td>')
+					)
+					.append($('<td>')
 							.append( oneAirlineRoute["DepartureAirportICAOCode"] )
-						)
-						.append($('<td>')
+					)
+					.append($('<td>')
 							.append( oneAirlineRoute["ArrivalAirport"] )
-						)
-						.append($('<td>')
+					)
+					.append($('<td>')
 							.append( oneAirlineRoute["ArrivalAirportICAOCode"] )
-						)
-					
+					)
 			}
 		}
 	}
@@ -192,13 +208,12 @@ class AirlineAirports {
 		let Adep = arr[1];
 		//console.log(Adep)
 		let Ades = arr[2];
-		//console.log(Ades)
-		// use ajax to get the data 
+		
 		$.ajax( {
 				method: 'get',
 				url :  "airline/wayPointsRoute/" + Adep +"/" + Ades,
 				async : true,
-				success: function(data, status) {
+				success: function(data) {
 											
 						//alert("Data: " + data + "\nStatus: " + status);
 						let dataJson = eval(data);		
@@ -228,12 +243,11 @@ class AirlineAirports {
 		let airlineName = $("#airlineSelectId option:selected").val();
 		airlineName = encodeURIComponent(airlineName);
 		
-		// use ajax to get the data 
 		$.ajax( {
 				method: 'get',
 				url :  "airline/airlineRoutes/" + airlineName,
 				async : true,
-				success: function(data, status) {
+				success: function(data) {
 								
 					//alert("Data: " + data + "\nStatus: " + status);
 					let dataJson = eval(data);		
@@ -344,7 +358,7 @@ class AirlineAirports {
 		// add the reservations
 		for (let airportId = 0; airportId < airports.length; airportId++ ) {
 			// insert one airport
-			SingletonAirlineAirports.getInstance().loadOneAirport(  airports[airportId] , showHide );
+			SingletonAirlineAirports.getInstance().loadOneAirport( airports[airportId] , showHide );
 		}
 	}
 
@@ -360,12 +374,11 @@ class AirlineAirports {
 		let airlineName = $("#airlineSelectId option:selected").val();
 		airlineName = encodeURIComponent(airlineName);
 
-		// use ajax to get the data 
 		$.ajax( {
 				method: 'get',
 				url :  "trajectory/airports/" + airlineName,
 				async : true,
-				success: function(data, status) {
+				success: function(data) {
 					stopBusyAnimation();
 					//alert("Data: " + data + "\nStatus: " + status);
 					let dataJson = eval(data);
@@ -382,7 +395,6 @@ class AirlineAirports {
 					document.getElementById("btnAirports").disabled = false
 				}
 		} );
-	
 	}
 
 	initAirports(globus) {
@@ -399,17 +411,14 @@ class AirlineAirports {
 		document.getElementById("btnAirports").onclick = function () {
 				
 			if (show) {
-				
 				show = false;
 				document.getElementById("btnAirports").innerText = "Airports";					
 				SingletonAirlineAirports.getInstance().showHideAllAirports( true );
 				
 			} else {
-				
 				show = true;
 				document.getElementById("btnAirports").innerText = "Airports";
 				SingletonAirlineAirports.getInstance().showHideAllAirports( false );
-				
 			}
 		};
 	}

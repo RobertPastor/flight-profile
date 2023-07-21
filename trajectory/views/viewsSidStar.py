@@ -20,17 +20,12 @@ def getSidStarFromDB( SidOrStar , airport , runway, waypoint ):
     
     airport = AirlineAirport.objects.filter ( AirportICAOcode = airport ).first()
     assert ( isinstance ( airport , AirlineAirport ))
-    #print ( airport )
     
     runway = AirlineRunWay.objects.filter( Name = runway , Airport = airport ).first()
     assert ( isinstance ( runway , AirlineRunWay ))
-
-    #print ( runway )
     
     waypoint = AirlineWayPoint.objects.filter ( WayPointName = waypoint).first()
     assert ( isinstance ( waypoint , AirlineWayPoint ))
-
-    #print ( waypoint )
     
     isSID = True if ( SidOrStar.lower() == "sid" ) else False
     
@@ -60,13 +55,9 @@ def showSidStar(request , SidOrStar , airport , runway, waypoint ):
     
     if (request.method == 'GET'):
         
-            #print (airline)
-            responseData = {}
-            sidStarsJson = getSidStarFromDB ( SidOrStar , airport , runway, waypoint )
-            responseData = {
-                'SidStar'  : sidStarsJson}
-            
-            return JsonResponse(responseData)
+        sidStarsJson = getSidStarFromDB ( SidOrStar , airport , runway, waypoint )
+        responseData = { 'SidStar'  : sidStarsJson }
+        return JsonResponse(responseData)
         
     else:
         return JsonResponse({'errors': "expecting GET method"})

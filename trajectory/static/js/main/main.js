@@ -62,7 +62,7 @@ function removeLayer( globus , layerName )  {
 				resolve(true);
 			}
 		} catch (err) {
-			console.error("2nd method to delete a lyer - err = "+ JSON.stringify(err));
+			console.error("2nd method to delete a layer - err = "+ JSON.stringify(err));
 			reject(err);
 		}
 		try {
@@ -72,7 +72,7 @@ function removeLayer( globus , layerName )  {
 				let entities = layerOne.getEntities();
 				layerOne.removeEntities(entities);
 				console.log("entity removed !!!");
-				layerOne.remove();
+				//layerOne.remove();
 				resolve(true);
 			}
 		} catch (err) {
@@ -171,8 +171,7 @@ function hideAllDiv(globus) {
 	fuelPlanner.hideFuelPlannerDiv();
 	
 	let sidStar = SingletonSidStar.getInstance();
-	// to hide a sidStar layer we remove it from open globus
-	sidStar.removeLayer();
+	
 }
 
 
@@ -220,7 +219,7 @@ function switchAirlines(globus) {
 function loadAirlinesSelector() {
 	/*
 	* fill the selector with the names of the airlines
-	* Warning : the airlines object is loaded in the index-og.html
+	* Warning : the airlines array is loaded in the index-og.html
 	*/
 	if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 		airlines.forEach ( function ( airline ) {
@@ -228,7 +227,6 @@ function loadAirlinesSelector() {
             //option.text = "AmericanWings";
 			let select = document.getElementById("airlineSelectId");
 			if ( select ) {
-				
 				let option = document.createElement("option");
                 option.text = airline["Name"];
 				select.add(option);
@@ -241,7 +239,8 @@ function loadAirlinesSelector() {
 function initTools(globus, viewExtent) {
 			
 	// add all controls that are derived from an og control class
-			
+	if	(globus){
+		
 		globus.planet.addControl(new MainControl());
 		globus.planet.addControl(new AirlineRoutesAirwaysSubMenu());
 		globus.planet.addControl(new AirlineOptimizationsSubMenu());
@@ -347,7 +346,10 @@ function initTools(globus, viewExtent) {
 		
 		// show the airports
 		SingletonAirlineAirports.getInstance().showHideAllAirports( true );
-	
+		
+		// 19th July 2023 Main Singleton Class
+		new SingletonMainClass.getInstance().init(globus);
+	}
 }
 
 
@@ -381,14 +383,15 @@ function init() {
 	//let airlineList = JSON.parse('{{ airlines|escapejs }}');
 	if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 				
-		let airline = airlines[0]
-		let MinLongitude = airline["MinLongitudeDegrees"]
-		let MinLatitude = airline["MinLatitudeDegrees"]
-		let MaxLongitude = airline["MaxLongitudeDegrees"]
-		let MaxLatitude = airline["MaxLatitudeDegrees"]
+		let airline = airlines[0];
+		let MinLongitude = airline["MinLongitudeDegrees"];
+		let MaxLongitude = airline["MaxLongitudeDegrees"];
+
+		let MinLatitude = airline["MinLatitudeDegrees"];
+		let MaxLatitude = airline["MaxLatitudeDegrees"];
 		
-		let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
-		let NorthEast = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
+		let SouthWest  = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
+		let NorthEast  = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
 		let viewExtent = new og.Extent( SouthWest , NorthEast );
 	
 		setTimeout( function() {

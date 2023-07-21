@@ -34,9 +34,9 @@ class AirlineRoutesControl extends og.Control {
 		let row_1 = document.createElement('tr');
 		
 		let th_list = [ 'Airline' , 'Departure Airport' , 'ICAO', 'SID' , 'Best RunWay', 'Destination Airport', 'ICAO', 'STAR', 'Best RunWay', 'Action'];
-		let th = undefined;
+		
 		th_list.forEach ( function ( element ) {
-			th = document.createElement('th');
+			let th = document.createElement('th');
 			th.innerHTML = element;
 			row_1.appendChild(th);
 		});

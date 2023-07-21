@@ -594,17 +594,13 @@ class AirlineProfileCosts {
 			
 			let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
 			
-			// get the name of the airline
-			let airlineName = $("#airlineSelectId option:selected").val();
-			airlineName = encodeURIComponent(airlineName);
-			
 			// init progress bar.
 			initProgressBar();
 			initWorker();
 			
 			$.ajax({
 						method: 'get',
-						url :  "trajectory/getAircraft/" + airlineName,
+						url :  "trajectory/aircraft" ,
 						async : true,
 						data: 'aircraft=' + aircraftICAOcode,
 						success: function(data) {

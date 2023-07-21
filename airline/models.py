@@ -87,13 +87,13 @@ class AirlineRoute(models.Model):
         assert ( isinstance ( firstWayPointInRoute , AirlineWayPoint ))
 
         AdepRunWay = AirlineRunWay.objects.filter  ( Name = AdepRunWayName , Airport = Adep ).first()
-        if ( AdepRunWay ):
+        if AdepRunWay:
             isSID = True
             sidStar = AirlineStandardDepartureArrivalRoute.objects.filter ( isSID = isSID , 
                                                                             DepartureArrivalAirport = Adep,
                                                                             DepartureArrivalRunWay  = AdepRunWay ,
                                                                             FirstLastRouteWayPoint = firstWayPointInRoute).first()
-            if ( sidStar ):
+            if sidStar:
                 return sidStar.getWayPointsListAsString(isSID)
             
         return ""
@@ -289,7 +289,7 @@ class AirlineRouteWayPoints(models.Model):
     def getWayPointsListAsString(self):
         routeAsString = ""
         first = True
-        for wayPoint in AirlineRouteWayPoints.objects.all().filter(Route=self).order_by("Order"):
+        for wayPoint in AirlineRouteWayPoints.objects.filter(Route=self).order_by("Order"):
             if (first):
                 routeAsString += str(wayPoint.WayPoint).strip()
                 first = False

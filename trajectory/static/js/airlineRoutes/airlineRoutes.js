@@ -24,13 +24,9 @@ function showSidStarRoute( elem ) {
 	
 	let layerName = elem.id ;
 	let layer = globus.planet.getLayerByName( layerName );
-	if (layer) {
+	if (layer && (layer.getVisibility() == false)) {
 		
-		/**
-		 * @todo remove Layer is defined in main.js
-		 *  */ 
-		removeLayer( globus , layerName );
-			
+		layer.setVisibility(true);
 	} else {
 		// load a Sid Star route
 		try {
@@ -60,6 +56,9 @@ class AirlineRoutes {
 		return this.globus;
 	}
 	
+	/**
+	 * @todo - same function as in airlineairports
+	 */
 	loadOneRouteWayPoint( layerRouteWayPoints, waypoint ) {
 	
 		let longitude = 0.0;
@@ -97,8 +96,6 @@ class AirlineRoutes {
 	loadRouteWayPoints(  airlineRoutesWaypointsArray , layerName ) {
 		
 		let globus = this.globus;
-	
-		//console.log("start loading route WayPoints");
 		let layerRouteWayPoints = new og.layer.Vector( layerName , {
 				billboard: { 
 					src: '/static/trajectory/images/marker.png', 
@@ -115,6 +112,7 @@ class AirlineRoutes {
 			// insert one waypoint
 			SingletonAirlineRoutes.getInstance().loadOneRouteWayPoint( layerRouteWayPoints, airlineRoutesWaypointsArray[wayPointId] );
 		}
+		SingletonMainClass.getInstance().setExtent(airlineRoutesWaypointsArray);
 	}
 	
 	// write in the table the best departure runway and the best arrival runway
@@ -177,8 +175,6 @@ class AirlineRoutes {
 	}
 
 	showHideWayPoints( domElement ) {
-		
-		let globus = this.globus;
 	
 		let id = domElement.id ;
 		//console.log( id );
@@ -189,24 +185,15 @@ class AirlineRoutes {
 		//console.log(Ades)
 			
 		let layerName =  this.LayerNamePrefix + Adep + "-" + Ades;
+		let globus = this.globus;
 		let layer = globus.planet.getLayerByName( layerName );
-		if (layer) {
+		if (layer && (layer.getVisibility() ==  true)) {
 			
 			document.getElementById(id).value = "Show";
-			try {
-				/**
-				 * @todo remove Layer is defined in main.js
-				 *  */ 
-				removeLayer( globus , layerName );
-			
-			} catch (err) {
-				console.log(JSON.stringify(err));
-			}
+			layer.setVisibility( false );
 			
 		} else {
-			//console.log( " layer " + layerName + " is NOT existing");
 			document.getElementById(id).value = "Hide";
-			
 			//console.log(id)
 			SingletonAirlineRoutes.getInstance().loadOneAirlineRoute( id );
 		} 
@@ -230,18 +217,10 @@ class AirlineRoutes {
 		
 		let layerName = this.LayerNamePrefix + oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"];
 		let layer = globus.planet.getLayerByName( layerName );
-		if (layer) {
+		if (layer && (layer.getVisibility() == false)) {
 			// layer is existing -> hide -> show button as hidden
 			document.getElementById(elemButton.id).value = "Hide";
-			try {
-				/**
-				 * @todo remove Layer as it is defined in main.js
-				 *  */ 
-				removeLayer( globus , layerName );
-			
-			} catch (err) {
-				console.error(JSON.stringify(err));
-			}
+			layer.setVisibility( true );
 		}
 		/**
 		* on click function 
@@ -275,10 +254,6 @@ class AirlineRoutes {
 		}
 	}
 	
-	getSidStarLayerNamePrefix() {
-		// openglobus global layer name prefix
-		return "SidStar-";
-	}
 
 	// April 2023 - add best runway
 	// 11th June 2023 add SID and STAR
@@ -344,22 +319,17 @@ class AirlineRoutes {
 		
 		let Adep = oneAirlineRoute["DepartureAirportICAOCode"];
 		let Ades = oneAirlineRoute["ArrivalAirportICAOCode"];
-		try {
-			let layerName = this.LayerNamePrefix + Adep + "-" + Ades;
-			/**
-			 * @todo remove layer is defined in main.js
-			 * */ 
-			removeLayer( globus , layerName );
+		let layerName = this.LayerNamePrefix + Adep + "-" + Ades;
+		let layer = globus.planet.getLayerByName( layerName );
+		if (layer && (layer.getVisibility() ==  true)) {
 			
-		} catch (err) {
-			console.log(JSON.stringify(err));
+			layer.setVisibility( false );
 		}
 	}
 
 	removeGlobusRoutesWayPointsLayers( airlineRoutesArray ) {
 	
 		for (var airlineRouteId = 0; airlineRouteId < airlineRoutesArray.length; airlineRouteId++ ) {
-			// insert one waypoint
 			SingletonAirlineRoutes.getInstance().removeOneAirlineRoute( airlineRoutesArray[airlineRouteId] );
 		}
 	}

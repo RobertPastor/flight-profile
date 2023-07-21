@@ -36,13 +36,7 @@ def getWayPointsOfRoute(routeWayPoints , adepRunWayObject, adesRunWayObject):
     for waypoint in AirlineWayPoint.objects.all():
         for routeWayPoint in routeWayPoints:
             if ( waypoint.WayPointName == routeWayPoint.WayPoint):
-                #print (waypoint.WayPointName)
-                '''
-                if waypoint.Latitude >= viewExtent["minlatitude"] and \
-                    waypoint.Latitude <= viewExtent["maxlatitude"] and \
-                    waypoint.Longitude >= viewExtent["minlongitude"] and \
-                    waypoint.Longitude <= viewExtent["maxlongitude"] :
-                '''
+                
                 if ( waypoint.WayPointName not in wayPointNames):
                     wayPointNames.append(waypoint.WayPointName)
                     wayPointsList.append({

@@ -32,7 +32,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from trajectory.Environment.Constants  import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes
+from trajectory.Environment.Constants  import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes, Knots2MetersPerSecond
+from trajectory.Environment.Constants  import  Meter2Feet , Feet2Meter, MeterSecond2Knots, Meter2NauticalMiles
 
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.BadaAircraftPerformance.BadaEngineFile import Engine
@@ -47,16 +48,6 @@ from trajectory.Environment.Earth import Earth
 from trajectory.Environment.Utils import logElapsedRealTime
 
 
-Knots2MetersPerSecond = 0.514444444
-Meter2Feet = 3.2808
-Feet2Meter = 0.3048
-MeterSecond2Knots = 1.9438444924406
-Meter2NauticalMiles = 0.000539956803
-Kilogram2Pounds = 2.20462262 # 1 kilogram = 2.204 lbs
-
-
-NauticalMiles2Meters = 1852. # meters
-ThreeDegreesGlideSlope = 3
 GlideSlopeStart2TouchDownNauticalMiles = 5 # 5 nautical miles from start of glide slope to runway touch down
 
 
