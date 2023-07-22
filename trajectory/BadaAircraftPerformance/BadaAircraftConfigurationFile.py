@@ -6,7 +6,7 @@ Created on 22 february 2015
 
         Written By:
                 Robert PASTOR 
-                @Email: < robert [--DOT--] pastor0691 (--AT--) orange [--DOT--] fr >
+                @Email: < robert [--DOT--] pastor0691 (--AT--) gmail [--DOT--] com >
 
         http://trajectoire-predict.monsite-orange.fr/ 
         Copyright 2015 Robert PASTOR 
@@ -24,7 +24,6 @@ Created on 22 february 2015
         You should have received a copy of the GNU General Public License
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
-
 '''
 
 import math
@@ -255,7 +254,6 @@ class AircraftConfiguration(FlightEnvelope):
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
         
-        
     def setInitialClimbConfiguration(self, elapsedTimeSeconds):
         ''' high lifting devices are used '''
         newConfiguration = 'initial-climb'
@@ -263,13 +261,11 @@ class AircraftConfiguration(FlightEnvelope):
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
 
-
     def setClimbConfiguration(self, elapsedTimeSeconds):
         newConfiguration = 'climb'
         if self.aircraftCurrentConfiguration != newConfiguration:
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
-    
     
     def setCruiseConfiguration(self, elapsedTimeSeconds):
         newConfiguration = 'cruise'
@@ -277,13 +273,11 @@ class AircraftConfiguration(FlightEnvelope):
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
  
- 
     def setDescentConfiguration(self, elapsedTimeSeconds):
         newConfiguration = 'descent'
         if self.aircraftCurrentConfiguration != newConfiguration:
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
-
 
     def setApproachConfiguration(self, elapsedTimeSeconds):
         ''' approach starts 4-5 nautics when the ILS 3-degrees descent slope is captured '''
@@ -293,7 +287,6 @@ class AircraftConfiguration(FlightEnvelope):
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
     
-    
     def setLandingConfiguration(self, elapsedTimeSeconds):
         ''' landing configuration - landing-gear down - starts as soon as speed < Approach stall speed 
         and altitude above airport field > xxx feet '''
@@ -302,13 +295,11 @@ class AircraftConfiguration(FlightEnvelope):
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
         
-        
     def setArrivalGroundRunConfiguration(self, elapsedTimeSeconds):
         newConfiguration = 'arrival-ground-run'
         if self.aircraftCurrentConfiguration != newConfiguration:
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
-            
             
     def isDepartureGroundRun(self):
         return (self.aircraftCurrentConfiguration=='departure-ground-run')

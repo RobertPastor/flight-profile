@@ -5,7 +5,7 @@ Created on 6 mars 2015
 
         Written By:
                 Robert PASTOR 
-                Email: < robert [--DOT--] pastor0691 (--AT--) orange [--DOT--] fr >
+                Email: < robert [--DOT--] pastor0691 (--AT--) gmail [--DOT--] com >
 
         http://trajectoire-predict.monsite-orange.fr/ 
         Copyright 2015 Robert PASTOR 

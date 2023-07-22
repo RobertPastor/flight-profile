@@ -1,8 +1,6 @@
 
-document.addEventListener('DOMContentLoaded', (event) => { 
-       
-	//console.log("compute flight profile js is loaded");
-	 
+document.addEventListener('DOMContentLoaded', () => { 
+       	 
 	$("#trComputeFlightProfileId").hide();
 	$("#aircraftSelectionId").hide();
 	$("#routesSelectionId").hide();
@@ -147,7 +145,7 @@ class AirlineProfileCosts {
 								});
 			
 		}
-		// the next function is using this.routes
+		// the next function is using this.routes object
 		this.setAirportsICAOcode();
 	}
 

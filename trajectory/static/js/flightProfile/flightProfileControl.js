@@ -17,8 +17,7 @@ class FlightProfileControl extends og.Control {
 	}
 	
 	getReducedClimPowerCoeffInputDefaultValue() {
-		//return "15";
-		return "0";
+		return "15";
 	}
 	
 	createRowWithAircraftSelector() {
@@ -59,14 +58,11 @@ class FlightProfileControl extends og.Control {
 		input_1.id = this.getReducedClimbPowerCoeffInputId();
 		input_1.maxlength = "6";
 		input_1.size = "5";
-		input_1.title = "enter a float between 0% reduction to a max of 15% reduction" ;
+		input_1.title = "enter a float between 0% power reduction to a max of 15% power reduction" ;
 		input_1.value = this.getReducedClimPowerCoeffInputDefaultValue();
 		input_1.style.backgroundColor = '#B2BEB5';
 		
-		/**
-		 * @todo - temporarily
-		 */
-		input_1.readOnly = true;
+		input_1.readOnly = false;
 
 		div_2.appendChild(input_1);
 
@@ -366,7 +362,7 @@ class FlightProfileControl extends og.Control {
 		div_7.classList.add("colClass");
 
 		// --------------------
-		// button down load state vector
+		// button download state vector
 		
 		let button_7 = document.createElement("button");
 		button_7.id = "btnDownLoadVerticalProfileId";
@@ -389,23 +385,19 @@ class FlightProfileControl extends og.Control {
 		button_8.id = "btnDownLoadKMLfileId";
 		button_8.innerHTML = "Download KML";
 		button_8.classList.add("buttonWidth");
-		button_8.title = "click to download a Keyhole Markup Language file";
+		button_8.title = "click to download a Keyhole Markup Language file with the compute trajectory";
 
 		div_8.appendChild(button_8);
 		
 		secondMainDiv.appendChild(div_8);
-
-		// add div with all buttons to the TD
 		td_2.appendChild( secondMainDiv )
 		// --------------------
 		
 		row.appendChild(td_2);
 		return row;
-		
 	}
 
 	onadd() {
-		//console.log("flight profile Control - onadd");
 		
 		let mainDiv = document.createElement('div');
 		mainDiv.id = this.getMainDivId();
@@ -428,23 +420,14 @@ class FlightProfileControl extends og.Control {
 		
 		let table = document.createElement('table');
 		table.id = "flightProfileTableId";
+				
+		// each function returns a row object
+		table.appendChild(this.createRowWithAircraftSelector());
 		
-		// ------------------
-		
-		let row = this.createRowWithAircraftSelector();
-		table.appendChild(row);
-		
-		row = this.createRowWithMass();
-		table.appendChild(row);
-		
-		row = this.createRowWithRouteSelector();
-		table.appendChild(row);
-		
-		row = this.createRowWithRunwaySelector();
-		table.appendChild(row);
-		
-		row = this.createRowWithButtons();
-		table.appendChild(row);
+		table.appendChild(this.createRowWithMass());
+		table.appendChild(this.createRowWithRouteSelector());
+		table.appendChild(this.createRowWithRunwaySelector());
+		table.appendChild(this.createRowWithButtons());
 		
 		mainDiv.appendChild(table);
 		this.renderer.div.appendChild(mainDiv);
