@@ -13,7 +13,6 @@ from trajectory.models import AirlineStandardDepartureArrivalRoute, AirlineAirpo
 
 def getSidStarFromDB( SidOrStar , airport , runway, waypoint ):
     
-    #print ( airport )
     ''' Sid Star Id is used to loop through the existing Sid Star '''
     
     assert ( isinstance ( airport , str ))

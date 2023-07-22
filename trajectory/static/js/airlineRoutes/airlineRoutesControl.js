@@ -33,7 +33,7 @@ class AirlineRoutesControl extends og.Control {
 		let thead = document.createElement('thead');
 		let row_1 = document.createElement('tr');
 		
-		let th_list = [ 'Airline' , 'Departure Airport' , 'ICAO', 'SID' , 'Best RunWay', 'Destination Airport', 'ICAO', 'STAR', 'Best RunWay', 'Action'];
+		let th_list = [ 'Airline' , 'Departure Airport' , 'ICAO', 'SID' , 'Best Rwy', 'Destination Airport', 'ICAO', 'STAR', 'Best Rwy', 'Action'];
 		
 		th_list.forEach ( function ( element ) {
 			let th = document.createElement('th');

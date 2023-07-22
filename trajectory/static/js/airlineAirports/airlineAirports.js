@@ -3,12 +3,10 @@
 const SingletonAirlineAirports = (function () {
 	
 	let instance;
-
     function createInstance() {
         let object = new AirlineAirports();
         return object;
     }
-
     return {
         getInstance: function () {
             if (!instance) {
@@ -24,14 +22,15 @@ function showRoute( elem ) {
 	
 	let globus = SingletonAirlineAirports.getInstance().getGlobus();
 	
-	//console.log( elem.id );
 	let layerName = elem.id ;
 	let layer = globus.planet.getLayerByName( layerName );
-	if (layer && (layer.getVisibility() == true )) {
-		// layer is existing -> hide -> show button as hidden
-		
-		layer.setVisibility( false );
-			
+	if (layer) {
+		// layer is existing
+		if (layer.getVisibility() == true) {
+			layer.setVisibility( false );
+		} else {
+			layer.setVisibility( true );
+		}	
 	} else {
 		// load a route
 		//console.log( " layer " + layerName + " is not existing");
@@ -60,16 +59,18 @@ class AirlineAirports {
 		let globus = this.globus;
 		
 		let arr = routeId.split("-");
-		let Adep = arr[1];
-		//console.log(Adep);
-		let Ades = arr[2];
-		//console.log(Ades);
+		if ( Array.isArray(arr) && (arr.length>1)){
 			
-		let layerName =  this.LayerNamePrefix + Adep + "-" + Ades;
-		let layer = globus.planet.getLayerByName( layerName );
-		if (layer && (layer.getVisibility() ==  true)) {
-			
-			layer.setVisibility( false );
+			let Adep = arr[1];
+			//console.log(Adep);
+			let Ades = arr[2];
+			//console.log(Ades);
+				
+			let layerName =  this.LayerNamePrefix + Adep + "-" + Ades;
+			let layer = globus.planet.getLayerByName( layerName );
+			if (layer && (layer.getVisibility() ==  true)) {
+				layer.setVisibility( false );
+			}
 		}
 	}
 	

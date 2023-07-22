@@ -17,16 +17,28 @@ const SingletonAirlineRoutes = (function () {
     };
 })();
 
-
-function showSidStarRoute( elem ) {
+/**
+ * same function used to show or hide a Sid Star
+ */
+function showHideSidStarRoute( elem ) {
 	
 	let globus = SingletonAirlineRoutes.getInstance().getGlobus();
 	
 	let layerName = elem.id ;
+	layerName = layerName.replaceAll("/", "-");
 	let layer = globus.planet.getLayerByName( layerName );
-	if (layer && (layer.getVisibility() == false)) {
-		
-		layer.setVisibility(true);
+	if (layer) {
+		if (layer.getVisibility() == false) {
+			layer.setVisibility(true);
+			try {
+				// load a SID STAR from backend
+				SingletonSidStar.getInstance().queryServer ( elem.id );
+			} catch (err) {
+				console.error( JSON.stringify(err));
+			}
+		} else {
+			SingletonSidStar.getInstance().hideLayer(layerName);
+		}
 	} else {
 		// load a Sid Star route
 		try {
@@ -50,6 +62,7 @@ class AirlineRoutes {
 		this.LayerNamePrefix = "WayPoints-";
 		this.LayerSidPrefix = "Sid-";
 		this.LayerStarPrefix = "Star-";
+		this.LayerWayPoints = {};
 	}
 	
 	getGlobus() {
@@ -113,6 +126,8 @@ class AirlineRoutes {
 			SingletonAirlineRoutes.getInstance().loadOneRouteWayPoint( layerRouteWayPoints, airlineRoutesWaypointsArray[wayPointId] );
 		}
 		SingletonMainClass.getInstance().setExtent(airlineRoutesWaypointsArray);
+		// 22nd July 2023 - store the wayPoints array
+		this.LayerWayPoints[layerName] = airlineRoutesWaypointsArray;
 	}
 	
 	// write in the table the best departure runway and the best arrival runway
@@ -161,7 +176,6 @@ class AirlineRoutes {
 							// true means Adep and false means Ades
 							SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , false, AdesRunWay);
 						}
-
 				},
 				error: function(data, status) {
 					console.log("Error - show Airline Routes : " + status + " Please contact your admin");
@@ -179,24 +193,37 @@ class AirlineRoutes {
 		let id = domElement.id ;
 		//console.log( id );
 		let arr = id.split("-");
-		let Adep = arr[1];
-		//console.log(Adep)
-		let Ades = arr[2];
-		//console.log(Ades)
-			
-		let layerName =  this.LayerNamePrefix + Adep + "-" + Ades;
-		let globus = this.globus;
-		let layer = globus.planet.getLayerByName( layerName );
-		if (layer && (layer.getVisibility() ==  true)) {
-			
-			document.getElementById(id).value = "Show";
-			layer.setVisibility( false );
-			
-		} else {
-			document.getElementById(id).value = "Hide";
-			//console.log(id)
-			SingletonAirlineRoutes.getInstance().loadOneAirlineRoute( id );
-		} 
+		if ( Array.isArray(arr) && (arr.length>1)) {
+
+			let Adep = arr[1];
+			//console.log(Adep)
+			let Ades = arr[2];
+			//console.log(Ades)
+				
+			let layerName =  this.LayerNamePrefix + Adep + "-" + Ades;
+			let globus = this.globus;
+			let layer = globus.planet.getLayerByName( layerName );
+			if (layer) {
+				// layer is existing
+				if (layer.getVisibility() ==  true) {
+					document.getElementById(id).value = "Show";
+					layer.setVisibility( false );
+				} else {
+					document.getElementById(id).value = "Hide";
+					layer.setVisibility( true );
+					if ( this.LayerWayPoints.hasOwnProperty(layerName)) {
+						let wayPointsArray = this.LayerWayPoints[layerName];
+						if ( wayPointsArray ) {
+							SingletonMainClass.getInstance().setExtent( wayPointsArray );
+						}
+					}
+				}
+			} else {
+				//console.log(id)
+				document.getElementById(id).value = "Hide";
+				SingletonAirlineRoutes.getInstance().loadOneAirlineRoute( id );
+			}
+		}
 	}
 	
 	configureRoutesWayPointsButton( oneAirlineRoute ) {
@@ -217,10 +244,15 @@ class AirlineRoutes {
 		
 		let layerName = this.LayerNamePrefix + oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"];
 		let layer = globus.planet.getLayerByName( layerName );
-		if (layer && (layer.getVisibility() == false)) {
-			// layer is existing -> hide -> show button as hidden
-			document.getElementById(elemButton.id).value = "Hide";
-			layer.setVisibility( true );
+		if (layer) {
+			// layer is existing
+			if (layer.getVisibility() == false) {
+				document.getElementById(elemButton.id).value = "Hide";
+				layer.setVisibility( true );
+			} else {
+				document.getElementById(elemButton.id).value = "Show";
+				layer.setVisibility( false );
+			}			
 		}
 		/**
 		* on click function 
@@ -240,7 +272,7 @@ class AirlineRoutes {
 		
 			elemTdSid.id = "tdSidId-" + oneAirlineRoute["SID"];
 			let id = this.LayerSidPrefix +  oneAirlineRoute["SID"];
-			elemTdSid.innerHTML = '<span> <a id="' +  id + '" href="#" onclick="showSidStarRoute(this);" >' + oneAirlineRoute["SID"] + '</a> </span>'  
+			elemTdSid.innerHTML = '<span> <a id="' +  id + '" href="#" onclick="showHideSidStarRoute(this);" >' + oneAirlineRoute["SID"] + '</a> </span>'  
 			elemTdSid.title = "click me";
 		}
 		// correct the STAR Id on the fly
@@ -249,7 +281,7 @@ class AirlineRoutes {
 		
 			elemTdStar.id = "tdStarId-" + oneAirlineRoute["STAR"];
 			let id = this.LayerStarPrefix +  oneAirlineRoute["STAR"];
-			elemTdStar.innerHTML = '<span> <a id="' +  id + '" href="#" onclick="showSidStarRoute(this);" >' + oneAirlineRoute["STAR"] + '</a> </span>'  
+			elemTdStar.innerHTML = '<span> <a id="' +  id + '" href="#" onclick="showHideSidStarRoute(this);" >' + oneAirlineRoute["STAR"] + '</a> </span>'  
 			elemTdStar.title = "click me";
 		}
 	}
@@ -321,9 +353,14 @@ class AirlineRoutes {
 		let Ades = oneAirlineRoute["ArrivalAirportICAOCode"];
 		let layerName = this.LayerNamePrefix + Adep + "-" + Ades;
 		let layer = globus.planet.getLayerByName( layerName );
-		if (layer && (layer.getVisibility() ==  true)) {
-			
-			layer.setVisibility( false );
+		if (layer) {
+			if (layer.getVisibility() == false) {
+				document.getElementById(elemButton.id).value = "Hide";
+				layer.setVisibility( true );
+			} else {
+				document.getElementById(elemButton.id).value = "Show";
+				layer.setVisibility( false );
+			}
 		}
 	}
 
@@ -392,35 +429,6 @@ class AirlineRoutes {
 				});
 
 			} else {
-				
-				// get the name of the airline
-				let airlineName = $("#airlineSelectId option:selected").val();
-				airlineName = encodeURIComponent(airlineName);
-
-				// only to retrieve the list of Adep Ades
-				// use ajax to get the data 
-				$.ajax( {
-							method: 'get',
-							url :  "airline/airlineRoutes/" + airlineName,
-							async : true,
-							success: function(data, status) {
-											
-								//alert("Data: " + data + "\nStatus: " + status);
-								var dataJson = eval(data);		
-								var airlineRoutesArray = dataJson["airlineRoutes"]
-								//removeGlobusRoutesWayPointsLayers (  globus, airlineRoutesArray );
-								//showRoutesWayPointsLayers ( globus, airlineRoutesArray );
-								
-							},
-							error: function(data, status) {
-								console.log("Error - show Airline Routes : " + status + " Please contact your admin");
-								showMessage("Error - Airline Routes" , data);
-							},
-							complete : function() {
-								stopBusyAnimation();
-								document.getElementById("btnAirlineRoutes").disabled = false;
-							},
-				});
 				
 				$("#airlineRoutesDivId").hide();
 			}

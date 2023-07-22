@@ -11,7 +11,6 @@ class AirlineAirportsRoutesControl extends og.Control {
 	}
 
 	onadd() {
-		//console.log("airline Airports Routes - onadd");
 		
 		let mainDiv = document.createElement('div');
 		mainDiv.id = "airlineAirportsRoutesMainDivId";
@@ -26,10 +25,9 @@ class AirlineAirportsRoutesControl extends og.Control {
 		
 		// 8th May 2023 - add hyperlink to show the route
 		// 25th June 2023 - show direction of the flight leg
-		let th_list = [ 'Airline' , 'direction', 'action' , 'Departure Airport' , 'ICAO', 'Arrival Airport', 'ICAO']
-		let th = undefined;
+		let th_list = [ 'Airline' , 'direction', 'action' , 'Departure Airport' , 'ICAO', 'Arrival Airport', 'ICAO'];
 		th_list.forEach ( function ( element ) {
-			th = document.createElement('th');
+			let th = document.createElement('th');
 			th.innerHTML = element;
 			row_1.appendChild(th);
 		});

@@ -5,9 +5,7 @@ class PolyLine {
 	
 	constructor( sidStarPattern ) {
 		//console.log("Polyline constructor");
-		//console.log ( sidStarPattern );
 		this.sidStarPattern = sidStarPattern.replaceAll ( "/" , "-" );
-		//console.log ( this.sidStarPattern );
 	}
 	
 	getLayerName() {
@@ -15,17 +13,15 @@ class PolyLine {
 		return "Sid-Star-Polyline-" + sidStarPattern;
 	}
 	
-	removerLayer () {
+	removeLayer () {
 		
 		let globus = this.globus;
-		//globus.planet.renderer.handler.defaultClock.clearInterval();
-		
 		let layerName = this.getLayerName();
-		let layer = globus.planet.getLayerByName( layerName );
-		if (layer && (layer.getVisibility() ==  true)) {
-			
-			layer.setVisibility( false );
-		}
+		/**
+		 * @todo defined in main.js
+		 */
+		removeLayer(globus, layerName);
+		
 	}
 	
 	init( globus, wayPointsArr ) {
@@ -63,7 +59,6 @@ class PolyLine {
 	draw() {
 		
 		let globus = this.globus ;
-            
        	let entity = new og.Entity({
                     'polyline': {
 	                    'path3v': this.paths,
@@ -73,15 +68,12 @@ class PolyLine {
                         'isClosed': false
                     }
         });
-            
         let layerName = this.getLayerName();
         let collection = new og.layer.Vector(layerName, {
 	            	'entities': []
 	    });
-	        	
 	    collection.add( entity );
 	    collection.addTo( globus.planet );
-	       
 	    // show some animation along the line between each SID or STAR waypoint
 	    globus.planet.renderer.handler.defaultClock.setInterval(30, () => {
 			try {
@@ -94,7 +86,6 @@ class PolyLine {
                             this.animIndex[i] = 0;
                             ind = 0;
                         }
-
                         let r = this.colors[i][0][0],
                             g = this.colors[i][0][1],
                             b = this.colors[i][0][2];
