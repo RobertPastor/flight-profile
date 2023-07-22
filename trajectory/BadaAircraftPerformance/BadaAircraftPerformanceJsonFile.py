@@ -32,7 +32,6 @@ class AircraftJsonPerformance(AircraftPerformance):
         self.schemaFilePath = os.path.join( self.schemaFilePath , "schema.json" )
         self.schemaFilePath = os.path.abspath( self.schemaFilePath )
             
-            
     def read(self):
         
         try:
@@ -110,6 +109,3 @@ class AircraftJsonPerformance(AircraftPerformance):
     def getWingAreaSurfaceSquareMeters(self):
         return self.performanceJsonData["aircraft"]["aerodynamics"]["wingsurface"]["value"]
 
-
-
-        

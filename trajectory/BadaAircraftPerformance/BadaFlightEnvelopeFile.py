@@ -32,9 +32,7 @@ from trajectory.BadaAircraftPerformance.BadaAircraftStateVectorFile import State
 
 from trajectory.Environment.Atmosphere import Atmosphere
 
-Meter2Feet = 3.2808
-Feet2Meter = 0.3048
-MeterSecond2Knots = 1.9438444924406
+from trajectory.Environment.Constants import Meter2Feet, Feet2Meter, MeterSecond2Knots
 
 
 class FlightEnvelope(AeroDynamics):
@@ -87,7 +85,7 @@ class FlightEnvelope(AeroDynamics):
 
         self.className = self.__class__.__name__
         
-        ''' init mother class '''
+        ''' initialize mother class '''
         AeroDynamics.__init__(self, aircraftPerformance, atmosphere, earth)
 
         assert isinstance(atmosphere, Atmosphere)
@@ -110,7 +108,6 @@ class FlightEnvelope(AeroDynamics):
         
         self.speedErrorRaised = False
 
-
     def setTargetCruiseFlightLevel(self, 
                                    RequestedFlightLevel, 
                                    departureAirportAltitudeMSLmeters):
@@ -127,22 +124,17 @@ class FlightEnvelope(AeroDynamics):
         self.targetCruiseAltitudeMslMeters = ( RequestedFlightLevel * 100.0 * Feet2Meter )
         logging.info ( self.className + ': set Cruise FL= {0} - QNH= {1:.2f} hecto Pascals - computed Altitude MSL=  {2:.2f} meters'.format(RequestedFlightLevel , QNHhectoPascals, self.targetCruiseAltitudeMslMeters) )
 
-
     def getTargetCruiseFlightLevelMeters(self):
         return self.targetCruiseAltitudeMslMeters
-    
     
     def setTargetApproachWayPoint(self, approachWayPoint):
         self.approachWayPoint = approachWayPoint
         
-        
     def getTargetApproachWayPoint(self):
         return self.approachWayPoint
     
-    
     def getMaxOperationalMach(self):
         return self.MaxOpMachNumber
-        
         
     def setTargetCruiseMach(self, cruiseMachNumber):
         ''' check that target mach is always lower or equal to Max Operational Mach '''
@@ -151,24 +143,20 @@ class FlightEnvelope(AeroDynamics):
 
         assert (cruiseMachNumber <= self.MaxOpMachNumber)
         logging.info ( self.className + ' ====================================================' )
-        logging.info ( self.className + ': set target cruise Mach= {0}'.format(cruiseMachNumber) )
+        logging.info ( self.className + ': set target cruise Mach = {0}'.format(cruiseMachNumber) )
         self.targetCruiseMachNumber = cruiseMachNumber
         logging.info ( self.className + ' ====================================================' )
 
-
     def getTargetCruiseMach(self):
         return self.targetCruiseMachNumber
-    
     
     def setArrivalRunwayTouchDownWayPoint(self, arrivalRunWayTouchDownWayPoint):
         ''' target runway touch down way point '''
         self.arrivalRunWayTouchDownWayPoint = arrivalRunWayTouchDownWayPoint
 
-
     def getArrivalRunwayTouchDownWayPoint(self):
         return self.arrivalRunWayTouchDownWayPoint
         
-
     def dump(self):
         logging.info ( self.className + ': VMO CAS= ' + str(self.MaxOpSpeedCasKnots) + ' knots' )
         logging.info ( self.className + ': Max Operational Mach Number= ' + str(self.MaxOpMachNumber) )
@@ -183,11 +171,9 @@ class FlightEnvelope(AeroDynamics):
     def getMaxAltitudeMslMtowFeet(self):
         return self.MaxOpAltitudeFeet
     
-    
     def getMaxOpSpeedCasKnots(self):
         return self.MaxOpSpeedCasKnots
     
-
     def initStateVector(self, 
                         elapsedTimeSeconds,
                         trueAirSpeedMetersSecond,
@@ -269,18 +255,14 @@ class FlightEnvelope(AeroDynamics):
     def createStateVectorHistoryFile(self):
         self.StateVector.createStateVectorHistoryFile()
     
-    
     def getCurrentAltitudeSeaLevelMeters(self):
         return self.StateVector.getCurrentAltitudeSeaLevelMeters()
-    
     
     def getCurrentTrueAirSpeedMetersSecond(self):
         return self.StateVector.getCurrentTrueAirSpeedMetersSecond()
     
-    
     def getCurrentDistanceFlownMeters(self):
         return self.StateVector.getCurrentDistanceFlownMeters()
-    
     
     def getFlightPathAngleDegrees(self):
         return self.StateVector.getFlightPathAngleDegrees()

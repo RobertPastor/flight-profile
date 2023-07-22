@@ -35,7 +35,6 @@ class TransitionAltitude(object):
     VCAS [m/s] and a Mach number, M, is defined to be the geo-potential pressure altitude at
     which VCAS and Mach represent the same TAS value
     '''
-    
     def __init__(self, engine):
         self.className = self.__class__.__name__
         self.engine = engine
@@ -71,5 +70,4 @@ class TransitionAltitude(object):
             ''' there is no transition altitude for turbo prop engines aircrafts '''
             raise ValueError (self.className + 'no transition altitude for turbo prop or piston engine aircraft')
         return HpressureTransitionFeet
-
 

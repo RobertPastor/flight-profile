@@ -25,7 +25,6 @@
         
 '''
 
-
 import os.path
 import re
 import logging
@@ -277,7 +276,6 @@ class AircraftPerformance(object):
             raise ValueError('BadaPerformanceFile: error while reading V Stall Speeds {0}'.format(e))
         return VstallKcasKnots
     
-    
     def getMaxClimbThrustCoeff(self, index):
         
         assert (isinstance(index, int) and index >= 0 and index <= 5)
@@ -288,9 +286,8 @@ class AircraftPerformance(object):
                 return fortran_float(str(self.dataLines[self.EngineLine]).split()[index+1])
 
         except Exception as e:
-            raise ValueError('BadaPerformanceFile: error while reading Max CLimb Thrust Coeff {0}'.format(e))
+            raise ValueError('BadaPerformanceFile: error while reading Max Climb Thrust Coeff {0}'.format(e))
         return 0.0
-    
     
     def getDescentThrustCoeff(self, index):
         
@@ -304,7 +301,6 @@ class AircraftPerformance(object):
         except Exception as e:
             raise ValueError('BadaPerformanceFile: error while reading Max CLimb Thrust Coeff {0}'.format(e))
         return 0.0
-           
            
     def getDragCoeff(self):
         '''

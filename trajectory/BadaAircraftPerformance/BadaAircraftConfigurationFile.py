@@ -46,7 +46,6 @@ from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.Environment.Earth import Earth
 from trajectory.Environment.Utils import logElapsedRealTime
 
-
 GlideSlopeStart2TouchDownNauticalMiles = 5 # 5 nautical miles from start of glide slope to runway touch down
 
 
@@ -107,16 +106,16 @@ class EnergyShareFactor(object):
 class AircraftConfiguration(FlightEnvelope):
     
     '''
-    Take-off         - take-off     lift/drag configuration         - max climb thrust settings
+    Take-off         - take-off     lift/drag configuration      - max climb thrust settings
     initial-climb    - initial climb lift-drag configuration     - max climb thrust settings
-    climb            - clean a/c configuration             - max climb thrust settings
+    climb            - clean a/c configuration                   - max climb thrust settings
     
-    cruise            - clean a/c configuration            - cruise thrust settings
-    descent        - clean a/c configuration            - descent-high thrust settings
-    descent        - clean a/c configuration            - descent-low thrust settings
+    cruise         - clean a/c configuration         - cruise thrust settings
+    descent        - clean a/c configuration         - descent-high thrust settings
+    descent        - clean a/c configuration         - descent-low thrust settings
     
-    approach            - approach a/c configuration         - approach thrust settings
-    landing            - landing a/c configuration             - landing thrust settings
+    approach       - approach a/c configuration      - approach thrust settings
+    landing        - landing a/c configuration       - landing thrust settings
     '''
     
     className = ""
@@ -171,14 +170,12 @@ class AircraftConfiguration(FlightEnvelope):
         self.groundMovement = GroundMovement(aircraftPerformance)
         self.engine = Engine(aircraftPerformance)
 
-        
         logger.info ( self.className  + ': ===================================================' )
         self.aircraftCurrentConfiguration = 'departure-ground-run'
         self.flightPathAngleDegrees = 0.0
         logger.info ( self.className + ': default configuration= ' + self.aircraftCurrentConfiguration )
         logger.info ( self.className + ': ===================================================' )
 
-        
         self.TakeOffMaxAltitudeThresholdReached = False
         self.InitialClimbMaxAltitudeThresholdReached = False
         
@@ -238,14 +235,13 @@ class AircraftConfiguration(FlightEnvelope):
         logElapsedRealTime( self.className , elapsedTimeSeconds )
         logger.info ( self.className + ' ====================================' )
 
-
     def setDepartureGroundRunConfiguration(self, elapsedTimeSeconds):
+        ''' configuration no lifting devices used - rolling friction '''
         newConfiguration = 'departure-ground-run'
         if self.aircraftCurrentConfiguration != newConfiguration:
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
             
-
     def setTakeOffConfiguration(self, elapsedTimeSeconds):
         ''' take off starts at the end of the ground-run when speed > 1.2 * Take-off stall speed '''
         ''' high lifting devices are used '''
@@ -255,7 +251,7 @@ class AircraftConfiguration(FlightEnvelope):
             self.aircraftCurrentConfiguration = newConfiguration
         
     def setInitialClimbConfiguration(self, elapsedTimeSeconds):
-        ''' high lifting devices are used '''
+        ''' high lifting devices are used - wheels are hidden '''
         newConfiguration = 'initial-climb'
         if self.aircraftCurrentConfiguration != newConfiguration:
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)

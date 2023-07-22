@@ -49,16 +49,13 @@ from trajectory.aerocalc.airspeed import cas2tas
 
 from trajectory.Guidance.GraphFile import Graph
 
-from trajectory.Environment.Constants import MeterPerSecond2Knots, Knot2MetersPerSecond, Meter2NauticalMiles,\
-    NauticalMiles2Meter, FinalArrivalTurnNauticalMiles,\
-    gravityMetersPerSquareSeconds
+from trajectory.Environment.Constants import MeterPerSecond2Knots, Knot2MetersPerSecond, Meter2NauticalMiles
+from trajectory.Environment.Constants import NauticalMiles2Meter, FinalArrivalTurnNauticalMiles, gravityMetersPerSquareSeconds
     
 from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 
 from trajectory.Guidance.TurnLegBaseFile import BaseTurnLeg
 from trajectory.Guidance.WayPointFile import WayPoint
-
-#Meter2Feet = 3.2808399 # one meter approx == 3 feet (3 feet 3â…œ inches)
 
 
 class TurnLeg(Graph):
@@ -75,7 +72,6 @@ class TurnLeg(Graph):
     reverse = False
     listOfAngleDegrees = []
     
-    
     def computeAngleDifferenceDegrees(self):
         initialAngleRadians = math.radians(self.initialHeadingDegrees)
         finalAngleRadians = math.radians(self.finalHeadingDegrees)
@@ -87,12 +83,10 @@ class TurnLeg(Graph):
         logging.info ("{0} - angle difference between initial and final heading = {1:.2f}".format(self.className, angleDifferenceDegrees))
         return angleDifferenceDegrees
             
-            
     def computeRadiusOfTurn(self):
         diameterMeters = self.initialWayPoint.getDistanceMetersTo(self.finalWayPoint)
         return diameterMeters / 2.0
             
-    
     def __init__(self, 
                  initialWayPoint, 
                  finalWayPoint,
@@ -104,7 +98,6 @@ class TurnLeg(Graph):
         initial Heading is the last heading of the previous great circle
         final way point is the next fix
         '''
-        
         Graph.__init__(self)
         self.className = self.__class__.__name__
         
@@ -115,15 +108,15 @@ class TurnLeg(Graph):
         assert (reverse == True) or (reverse == False)
         self.reverse = reverse
                 
-        ''' sanity check initialWayPoint '''''''''''
+        ''' sanity check initial WayPoint '''
         assert (isinstance(initialWayPoint, WayPoint))
         self.initialWayPoint = initialWayPoint
 
-        ''' sanity check finalWayPoint '''''''''''
+        ''' sanity check final WayPoint '''
         assert (isinstance(finalWayPoint, WayPoint))
         self.finalWayPoint = finalWayPoint
 
-        ''' sanity check initialHeadingDegrees '''''''''''
+        ''' sanity check initial Heading Degrees '''
         assert isinstance(initialHeadingDegrees, float)
         assert (initialHeadingDegrees >= 0.0)
         assert (initialHeadingDegrees <= 360.0)
@@ -142,7 +135,7 @@ class TurnLeg(Graph):
         assert (self.finalHeadingDegrees >= 0.0) 
         assert (self.finalHeadingDegrees <= 360.0)
         
-        ''' sanity check aircraft '''''''''''
+        ''' sanity check aircraft '''
         assert (isinstance(aircraft, BadaAircraft))
         self.aircraft = aircraft
                 
@@ -150,7 +143,7 @@ class TurnLeg(Graph):
         #logging.info self.className + ': turn from= {0:.2f} degrees to {1:.2f} degrees'.format(self.initialHeadingDegrees, self.finalHeadingDegrees)
         
         ''' default value - for turn angle steps '''
-        self.stepDegrees = self.BaseStepDegrees # degrees
+        self.stepDegrees = self.BaseStepDegrees 
 
         ''' turn clock wise or anti clock wise '''
         initialAngleRadians = math.radians(self.initialHeadingDegrees)
@@ -169,7 +162,6 @@ class TurnLeg(Graph):
         logging.info ( self.className + strMsg )
         self.previousDistanceToArrivalAxisMeters = 0.0
         
-        
     def buildTurnLeg(self, 
                      deltaTimeSeconds,
                      elapsedTimeSeconds,
@@ -185,7 +177,6 @@ class TurnLeg(Graph):
         ''' heading changes according to an aircraft speed => radius of turn '''
         ''' for the last turn => final heading is the heading of run-way '''
         if lastTurn == True:
-            pass
             self.finalHeadingDegrees = finalHeadingDegrees
         
         ''' initial altitude '''
@@ -214,11 +205,7 @@ class TurnLeg(Graph):
             ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
             radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( gravityMetersPerSquareSeconds * math.tan(math.radians(bankAngleDegrees)))
             logging.info ("{0} - radius of turn = {1:.2f} in meters - for a 15 degrees bank angle".format(self.className, radiusOfTurnMeters))
-            
-            #logging.info ( self.initialHeadingDegrees )
-            #logging.info ( self.finalHeadingDegrees )
-            #angleDifferencesDegrees = self.computeAngleDifferenceDegrees()
-            
+                        
             #newRadiusOfTurnMeters = self.computeRadiusOfTurn()
             shortestDistanceMeters = arrivalRunway.computeShortestDistanceToRunway(self.initialWayPoint)
             newRadiusOfTurnMeters = shortestDistanceMeters / 2.0
@@ -233,7 +220,7 @@ class TurnLeg(Graph):
 
         logging.info ( self.className + ': tas= {0:.2f} knots - radius of turn= {1:.2f} meters - radius of turn= {2:.2f} nautics'.format(tasKnots, radiusOfTurnMeters, radiusOfTurnMeters*Meter2NauticalMiles) )           
 
-        ''' index used to initialise the loop '''        
+        ''' index used to initialize the loop '''        
         index = 0
             
         ''' build a list that can be reversed afterwards '''
@@ -265,9 +252,9 @@ class TurnLeg(Graph):
             endOfSimulation, deltaDistanceMeters , altitudeMeanSeaLevelMeters = self.aircraft.fly(
                                                                     elapsedTimeSeconds = elapsedTimeSeconds,
                                                                     deltaTimeSeconds = deltaTimeSeconds , 
-                                                                     distanceStillToFlyMeters = distanceStillToFlyMeters,
-                                                                     currentPosition = intermediateWayPoint,
-                                                                     distanceToLastFixMeters = distanceToLastFixMeters)
+                                                                    distanceStillToFlyMeters = distanceStillToFlyMeters,
+                                                                    currentPosition = intermediateWayPoint,
+                                                                    distanceToLastFixMeters = distanceToLastFixMeters)
             ''' update elapsed time seconds '''
             elapsedTimeSeconds += deltaTimeSeconds
             ''' update distance to fly '''

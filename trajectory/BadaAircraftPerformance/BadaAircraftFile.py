@@ -30,7 +30,6 @@ import logging
 from trajectory.BadaAircraftPerformance.BadaAircraftConfigurationFile import AircraftConfiguration
 from trajectory.Guidance.WayPointFile import WayPoint
 
-
 class BadaAircraft(AircraftConfiguration):
     className = ""
 
@@ -56,20 +55,18 @@ class BadaAircraft(AircraftConfiguration):
         ''' initialize the mother class aircraftConfiguration => is the Chef-d-orchestre '''
         AircraftConfiguration.__init__(self, badaPerformanceFilePath, ICAOcode , atmosphere, earth)
 
-   
     def getWakeTurbulenceCategory(self):
         return self.WakeTurbulenceCategory
         
     def __str__(self):
         strAC = self.className + ' ICAO code= {0}'.format(self.ICAOcode)
         strAC += ' wake Turbulence category= {0}'.format(self.WakeTurbulenceCategory)
-        strAC += ' ac full name= {0}'.format(self.aircraftFullName)
+        strAC += ' aircraft full name= {0}'.format(self.aircraftFullName)
         return str(strAC)
     
     def dump(self):
         logging.info ( self.className + ' ICAO code= {0}'.format(self.ICAOcode) )
         logging.info ( self.className + ' aircraft full name= {0}'.format(self.aircraftFullName) )
-
 
     def getLandingLengthMeters(self):
         return self.groundMovement.getLandingLengthMeters()

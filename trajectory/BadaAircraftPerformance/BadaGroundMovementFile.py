@@ -29,7 +29,6 @@ Created on 12 avr. 2015
 
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 
-
 class GroundMovement(object):
     className = ''
 
@@ -52,10 +51,10 @@ class GroundMovement(object):
         '''
         start with take-off thrust - in Newtons
         THR - thrust acting parallel to the aircraft velocity vector [Newtons]
-        
         '''
         raise ValueError('not yet implemented')
 
     def dump(self):
         print ( self.className + ': Take Off Length= ' + str(self.TakeOffLengthMeters) + ' meters' )
         print ( self.className + ': Landing Length= ' + str(self.LandingLengthMeters) + ' meters' )
+        

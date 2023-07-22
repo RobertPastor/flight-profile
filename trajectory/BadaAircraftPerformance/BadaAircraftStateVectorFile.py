@@ -25,13 +25,7 @@
 
 '''
 
-from trajectory.Environment.Constants import MeterSecond2Knots
-from trajectory.Environment.Constants import Meter2Feet
-from trajectory.Environment.Constants import Meter2NauticalMiles
-
-#MeterSecond2Knots = 1.9438444924406
-#Meter2Feet = 3.2808
-#Meter2NauticalMiles = 0.000539956803
+from trajectory.Environment.Constants import MeterSecond2Knots , Meter2Feet, Meter2NauticalMiles
 
 from trajectory.OutputFiles.XlsxOutputFile import XlsxOutput
 from trajectory.Environment.Atmosphere import Atmosphere
@@ -111,7 +105,6 @@ class StateVector(object):
         else:
             return 0.0
         
-
     def getCurrentTrueAirSpeedMetersSecond(self):
         if len(self.aircraftStateHistory) > 0:
             ''' each recorded value is a dictionary '''
@@ -123,7 +116,6 @@ class StateVector(object):
         else:
             raise ValueError(self.className + ': speed history is empty')
 
-
     def getCurrentDistanceFlownMeters(self):
         if len(self.aircraftStateHistory) > 0:
             lastDict = self.aircraftStateHistory[-1]
@@ -132,7 +124,6 @@ class StateVector(object):
             return currentDistanceMeters
         else:
             return 0.0
-        
         
     def getFlightPathAngleDegrees(self):
         if len(self.aircraftStateHistory) > 0:
@@ -143,7 +134,6 @@ class StateVector(object):
         else:
             return 0.0        
 
-        
     def createStateVectorHistoryFile(self, filePrefix):
         if isinstance(filePrefix, str) and len(filePrefix)>0:
             fileName =  filePrefix + '-Altitude-MSL-Speed-History'
@@ -250,7 +240,6 @@ class StateVector(object):
                                                  endOfSimulation)
         xlsxOutput.close()
                     
-                    
     def writeHeaders(self, ws, style, headers):
         row = 0
         col = 0
@@ -279,7 +268,7 @@ class StateVector(object):
                                                  liftNewtons            ,
                                                  loadFactor             ,
                                                  endOfSimulation):
-        pass
+
         ColumnIndex = 0
         ws.write(row, ColumnIndex, elapsedTimeSeconds)
         ColumnIndex += 1

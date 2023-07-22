@@ -695,9 +695,10 @@ class AirlineProfileCosts {
 									
 									// add Kml From Xml add to open globus
 									try {
+										// need to create a Pull Request to openglobus to add this function
 										layerKML.addKmlFromXml(  xmlDoc ,  null ,  null );
 									} catch (err) {
-										showMessage( "Error" , JSON.stringify(err) );
+										showMessage("Error" , JSON.stringify(err) );
 									}
 								}
 								
@@ -710,9 +711,7 @@ class AirlineProfileCosts {
 									let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"];
 									SingletonProfileCosts.getInstance().displayD3LineChart(arrayAltitudeMSLtime);
 									showMessage("Information" , "Double Click in the vertical profile to return to the map");
-
 								}
-								
 							}
 						},
 						error: function(data, status) {

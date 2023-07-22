@@ -85,26 +85,20 @@ class AeroDynamics(object):
         assert (phase in ['CR', 'IC', 'TO', 'AP', 'LD'])
         return self.VstallKcas[phase]
         
-        
     def getDragCoeff(self, phase):
         assert (phase in ['CR', 'IC', 'TO', 'AP', 'LD'])
         CD0 = self.DragCoeff['CD0'][phase]
         CD2 = self.DragCoeff['CD2'][phase]
         return CD0, CD2
 
-
     def getWingAreaSurfaceSquareMeters(self):
         return self.WingAreaSurfaceSquareMeters
-        
         
     def __str__(self):
         strMsg = self.className + ': WingAreaSurface Square-Meters= ' + str(self.WingAreaSurfaceSquareMeters)
         strMsg += ': stall speeds in knots= ' + str (self.VstallKcas)
         return strMsg
         
-        
     def dump(self):
         logging.info ( self.className + ': Wing Area Surface= {0} Square-Meters'.format(self.WingAreaSurfaceSquareMeters) )
         logging.info ( self.className + ': stall speed= {0} knots'.format(self.VstallKcas) )
-        
-
