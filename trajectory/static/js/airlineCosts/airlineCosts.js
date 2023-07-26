@@ -123,12 +123,11 @@ class AirlineCosts {
 			req.open("GET", urlToSend, true);
 			req.responseType = "blob";
 
-			req.onload = function (event) {
+			req.onload = function () {
 				
 				stopBusyAnimation();
 				document.getElementById("btnLaunchAirlineCosts").disabled = false;
 
-				
 				let blob = req.response;
 				let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
 				fileName = fileName.split("=")[1]
@@ -166,7 +165,7 @@ class AirlineCosts {
 							method: 'get',
 							url :  "airline/airlineCosts/" + airlineName,
 							async : true,
-							success: function(data, status) {
+							success: function(data) {
 								
 								let dataJson = eval(data);
 								if ( dataJson.hasOwnProperty("errors") ) {

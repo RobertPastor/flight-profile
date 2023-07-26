@@ -281,7 +281,7 @@ function initTools(globus, viewExtent) {
 		let flightProfileControl = new FlightProfileControl();
 		globus.planet.addControl(flightProfileControl);
 		
-		// compute profiel and costs for each route and runways selection
+		// compute profile and costs for each route and runways selection
 		let airlineProfileCosts = SingletonProfileCosts.getInstance();
 		airlineProfileCosts.launchFlightProfile(globus, flightProfileControl);
 		
@@ -290,7 +290,7 @@ function initTools(globus, viewExtent) {
 		globus.planet.addControl(new AirlineFlightLegCostsResultsControl());
 		
 		let airlineFlightLegCosts = SingletonAirlineFlightLegCosts.getInstance();
-		airlineFlightLegCosts.initFlightLegCosts();
+		airlineFlightLegCosts.initFlightLegCosts(flightProfileControl);
 		
 		// airline costs optimization
 		globus.planet.addControl(new AirlineCostsControl());
@@ -329,10 +329,10 @@ function initTools(globus, viewExtent) {
 		ogLayerCleaner.init(globus, ogLayerCleanerControl);
 		
 		// init listener for downloading EXCEL Vertical Flight Profile
-		initDownloadVerticalProfile();
+		initDownloadVerticalProfile(flightProfileControl);
 		
 		// 24th June 2023 - init listener for downloading KML file
-		initDownloadKMLfile();
+		initDownloadKMLfile(flightProfileControl);
 		
 		// 8th June 2023 - SID STAR
 		let sidStar = SingletonSidStar.getInstance();

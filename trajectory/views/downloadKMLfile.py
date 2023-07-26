@@ -31,7 +31,7 @@ from trajectory.models import BadaSynonymAircraft
 
 @csrf_protect
 def createKMLfile(request, airlineName):
-    
+    ''' @TODO same inputs as compute profile , compute costs and comput state vector  '''
     ''' this is the main view entry '''
     locale.setlocale(locale.LC_TIME, French_Locale)
     
@@ -67,6 +67,12 @@ def createKMLfile(request, airlineName):
                 cruiseFLfeet = request.GET['fl'] 
                 logger.debug( "cruise FL feet = {0}".format( cruiseFLfeet ) )
                 
+                reducedClimbPowerCoeff = 0.0
+                try:
+                    reducedClimbPowerCoeff = request.GET['reduc']
+                except:
+                    reducedClimbPowerCoeff = 0.0
+                
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 if (airlineRoute):
                     logger.debug ( airlineRoute )
@@ -81,7 +87,8 @@ def createKMLfile(request, airlineName):
                                             aircraftICAOcode = aircraftICAOcode,
                                             RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
                                             cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                            takeOffMassKilograms = float(takeOffMassKg)  )
+                                            takeOffMassKilograms = float(takeOffMassKg)  ,
+                                            reducedClimbPowerCoeff = float(reducedClimbPowerCoeff) )
     
                         ret = flightPath.computeFlight(deltaTimeSeconds = 1.0)
                             

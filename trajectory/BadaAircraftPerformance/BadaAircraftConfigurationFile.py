@@ -406,6 +406,12 @@ class AircraftConfiguration(FlightEnvelope):
         liftNewtons = liftNewtons * self.WingAreaSurfaceSquareMeters * liftCoeff
         return liftNewtons
     
+    def setReducedClimbPowerCoeff(self, reducedClimbPowerCoef):
+        self.reducedClimbPowerCoef = reducedClimbPowerCoef
+        
+    def getReducedClimbPowerCoeff(self):
+        return self.reducedClimbPowerCoef
+    
     def computeBaseThrustNewtons(self, geopotentialPressureAltitudeFeet):
         ''' following computation is true only for a jet aircraft '''
         thrustNewtons = (1 - (geopotentialPressureAltitudeFeet / self.engine.getMaxClimbThrustCoeff(1) ))
@@ -413,6 +419,20 @@ class AircraftConfiguration(FlightEnvelope):
         thrustNewtons = self.engine.getMaxClimbThrustCoeff(0) * thrustNewtons
         return thrustNewtons
         
+    def computeClimbPowerReductionCoeff(self):
+        ''' 23rd July - reduced climb power see BADA manual 3.10 '''
+        powerReducedCoeff = ( self.aircraftMass.getMaximumMassKilograms() - self.aircraftMass.getCurrentMassKilograms()  )
+        powerReducedCoeff = powerReducedCoeff / ( self.aircraftMass.getMaximumMassKilograms() - self.aircraftMass.getMinimumMassKilograms() )
+        ''' the coefficient is provided in % by the user '''
+        if self.getReducedClimbPowerCoeff() > 0.0:
+            # in percentage example 15%
+            powerReducedCoeff = 1 - ( ( self.getReducedClimbPowerCoeff() / 100.0 ) * powerReducedCoeff )
+        else:
+            # in value example 0,15
+            powerReducedCoeff = 1 - ( self.getReducedClimbPowerCoeff() * powerReducedCoeff )
+        if powerReducedCoeff==1:
+            print(powerReducedCoeff)
+        return powerReducedCoeff
     
     def computeThrustNewtons(self, geopotentialPressureAltitudeFeet ):
 
@@ -442,7 +462,7 @@ class AircraftConfiguration(FlightEnvelope):
             
                 ''' following computation is true only for a jet aircraft '''
                 thrustNewtons = self.computeBaseThrustNewtons(geopotentialPressureAltitudeFeet)
-                
+                                
                 ''' correction due to altitude difference '''
                 #altitudeDifferenceMeters = self.getTargetCruiseFlightLevelMeters() - ( geopotentialPressureAltitudeFeet * feet2Meters)
                 #percent = altitudeDifferenceMeters / self.getTargetCruiseFlightLevelMeters()
@@ -537,18 +557,17 @@ class AircraftConfiguration(FlightEnvelope):
         if self.isDepartureGroundRun():
             liftCoeff = 0.1
         else:
-            gravityCenter = self.earth.gravity(self.earth.getRadiusMeters(), math.radians(latitudeDegrees))[0]
-            #logger.info self.className + ': gravity= ' + str(gravityCenter) + ' meters / square seconds'
+            gravityCenterMetersPerSquaredSeconds = self.earth.gravity(self.earth.getRadiusMeters(), math.radians(latitudeDegrees))[0]
+            #logger.info self.className + ': gravity= ' + str(gravityCenterMetersPerSquaredSeconds) + ' meters / square seconds'
             airDensity = self.atmosphere.getAirDensityKilogramsPerCubicMeters(altitudeMeters)
             #logger.info self.className + ': air density= ' + str(airDensity) + ' kg / cubic meters'
-            liftCoeff = 2 * aircraftMassKilograms * gravityCenter
+            liftCoeff = 2 * aircraftMassKilograms * gravityCenterMetersPerSquaredSeconds
             if TrueAirSpeedMetersSecond > 0.0:
                 wingAreaSurfaceSquareMeters = self.getWingAreaSurfaceSquareMeters()
                 liftCoeff = liftCoeff / ( airDensity * TrueAirSpeedMetersSecond * TrueAirSpeedMetersSecond * wingAreaSurfaceSquareMeters)
             else:
                 liftCoeff = 0.0
         return liftCoeff
-        
         
     def computeApproachStallSpeedCasKnots(self):
         VstallKcas = self.getVstallKcas('LD')
@@ -560,7 +579,6 @@ class AircraftConfiguration(FlightEnvelope):
         #logger.info self.className + ': {0} - CAS stall speed= {1} Knots'.format(str(self.aircraftCurrentConfiguration), str(Vstall))
         return Vstall
         
-        
     def computeLandingStallSpeedCasKnots(self):
         VstallKcas = self.getVstallKcas('AP')
 
@@ -571,7 +589,6 @@ class AircraftConfiguration(FlightEnvelope):
         #logger.info self.className + ': {0} - CAS stall speed= {1} Knots'.format(str(self.aircraftCurrentConfiguration), str(Vstall))
         return Vstall
 
-        
     def computeStallSpeedCasKnots(self):
         '''
         Aircraft operating speeds vary with the aircraft mass. 
@@ -602,7 +619,6 @@ class AircraftConfiguration(FlightEnvelope):
         but the TAS where the stall occurs increases with altitude because of the lower air density (1/2 ρ).
         
         '''
-        
         VstallKcas = 0.0
         if self.isDepartureGroundRun() or self.isArrivalGroundRun():
             ''' leave ground run as soon as Take Off stall speed is reached '''
@@ -640,7 +656,6 @@ class AircraftConfiguration(FlightEnvelope):
         #logger.info self.className + ': {0} - CAS stall speed= {1} Knots'.format(str(self.aircraftCurrentConfiguration), str(Vstall))
         return Vstall
         
-        
     def updateAircraftConfiguration(self, newConfiguration):
         if newConfiguration in self.aircraftConfigurationList:
             
@@ -652,17 +667,14 @@ class AircraftConfiguration(FlightEnvelope):
         else:
             raise ValueError (self.className + ': unknown aircraft configuration')
 
-
     def getAircraftConfiguration(self):
         return self.aircraftCurrentConfiguration
-
 
     def setCurrentAltitudeSeaLevelMeters(self, 
                                          elapsedTimeSeconds, 
                                          altitudeMeanSeaLevelMeters,
                                          lastAltitudeMeanSeaLevelMeters,
                                          targetCruiseAltitudeMslMeters):
-                
         '''
         CONFIGURATION ALTITUDE THRESHOLD
         For 4 configurations, altitude thresholds have been specified in BADA: take-off (TO), initial climb
@@ -778,16 +790,25 @@ class AircraftConfiguration(FlightEnvelope):
         return self.cruiseSpeedReached
     
     ''' ROCD is expressed in meters per seconds '''
-    def computeROCD(self, deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenter, ESF):
-        ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenter ) ) * ESF 
+    def computeROCD(self, deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenterMetersPerSquaredSeconds, ESF):
+        if self.isInitialClimb() or self.isClimb():
+            ''' 23rd July 2023 - see BADA 3.10 manual - reduced Climb Power Coefficient '''
+            coeff = self.computeClimbPowerReductionCoeff()
+            ROCD  = ( ( (thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond * self.computeClimbPowerReductionCoeff()) / ( aircraftMassKilograms * gravityCenterMetersPerSquaredSeconds ) ) * ESF 
+        else:
+            ROCD  = ( ( (thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenterMetersPerSquaredSeconds ) ) * ESF 
+
         if ( ROCD > 0.0 ):
+            ''' compute feet per minutes '''
             if  ( ( ( ( ROCD / deltaTimeSeconds ) * 60.0 ) * Meter2Feet ) > MaxRateOfClimbFeetPerMinutes ):
-                ROCD = ( MaxRateOfClimbFeetPerMinutes * Feet2Meter ) / 60.0
+                pass
+                #ROCD = ( MaxRateOfClimbFeetPerMinutes * Feet2Meter ) / 60.0
+                
         if ( ROCD < 0.0 ):
             if ( ( ( ( ROCD / deltaTimeSeconds) * 60.0 ) * Meter2Feet ) < MaxRateOfDescentFeetPerMinutes ):
                 ROCD = ( MaxRateOfDescentFeetPerMinutes * Feet2Meter ) / 60.0
+                
         return ROCD
-
 
     def fly(self, 
             elapsedTimeSeconds, 
@@ -819,8 +840,7 @@ class AircraftConfiguration(FlightEnvelope):
                            latitudeDegrees)
         
         #logger.info self.className + ': elapsed time= {0} seconds ... thrust= {1} newtons ... drag= {2} newtons'.format(elapsedTimeSeconds, thrustNewtons, dragNewtons)
-        gravityCenter = self.earth.gravity(self.earth.getRadiusMeters()+altitudeMeanSeaLevelMeters,
-                                           math.radians(latitudeDegrees))[0]
+        gravityCenterMetersPerSquaredSeconds = self.earth.gravity(self.earth.getRadiusMeters()+altitudeMeanSeaLevelMeters, math.radians(latitudeDegrees))[0]
         
         if self.isDepartureGroundRun():
             #liftNewtons = 0.0
@@ -834,7 +854,7 @@ class AircraftConfiguration(FlightEnvelope):
             
             #logger.info self.className + ': elapsed time= {0} seconds ... true airspeed= {1} meters/seconds ... CAS= {2} knots'.format(elapsedTimeSeconds, trueAirSpeedMetersSecond, casKnots)
             
-            aircraftAcceleration = thrustNewtons - dragNewtons - self.rollingFrictionCoefficient * ( aircraftMassKilograms * gravityCenter - liftNewtons)
+            aircraftAcceleration = thrustNewtons - dragNewtons - self.rollingFrictionCoefficient * ( aircraftMassKilograms * gravityCenterMetersPerSquaredSeconds - liftNewtons)
             aircraftAcceleration = aircraftAcceleration / aircraftMassKilograms
             trueAirSpeedMetersSecond += aircraftAcceleration * deltaTimeSeconds
             
@@ -869,14 +889,14 @@ class AircraftConfiguration(FlightEnvelope):
             ESF = self.energyShareFactor.computeEnergyShareFactor(mach)
             
             ''' compute Altitude change '''
-            #ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenter ) ) * ESF 
-            ROCD = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenter, ESF)
+            #ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenterMetersPerSquaredSeconds ) ) * ESF 
+            ROCD = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenterMetersPerSquaredSeconds, ESF)
 
             deltaAltitudeMeters = ROCD * deltaTimeSeconds
             altitudeMeanSeaLevelMeters += deltaAltitudeMeters
             
             ''' compute new True Air Speed '''
-            aircraftAcceleration = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenter * ROCD )/ trueAirSpeedMetersSecond ) 
+            aircraftAcceleration = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * ROCD )/ trueAirSpeedMetersSecond ) 
             trueAirSpeedMetersSecond += aircraftAcceleration * deltaTimeSeconds
 
             ''' is it time to move from TakeOff to Climb configuration '''
@@ -894,7 +914,6 @@ class AircraftConfiguration(FlightEnvelope):
             ''' distance flown '''
             deltaDistanceMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees)) * deltaTimeSeconds
             
- 
         elif self.isInitialClimb():
             ''' climb at constant CAS '''
             mach = self.atmosphere.tas2mach(tas = trueAirSpeedMetersSecond,
@@ -904,14 +923,14 @@ class AircraftConfiguration(FlightEnvelope):
             
             ESF = self.energyShareFactor.computeEnergyShareFactor(mach)
             ''' compute Altitude change '''
-            #ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenter ) ) * ESF 
-            ROCD = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenter, ESF)
+            #ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenterMetersPerSquaredSeconds ) ) * ESF 
+            ROCD = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenterMetersPerSquaredSeconds, ESF)
 
             deltaAltitudeMeters = ROCD * deltaTimeSeconds
             altitudeMeanSeaLevelMeters += deltaAltitudeMeters
             
             ''' compute new True Air Speed '''
-            aircraftAcceleration = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenter * ROCD) / trueAirSpeedMetersSecond) 
+            aircraftAcceleration = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * ROCD) / trueAirSpeedMetersSecond) 
             trueAirSpeedMetersSecond += aircraftAcceleration * deltaTimeSeconds
             ''' distance flown '''
             deltaDistanceMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees))* deltaTimeSeconds
@@ -933,7 +952,6 @@ class AircraftConfiguration(FlightEnvelope):
                 ''' target cruise altitude reached '''
                 self.setClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
 
-
         elif self.isClimb():     
             ''' climb at constant Mach '''
             mach = self.atmosphere.tas2mach(tas = trueAirSpeedMetersSecond,
@@ -949,8 +967,8 @@ class AircraftConfiguration(FlightEnvelope):
             ESF = self.energyShareFactor.computeEnergyShareFactor(mach)
             
             ''' compute Altitude change '''
-            #ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenter ) ) * ESF 
-            ROCD = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenter, ESF)
+            #ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenterMetersPerSquaredSeconds ) ) * ESF 
+            ROCD = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenterMetersPerSquaredSeconds, ESF)
             
             ''' last xxx feet before reaching target cruise level '''
             LevelMetersThreshold = 500.0
@@ -989,7 +1007,7 @@ class AircraftConfiguration(FlightEnvelope):
             altitudeMeanSeaLevelMeters += deltaAltitudeMeters
             
             ''' compute new True Air Speed '''
-            aircraftAcceleration = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenter * ROCD) / trueAirSpeedMetersSecond) 
+            aircraftAcceleration = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * ROCD) / trueAirSpeedMetersSecond) 
             trueAirSpeedMetersSecond += aircraftAcceleration * deltaTimeSeconds
            
             if (((ROCD * 3600 ) / Meter2Feet ) < 10.0 ):
@@ -1013,7 +1031,6 @@ class AircraftConfiguration(FlightEnvelope):
                 ''' this is used to modify the integration step => 10 sec in Cruise and 1s in Descent '''
                 self.cruiseSpeedReached = False
         
-        
         elif self.isCruise():
             ''' cruise altitude is reached '''
             ''' all energy is used to reach or maintain Mach '''
@@ -1029,7 +1046,6 @@ class AircraftConfiguration(FlightEnvelope):
             ESF = self.energyShareFactor.computeEnergyShareFactor(mach)
             
             ''' compute Altitude change '''
-            
             if ( altitudeMeanSeaLevelMeters < (self.getTargetCruiseFlightLevelMeters() + 100.0) ) \
                 and ( altitudeMeanSeaLevelMeters > (self.getTargetCruiseFlightLevelMeters() - 100.0) ):
                 ''' cruise '''
@@ -1037,8 +1053,8 @@ class AircraftConfiguration(FlightEnvelope):
                 deltaAltitudeMeters = 0.0
             else:
                 ''' continue climbing '''
-                #ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenter ) ) * ESF 
-                ROCD = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenter, ESF)
+                #ROCD  = ( ((thrustNewtons - dragNewtons) * trueAirSpeedMetersSecond) / ( aircraftMassKilograms * gravityCenterMetersPerSquaredSeconds ) ) * ESF 
+                ROCD = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenterMetersPerSquaredSeconds, ESF)
 
                 deltaAltitudeMeters = ROCD * deltaTimeSeconds
                 altitudeMeanSeaLevelMeters += deltaAltitudeMeters
@@ -1046,7 +1062,7 @@ class AircraftConfiguration(FlightEnvelope):
             ''' compute new True Air Speed '''
             if (mach < (self.getTargetCruiseMach() - (self.getTargetCruiseMach() * 0.001))):
                 ''' if target mach not reached => accelerate '''
-                aircraftAcceleration = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenter * ROCD) / trueAirSpeedMetersSecond) 
+                aircraftAcceleration = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * ROCD) / trueAirSpeedMetersSecond) 
                 trueAirSpeedMetersSecond += aircraftAcceleration * deltaTimeSeconds
             else:
                 ''' correct thrust in order to reduce fuel flow '''
@@ -1060,13 +1076,11 @@ class AircraftConfiguration(FlightEnvelope):
                 self.setDescentConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
                 self.cruiseSpeedReached = False
             
-
         elif self.isDescent():
             
             ''' descent at constant Mach '''
             ''' as aircraft configuration is clean , this phase transforms potential energy in kinetic energy to maintain a Mach '''
             ''' energy is negative as thrust lower to drag '''
-            
             ESF = 0.8
             ''' compute new True Air Speed '''
             aircraftAcceleration = self.computeDescentDecelerationMeterPerSquareSeconds(trueAirSpeedMetersSecond = trueAirSpeedMetersSecond, 
@@ -1078,7 +1092,6 @@ class AircraftConfiguration(FlightEnvelope):
             #logger.debug 'acceleration= {0:.2f} - speed= {1:.2f} - distance= {2:.2f}'.format(aircraftAcceleration, trueAirSpeedMetersSecond, deltaDistanceMeters)
 
             ''' check altitude versus approach altitude '''
-            
             if altitudeMeanSeaLevelMeters <= self.approachWayPoint.getAltitudeMeanSeaLevelMeters():
                 ROCD = 0.0
                 deltaAltitudeMeters = 0.0
@@ -1107,7 +1120,6 @@ class AircraftConfiguration(FlightEnvelope):
                 ''' as soon as speed decrease to approach configuration => change aircraft configuration '''
                 self.setApproachConfiguration(elapsedTimeSeconds + deltaTimeSeconds )
                 
-
         elif self.isApproach():
             ''' configuration is changed to reduce air speed '''
             ''' ensure that descent slope is 3 degrees '''
@@ -1149,7 +1161,6 @@ class AircraftConfiguration(FlightEnvelope):
                 logger.debug ( self.className +': distance to approach fix= {0:.2f} meters - delta altitude to approach fix= {1:.2f} meters'.format(distanceToTargetApproachFixMeters, deltaAltitudeToTargetApproachFixMeters) )
                 self.setLandingConfiguration(elapsedTimeSeconds + deltaTimeSeconds )
 
-                
         elif self.isLanding():
             ''' landing gear is extracted '''
             ''' compute new True Air Speed '''
@@ -1178,8 +1189,6 @@ class AircraftConfiguration(FlightEnvelope):
 
                 self.setArrivalGroundRunConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
 
-            #endOfSimulation = True
-
         elif self.isArrivalGroundRun():
             ''' altitude stays unchanged '''
             deltaAltitudeMeters = 0.0
@@ -1197,7 +1206,6 @@ class AircraftConfiguration(FlightEnvelope):
                 logger.info ( self.className +' - taxi speed reached => end of simulation' )
                 endOfSimulation = True
             
- 
         else:
             logger.info("Error - phase is not yet implemented")
             raise ValueError('not yet implemented')
@@ -1236,7 +1244,6 @@ class AircraftConfiguration(FlightEnvelope):
         ''' return delta distance and altitude changes '''
         return endOfSimulation, deltaDistanceMeters, altitudeMeanSeaLevelMeters
 
-            
     def computeDescentDistanceMeters(self, trueAirSpeedMetersSeconds):
         '''
         Descent Information: Airbus A320
@@ -1293,7 +1300,6 @@ class AircraftConfiguration(FlightEnvelope):
         #logger.info "Start Descent at distance Meters from Airport= ", descentDistanceMeters, " descent distance in nautical miles= ", (descentDistanceMeters)/OneNauticalMiles
         return descentDistanceMeters
 
-
     def computeDescentRateFeetPerMinute(self):
         ''' use descent thrust '''
         
@@ -1312,24 +1318,21 @@ class AircraftConfiguration(FlightEnvelope):
         DescentRateFeetPerMinutes = 2200.0
         #DescentRateFeetPerMinutes = 3000.0
         return DescentRateFeetPerMinutes
-    
 
     def createStateVectorOutputFile(self, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcode):
         assert ( type(abortedFlight) == bool )
         #logger.info self.className + ': create State Vector output file'
         filePrefix = ""
         if abortedFlight:
-            filePrefix = "ABORTED"
+            filePrefix = "Aborted"
         filePrefix += "-" + aircraftICAOcode + "-" + AdepICAOcode + "-" + AdesICAOcode
         self.StateVector.createStateVectorHistoryFile(filePrefix)
-
 
     def createStateVectorOutputSheet(self, workbook, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcode):
         assert ( type(abortedFlight) == bool )
         #logging.info self.className + ': create State Vector output file'
         filePrefix = ""
         if abortedFlight:
-            filePrefix = "ABORTED"
+            filePrefix = "Aborted"
         filePrefix += "-" + aircraftICAOcode + "-" + AdepICAOcode + "-" + AdesICAOcode
         self.StateVector.createStateVectorHistorySheet(workbook)
-        

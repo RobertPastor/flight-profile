@@ -31,7 +31,7 @@ def computeDurationHours( durationSeconds ):
         
 
 def computeCosts(request, airlineName):
-    
+    ''' @TODO same inputs as compute profile , compute costs and comput state vector  '''
     logger.setLevel(logging.DEBUG)
     logger.debug ("compute Flight leg related costs")
     
@@ -63,6 +63,12 @@ def computeCosts(request, airlineName):
             cruiseFLfeet = request.GET['fl'] 
             logger.debug( "cruise FL feet = {0}".format( cruiseFLfeet ) )
             
+            reducedClimbPowerCoeff = 0.0
+            try:
+                reducedClimbPowerCoeff = request.GET['reduc']
+            except:
+                reducedClimbPowerCoeff = 0.0
+            
             airline = Airline.objects.filter(Name=airlineName).first()
             if (airline):
 
@@ -84,7 +90,8 @@ def computeCosts(request, airlineName):
                                         aircraftICAOcode = aircraftICAOcode,
                                         RequestedFlightLevel = float ( cruiseFLfeet )  / 100.0 , 
                                         cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                        takeOffMassKilograms =  float(takeOffMassKg) )
+                                        takeOffMassKilograms =  float(takeOffMassKg) ,
+                                        reducedClimbPowerCoeff = float(reducedClimbPowerCoeff) )
         
                         flightPath.computeFlight(deltaTimeSeconds = 1.0)
             

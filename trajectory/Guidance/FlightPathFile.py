@@ -103,7 +103,7 @@ class FlightPath(FlightPlan):
                                                  departureAirportAltitudeMSLmeters = self.getDepartureAirport().getFieldElevationAboveSeaLevelMeters())
         self.aircraft.setTargetCruiseMach(cruiseMachNumber = cruiseMach)
         # 17th july 2023
-        self.reducedClimbPowerCoeff = reducedClimbPowerCoeff
+        self.aircraft.setReducedClimbPowerCoeff( reducedClimbPowerCoeff )
         
         self.arrivalAirport = self.getArrivalAirport()
         if (self.arrivalAirport is None):
@@ -124,10 +124,10 @@ class FlightPath(FlightPlan):
              acBd.aircraftPerformanceFileExists(self.aircraftICAOcode)):
                         
             self.aircraft = BadaAircraft(ICAOcode = self.aircraftICAOcode, 
-                                         aircraftFullName = acBd.getAircraftFullName(self.aircraftICAOcode),
-                                          badaPerformanceFilePath = acBd.getAircraftPerformanceFile(self.aircraftICAOcode),
-                                          atmosphere = atmosphere,
-                                          earth = earth)
+                                        aircraftFullName = acBd.getAircraftFullName(self.aircraftICAOcode),
+                                        badaPerformanceFilePath = acBd.getAircraftPerformanceFile(self.aircraftICAOcode),
+                                        atmosphere = atmosphere,
+                                        earth = earth)
             self.aircraft.dump()
         else:
             raise ValueError(self.className + ': aircraft not found= ' + self.aircraftICAOcode)

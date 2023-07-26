@@ -1,7 +1,7 @@
 
 
 
-function initDownloadVerticalProfile() {
+function initDownloadVerticalProfile(flightProfileControl) {
 	
 	document.getElementById("btnDownLoadVerticalProfileId").onclick = function () {
 
@@ -17,6 +17,10 @@ function initDownloadVerticalProfile() {
 		let elemTOMassKg = document.getElementById('TakeOffMassKgId');
 		let elemFL = document.getElementById('requestedFlightLevelId');
 		
+		// cannot used this keyword in call back
+		let reducedClimbPowerCoeffInputId = flightProfileControl.getReducedClimbPowerCoeffInputId();
+		let elemReduced = document.getElementById(reducedClimbPowerCoeffInputId);
+		
 		// get the name of the airline
 		let airlineName = $("#airlineSelectId option:selected").val();
 		airlineName = encodeURIComponent(airlineName);
@@ -31,6 +35,7 @@ function initDownloadVerticalProfile() {
 		urlToSend += "&adesRwy=" + arrivalRunWay;
 		urlToSend += "&mass=" + elemTOMassKg.value;
 		urlToSend += "&fl=" + elemFL.value;
+		urlToSend += "&reduc=" + elemReduced.value;
 		
 		let req = new XMLHttpRequest();
 		req.open("GET", urlToSend, true);

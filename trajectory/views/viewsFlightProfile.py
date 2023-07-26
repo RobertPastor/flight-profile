@@ -94,7 +94,6 @@ def getAirport(airportICAOcode):
                      "Latitude"        : airport.Latitude         }
     return {}
     
-    
 def computeFlightProfile(request, airlineName):
     
     logger.setLevel(logging.INFO)

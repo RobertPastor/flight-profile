@@ -80,8 +80,10 @@ class AirlineFlightLegCosts {
 		}
 	}
 
-	initFlightLegCosts() {
-	
+	initFlightLegCosts(flightProfileControl) {
+		
+		this.flightProfileControl = flightProfileControl;
+		
 		$('#airlineFlightLegCostsMainDivId').hide();
 		
 		// btnComputeCostsId
@@ -100,6 +102,10 @@ class AirlineFlightLegCosts {
 			let elemTOMassKg = document.getElementById('TakeOffMassKgId');
 			let elemFL = document.getElementById('requestedFlightLevelId');
 			
+			// cannot used this keyword in call back
+			let reducedClimbPowerCoeffInputId = flightProfileControl.getReducedClimbPowerCoeffInputId();
+			let elemReduced = document.getElementById(reducedClimbPowerCoeffInputId);
+			
 			// get the name of the airline
 			let airlineName = $("#airlineSelectId option:selected").val();
 			airlineName = encodeURIComponent(airlineName);
@@ -108,13 +114,18 @@ class AirlineFlightLegCosts {
 			initProgressBar();
 			initWorker();
 			
+			// 17th July 2023 - add reduced climb power coefficient
+			/**
+			 * @todo - same code as in compute flight profile to launch a computation
+			 */
 			let data = {
 				aircraft : aircraftICAOcode,
 				route    : route,
 				AdepRwy  : departureRunWay,
 				AdesRwy  : arrivalRunWay,
 				mass     : elemTOMassKg.value,
-				fl       : elemFL.value
+				fl       : elemFL.value,
+				reduc    : elemReduced.value
 			}
 			
 			$.ajax( {
@@ -122,7 +133,7 @@ class AirlineFlightLegCosts {
 						url :  "trajectory/computeCosts/" + airlineName,
 						async : true,
 						data :  data,
-						success: function(data, status) {
+						success: function(data) {
 							
 							let dataJson = eval(data);
 							if ( dataJson.hasOwnProperty("errors") ) {

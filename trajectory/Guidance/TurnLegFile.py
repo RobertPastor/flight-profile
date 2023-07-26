@@ -49,7 +49,7 @@ from trajectory.aerocalc.airspeed import cas2tas
 
 from trajectory.Guidance.GraphFile import Graph
 
-from trajectory.Environment.Constants import MeterPerSecond2Knots, Knot2MetersPerSecond, Meter2NauticalMiles
+from trajectory.Environment.Constants import MeterPerSecond2Knots, Knots2MetersPerSecond, Meter2NauticalMiles
 from trajectory.Environment.Constants import NauticalMiles2Meter, FinalArrivalTurnNauticalMiles, gravityMetersPerSquareSeconds
     
 from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
@@ -199,7 +199,7 @@ class TurnLeg(Graph):
                                                altitude = altitudeMeanSeaLevelMeters,
                                                temp = 'std',
                                                speed_units = 'kt',
-                                               alt_units = 'm' ) * Knot2MetersPerSecond
+                                               alt_units = 'm' ) * Knots2MetersPerSecond
             tasKnots = tasMetersPerSecond * MeterPerSecond2Knots
         
             ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
@@ -401,7 +401,7 @@ class TurnLeg(Graph):
                                                altitude = simulatedAltitudeSeaLevelMeters,
                                                temp = 'std',
                                                speed_units = 'kt',
-                                               alt_units = 'm' ) * Knot2MetersPerSecond
+                                               alt_units = 'm' ) * Knots2MetersPerSecond
             deltaDistanceMeters = trueAirspeedMeterSeconds * deltaTimeSeconds 
             altitudeMeanSeaLevelMeters = altitudeMeanSeaLevelMeters + trueAirspeedMeterSeconds * math.sin(math.radians(flightPathAngleDegrees))
             ''' update elapsed time '''
@@ -465,7 +465,7 @@ class TurnLeg(Graph):
                                                altitude = simulatedAltitudeSeaLevelMeters,
                                                temp = 'std',
                                                speed_units = 'kt',
-                                               alt_units = 'm' ) * Knot2MetersPerSecond
+                                               alt_units = 'm' ) * Knots2MetersPerSecond
         tasKnots = tasMetersPerSecond * MeterPerSecond2Knots
         
         ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
