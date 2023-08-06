@@ -125,14 +125,14 @@ th {
 
 .mainTable {
 	position: absolute;
-	top : 5px;
-	left : 5px;
+	top: 5px;
+	left: 5px;
 }
 
 .layerCleaner {
 	position: absolute;
-	top : 5px;
-	left : 500px;
+	top:5px;
+	left:500px;
 }
 
 .airlineFleetTableDiv {
@@ -161,13 +161,13 @@ th {
 
 .d3Div {
 	position: absolute;
-	top : 60px;
-	left : 10px;
+	top: 60px;
+	left: 10px;
 	z-index: 100;
 }
 
 .airlineSelect {
-	width : 100%;
+	width: 100%;
 	background-color: cyan;
 }
 
@@ -198,14 +198,14 @@ th {
 
 .airlineFlightLegCostsMainDiv {
 	position: absolute;
-	top : 100px;
-	left : 10px;
+	top: 100px;
+	left: 10px;
 }
 
 .airlineCostsOptimizationMainDiv {
 	position: absolute;
-	top : 100px;
-	left : 10px;
+	top: 100px;
+	left: 10px;
 }
 
 .airlineCasmOptimizationMainDiv {

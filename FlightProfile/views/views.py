@@ -42,9 +42,6 @@ def save_user(request):
             user.save()
 
 def index(request):
-    # create a function
-    # create a dictionary to pass
-    # data to the template
     
     ''' save anonymous user's IP address '''
     save_user(request)

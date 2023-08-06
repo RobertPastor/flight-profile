@@ -116,15 +116,14 @@ class AirlineFleet {
 				document.getElementById("btnAirlineFleet").disabled = true
 				
 				// get the name of the airline
-				let airlineName = $("#airlineSelectId option:selected").val();
-				airlineName = encodeURIComponent(airlineName);
+				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 				// use ajax to get the data 
 				$.ajax( {
 						method: 'get',
 						url :  "airline/airlineFleet/" + airlineName,
 						async : true,
-						success: function(data, status) {
+						success: function(data) {
 										
 							//alert("Data: " + data + "\nStatus: " + status);
 							var dataJson = eval(data);		

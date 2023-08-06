@@ -29,6 +29,11 @@ from trajectory.models import AirlineAirport
 
 from trajectory.models import BadaSynonymAircraft
 
+def writeReadMeRow(worksheet, row, headerStr , styleHeader, dataStr,  styleData):
+    worksheet.write(row, 0 , headerStr, styleHeader)
+    worksheet.write(row, 1 , dataStr, styleData)
+    
+
 def writeReadMe(workbook, request, airlineName):
 
     wsReadMe = workbook.add_worksheet("ReadMe")
@@ -36,52 +41,50 @@ def writeReadMe(workbook, request, airlineName):
     styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
     
     row = 0
-    wsReadMe.write(row, 0 , "Airline Services", styleLavender)
-    wsReadMe.write(row, 1 , "Vertical Flight Profile", styleEntete)
+    writeReadMeRow(wsReadMe, row, "Airline Services" , styleLavender , "Vertical Flight Profile", styleEntete)
     
     row = row + 1
-    wsReadMe.write(row, 0 , "Airline", styleLavender)
-    wsReadMe.write(row, 1 , airlineName, styleEntete)
-    
+    writeReadMeRow(wsReadMe, row, "Airline" , styleLavender , airlineName, styleEntete)
+
     row = row + 1
-    wsReadMe.write(row, 0 , "Aircraft ICAO code", styleLavender)
-    wsReadMe.write(row, 1 , request.GET['ac'], styleEntete)
+    writeReadMeRow(wsReadMe, row, "Aircraft ICAO code" , styleLavender , request.GET['ac'], styleEntete)
     
     aircraft = AirlineAircraft.objects.all().filter(aircraftICAOcode=request.GET['ac']).first()
     if ( aircraft ):
         row = row + 1
-        wsReadMe.write(row, 0 , "Aircraft", styleLavender)
-        wsReadMe.write(row, 1 , aircraft.getAircraftFullName(), styleEntete)
+        writeReadMeRow(wsReadMe, row, "Aircraft" , styleLavender , aircraft.getAircraftFullName() , styleEntete)
     
     row = row + 1
-    wsReadMe.write(row, 0 , "Departure Airport ICAO code", styleLavender)
-    Adep = str(request.GET['route']).split("-")[0]
-    wsReadMe.write(row, 1 , Adep, styleEntete)
+    writeReadMeRow(wsReadMe, row, "Departure Airport ICAO code" , styleLavender , str(request.GET['route']).split("-")[0] , styleEntete)
     
-    airport = AirlineAirport.objects.filter(AirportICAOcode = Adep).first()
+    airport = AirlineAirport.objects.filter(AirportICAOcode = str(request.GET['route']).split("-")[0]).first()
     if airport:
         row = row + 1
-        wsReadMe.write(row, 0 , "Departure Airport", styleLavender)
-        wsReadMe.write(row, 1 , airport.getAirportName(), styleEntete)
+        writeReadMeRow(wsReadMe, row, "Departure Airport" , styleLavender , airport.getAirportName() , styleEntete)
         
     row = row + 1
-    wsReadMe.write(row, 0 , "Departure Airport Runway", styleLavender)
-    wsReadMe.write(row, 1 , request.GET['adepRwy'], styleEntete)
+    writeReadMeRow(wsReadMe, row, "Departure Airport Runway" , styleLavender , request.GET['adepRwy'] , styleEntete)
 
     row = row + 1
-    wsReadMe.write(row, 0 , "Destination Airport ICAO code", styleLavender)
-    Ades = str(request.GET['route']).split("-")[1]
-    wsReadMe.write(row, 1 , Ades, styleEntete)
+    writeReadMeRow(wsReadMe, row, "Arrival Airport ICAO code" , styleLavender , str(request.GET['route']).split("-")[1] , styleEntete)
     
-    airport = AirlineAirport.objects.filter(AirportICAOcode = Ades).first()
+    airport = AirlineAirport.objects.filter(AirportICAOcode = str(request.GET['route']).split("-")[1]).first()
     if airport:
         row = row + 1
-        wsReadMe.write(row, 0 , "Destination Airport", styleLavender)
-        wsReadMe.write(row, 1 , airport.getAirportName(), styleEntete)
+        writeReadMeRow(wsReadMe, row, "Arrival Airport" , styleLavender , airport.getAirportName() , styleEntete)
     
     row = row + 1
-    wsReadMe.write(row, 0 , "Destination Airport Runway", styleLavender)
-    wsReadMe.write(row, 1 , request.GET['adesRwy'], styleEntete)
+    writeReadMeRow(wsReadMe, row, "Arrival Airport Runway" , styleLavender , request.GET['adesRwy'] , styleEntete)
+
+    row = row + 1
+    writeReadMeRow(wsReadMe, row, "TakeOff Mass (kg)" , styleLavender , request.GET['mass'] , styleEntete)
+
+    row = row + 1
+    writeReadMeRow(wsReadMe, row, "Cruise Flight Level (feet)" , styleLavender , request.GET['fl'] , styleEntete)
+
+    row = row + 1
+    writeReadMeRow(wsReadMe, row, "Reduced Climb Power Coefficient (%)" , styleLavender , request.GET['reduc'] , styleEntete)
+
     
     wsReadMe.autofit()
 

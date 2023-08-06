@@ -97,8 +97,7 @@ class AirlineCASM {
 			document.getElementById("btnLaunchCASM").disabled = true;
 
 			// get the name of the airline
-			let airlineName = $("#airlineSelectId option:selected").val();
-			airlineName = encodeURIComponent(airlineName);
+			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 			// init progress bar.
 			initProgressBar();
@@ -147,8 +146,7 @@ class AirlineCASM {
 				document.getElementById("btnLaunchCASM").style.backgroundColor = "green";
 				
 				// get the name of the airline
-				let airlineName = $("#airlineSelectId option:selected").val();
-				airlineName = encodeURIComponent(airlineName);
+				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 				// init progress bar.
 				initProgressBar();

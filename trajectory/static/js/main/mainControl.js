@@ -47,7 +47,7 @@ function listenSubMenuAirwaysEntry( btnAirwaysId , mainSubMenuAirwaysDivId) {
 				
 				$("#"+ mainSubMenuAirwaysDivId).show();
 				
-				document.getElementById(mainSubMenuAirwaysDivId).addEventListener("mouseleave", function (e) {
+				document.getElementById(mainSubMenuAirwaysDivId).addEventListener("mouseleave", function () {
 					$("#"+ mainSubMenuAirwaysDivId).hide();
 				});
 			}
@@ -64,26 +64,25 @@ class MainControl extends og.Control {
 	}
 	
 	oninit() {
-		//console.log("main Control - oninit");
 	}
 
-	onadd() {
-		//console.log("main Control - onadd");
-		
+	onadd() {		
 		let mainDiv = document.createElement('div');
 		mainDiv.id = "mainTableId";
 		mainDiv.classList.add('mainTable');
 		
 		let draggableMainDiv = document.createElement('div');
 		draggableMainDiv.id = mainDiv.id  + "Header";
-		draggableMainDiv.innerHTML = "Click here to move -> Main navigation bar";
+		draggableMainDiv.innerHTML = "Click here to move -> Main navigation bar ---> click to download a User Manual -->";
 		draggableMainDiv.classList.add("draggableDivHeader");
-		mainDiv.appendChild(draggableMainDiv);
 		
 		let span = document.createElement('span');
 		span.id = "PdfPresentationId";
 		span.innerHTML = "<a title='download a pdf presentation' id='linkDownloadPdfPresentationId' class='download' href='#' onclick='initDownloadPdfPresentation()' ></a>";
 		draggableMainDiv.appendChild(span);
+		
+		mainDiv.appendChild(draggableMainDiv);
+
 						
 		let table = document.createElement('table');
 		let tbody = document.createElement('tbody');

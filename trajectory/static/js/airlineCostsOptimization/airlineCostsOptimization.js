@@ -91,8 +91,7 @@ class AirlineCostsOptimization {
 				document.getElementById("btnLaunchCostsOptimization").disabled = true;
 			
 				// get the name of the airline
-				let airlineName = $("#airlineSelectId option:selected").val();
-				airlineName = encodeURIComponent(airlineName);
+				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 				// init progress bar.
 				initProgressBar();

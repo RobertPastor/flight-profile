@@ -277,8 +277,7 @@ class FuelPlanner {
 				$('#mainFuelPlannerDivId').show();
 				
 				// get the name of the airline
-				let airlineName = $("#airlineSelectId option:selected").val();
-				airlineName = encodeURIComponent(airlineName);
+				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 				// use ajax to get the data 
 				$.ajax( {

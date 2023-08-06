@@ -424,14 +424,15 @@ class AircraftConfiguration(FlightEnvelope):
         powerReducedCoeff = ( self.aircraftMass.getMaximumMassKilograms() - self.aircraftMass.getCurrentMassKilograms()  )
         powerReducedCoeff = powerReducedCoeff / ( self.aircraftMass.getMaximumMassKilograms() - self.aircraftMass.getMinimumMassKilograms() )
         ''' the coefficient is provided in % by the user '''
-        if self.getReducedClimbPowerCoeff() > 0.0:
+        if self.getReducedClimbPowerCoeff() >= 0.0:
             # in percentage example 15%
             powerReducedCoeff = 1 - ( ( self.getReducedClimbPowerCoeff() / 100.0 ) * powerReducedCoeff )
         else:
             # in value example 0,15
             powerReducedCoeff = 1 - ( self.getReducedClimbPowerCoeff() * powerReducedCoeff )
         if powerReducedCoeff==1:
-            print(powerReducedCoeff)
+            pass
+            #print(powerReducedCoeff)
         return powerReducedCoeff
     
     def computeThrustNewtons(self, geopotentialPressureAltitudeFeet ):

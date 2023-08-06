@@ -69,4 +69,10 @@ class MainClass {
 		
 	}
 	
+	// 30th July 2023 
+	getSelectedAirline() {
+		// encode URI component as this airline name will be used as a argument of an URL
+		return encodeURIComponent($("#airlineSelectId option:selected").val());
+	}
+	
 }

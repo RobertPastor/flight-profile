@@ -34,11 +34,9 @@ class AirlineFlightLegCosts {
 		let arrivalRunWay = $("#airlineArrivalRunWayFlightProfileId option:selected").val()
 		
 		// get the name of the airline
-		let airlineName = $("#airlineSelectId option:selected").val();
-		airlineName = encodeURIComponent(airlineName);
+		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
-		//console.log("before tableCostsResultsId tbody tr append")
-		
+		// 30th July 2023 - add requested cruise level and reduced climb power coefficient
 		$("#airlineFlightLegCostsTableId")
 			.find('tbody')
 			.append($('<tr>')
@@ -52,7 +50,11 @@ class AirlineFlightLegCosts {
 				.append('<td>'+ arrivalRunWay +'</td>')
 
 				.append('<td>'+ dataJson["isAborted"] +'</td>')
-				.append('<td>'+ dataJson["initialMassKilograms"] +'</td>')
+				.append('<td>'+ dataJson["takeOffMassKilograms"] +'</td>')
+				
+				.append('<td>'+ dataJson["cruiseLevelFeet"] +'</td>')
+				.append('<td>'+ dataJson["reducedClimbPowerCoeff"] +'</td>')
+				
 				.append('<td>'+ dataJson["finalMassKilograms"] +'</td>')
 				.append('<td>'+ dataJson["massLossFilograms"] +'</td>')
 				
@@ -64,7 +66,6 @@ class AirlineFlightLegCosts {
 				.append('<td>'+ dataJson["totalCostsDollars"] +'</td>')
 			);
 		//console.log("after tableCostsResultsId tbody tr append")
-
 	}
 
 	hideAirlineFlightLegCostsDiv() {
@@ -107,8 +108,7 @@ class AirlineFlightLegCosts {
 			let elemReduced = document.getElementById(reducedClimbPowerCoeffInputId);
 			
 			// get the name of the airline
-			let airlineName = $("#airlineSelectId option:selected").val();
-			airlineName = encodeURIComponent(airlineName);
+			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 			// init progress bar.
 			initProgressBar();

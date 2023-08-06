@@ -499,7 +499,7 @@ class FlightPath(FlightPlan):
             self.finalRoute.addGraph(arrivalGroundRun)
             ''' set total elapsed time seconds '''
             logging.info ("------------------- arrival ground run ----------")
-            logging.info ("------------------- elapsed time seconds = {0} --------------".format( int ( arrivalGroundRun.getElapsedTimeSeconds() ) ) ) 
+            logging.info ("------------------- elapsed time = {0} seconds -------------".format( int ( arrivalGroundRun.getElapsedTimeSeconds() ) ) ) 
             logElapsedRealTime( self.className , int ( arrivalGroundRun.getElapsedTimeSeconds() ) )
             logging.info ("------------------- arrival ground run ----------")
             self.elapsedTimeSeconds = arrivalGroundRun.getElapsedTimeSeconds()

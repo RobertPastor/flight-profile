@@ -32,8 +32,9 @@
 				
 				let thead = document.createElement('thead');
 				let row_1 = document.createElement('tr');
-
-				let th_list = [ 'Airline' , 'Aircraft' , 'Seats', 'Adep', 'RunWay', 'Ades', 'RunWay', 'Is Aborted', 'Initial Mass Kg' ,
+				// 30th July 2023 - add requested flight level and the reduced climb power coefficient
+				let th_list = [ 'Airline' , 'Aircraft' , 'Seats', 'Adep', 'RunWay', 'Ades', 'RunWay', 'Is Aborted', 'TakeOff Mass Kg' ,
+								'Cruise Level ft', 'Climb Power %',
 								'Final Mass Kg', 'Lost Mass Kg', 'Fuel Costs US$', 'Flight Duration Hours', 'Flying Costs US$', 'Crew Costs US$', 'Total Costs US$' ];
 				let th = undefined;
 				th_list.forEach ( function ( element ) {

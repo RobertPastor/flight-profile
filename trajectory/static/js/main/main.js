@@ -170,7 +170,7 @@ function hideAllDiv(globus) {
 	let fuelPlanner = SingletonFuelPlanner.getInstance();
 	fuelPlanner.hideFuelPlannerDiv();
 	
-	let sidStar = SingletonSidStar.getInstance();
+	SingletonSidStar.getInstance();
 	
 }
 
@@ -183,8 +183,9 @@ function switchAirlines(globus) {
 		hideAllDiv(globus);
 		
 		stopBusyAnimation();
+		
 		// selector in the main menu bar
-		let airlineName = $("#airlineSelectId option:selected").val();
+		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 		
 		/**
 		 * airlines data is made available through template index-og.html
@@ -362,16 +363,22 @@ function initMain(viewExtent) {
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
     });
 	
-    // a HTMLDivElement which its id is `globus`
+    // a HTMLDivElement whose id is `globus`
     var globus = new og.Globe({
             "target": "globusDivId", 
             "name": "Earth",
             "terrain": new og.terrain.GlobusTerrain(),
             "layers": [osm],
             "autoActivated": true,
-			"viewExtent" : viewExtent
+			"viewExtent" : viewExtent,
+			"controls": [
+				new og.control.MouseNavigation({ autoActivate: true }),
+                new og.control.KeyboardNavigation({ autoActivate: true }),
+                new og.control.EarthCoordinates({ autoActivate: true, center: false , type: 1}),
+                new og.control.ZoomControl({ autoActivate: true }),
+                new og.control.CompassButton()
+                ]
 	});
-	
 	initTools (globus, viewExtent);
 }
 

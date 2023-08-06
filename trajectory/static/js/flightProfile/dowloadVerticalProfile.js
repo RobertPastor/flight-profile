@@ -22,8 +22,7 @@ function initDownloadVerticalProfile(flightProfileControl) {
 		let elemReduced = document.getElementById(reducedClimbPowerCoeffInputId);
 		
 		// get the name of the airline
-		let airlineName = $("#airlineSelectId option:selected").val();
-		airlineName = encodeURIComponent(airlineName);
+		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 		// init progress bar.
 		initProgressBar();

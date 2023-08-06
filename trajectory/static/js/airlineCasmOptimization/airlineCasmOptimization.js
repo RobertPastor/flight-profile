@@ -84,8 +84,7 @@ class AirlineCasmOptimization {
 				//document.getElementById("btnLaunchCasmOptimization").style.backgroundColor = "green";
 				
 				// get the name of the airline
-				let airlineName = $("#airlineSelectId option:selected").val();
-				airlineName = encodeURIComponent(airlineName);
+				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 				// init progress bar.
 				initProgressBar();
@@ -95,7 +94,7 @@ class AirlineCasmOptimization {
 					method: 'get',
 					url :  "airline/getAirlineCasmOptimization/" + airlineName,
 					async : true,
-					success: function(data, status) {
+					success: function(data) {
 						
 						let dataJson = eval(data);
 						if ( dataJson.hasOwnProperty("errors") ) {

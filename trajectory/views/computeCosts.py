@@ -109,14 +109,17 @@ def computeCosts(request, airlineName):
                         response_data = {
                                         'seats' : airlineAircraft.getMaximumNumberOfPassengers(),
                                         'isAborted': flightPath.abortedFlight ,
-                                        'initialMassKilograms' : flightPath.aircraft.getAircraftInitialMassKilograms(),
-                                        'finalMassKilograms' : round ( flightPath.aircraft.getAircraftCurrentMassKilograms() , 1),
-                                        'massLossFilograms' : round ( flightPath.aircraft.getAircraftInitialMassKilograms()-flightPath.aircraft.getAircraftCurrentMassKilograms() , 1 ),
-                                        'fuelCostsDollars' : round( fuelCostsUSdollars , 0),
-                                        'flightDurationHours' : round ( ( float(flightPath.getFlightDurationSeconds() ) / 3600.0 ), 4 ),
+                                        'initialMassKilograms'   : flightPath.aircraft.getAircraftInitialMassKilograms(),
+                                        'takeOffMassKilograms'   : flightPath.aircraft.getAircraftInitialMassKilograms(),
+                                        'cruiseLevelFeet'        : cruiseFLfeet,
+                                        'reducedClimbPowerCoeff' : reducedClimbPowerCoeff,
+                                        'finalMassKilograms'     : round ( flightPath.aircraft.getAircraftCurrentMassKilograms() , 1),
+                                        'massLossFilograms'      : round ( flightPath.aircraft.getAircraftInitialMassKilograms()-flightPath.aircraft.getAircraftCurrentMassKilograms() , 1 ),
+                                        'fuelCostsDollars'       : round( fuelCostsUSdollars , 0),
+                                        'flightDurationHours'    : round ( ( float(flightPath.getFlightDurationSeconds() ) / 3600.0 ), 4 ),
                                         'operationalFlyingCostsDollars' : round ( operationalFlyingCostsUSdollars , 0),
-                                        'crewFlyingCostsDollars': round( crewCostsUSdollars , 0 ),
-                                        'totalCostsDollars' : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars , 0 )
+                                        'crewFlyingCostsDollars'        : round( crewCostsUSdollars , 0 ),
+                                        'totalCostsDollars'             : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars , 0 )
                                         }
                         return JsonResponse(response_data)
                     else:

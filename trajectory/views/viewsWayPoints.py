@@ -70,8 +70,8 @@ def getWayPointsFromDB(viewExtent, airlineName):
     if (airline):
         for airlineRoute in AirlineRoute.objects.filter(airline=airline):
             
-            print ( "best departure runway = {0}".format( airlineRoute.computeBestDepartureRunWay() ) )
-            print ( "best arrival runway = {0}".format( airlineRoute.computeBestArrivalRunWay() ) )
+            #print ( "best departure runway = {0}".format( airlineRoute.computeBestDepartureRunWay() ) )
+            #print ( "best arrival runway = {0}".format( airlineRoute.computeBestArrivalRunWay() ) )
             
             for airlineRouteWayPoints in AirlineRouteWayPoints.objects.filter(Route = airlineRoute):
                 wayPointName = airlineRouteWayPoints.WayPoint
@@ -98,7 +98,6 @@ def getWayPoints(request, airlineName):
     logger.debug ("get WayPoints")
     if (request.method == 'GET'):
         logger.debug("get request received - WayPoints")
-        print ( request.GET )
         try:
             viewExtent = {
                "minlatitude" : int(request.GET['minlatitude']),

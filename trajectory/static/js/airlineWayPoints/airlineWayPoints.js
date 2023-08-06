@@ -96,8 +96,7 @@ class AirlineWayPoints {
 				data += 'maxlongitude=' + parseInt(northEast["lon"]).toString();
 				
 				// get the name of the airline
-				let airlineName = $("#airlineSelectId option:selected").val();
-				airlineName = encodeURIComponent(airlineName);
+				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 				
 				let layerName = airlineName + "-" + "WayPoints";
 				let layerWayPoints = globus.planet.getLayerByName( layerName );
@@ -150,8 +149,7 @@ class AirlineWayPoints {
 				document.getElementById("btnWayPoints").style.backgroundColor = "yellow";
 				
 				// get the name of the airline
-				let airlineName = $("#airlineSelectId option:selected").val();
-				airlineName = encodeURIComponent(airlineName);
+				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 				// hide the airports
 				let layerName = airlineName + "-" + "WayPoints";

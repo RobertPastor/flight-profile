@@ -111,8 +111,7 @@ class AirlineCosts {
 			document.getElementById("btnLaunchAirlineCosts").disabled = true;
 			
 			// get the name of the airline
-			let airlineName = $("#airlineSelectId option:selected").val();
-			airlineName = encodeURIComponent(airlineName);
+			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 			// init progress bar.
 			initProgressBar();
@@ -154,8 +153,7 @@ class AirlineCosts {
 				document.getElementById("btnLaunchAirlineCosts").style.backgroundColor = "green";
 				
 				// get the name of the airline
-				let airlineName = $("#airlineSelectId option:selected").val();
-				airlineName = encodeURIComponent(airlineName);
+				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 				// init progress bar.
 				initProgressBar();

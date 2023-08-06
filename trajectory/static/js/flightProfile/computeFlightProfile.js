@@ -127,7 +127,7 @@ class AirlineProfileCosts {
 		
 		// 18th June 2023 - create a list of departure and arrival airports
 		this.routes = [];
-		let airlineName = $("#airlineSelectId option:selected").val();
+		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 		
 		// empty the selector
 		$('#airlineRouteId').empty();
@@ -312,8 +312,7 @@ class AirlineProfileCosts {
 	getLayerPrefix() {
 		
 		// get the name of the airline
-		let airlineName = $("#airlineSelectId option:selected").val();
-		airlineName = encodeURIComponent(airlineName);
+		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 		return "Rays" + "-" + airlineName;
 	}
 	
@@ -344,8 +343,7 @@ class AirlineProfileCosts {
 		
 		// add layer to the House Keeping class
 		// get the name of the airline
-		let airlineName = $("#airlineSelectId option:selected").val();
-		airlineName = encodeURIComponent(airlineName);
+		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 				
 		// add layer to the og Cleaner table
 		SingletonOgLayerCleaner.getInstance().addLayer( layerName , airlineName , route.split("-")[0] , route.split("-")[1]);
@@ -495,8 +493,7 @@ class AirlineProfileCosts {
 		$( "#airlineRouteId" ).change(function() {
 			
 			// get the name of the airline
-			let airlineName = $("#airlineSelectId option:selected").val();
-			airlineName = encodeURIComponent(airlineName);
+			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 			//console.log( "Handler for airlineRouteId selection change called." );
 			$.ajax( {
@@ -547,8 +544,7 @@ class AirlineProfileCosts {
 				$('#flightProfileMainDivId').show();
 								
 				// get the name of the airline
-				let airlineName = $("#airlineSelectId option:selected").val();
-				airlineName = encodeURIComponent(airlineName);
+				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 				// use ajax to get the data 
 				$.ajax( {
@@ -650,8 +646,7 @@ class AirlineProfileCosts {
 			let elemReduced = document.getElementById(reducedClimbPowerCoeffInputId);
 			
 			// get the name of the airline
-			let airlineName = $("#airlineSelectId option:selected").val();
-			airlineName = encodeURIComponent(airlineName);
+			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 			
 			let data = 'aircraft=' + aircraft;
 			data += '&route=' + route;

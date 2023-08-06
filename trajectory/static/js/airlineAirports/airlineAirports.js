@@ -241,8 +241,7 @@ class AirlineAirports {
 	queryRoutesStartingFromAirport ( departureAirportICAOcode , position ) {
 		
 		// get the name of the airline
-		let airlineName = $("#airlineSelectId option:selected").val();
-		airlineName = encodeURIComponent(airlineName);
+		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 		
 		$.ajax( {
 				method: 'get',
@@ -275,8 +274,7 @@ class AirlineAirports {
 		let globus = this.globus;
 	
 		// get the name of the airline
-		let airlineName = $("#airlineSelectId option:selected").val();
-		airlineName = encodeURIComponent(airlineName);
+		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 		// need to prefix an airport ICAO code with the airline name 
 		// as the same airport might be used by several airlines
@@ -372,8 +370,7 @@ class AirlineAirports {
 		initWorker();
 		
 		// get the name of the airline
-		let airlineName = $("#airlineSelectId option:selected").val();
-		airlineName = encodeURIComponent(airlineName);
+		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
 		$.ajax( {
 				method: 'get',
