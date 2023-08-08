@@ -205,7 +205,7 @@ class AirlineRoute(models.Model):
                                     LatitudeDegrees    = rwy.LatitudeDegrees,
                                     LongitudeDegrees   = rwy.LongitudeDegrees)
                     rwyEnd = runWay.getEndOfRunWay()
-                    ''' 5 nautical miles after end of run-way '''
+                    ''' 5 NM after end of run-way '''
                     latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading( 5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
                     pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
         
@@ -248,7 +248,7 @@ class AirlineRoute(models.Model):
                                     LatitudeDegrees    = rwy.LatitudeDegrees,
                                     LongitudeDegrees   = rwy.LongitudeDegrees)
                     rwyEnd = runWay.getEndOfRunWay()
-                    ''' 5 nautical miles after end of runway '''
+                    ''' 5 NM after end of runway '''
                     latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading(5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
                     pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
                     

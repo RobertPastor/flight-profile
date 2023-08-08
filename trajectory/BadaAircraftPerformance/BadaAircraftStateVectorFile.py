@@ -153,8 +153,8 @@ class StateVector(object):
                                  'mach',
                                  'rate-of-climb-descent-feet-minute',
                                  
-                                 'distance-flown-nautical-miles',
-                                 'distance-to-fly-nautical-miles',
+                                 'distance-flown-NM',
+                                 'distance-to-fly-NM',
                                  
                                  'aircraft-mass-kilograms'      ,
                                  'flight-path-angle-degrees'    ,

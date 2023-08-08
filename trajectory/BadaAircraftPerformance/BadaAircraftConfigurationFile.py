@@ -46,7 +46,7 @@ from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.Environment.Earth import Earth
 from trajectory.Environment.Utils import logElapsedRealTime
 
-GlideSlopeStart2TouchDownNauticalMiles = 5 # 5 nautical miles from start of glide slope to runway touch down
+GlideSlopeStart2TouchDownNauticalMiles = 5 # 5 NMfrom start of glide slope to runway touch down
 
 
 class EnergyShareFactor(object):
@@ -1298,7 +1298,6 @@ class AircraftConfiguration(FlightEnvelope):
         durationDescentSeconds = ((deltaAltitudeMeters * Meter2Feet) / self.computeDescentRateFeetPerMinute()) * 60.0
         #logger.info "descent duration Seconds= ", durationDescentSeconds, " duration in minutes= ", durationDescentSeconds/60.
         descentDistanceMeters = trueAirSpeedMetersSeconds * durationDescentSeconds
-        #logger.info "Start Descent at distance Meters from Airport= ", descentDistanceMeters, " descent distance in nautical miles= ", (descentDistanceMeters)/OneNauticalMiles
         return descentDistanceMeters
 
     def computeDescentRateFeetPerMinute(self):

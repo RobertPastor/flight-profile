@@ -8,3 +8,4 @@ encoding//trajectory/aerocalc/test/test_airspeed.py=utf-8
 encoding//trajectory/aerocalc/test/test_ssec.py=utf-8
 encoding//trajectory/aerocalc/test/test_std_atm.py=utf-8
 encoding//trajectory/aerocalc/test/test_unit_conversion.py=utf-8
+encoding//trajectory/aerocalc/unit_conversion.py=utf-8

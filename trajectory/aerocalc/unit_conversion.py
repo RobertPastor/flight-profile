@@ -105,7 +105,7 @@ def area_conv(A, from_units=default_area_units,
     elif from_units == 'nm**2':
         A *= (1852 / 0.3048) ** 2
     else:
-        raise ValueError (          'from_units must be "ft**2" or "in**2" or "m**2" or "km**2" or "sm**2" (square statute miles) or "nm**2" (square nautical miles).')
+        raise ValueError ('from_units must be "ft**2" or "in**2" or "m**2" or "km**2" or "sm**2" (square statute miles) or "nm**2" (square nautical miles).')
 
     if to_units == 'ft**2':
         return A
@@ -120,7 +120,7 @@ def area_conv(A, from_units=default_area_units,
     elif to_units == 'nm**2':
         return A * (0.3048 / 1852) ** 2
     else:
-        raise ValueError (       'from_units must be "ft**2" or "in**2" or "m**2" or "km**2" or "sm**2" (square statute miles) or "nm**2" (square nautical miles).')
+        raise ValueError ('from_units must be "ft**2" or "in**2" or "m**2" or "km**2" or "sm**2" (square statute miles) or "nm**2" (square nautical miles).')
 
 
 def density_conv(D, from_units, to_units):
@@ -497,7 +497,7 @@ def vol_conv(V, from_units=default_vol_units,
     elif from_units == 'l':
         V /= 3.048 ** 3
     else:
-        raise ValueError (           'from_units must be "ft**3", "in**3", "USG", "ImpGal", "l", "m**3", "km**3", "sm**3" (cubic statute miles) or "nm**3" (cubic nautical miles).' )
+        raise ValueError ('from_units must be "ft**3", "in**3", "USG", "ImpGal", "l", "m**3", "km**3", "sm**3" (cubic statute miles) or "nm**3" (cubic nautical miles).' )
 
     if to_units == 'ft**3':
         return V
@@ -518,7 +518,7 @@ def vol_conv(V, from_units=default_vol_units,
     elif to_units == 'l':
         return V * 3.048 ** 3
     else:
-        raise ValueError (        'to_units must be "ft**3", "in**3", "USG", "ImpGal", "l", "m**3", "km**3", "sm**3" (cubic statute miles) or "nm**3" (cubic nautical miles).' )
+        raise ValueError ( 'to_units must be "ft**3", "in**3", "USG", "ImpGal", "l", "m**3", "km**3", "sm**3" (cubic statute miles) or "nm**3" (cubic nautical miles).' )
 
 
 def wt_conv(W, from_units=default_weight_units,
