@@ -377,7 +377,7 @@ class FlightPlan(FixList):
         firstWayPoint = self.wayPointsDict[self.fixList[firstIndex]]
         secondWayPoint = self.wayPointsDict[self.fixList[secondIndex]]
         IntervalDistanceNm = firstWayPoint.getDistanceMetersTo(secondWayPoint) * Meter2NauticalMiles
-        if IntervalDistanceNm < minIntervalNautics:
+        if IntervalDistanceNm < ( minIntervalNautics - 1.0):
             logging.info ( self.className + ': WARNING - distance between {0} and {1} less than 10 Nm = {2:.2f}'.format(firstWayPoint.getName(), secondWayPoint.getName(), IntervalDistanceNm) )
             return True
         return False
