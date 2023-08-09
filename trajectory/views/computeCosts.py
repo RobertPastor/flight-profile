@@ -66,6 +66,7 @@ def computeCosts(request, airlineName):
             reducedClimbPowerCoeff = 0.0
             try:
                 reducedClimbPowerCoeff = request.GET['reduc']
+                reducedClimbPowerCoeff = float(reducedClimbPowerCoeff)
             except:
                 reducedClimbPowerCoeff = 0.0
             

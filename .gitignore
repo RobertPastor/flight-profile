@@ -135,6 +135,9 @@ dmypy.json
 #*.xlsx
 *.kml
 
+#eclipse
+.settings/org.eclipse.core.resources.prefs
+
 #exception for configuration file with xlsx extension
 !airline/management/commands/AirlineRoutes/AirlineRoutesAirportsDepartureArrival.xlsx
 !airline/management/commands/AirlineRoutesWayPoints/WayPoints.xlsx
