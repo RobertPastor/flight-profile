@@ -29,7 +29,6 @@ DEBUG = False
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'airlineservices.eu.pythonanywhere.com']
 
 # Application definition
-
 INSTALLED_APPS = [
     'trajectory',
     'airline',

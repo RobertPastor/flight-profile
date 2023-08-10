@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 from trajectory.management.commands.SidStar.SidStarDatabaseLoader import SidStarLoaderOne
 
 class Command(BaseCommand):
-    help = 'Reads the WayPoints and write in a table'
+    help = 'Reads the SID STAR waypoints and write in a table'
 
     def handle(self, *args, **options):
         

@@ -2,17 +2,12 @@
 var worker = undefined;
 
 window.addEventListener('DOMContentLoaded', () => {
-	
 	window.addEventListener("load", ($) => {
-					
 			setTimeout( function() {
-				
 				init();
-				
 			} , 500 );
 	});
 });
-
 
 function removeAllChilds (parent) {
     while (parent.lastChild) {
@@ -24,7 +19,6 @@ function showMessage ( title, message ) {
 	
 	const dialog = document.getElementById("dialogId");
 	if (dialog) {
-		
 		removeAllChilds(dialog);
 		$("#dialogId")
 				.dialog({
@@ -171,7 +165,6 @@ function hideAllDiv(globus) {
 	fuelPlanner.hideFuelPlannerDiv();
 	
 	SingletonSidStar.getInstance();
-	
 }
 
 
@@ -181,7 +174,6 @@ function switchAirlines(globus) {
 		
 		// hide all div created for the other airlines
 		hideAllDiv(globus);
-		
 		stopBusyAnimation();
 		
 		// selector in the main menu bar
@@ -220,12 +212,10 @@ function switchAirlines(globus) {
 function loadAirlinesSelector() {
 	/*
 	* fill the selector with the names of the airlines
-	* Warning : the airlines array is loaded in the index-og.html
+	* Warning : the airlines array is loaded in the index-og.html -> see Django templates area 
 	*/
 	if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 		airlines.forEach ( function ( airline ) {
-			//let option = document.createElement("option");
-            //option.text = "AmericanWings";
 			let select = document.getElementById("airlineSelectId");
 			if ( select ) {
 				let option = document.createElement("option");
@@ -235,7 +225,6 @@ function loadAirlinesSelector() {
 		});
 	}
 }
-
 
 function initTools(globus, viewExtent) {
 			
@@ -376,7 +365,7 @@ function initMain(viewExtent) {
                 new og.control.KeyboardNavigation({ autoActivate: true }),
                 new og.control.EarthCoordinates({ autoActivate: true, center: false , type: 1}),
                 new og.control.ZoomControl({ autoActivate: true }),
-                new og.control.CompassButton()
+                new og.control.CompassButton()                
                 ]
 	});
 	initTools (globus, viewExtent);

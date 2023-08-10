@@ -44,30 +44,24 @@ class SidStarLoaderOne():
         
         
     def exists( self ):
-        
         print ( self.fileName )
         self.filePath = os.path.join( self.FilesFolder , self.fileName)
         print ( self.filePath )
         return os.path.exists(self.filePath)
-        
     
     def getAirport(self):
         return self.airport
     
-    
     def getRunWay(self):
         return self.runway
-    
     
     def getOrCreateSidStarDBObject(self):
         
         sidStarDbObj = None
-
         self.airport = AirlineAirport.objects.filter( AirportICAOcode = self.departureOrArrivalAirportICAO ).first()
         if ( self.airport is None ):
             raise ValueError ( "airport = {0} not found in databaase ".format( self.departureOrArrivalAirportICAO ))
         else:
-                    
             self.runway = AirlineRunWay.objects.filter( Name = self.RunWayStr , Airport = self.airport ).first()
             if ( self.runway is None ):
                 raise ValueError ( "runway = {0} not found in databaase ".format( self.RunWayStr ))
@@ -114,6 +108,7 @@ class SidStarLoaderOne():
                 
                 latitudeDegrees = 0.0
                 longitudeDegrees = 0.0
+                ''' search for the airport '''
                 if ( str(row["waypoint"]).startswith( self.airport.getICAOcode() )):
                     ''' first entry is airport ICAO code / runway name '''
                     if ( str ( row["waypoint"] ).index( "/" ) > 0):
@@ -122,7 +117,8 @@ class SidStarLoaderOne():
                         print ( runwayName )
                         latitudeDegrees = self.runway.getLatitudeDegrees()
                         longitudeDegrees= self.runway.getLongitudeDegrees()
-                    
+                    else:
+                        raise ValueError ( "Expecting a SLASH in airport name = {0} but not found ".format( str ( row["waypoint"] ) ) )
                 else:
                     print ("latitude is {0}".format(row["latitude"]))
                     strLatitude = str( row["latitude"] ).strip()
@@ -130,6 +126,8 @@ class SidStarLoaderOne():
                         strLatitude = str(strLatitude).replace('°','-')
                         strLatitude = str(strLatitude).strip().replace("'", '-').replace(' ','').replace('"','')
                         latitudeDegrees = convertDegreeMinuteSecondToDecimal ( strLatitude )
+                    else:
+                        raise ValueError ( "Expecting a ° degree symbol in latitude = {0} but not found ".format( str( row["latitude"] ) ) )
                             
                     print ("longitude is {0}".format(row["longitude"]))
                     strLongitude = str( row["longitude"] ).strip()
@@ -137,22 +135,25 @@ class SidStarLoaderOne():
                         strLongitude = str(strLongitude).replace('°','-')
                         strLongitude = str(strLongitude).strip().replace("'", '-').replace(' ','').replace('"','')
                         longitudeDegrees = convertDegreeMinuteSecondToDecimal ( strLongitude )
+                    else:
+                        raise ValueError ( "Expecting a ° degree symbol in longitude = {0} but not found ".format( str( row["longitude"] ) ) )
                 
                 print ("----------- {0} -----------".format(row["order"]))
-                
+                ''' 10th August 2023 - DASH is a separator in the fixlist -> need to replace it with UNDERSCORE '''
+                waypointWithoutDash = str(row["waypoint"]).strip().replace("-", "_")
                 sidStarWayPoint = AirlineSidStarWayPointsRoute ( 
                                 Route           = sidStarDbObj ,
                                 Order           = int( row["order"] ),
-                                WayPointName    = str(row["waypoint"]).strip() ,
+                                WayPointName    =  waypointWithoutDash,
                                 LatitudeDegrees  = latitudeDegrees,
                                 LongitudeDegrees = longitudeDegrees
                                 )
                 sidStarWayPoint.save()
                 
-                ''' 6th June 2023 - SID STAR waypoints must be loaded in the WayPoints database '''
-                airlineWayPoint = AirlineWayPoint.objects.filter ( WayPointName = str(row["waypoint"]).strip() ).first()
+                ''' 6th June 2023 - SID STAR way-points must be loaded in the WayPoints database '''
+                airlineWayPoint = AirlineWayPoint.objects.filter ( WayPointName = waypointWithoutDash ).first()
                 if ( airlineWayPoint is None ):
-                    airlineWayPoint = AirlineWayPoint( WayPointName = str(row["waypoint"]).strip() ,
+                    airlineWayPoint = AirlineWayPoint( WayPointName = waypointWithoutDash ,
                                                        Latitude = latitudeDegrees,
                                                        Longitude = longitudeDegrees )
                     airlineWayPoint.save()

@@ -103,9 +103,16 @@ class AirlineFlightLegCosts {
 			let elemTOMassKg = document.getElementById('TakeOffMassKgId');
 			let elemFL = document.getElementById('requestedFlightLevelId');
 			
-			// cannot used this keyword in call back
+			// cannot used "this"" keyword in call back
 			let reducedClimbPowerCoeffInputId = flightProfileControl.getReducedClimbPowerCoeffInputId();
 			let elemReduced = document.getElementById(reducedClimbPowerCoeffInputId);
+			let elemReducedValue = 0.0;
+			try {
+				elemReducedValue = parseFloat(elemReduced.value)
+			} catch (error) {
+  				// field value is empty
+  				elemReducedValue = 0.0
+			}
 			
 			// get the name of the airline
 			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
@@ -125,7 +132,7 @@ class AirlineFlightLegCosts {
 				AdesRwy  : arrivalRunWay,
 				mass     : elemTOMassKg.value,
 				fl       : elemFL.value,
-				reduc    : elemReduced.value
+				reduc    : elemReducedValue
 			}
 			
 			$.ajax( {
