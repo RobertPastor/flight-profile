@@ -99,7 +99,7 @@ def createExcelWorkbook(memoryFile, request, airlineName):
 
 @csrf_protect
 def createExcelVerticalProfile(request, airlineName):
-    ''' @TODO same inputs as compute profile , compute costs and comput state vector  '''
+    ''' @TODO same inputs as compute profile , compute costs and compute state vector  '''
     ''' this is the main view entry '''
     locale.setlocale(locale.LC_TIME, French_Locale)
     
@@ -114,15 +114,8 @@ def createExcelVerticalProfile(request, airlineName):
             
             badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
             if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
-                
-                logger.info ("selected aircraft = {0}".format( aircraftICAOcode ) )
-            
+                            
                 airlineRoute = request.GET['route']
-                
-                logger.debug(airlineRoute)
-                
-                logger.debug ( str(airlineRoute).split("-")[0] )
-                logger.debug ( str(airlineRoute).split("-")[1] )
                 
                 departureAirportICAOcode = str(airlineRoute).split("-")[0]
                 departureAirportRunWayName = request.GET['adepRwy']
@@ -131,9 +124,7 @@ def createExcelVerticalProfile(request, airlineName):
                 arrivalAirportRunWayName = request.GET['adesRwy']
                 
                 takeOffMassKg = request.GET['mass']
-                #logger.debug( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
                 cruiseFLfeet = request.GET['fl'] 
-                #logger.debug( "cruise FL feet = {0}".format( cruiseFLfeet ) )
                 
                 reducedClimbPowerCoeff = 0.0
                 try:
@@ -144,14 +135,11 @@ def createExcelVerticalProfile(request, airlineName):
                 
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 if (airlineRoute):
-                        #logger.debug ( airlineRoute )
                         '''  use run-ways defined in the web page '''
                         routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                         #logger.debug ( routeAsString )
                         acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
                         if ( acPerformance.read() ):
-                            #logger.debug ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                            #logger.debug ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
             
                             flightPath = FlightPath(
                                             route = routeAsString, 
