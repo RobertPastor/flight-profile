@@ -18,14 +18,14 @@ from pulp import LpProblem , LpMinimize ,  LpVariable, lpSum, LpStatus ,  PULP_C
 from django.http import  JsonResponse
 from airline.models import Airline, AirlineCosts, AirlineAircraft, AirlineRoute
 
-from trajectory.Environment.Constants import kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
+from trajectory.Environment.Constants import Kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
 from airline.models import AirlineAircraftInstances
 from airline.views.utils import compute_total_costs
 
 
 ''' 29th April 2023 add cruise level and adep . Ades runways '''
 costsHeaders = ['airline' , 'aircraft'  , 'departureAirport' , 'adepRunway' , 'arrivalAirport' ,  'adesRunway' ,  'isAborted' , 'takeOffMassKg'  ,  'finalMassKg' , 'cruiseLevelFeet'  \
-              , 'leg length NM' , 'Specific Range NM/kg' , 'flightDurationHours' , 'fuelCosts US$' , 'operationalCosts US$' , 'crewCosts US$' , 'totalCosts US$' ]       
+              , 'leg length Nm' , 'Specific Range Nm/kg' , 'flightDurationHours' , 'fuelCosts US$' , 'operationalCosts US$' , 'crewCosts US$' , 'totalCosts US$' ]       
 
 costsMinimizationHeaders = [ 'airline' , 'Solver Status', 'aircraft' , 'departureAirport' , 'adepRunway' , 'arrivalAirport' , 'adesRunway' , 'totalCostsUSdollars' ]
 
@@ -78,7 +78,7 @@ def writeAirlineCostsResults(workbook , airlineName):
                 for airlineCosts in AirlineCosts.objects.all().filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute):    
                         
                     massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
-                    fuelCostsUSdollars = massLossKg * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
+                    fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
                             
                     operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
                             
@@ -378,7 +378,7 @@ def getAirlineCosts(request, airlineName):
                     for airlineCosts in AirlineCosts.objects.all().filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute):    
                         
                         massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
-                        fuelCostsUSdollars = massLossKg * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
+                        fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
                             
                         operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
                             

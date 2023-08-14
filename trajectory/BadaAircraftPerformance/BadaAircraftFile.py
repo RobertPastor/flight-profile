@@ -59,14 +59,14 @@ class BadaAircraft(AircraftConfiguration):
         return self.WakeTurbulenceCategory
         
     def __str__(self):
-        strAC = self.className + ' ICAO code= {0}'.format(self.ICAOcode)
-        strAC += ' wake Turbulence category= {0}'.format(self.WakeTurbulenceCategory)
-        strAC += ' aircraft full name= {0}'.format(self.aircraftFullName)
+        strAC = self.className + ' ICAO code = {0}'.format(self.ICAOcode)
+        strAC += ' wake Turbulence category = {0}'.format(self.WakeTurbulenceCategory)
+        strAC += ' aircraft full name = {0}'.format(self.aircraftFullName)
         return str(strAC)
     
     def dump(self):
-        logging.info ( self.className + ' ICAO code= {0}'.format(self.ICAOcode) )
-        logging.info ( self.className + ' aircraft full name= {0}'.format(self.aircraftFullName) )
+        logging.info ( self.className + ' ICAO code = {0}'.format(self.ICAOcode) )
+        logging.info ( self.className + ' aircraft full name = {0}'.format(self.aircraftFullName) )
 
     def getLandingLengthMeters(self):
         return self.groundMovement.getLandingLengthMeters()
@@ -108,6 +108,4 @@ class BadaAircraft(AircraftConfiguration):
                                             trueAirSpeedMetersSecond, 
                                             airportFieldElevationAboveSeaLevelMeters,
                                             aircraftMassKilograms)
-        
-
         

@@ -38,7 +38,7 @@ from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 from trajectory.Guidance.WayPointFile import WayPoint, Airport
 from trajectory.Environment.RunWayFile import RunWay
 from trajectory.Guidance.GraphFile import Graph
-from trajectory.Environment.Constants import NauticalMiles2Meter , Meter2NauticalMiles
+from trajectory.Environment.Constants import NauticalMiles2Meter , Meter2NauticalMiles, ConstantClimbRampLengthNauticalMiles
 
 
 class ClimbRamp(Graph):
@@ -81,7 +81,7 @@ class ClimbRamp(Graph):
                        elapsedTimeSeconds, 
                        distanceStillToFlyMeters, 
                        distanceToLastFixMeters,
-                       climbRampLengthNautics = 5.0 ):
+                       climbRampLengthNautics = ConstantClimbRampLengthNauticalMiles ):
         
         ''' from the run-way , we get the orientation or run-way true heading in degrees '''
         runWayOrientationDegrees = self.runway.getTrueHeadingDegrees()     
@@ -115,7 +115,7 @@ class ClimbRamp(Graph):
                                                                     elapsedTimeSeconds       = elapsedTimeSeconds,
                                                                     deltaTimeSeconds         = deltaTimeSeconds , 
                                                                     distanceStillToFlyMeters = distanceStillToFlyMeters,
-                                                                    currentPosition          =  intermediateWayPoint,
+                                                                    currentPosition          = intermediateWayPoint,
                                                                     distanceToLastFixMeters  = distanceToLastFixMeters)
             ''' distance flown '''
             cumulatedLegDistanceMeters += deltaDistanceMeters

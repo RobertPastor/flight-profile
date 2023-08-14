@@ -238,20 +238,22 @@ class AirlineStandardDepartureArrivalRoute(models.Model):
         first = True
         sidStarWayPointsRoute = AirlineSidStarWayPointsRoute.objects.filter( Route = self ).order_by("Order")
         for wayPoint in sidStarWayPointsRoute:
+            ''' DASH is a separator in the fix list !!! '''
+            wayPointName = str(wayPoint.WayPointName).strip().upper().replace("-", "_")
             if (first):
                 first = False
                 if ( isSID ):
                     if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
-                        routeAsString += str(wayPoint.WayPointName).strip()
+                        routeAsString += wayPointName
                 else:
                     if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
-                        routeAsString += str(wayPoint.WayPointName).strip()
+                        routeAsString += wayPointName
             else:
                 if ( isSID ):
-                    routeAsString += "-" + str(wayPoint.WayPointName).strip()
+                    routeAsString += "-" + wayPointName
                 else:
                     if ( ( ("/") in str(wayPoint.WayPointName) ) == False ):
-                        routeAsString += "-" + str(wayPoint.WayPointName).strip()
+                        routeAsString += "-" + wayPointName
         
         return routeAsString
 

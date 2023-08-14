@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 from airline.models import Airline, AirlineCosts, AirlineAircraft, AirlineRoute
 from airline.models import AirlineAircraftInstances
 
-from trajectory.Environment.Constants import kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
+from trajectory.Environment.Constants import Kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
 
@@ -53,7 +53,7 @@ def computeAirlineCostsArray(airline, airlineName):
                     if airlineCosts:
                         
                         massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
-                        fuelCostsUSdollars = massLossKg * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
+                        fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
                                 
                         operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
                                 
@@ -162,7 +162,7 @@ def getAirlineCasmOptimization(request, airlineName):
                         if airlineCosts:
                             
                             massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
-                            fuelCostsUSdollars = massLossKg * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
+                            fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
                                     
                             operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
                                     

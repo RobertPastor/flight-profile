@@ -34,12 +34,9 @@ from trajectory.Guidance.WayPointFile import WayPoint, Airport
 from trajectory.Environment.RunWayFile import RunWay
 
 from trajectory.Guidance.GraphFile import Graph
-
 from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 
-
-NauticalMiles2Meters = 1852. # meters
-Meter2NauticalMiles = 0.000539956803
+from trajectory.Environment.Constants import NauticalMiles2Meters , Meter2NauticalMiles # = 0.000539956803
 
 NumberOfSlopeParts = 100 # dimension less number (number of elementary legs in the slope)
 
@@ -177,7 +174,6 @@ class DescentGlideSlope(Graph):
             newIntermediatePoint.setName(Name = Name)
   
 
-        
     def buildSimulatedGlideSlope(self, descentGlideSlopeSizeNautics):
         '''====================================================='''
         ''' build the three degrees glide slope '''

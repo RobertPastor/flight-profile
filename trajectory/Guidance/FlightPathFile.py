@@ -55,11 +55,9 @@ from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 
 from trajectory.Guidance.WayPointFile import Airport
 
-from trajectory.Environment.Constants import Meter2Feet # = 3.2808 # one meter equals 3.28 feet
-from trajectory.Environment.Constants import gravityMetersPerSquareSeconds 
-from trajectory.Environment.Constants import Meter2NauticalMiles #= 0.000539956803 # One Meter = 0.0005 nautical miles
+from trajectory.Environment.Constants import Meter2Feet , GravityMetersPerSquareSeconds , Meter2NauticalMiles #= 0.000539956803 # One Meter = 0.0005 nautical miles
 from trajectory.Environment.Constants import Kilogram2Pounds # = 2.20462262 # 1 kilogram = 2.204 lbs
-from trajectory.Environment.Constants import minFlightLevel, maxFlightLevel 
+from trajectory.Environment.Constants import MinFlightLevel, MaxFlightLevel , DescentGlideSlopeThreeDegrees
 
 
 class FlightPath(FlightPlan):
@@ -97,8 +95,8 @@ class FlightPath(FlightPlan):
         
         assert isinstance(self.aircraft, BadaAircraft) and not(self.aircraft is None)
         self.aircraft.setAircraftMassKilograms(takeOffMassKilograms)
-        
-        assert RequestedFlightLevel >= minFlightLevel and RequestedFlightLevel <= maxFlightLevel
+        ''' sanity checks '''
+        assert RequestedFlightLevel >= MinFlightLevel and RequestedFlightLevel <= MaxFlightLevel
         self.aircraft.setTargetCruiseFlightLevel(RequestedFlightLevel = RequestedFlightLevel, 
                                                  departureAirportAltitudeMSLmeters = self.getDepartureAirport().getFieldElevationAboveSeaLevelMeters())
         self.aircraft.setTargetCruiseMach(cruiseMachNumber = cruiseMach)
@@ -192,7 +190,7 @@ class FlightPath(FlightPlan):
                 logging.info ( self.className + ' difference= {0:.2f} degrees'.format(angleDifferenceDegrees) )
     
                 tasMetersPerSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
-                radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( gravityMetersPerSquareSeconds * math.tan(math.radians(15.0)))
+                radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( GravityMetersPerSquareSeconds * math.tan(math.radians(15.0)))
     
                 anticipatedTurnStartMeters = radiusOfTurnMeters * math.tan(math.radians((180.0 - abs(angleDifferenceDegrees))/2.0))
                 logging.info ( self.className + ' anticipated turn start from end point= {0:.2f} meters'.format(anticipatedTurnStartMeters) )
@@ -288,7 +286,6 @@ class FlightPath(FlightPlan):
         ''' 
         this function manages the departure phases with a ground run and a climb ramp 
         '''
-        
         logging.info ( self.className + ' ============== build the departure ground run =========== '  )
         self.finalRoute = GroundRunLeg(runway = self.departureRunway, 
                                  aircraft = self.aircraft,
@@ -326,6 +323,7 @@ class FlightPath(FlightPlan):
                                         aircraft = self.aircraft, 
                                         departureAirport = self.departureAirport)
             ''' climb ramp of 5.0 nautical miles is not possible if first fix placed in between '''
+            ''' @TODO - First fix must not be allowed nearer to 5 Nautical Miles '''
             climbRampLengthNautics = min(distanceToFirstFixNautics / 2.0 , 5.0)
             climbRamp.buildClimbRamp(deltaTimeSeconds = self.deltaTimeSeconds,
                                      elapsedTimeSeconds = initialWayPoint.getElapsedTimeSeconds(),
@@ -363,9 +361,9 @@ class FlightPath(FlightPlan):
         descentGlideSlope = DescentGlideSlope( runway   = self.arrivalRunway,
                                                aircraft = self.aircraft,
                                                arrivalAirport = self.arrivalAirport,
-                                               descentGlideSlopeDegrees = 3.0)
+                                               descentGlideSlopeDegrees = DescentGlideSlopeThreeDegrees)
         
-        ''' if there is a fix nearer to 5 nautics of the touch-down then limit size of simulated glide slope '''
+        ''' if there is a fix nearer to 5 Nm of the touch-down then limit size of simulated glide slope '''
         descentGlideSlopeSizeNautics = min(distanceToLastFixNautics / 2.0 , 5.0)
         ''' build simulated glide slope '''
         descentGlideSlope.buildSimulatedGlideSlope(descentGlideSlopeSizeNautics)

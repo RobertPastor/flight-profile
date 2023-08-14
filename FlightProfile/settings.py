@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import platform
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,8 +24,10 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = '4^ksyema_s7@5=s&ykv@g4c7&+3v99q5208wl%-@8x-e@=fkkq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 DEBUG = False
+print ( platform.platform().lower() )
+if "windows" in platform.platform().lower():
+    DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'airlineservices.eu.pythonanywhere.com']
 

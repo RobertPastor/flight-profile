@@ -12,10 +12,8 @@ Feet2Meter = 0.3048 # one feet equals 0.3048 meters
 
 Meter2NauticalMiles = 0.000539956803 # One Meter = 0.0005 nautical miles
 
-
 NauticalMiles2Meter = 1852.0 # in meters
 NauticalMiles2Meters = 1852.0 # in meters
-
 
 Knots2MetersSeconds   = 0.514444444 # meters / second
 Knots2MetersPerSecond = 0.514444444 # meters / second
@@ -29,19 +27,28 @@ Kilogram2Pounds = 2.20462262
 Kilogram2Pounds = 2.20462262 # 1 kilogram = 2.204 lbs
 
 # minimal radius of the final turn -> /flight-profile/trajectory/Guidance/TurnLegFile.py
-FinalArrivalTurnNauticalMiles = 5.0
-ThreeDegreesGlideSlope = 3
+FinalArrivalTurnRadiusNauticalMiles = 5.0
+ThreeDegreesGlideSlope = 3.0
+
+DescentGlideSlopeThreeDegrees = 3.0
 
 MaxRateOfClimbFeetPerMinutes = 2000.0
 MaxRateOfDescentFeetPerMinutes = -2200.0
 
-kerosene_kilo_to_US_gallons = 0.33
+Kerosene_kilo_to_US_gallons = 0.33
 US_gallon_to_US_dollars = 3.25
 
-gravityMetersPerSquareSeconds = 9.81
+GravityMetersPerSquareSeconds = 9.81
 
-minFlightLevel = 15.0
-maxFlightLevel = 450.0
+MinFlightLevel = 15.0
+MaxFlightLevel = 450.0
 
 ''' 23rd July 2023 - Reduced Climb Power - see BADA manual 3.10 '''
 reducedClimbPowerJetCoeffMaxValue = 0.15
+
+ConstantClimbRampLengthNauticalMiles = 5.0 # Nautical Miles
+GlideSlopeStart2TouchDownNauticalMiles = 5.0 # 5 Nmfrom start of glide slope to runway touch down
+
+RollingFrictionCoefficient = 0.035
+
+ConstantTaxiSpeedCasKnots = 5.0 # Knots CAS ???

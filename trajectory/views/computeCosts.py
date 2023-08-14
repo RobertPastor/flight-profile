@@ -13,7 +13,7 @@ from airline.models import Airline, AirlineRoute, AirlineAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
-from trajectory.Environment.Constants import kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
+from trajectory.Environment.Constants import Kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
 
 
 def computeDurationHours( durationSeconds ):
@@ -98,7 +98,7 @@ def computeCosts(request, airlineName):
             
                         logger.debug ( "=========== Flight Plan computation is done  =========== " )
                         
-                        fuelCostsUSdollars =  ( flightPath.aircraft.getAircraftInitialMassKilograms() - flightPath.aircraft.getAircraftCurrentMassKilograms() )  * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
+                        fuelCostsUSdollars =  ( flightPath.aircraft.getAircraftInitialMassKilograms() - flightPath.aircraft.getAircraftCurrentMassKilograms() )  * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
         
                         airlineAircraft = AirlineAircraft.objects.filter(aircraftICAOcode=aircraftICAOcode).first()
                         operationalFlyingCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()

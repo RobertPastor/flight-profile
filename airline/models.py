@@ -4,7 +4,7 @@ from django.db import models
 from trajectory.models import AirlineAirport, AirlineRunWay, AirlineStandardDepartureArrivalRoute
 
 from trajectory.Environment.RunWayFile import RunWay
-from trajectory.Environment.Constants import NauticalMiles2Meter , Meter2NauticalMiles
+from trajectory.Environment.Constants import NauticalMiles2Meter , Meter2NauticalMiles, ConstantClimbRampLengthNauticalMiles
 
 from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
 from trajectory.Environment.Earth import EarthRadiusMeters
@@ -28,7 +28,6 @@ class Airline(models.Model):
     ''' since Django 2.2 if eq is implemented, need to implement hash otherwise we get a type error object is unhashable '''
     def __hash__(self):
         return super().__hash__()
-
 
 def get_default_airline():
     return Airline.objects.get_or_create(Name="AmericanWings")[0]
@@ -80,7 +79,6 @@ class AirlineRoute(models.Model):
             
         return airportsICAOcodeList
     
-    
     def extendRouteWithSID (self , Adep , AdepRunWayName , firstWayPointInRoute ):
         
         assert ( isinstance ( Adep , AirlineAirport ))
@@ -98,7 +96,6 @@ class AirlineRoute(models.Model):
             
         return ""
     
-    
     def extendRouteWithSTAR(self , Ades , AdesRunWayName , lastWayPointInRoute):
         
         assert ( isinstance ( Ades , AirlineAirport ))
@@ -115,7 +112,6 @@ class AirlineRoute(models.Model):
                 return sidStar.getWayPointsListAsString(isSID)
         
         return ""
-    
     
     def getfirstRouteWayPoint(self):
         airlineRouteWayPoint = AirlineRouteWayPoints.objects.filter(Route=self).distinct().order_by("Order").first()
@@ -180,7 +176,7 @@ class AirlineRoute(models.Model):
                 if AdesRunWay and ( len (AdesRunWay.Name ) > 0):
                     strRoute += "/" + AdesRunWay.Name 
             
-        # clean
+        # clean after duplicates suppression
         strRoute = str(strRoute).replace("--", "-")        
         return strRoute
   
@@ -205,8 +201,8 @@ class AirlineRoute(models.Model):
                                     LatitudeDegrees    = rwy.LatitudeDegrees,
                                     LongitudeDegrees   = rwy.LongitudeDegrees)
                     rwyEnd = runWay.getEndOfRunWay()
-                    ''' 5 NM after end of run-way '''
-                    latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading( 5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
+                    ''' 5 Nm after end of run-way '''
+                    latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading( ConstantClimbRampLengthNauticalMiles * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
                     pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
         
                     distanceMeters = pathEnd.computeDistanceMetersTo(firstRouteWayPoint)
@@ -248,8 +244,8 @@ class AirlineRoute(models.Model):
                                     LatitudeDegrees    = rwy.LatitudeDegrees,
                                     LongitudeDegrees   = rwy.LongitudeDegrees)
                     rwyEnd = runWay.getEndOfRunWay()
-                    ''' 5 NM after end of runway '''
-                    latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading(5 * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
+                    ''' 5 Nm after end of runway '''
+                    latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading(ConstantClimbRampLengthNauticalMiles * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
                     pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
                     
                     distanceMeters = pathEnd.computeDistanceMetersTo(lastRouteWayPoint)
@@ -300,7 +296,6 @@ class AirlineRouteWayPoints(models.Model):
     def getWayPointName(self):
         return self.WayPoint
         
-
 class AirlineAircraftInstances(object):
 
     ''' compute a list of aircraft instances to reach the same number of aircraft instances as the number of flight legs '''
@@ -333,7 +328,6 @@ class AirlineAircraftInstances(object):
     def getAircraftInstanceICAOcode(self, acInstance):
         return str(acInstance).split("-")[0]
     
-
 class AirlineAircraft(models.Model):
     aircraftICAOcode = models.CharField(max_length = 50)
     aircraftFullName = models.CharField(max_length = 500)
@@ -349,7 +343,6 @@ class AirlineAircraft(models.Model):
     takeOffMTOWLengthMeters = models.FloatField(default = 0)
     
     airline = models.ForeignKey(Airline, on_delete=models.CASCADE  )
-
 
     ''' used to compare objects '''
     def __eq__(self, other):
@@ -403,7 +396,6 @@ class AirlineAircraft(models.Model):
     def getTurnAroundTimesMinutes(self):
         return self.turnAroundTimesMinutes
     
-
 ''' 29th April 2023 - add target cruise level - departure run-way and arrival run-way '''
 class AirlineCosts(models.Model):
     airline               = models.ForeignKey( Airline, on_delete=models.CASCADE , default=None )
@@ -435,7 +427,6 @@ class AirlineCosts(models.Model):
     
     def getFlightLegFuelBurnKg(self):
         return ( self.initialTakeOffMassKg - self.finalMassKg)
-    
     
 ''' add user to track IP address of the anonymous guests '''
 class User(models.Model):

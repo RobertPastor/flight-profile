@@ -50,7 +50,7 @@ from trajectory.aerocalc.airspeed import cas2tas
 from trajectory.Guidance.GraphFile import Graph
 
 from trajectory.Environment.Constants import MeterPerSecond2Knots, Knots2MetersPerSecond, Meter2NauticalMiles
-from trajectory.Environment.Constants import NauticalMiles2Meter, FinalArrivalTurnNauticalMiles, gravityMetersPerSquareSeconds
+from trajectory.Environment.Constants import NauticalMiles2Meter, FinalArrivalTurnRadiusNauticalMiles, GravityMetersPerSquareSeconds
     
 from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 
@@ -187,11 +187,11 @@ class TurnLeg(Graph):
         tasKnots = tasMetersPerSecond * MeterPerSecond2Knots
         
         ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
-        radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( gravityMetersPerSquareSeconds * math.tan(math.radians(bankAngleDegrees)))
+        radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( GravityMetersPerSquareSeconds * math.tan(math.radians(bankAngleDegrees)))
         
         if ((2*radiusOfTurnMeters) > self.initialWayPoint.getDistanceMetersTo(self.finalWayPoint)):
             ''' increase bank angle to 25 degrees and decrease turn radius '''
-            radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( gravityMetersPerSquareSeconds * math.tan(math.radians(25.0)))
+            radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( GravityMetersPerSquareSeconds * math.tan(math.radians(25.0)))
             
         ''' case of last turn '''
         if lastTurn == True:
@@ -203,7 +203,7 @@ class TurnLeg(Graph):
             tasKnots = tasMetersPerSecond * MeterPerSecond2Knots
         
             ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
-            radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( gravityMetersPerSquareSeconds * math.tan(math.radians(bankAngleDegrees)))
+            radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( GravityMetersPerSquareSeconds * math.tan(math.radians(bankAngleDegrees)))
             logging.info ("{0} - radius of turn = {1:.2f} in meters - for a 15 degrees bank angle".format(self.className, radiusOfTurnMeters))
                         
             #newRadiusOfTurnMeters = self.computeRadiusOfTurn()
@@ -469,11 +469,11 @@ class TurnLeg(Graph):
         tasKnots = tasMetersPerSecond * MeterPerSecond2Knots
         
         ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
-        radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( gravityMetersPerSquareSeconds * math.tan(math.radians(bankAngleDegrees)))
-        logging.info ( '{0} - tas= {1:.2f} knots - radius of turn= {2:.2f} meters - radius of turn= {3:.2f} nautics'.format(self.className, tasKnots, radiusOfTurnMeters, radiusOfTurnMeters*Meter2NauticalMiles) )        
+        radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( GravityMetersPerSquareSeconds * math.tan(math.radians(bankAngleDegrees)))
+        logging.info ( '{0} - tas= {1:.2f} knots - radius of turn= {2:.2f} meters - radius of turn= {3:.2f} Nm'.format(self.className, tasKnots, radiusOfTurnMeters, radiusOfTurnMeters*Meter2NauticalMiles) )        
  
-        if ( radiusOfTurnMeters * Meter2NauticalMiles < FinalArrivalTurnNauticalMiles):
-            radiusOfTurnMeters = FinalArrivalTurnNauticalMiles * NauticalMiles2Meter
+        if ( radiusOfTurnMeters * Meter2NauticalMiles < FinalArrivalTurnRadiusNauticalMiles):
+            radiusOfTurnMeters = FinalArrivalTurnRadiusNauticalMiles * NauticalMiles2Meter
  
         #stop()
         ''' index used to initialize the loop '''        

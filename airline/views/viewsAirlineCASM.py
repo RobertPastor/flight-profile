@@ -21,10 +21,10 @@ from airline.models import Airline
 from airline.models import AirlineCosts, AirlineAircraft, AirlineRoute
 from airline.views.viewsAirlineCasmOptimization import computeAirlineCostsArray
 
-from trajectory.Environment.Constants import kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
+from trajectory.Environment.Constants import Kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
-headersCASM = [ 'Airline' , 'Aircraft' , 'Departure', 'Arrival', 'Is Aborted', 'nb Seats' , 'leg length NM' , 'total Costs US$' , 'Costs per Available Seat Mile US$' ]
+headersCASM = [ 'Airline' , 'Aircraft' , 'Departure', 'Arrival', 'Is Aborted', 'nb Seats' , 'leg length Nm' , 'total Costs US$' , 'Costs per Available Seat Mile US$' ]
 headersCASMoptim = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned' , 'Departure', 'Arrival', 'nb Seats' , 'leg length (nm)' , 'total Costs US$' , 'Costs per Available Seat Mile US$' ]
 
 
@@ -80,7 +80,7 @@ def writeAirlineCasmResults(workbook , airlineName):
                 for airlineCosts in AirlineCosts.objects.all().filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute):    
                             
                     massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
-                    fuelCostsUSdollars = massLossKg * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
+                    fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
                                 
                     operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
                                 
@@ -236,7 +236,7 @@ def writeAirlineCasmOptimizationResults(workbook , airlineName):
                             if airlineCosts:
                                 
                                 massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
-                                fuelCostsUSdollars = massLossKg * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
+                                fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
                                         
                                 operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
                                         
@@ -350,7 +350,7 @@ def getAirlineCASM(request, airlineName):
                     for airlineCosts in AirlineCosts.objects.all().filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute):    
                             
                         massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
-                        fuelCostsUSdollars = massLossKg * kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
+                        fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
                                 
                         operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
                                 

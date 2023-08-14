@@ -45,7 +45,6 @@ class Vertex(object):
     def __str__(self):
         return self.className + ': vertex= {0}'.format(str(self._vertex))
 
-
 class Edge(object):
     _tail = None
     _head = None
@@ -59,10 +58,8 @@ class Edge(object):
     def getTail(self):
         return self._tail
     
-    
     def getHead(self):
         return self._head
-
 
     def getDistanceTailHeadMeters(self):
         if ( isinstance(self._tail, (WayPoint, Airport)) and isinstance(self._head, (WayPoint , Airport)) ):
@@ -70,13 +67,11 @@ class Edge(object):
 
         return self.distanceTailHeadMeters
 
-
     def getBearingTailHeadDegrees(self):
         if ( isinstance(self._tail, (WayPoint , Airport)) and isinstance(self._head, (WayPoint , Airport)) ):
             self.bearingTailHeadDegrees = self._tail.getBearingDegreesTo(self._head)
 
         return self.bearingTailHeadDegrees
-
 
 class Graph(object):
     _vertex = []
@@ -89,7 +84,6 @@ class Graph(object):
         self._vertex = []
         self._edge = []
         self.lengthMeters = 0.0
-
 
     def __str__(self):
         return self.className + ': number of vertices= {0}'.format(len(self._vertex))
@@ -111,7 +105,6 @@ class Graph(object):
                 tail = self._vertex[numberOfVertices-2].getWeight()
                 head = self._vertex[numberOfVertices-1].getWeight()
                 self.addEdge(Edge(tail, head))
-            
         else:
             assert (isinstance(args[0], int))
             index = args[0]
@@ -135,7 +128,6 @@ class Graph(object):
             else:
                 raise ValueError(self.className + ': insert index= {0] not in the limits 0..len'.format(index, len(self._vertex)))
 
-        
     def getVertex(self, v):
         """
         (Graph, int) -> Vertex
@@ -146,13 +138,11 @@ class Graph(object):
             raise ValueError(self.className + ': getVertex: vertex index out of bounds!!!')
         return self._vertex[v]
     
-        
     def getLastVertex(self):
         numberOfVertices = len(self._vertex)
         if numberOfVertices > 0:
             return self._vertex[numberOfVertices-1]
         return None
-    
     
     def insertEdge(self, index, baseEdge):
         assert(isinstance(index, int))
@@ -164,10 +154,8 @@ class Graph(object):
                 self.lengthMeters += baseEdge.getDistanceTailHeadMeters()
             else:
                 raise ValueError('Graph: insert edge - edge must be of class BaseEdge !!!')
-
         else:
             raise ValueError('Graph: getVertex: vertex index out of bounds!!!')
-    
     
     def addEdge(self, baseEdge):
         '''logging.info 'Graph: add edge'''
@@ -177,7 +165,6 @@ class Graph(object):
             self.lengthMeters += baseEdge.getDistanceTailHeadMeters()
         else:
             raise ValueError('Graph: add edge - edge must be of class BaseEdge !!!')
-    
     
     def getLastEdge(self):
         numberOfEdges = len(self._edge)
@@ -191,7 +178,7 @@ class Graph(object):
         '''
         assert isinstance(w, int)
         if w < 0 or w > len(self._edge):
-            raise ValueError('Graph: getEdge: edge index out of bounds!!!')
+            raise ValueError('Graph: getEdge: edge index out of bounds !!!')
         return self._edge[w]
     
     def getNumberOfVertices(self):
@@ -216,10 +203,34 @@ class Graph(object):
         ''' returns an iterator on the edges '''
         for edge in self._edge:
             yield edge
-    
+            
+    def hideSomeVertices(self, kmlFileLike , nbHidden):
+        
+        count = 0
+        for vertex in self.getVertices():
+            wayPoint = vertex.getWeight()
+            if ( len(wayPoint.getName())> 0):
+                    # if waypoint gas a name -> reset counter
+                    count = 0
+                    kmlFileLike.write( wayPoint.getName(),
+                                    wayPoint.getLongitudeDegrees(),
+                                    wayPoint.getLatitudeDegrees(), 
+                                    wayPoint.getAltitudeMeanSeaLevelMeters())
+            else:
+                count = count + 1
+                if (count < nbHidden):
+                    pass
+                else:
+                    # reset counter every nbHidden vertex
+                    count = 0
+                    kmlFileLike.write( wayPoint.getName(),
+                                    wayPoint.getLongitudeDegrees(),
+                                    wayPoint.getLatitudeDegrees(), 
+                                    wayPoint.getAltitudeMeanSeaLevelMeters())
+        return kmlFileLike
     
     def createKmlFileLike(self, memoryFile, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde):
-        
+        ''' create a memory file like to download '''
         self.AbortedFlight = abortedFlight
         self.AircraftICAOcode = aircraftICAOcode
         self.AdepICAOcode = AdepICAOcode
@@ -245,19 +256,13 @@ class Graph(object):
             strFileName += '-{0}.kml'.format(datetime.now().strftime("%d-%b-%Y-%Hh%Mm%S"))
             
             kmlFileLike = KmlFileLike( strFileName, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde)
-            for vertex in self.getVertices():
-                    wayPoint = vertex.getWeight()
-                    kmlFileLike.write( wayPoint.getName(),
-                                        wayPoint.getLongitudeDegrees(),
-                                        wayPoint.getLatitudeDegrees(), 
-                                        wayPoint.getAltitudeMeanSeaLevelMeters())
+            kmlFileLike = self.hideSomeVertices(kmlFileLike, 10)
             ''' this is where the xml / kml document is pushed into the StringIO '''
             kmlFileLike.close(memoryFile)
             ''' no need to return anything as the memoryFile is directly written in '''
             logging.info ( "{0} - {1}".format(self.className , strFileName) )
         
         return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")
-
     
     def createKmlOutputFile(self, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde):
         

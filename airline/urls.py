@@ -18,25 +18,15 @@ app_name = "airline"
 urlpatterns = [
     
     path('airlineRoutes/<slug:airlineName>' , getAirlineRoutes , name='getAirlineRoutes'),
-    
     path('airlineFleet/<slug:airlineName>' , getAirlineFleet , name='getAirlineFleet'),
-    
     path('wayPointsRoute/<slug:Adep>/<slug:Ades>' , getRouteWayPoints , name='getRouteWayPoints'),
-    
     path('airlineCosts/<slug:airlineName>' , getAirlineCosts , name = 'getAirlineCosts'),
-    
     path('airlineCostsOptimization/<slug:airlineName>' , getAirlineCostsOptimization , name = 'getAirlineCostsOptimization'),
-
     path('getAirlineCostsXlsx/<slug:airlineName>' , getAirlineCostsAsXlsx , name = 'getAirlineCostsAsXlsx'),
-    
     path('getAirlineCASM/<slug:airlineName>' , getAirlineCASM , name = 'getAirlineCASM'),
-    
     path('getAirlineCasmXlsx/<slug:airlineName>' , getAirlineCasmXlsx , name = 'getAirlineCasmXlsx'),
-    
     path('getAirlineCasmOptimization/<slug:airlineName>' , getAirlineCasmOptimization , name = 'getAirlineCasmOptimization'),
-    
     path('getAirlineSeatMilesXlsx/<slug:airlineName>' , getAirlineSeatsMilesMaxXlsx , name = 'getAirlineSeatsMilesMaxXlsx'),
-    
     path('users' , viewUsers , name = 'viewUsers')
     
 ]
