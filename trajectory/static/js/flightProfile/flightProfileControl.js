@@ -61,7 +61,6 @@ class FlightProfileControl extends og.Control {
 		input_1.title = "enter a float between 0% power reduction to a max of 15% power reduction" ;
 		input_1.value = this.getReducedClimPowerCoeffInputDefaultValue();
 		input_1.style.backgroundColor = '#B2BEB5';
-		
 		input_1.readOnly = false;
 
 		div_2.appendChild(input_1);
@@ -195,6 +194,14 @@ class FlightProfileControl extends og.Control {
 	getAdesICAOcodeInputId() {
 		return "fligthProfileControlAdesICAOInputId";
 	}
+	// 14th August 2023 - checkbox to select best departure runway
+	getBestDepartureRunwayCheckBoxId() {
+		return "BestDepartureRunwayCheckBoxId";
+	}
+	// 14th August 2023 - checkbox to select best arrival runway
+	getBestArrivalRunwayCheckBoxId() {
+		return "BestArrivalRunwayCheckBoxId";
+	}
 	
 	createRowWithRouteSelector() {
 		
@@ -208,7 +215,7 @@ class FlightProfileControl extends og.Control {
 		
 		// input to store ICAO code of the Adep
 		let input_1 = document.createElement("input");
-		input_1.id = this.getAdepICAOcodeInputId();
+		input_1.id     = this.getAdepICAOcodeInputId();
 		input_1.hidden = false;
 		input_1.maxlength = "5";
 		input_1.size = "5";
@@ -260,6 +267,9 @@ class FlightProfileControl extends og.Control {
 		return row;
 	}
 	
+	/**
+	 * 14th August 2023 - add a checkbox to select the Best Runway
+	 */
 	createRowWithRunwaySelector() {
 		
 		let row = document.createElement('tr');
@@ -269,28 +279,47 @@ class FlightProfileControl extends og.Control {
 		div_3.id = "runWaysSelectionFlightProfileId";
 		div_3.classList.add("runWaysSelectionFlightProfileClass");
 		
+		// add a checkbox
+		let checkboxBestDepartureRunway = document.createElement('input');
+		checkboxBestDepartureRunway.type = "checkbox";
+		checkboxBestDepartureRunway.name = "BestDepartureRunwayCheckBox";
+		checkboxBestDepartureRunway.value = "value";
+		checkboxBestDepartureRunway.title = "When ticked best runway is selected"
+		checkboxBestDepartureRunway.id    = this.getBestDepartureRunwayCheckBoxId();
+		
+		div_3.appendChild(checkboxBestDepartureRunway);
+		
 		let label_3 = document.createElement("label");
-		label_3.innerHTML = "Departure RunWay -> " ;
+		label_3.innerHTML = " -> Departure RunWay -> " ;
 		div_3.appendChild(label_3);
 		
-		let select_3 = document.createElement("select");
-		select_3.id = "airlineDepartureRunWayFlightProfileId";
-		select_3.name = "airlineDepartureRunWayFlightProfileName";
+		let select_3   = document.createElement("select");
+		select_3.id    = "airlineDepartureRunWayFlightProfileId";
+		select_3.name  = "airlineDepartureRunWayFlightProfileName";
 		select_3.title = "click to select the Departure runway";
 
 		div_3.appendChild(select_3);
 		td_1.appendChild(div_3);
 		
 		// --------------------
-		
 		let td_2 = document.createElement('td');
 					
 		let div_4 = document.createElement('div');
 		div_4.id = "runWaysSelectionFlightProfileId";
 		div_4.classList.add("runWaysSelectionFlightProfileClass");
 		
+		// add a checkbox
+		let checkboxBestArrivalRunway   = document.createElement('input');
+		checkboxBestArrivalRunway.type  = "checkbox";
+		checkboxBestArrivalRunway.name  = "BestDepartureRunwayCheckBox";
+		checkboxBestArrivalRunway.value = "value";
+		checkboxBestArrivalRunway.title = "When ticked best runway is selected"
+		checkboxBestArrivalRunway.id    = this.getBestArrivalRunwayCheckBoxId();
+		
+		div_4.appendChild(checkboxBestArrivalRunway);
+		
 		let label_4 = document.createElement("label");
-		label_4.innerHTML = "Arrival RunWay -> " ;
+		label_4.innerHTML = " -> Arrival RunWay -> " ;
 		div_4.appendChild(label_4);
 		
 		let select_4 = document.createElement("select");

@@ -18,21 +18,13 @@ app_name = "trajectory"
 urlpatterns = [
     
     path('airports/<slug:airlineName>' , getAirports , name='getAirports'),
-    
     path('waypoints/<slug:airlineName>' , getWayPoints , name='getWayPoints'),
-
     path('launchFlightProfile/<slug:airlineName>' , launchFlightProfile , name='launchFlightProfile'),
-    
     path('computeFlightProfile/<slug:airlineName>' , computeFlightProfile , name='computeFlightProfile'),
-
     path('computeCosts/<slug:airlineName>' , computeCosts , name='computeCosts'),
-    
     path('aircraft' , getAircraft , name="getAircraft"),
-    
     path('fuelPlanner/<slug:airlineName>' , launchFuelPlanner , name='launchFuelPlanner'),
-    
     path('computeRunwayOvershoot/<slug:aircraft>/<slug:airport>/<slug:runway>/<slug:mass>' , computeRunwayOvershoot , name ='computeRunwayOvershoot'),
-    
     path('sidStar/<slug:SidOrStar>/<slug:airport>/<slug:runway>/<slug:waypoint>' , showSidStar , name="showSidStar"),
 
 ]
@@ -41,7 +33,6 @@ urlpatterns = [
 urlpatterns += [
     
     path('excel/<slug:airlineName>', createExcelVerticalProfile , name='createExcel'),
-    
     path('kml/<slug:airlineName>', createKMLfile , name='createKMLfile'),
     
 ]

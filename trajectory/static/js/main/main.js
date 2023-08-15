@@ -105,7 +105,6 @@ function initWorker() {
         if (typeof (worker) == "undefined") {
             worker = new Worker("/static/js/worker/worker.js");
             worker.onmessage = function (event) {
-				
                 let progressBar = document.getElementById('workerId');
 				if (progressBar) {
 					progressBar.style.width = event.data + '%';
@@ -129,7 +128,7 @@ function clickToHide() {
 }
 
 /**
- * hide all fivs - use it when an airline is changed
+ * hide all DIVs - use it when an airline is changed
  */
 function hideAllDiv(globus) {
 	
@@ -260,10 +259,11 @@ function initTools(globus, viewExtent) {
 		// table allowing to see the Routes 
 		globus.planet.addControl(new AirlineRoutesControl());
 	
-		// load the airline routes waypoints
+		// load the airline routes 
 		let airlineRoutes = SingletonAirlineRoutes.getInstance();
 		airlineRoutes.initAirlineRoutes(globus);
 	
+		// load the airline routes waypoints
 		let airlineWayPoints = SingletonAirlineWayPoints.getInstance();
 		airlineWayPoints.initWayPoints(globus, viewExtent);
 		

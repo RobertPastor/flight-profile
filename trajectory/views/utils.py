@@ -82,7 +82,6 @@ def convertDegreeMinuteSecondToDecimal(DegreeMinuteSecond='43-40-51.00-N'):
     #print "DegreeMinuteSecond= ", DegreeMinuteSecond, " DecimalValue= ", DecimalValue
     return DecimalValue
 
-
 def computeRouteLengthMiles( AdepICAOcode, AdesICAOcode ):
     try:
         adepAirport = AirlineAirport.objects.filter( AirportICAOcode = AdepICAOcode ).first()
@@ -96,7 +95,6 @@ def computeRouteLengthMiles( AdepICAOcode, AdesICAOcode ):
     except :
         return 0.0
 
-
 def isAirportInAirlineAirports(airline , airlineAirport ):
     
     assert ( isinstance ( airline , Airline ))
@@ -107,7 +105,6 @@ def isAirportInAirlineAirports(airline , airlineAirport ):
             return True
         
     return False
-
 
 def computeListOfDepartureRunWaysWithSID(airlineRoute):
     sidStars = AirlineStandardDepartureArrivalRoute.objects.all()
@@ -126,7 +123,6 @@ def computeListOfDepartureRunWaysWithSID(airlineRoute):
 
     return ""
 
-
 def computeListOfArrivalRunWaysWithSTAR(airlineRoute):
     sidStars = AirlineStandardDepartureArrivalRoute.objects.all()
     for sidStar in sidStars:
@@ -141,7 +137,6 @@ def computeListOfArrivalRunWaysWithSTAR(airlineRoute):
                     return StarName
     
     return ""
-
 
 def getAirlineRoutesFromDB(airline):
     airlineRoutesList = []
@@ -162,13 +157,10 @@ def getAirlineRoutesFromDB(airline):
                 } )
     return airlineRoutesList
 
-
 def getAirlineTripPerformanceFromDB( airline ):
-    
     assert ( isinstance( airline , Airline ))
     airlineTripPerformanceList = []
     for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
-        pass
         badaAircraft = BadaSynonymAircraft.objects.all().filter( AircraftICAOcode=airlineAircraft.aircraftICAOcode ).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
             acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
@@ -190,8 +182,6 @@ def getAirlineTripPerformanceFromDB( airline ):
                             })
     return airlineTripPerformanceList
 
-
-
 def getAirlineRunWaysFromDB():
     airlineRunWaysList = []
     for airlineRunWay in AirlineRunWay.objects.all():
@@ -201,7 +191,6 @@ def getAirlineRunWaysFromDB():
             'airlineRunWayTrueHeadindDegrees': airlineRunWay.TrueHeadingDegrees})
     #print ( "Size of RunWays list = {0}".format(len(airlineRunWaysList)))
     return airlineRunWaysList
-
 
 def getAirportsFromDB(airline):
     ICAOlist = []

@@ -33,7 +33,7 @@ http://www.aerospaceweb.org/question/performance/q0146.shtml
 extract from A320 Airbus instructor manual
 
 The RADIUS OF TURN of the trajectory is a function of TAS and BANK.
-TAS [kt] RADIUS (15° Φ) [NM] RADIUS (25° Φ) [NM]
+TAS [kt] RADIUS (15° Φ) [Nm] RADIUS (25° Φ) [Nm]
 150             1.2                 0.7
 180             1.8                 1.0
 210             2.4                 1.4

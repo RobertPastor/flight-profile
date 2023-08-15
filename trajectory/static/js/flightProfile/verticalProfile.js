@@ -1,7 +1,4 @@
 
-
-
-	
 class VerticalProfile {
 	
 	constructor() {
@@ -44,7 +41,6 @@ class VerticalProfile {
 		let svg = d3.select("#d3vizId")
 			.data(data)
 			.append("svg")
-			
 			.attr("width", width)
 			.attr("height", height)
 			.append("g")

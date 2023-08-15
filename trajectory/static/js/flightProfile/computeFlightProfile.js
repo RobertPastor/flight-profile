@@ -75,7 +75,7 @@ class AirlineProfileCosts {
 		}
 		
 		// set takeoff Mass
-		let elemTOMassKg = document.getElementById('TakeOffMassKgId');
+		let elemTOMassKg    = document.getElementById('TakeOffMassKgId');
 		let elemMinTOMassKg = document.getElementById('minTakeOffMassKgId');
 		let elemMaxTOMassKg = document.getElementById('maxTakeOffMassKgId');
 		
@@ -135,7 +135,7 @@ class AirlineProfileCosts {
 		for (let index = 0; index < airlineRoutesArray.length; index++) {
 			
 			let airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
-			let airlineRouteKey = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
+			let airlineRouteKey  = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
 			$('#airlineRouteId').append('<option value="' + airlineRouteKey + '">' + airlineRouteName + '</option>');
 			
 			// this.routes is used further ... please see below
@@ -151,9 +151,18 @@ class AirlineProfileCosts {
 
 	loadOneFlightProfileWayPoint( layerWayPoints, waypoint ) {
 	
-		let longitude = parseFloat(waypoint.Longitude);
-		let latitude = parseFloat(waypoint.Latitude);
-		let name = waypoint.name;
+		let longitude = 0.0;
+		if (waypoint.hasOwnProperty("Longitude")) {
+			longitude = parseFloat(waypoint.Longitude);
+		}
+		let latitude = 0.0;
+		if (waypoint.hasOwnProperty("Latitude")) {
+			latitude = parseFloat(waypoint.Latitude);
+		}
+		let name = "";
+		if (waypoint.hasOwnProperty("name")) {
+			name = parseFloat(waypoint.name);
+		}
 		
 		layerWayPoints.add(new og.Entity({
 				lonlat: [longitude, latitude],
@@ -181,7 +190,6 @@ class AirlineProfileCosts {
 		if ( dataJson.hasOwnProperty('waypoints')) {
 			waypoints = eval(dataJson['waypoints']);
 		}
-
 		// add the waypoints
 		for (let wayPointId = 0; wayPointId < waypoints.length; wayPointId++ ) {
 			// insert one waypoint
@@ -191,9 +199,18 @@ class AirlineProfileCosts {
 
 	loadFlightProfileOneAirport( layerAirports, airport ) {
 	
-		let longitude = parseFloat(airport.Longitude);
-		let latitude = parseFloat(airport.Latitude);
-		let name = airport.AirportName;
+		let longitude = 0.0;
+		if (airport.hasOwnProperty("Longitude")) {
+			longitude = parseFloat(airport.Longitude);
+		}
+		let latitude = 0.0;
+		if (airport.hasOwnProperty("Latitude")) {
+			latitude = parseFloat(airport.Latitude);
+		}
+		let name = "";
+		if (airport.hasOwnProperty("AirportName")) {
+			name = airport.AirportName;
+		}
 		
 		layerAirports.add(new og.Entity({
 				lonlat: [longitude, latitude],
@@ -216,7 +233,9 @@ class AirlineProfileCosts {
 
 	loadOneRay( rayLayer, placeMark ) {
 	
-		// @TODO get these constants from og
+		/**
+		 * @TODO get these constants from og
+		 */ 
 		let ellipsoid = new og.Ellipsoid(6378137.0, 6356752.3142);
 		
 		let latitude = 0.0;
@@ -278,7 +297,6 @@ class AirlineProfileCosts {
 	}
 
 	addRays ( rayLayer , placeMarks ) {
-	
 		// add the waypoints
 		for (let placeMarkId = 0; placeMarkId < placeMarks.length; placeMarkId++ ) {
 			// insert one waypoint
@@ -289,7 +307,9 @@ class AirlineProfileCosts {
 	deleteCreateKMLLayer(globus , layerName ) {
 	
 		let finalLayerName = "FlightProfile-" + layerName ;
-		// @TODO removeLayer defined in the main.js
+		/**
+		 * @TODO removeLayer defined in the main.js
+		 */
 		removeLayer( globus , finalLayerName );
 		
 		let layerKML = new og.layer.KML( finalLayerName , {
@@ -351,68 +371,187 @@ class AirlineProfileCosts {
 		return rayLayer;
 	}
 
-
+	// using D3 library - display a vertical profile
 	displayD3LineChart( arrayAltitudeMSLtime ) {
 	
 		let verticalProfile = new VerticalProfile();
 		verticalProfile.displayVerticalProfile (arrayAltitudeMSLtime);
+	}
+	
+	populateBestDepartureRunway(airlineRoutesArray) {
 		
+		$('#airlineDepartureRunWayFlightProfileId').empty();
+		
+		let departureRunwayCheckBoxId = this.flightProfileControl.getBestDepartureRunwayCheckBoxId();
+		
+		for ( let index = 0 ; index < airlineRoutesArray.length ; index++) {
+				
+				let route = $("#airlineRouteId option:selected").val();
+				if ( ( route.split("-")[0] == airlineRoutesArray[index]["DepartureAirportICAOCode"] )
+					&& ( route.split("-")[1] == airlineRoutesArray[index]["ArrivalAirportICAOCode"] ) ) {
+					
+					// fill only one option è> the best runway -> BestDepartureRunway
+					let airlineRunWayKey = airlineRoutesArray[index]["BestDepartureRunway"];
+					$('#airlineDepartureRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayKey + '</option>');
+				}
+		}
+	}
+	
+	populateBestArrivalRunway( airlineRoutesArray ) {
+		
+		$('#airlineArrivalRunWayFlightProfileId').empty();
+		
+		let arrivalRunwayCheckBoxId = this.flightProfileControl.getBestArrivalRunwayCheckBoxId();
+			
+		for ( let index = 0 ; index < airlineRoutesArray.length ; index++) {
+			
+				let route = $("#airlineRouteId option:selected").val();
+				if ( ( route.split("-")[0] == airlineRoutesArray[index]["DepartureAirportICAOCode"] )
+					&& ( route.split("-")[1] == airlineRoutesArray[index]["ArrivalAirportICAOCode"] ) ) {
+					
+					// fill only one option è> the best arrival runway -> BestDepartureRunway
+					let airlineRunWayKey = airlineRoutesArray[index]["BestArrivalRunway"];
+					$('#airlineArrivalRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayKey + '</option>');
+
+				}
+		}
 	}
 
-	populateAirlineRunWaysFlightProfileSelector( airlineRunWaysArray ) {
+	// 15th August 2023 - use checkbox to use only the Best Departure or arrival runway
+	populateAirlineRunWaysFlightProfileSelector( airlineRunWaysArray , airlineRoutesArray ) {
 	
 		$("#tableFlightProfileId").show();
 		$("#trComputeFlightProfileId").show();
 		
-		// empty the selector
+		// empty the departure runway selector
 		$('#airlineDepartureRunWayFlightProfileId').empty();
 		
-		for ( let index = 0 ; index < airlineRunWaysArray.length ; index++) {
+		let departureRunwayCheckBoxId = this.flightProfileControl.getBestDepartureRunwayCheckBoxId();
+		if ( $("#"+departureRunwayCheckBoxId).is(":checked") ) {
 			
-			let route = $("#airlineRouteId option:selected").val();
+			this.populateBestDepartureRunway(airlineRoutesArray);
 			
-			if ( route.split("-")[0] == airlineRunWaysArray[index]["airlineAirport"]) {
-							
-				let airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"];
-				let airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading";
-				$('#airlineDepartureRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
+		} else {
+			
+			for ( let index = 0 ; index < airlineRunWaysArray.length ; index++) {
+			
+				let route = $("#airlineRouteId option:selected").val();
+				if ( route.split("-")[0] == airlineRunWaysArray[index]["airlineAirport"]) {
+								
+					let airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"];
+					let airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading";
+					$('#airlineDepartureRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
+				}
 			}
 		}
 		
-		// empty the selector
+		
+		// empty the arrival runway selector
 		$('#airlineArrivalRunWayFlightProfileId').empty();
 		
-		for ( let index = 0 ; index < airlineRunWaysArray.length ; index++) {
+		let arrivalRunwayCheckBoxId = this.flightProfileControl.getBestArrivalRunwayCheckBoxId();
+		if ( $("#"+arrivalRunwayCheckBoxId).is(":checked") ) {
+						
+			this.populateBestArrivalRunway( airlineRoutesArray );
 			
-			let route = $("#airlineRouteId option:selected").val();
+		} else {
 			
-			if ( route.split("-")[1] == airlineRunWaysArray[index]["airlineAirport"]) {
+			for ( let index = 0 ; index < airlineRunWaysArray.length ; index++) {
 				
-				let airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"];
-				let airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading";
-				$('#airlineArrivalRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
+				let route = $("#airlineRouteId option:selected").val();
+				if ( route.split("-")[1] == airlineRunWaysArray[index]["airlineAirport"]) {
+					
+					let airlineRunWayKey = airlineRunWaysArray[index]["airlineRunWayName"];
+					let airlineRunWayName = airlineRunWaysArray[index]["airlineRunWayName"] + " -> " + airlineRunWaysArray[index]["airlineRunWayTrueHeadindDegrees"] + " degrees True Heading";
+					$('#airlineArrivalRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayName + '</option>');
+				}
 			}
 		}
 	}
 
 	hideFlightProfileDiv() {
-	
 		if ( $('#flightProfileMainDivId').is(":visible") ) {
 			$("#flightProfileMainDivId").hide();
 		}
 	}
-
+	
+	// main entry point - called from main.js
 	launchFlightProfile(globus , flightProfileControl) {
 	
-		this.globus = globus ;
+		this.globus = globus;
 		this.flightProfileControl = flightProfileControl;
 		
-		globus.planet.events.on("layeradd", function (e) {
-			
-			if (e.pickingObject instanceof og.Layer) {
-				console.log(e.pickingObject.name);
-			}
-			stopBusyAnimation();
+		/**
+		 * globus.planet.events.on("layeradd", function (e) {
+		*  if (e.pickingObject instanceof og.Layer) {
+		*		console.log(e.pickingObject.name);
+		*	}
+		*	stopBusyAnimation();
+		*});
+		**/
+		
+		// 14th August 2023 - Listen to change in the Best Runway selection checkbox
+		let departureRunwayCheckBoxId = this.flightProfileControl.getBestDepartureRunwayCheckBoxId();
+		document.getElementById( departureRunwayCheckBoxId ).addEventListener('change', function () {
+						
+			// get the name of the airline
+			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
+
+			//console.log( "Handler for airlineRouteId selection change called." );
+			$.ajax( {
+						method: 'get',
+						url :  "trajectory/launchFlightProfile/" + airlineName,
+						async : true,
+						success: function(data) {
+										
+							let dataJson = eval(data);
+							// airlineRunWays
+							if ( dataJson.hasOwnProperty( "airlineRunWays" ) && dataJson.hasOwnProperty( "airlineRoutes" ) ) {
+								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] , dataJson["airlineRoutes"]);
+							}
+						},
+						error: function(data, status) {
+							stopBusyAnimation();
+							console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
+							showMessage( "Error - Launch Flight Profile" , eval(data) );
+						},
+						complete : function() {
+							stopBusyAnimation();
+							document.getElementById("btnLaunchFlightProfile").disabled = false;
+						},
+				});
+		});
+		
+		// 14th August 2023 - Listen to change in the Best Runway selection checkbox
+		let arrivalRunwayCheckBoxId = this.flightProfileControl.getBestArrivalRunwayCheckBoxId();
+		document.getElementById( arrivalRunwayCheckBoxId ).addEventListener('change', function () {
+						
+			// get the name of the airline
+			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
+
+			//console.log( "Handler for airlineRouteId selection change called." );
+			$.ajax( {
+						method: 'get',
+						url :  "trajectory/launchFlightProfile/" + airlineName,
+						async : true,
+						success: function(data) {
+										
+							let dataJson = eval(data);
+							// airlineRunWays
+							if ( dataJson.hasOwnProperty( "airlineRunWays" ) && dataJson.hasOwnProperty( "airlineRoutes" ) ) {
+								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] , dataJson["airlineRoutes"] );
+							}
+						},
+						error: function(data, status) {
+							stopBusyAnimation();
+							console.log("Error - launch Flight Profile: " + status + " Please contact your admin");
+							showMessage( "Error - Launch Flight Profile" , eval(data) );
+						},
+						complete : function() {
+							stopBusyAnimation();
+							document.getElementById("btnLaunchFlightProfile").disabled = false;
+						},
+				});
 		});
 		
 		// 16th July 2023 - listen to Reduced Climb Power settings changes
@@ -453,7 +592,6 @@ class AirlineProfileCosts {
 				showMessage("Take Off Mass Error" , "Take Off Mass KG must be an integer");
 				elemTOMassKg.value = elemMaxTOMassKg.value;
 			} else {
-				
 				if ( massValue > parseInt( elemMaxTOMassKg.value ) ) {
 					showMessage ("Take Off Mass Error" , "Take Off Mass Kg must be lower or equal to " + elemMaxTOMassKg.value )
 					elemTOMassKg.value = elemMaxTOMassKg.value;
@@ -473,23 +611,22 @@ class AirlineProfileCosts {
 			//console.log(elemFL.value);
 			let elemMaxFL = document.getElementById('maxFlightLevelId');
 			
-				if ( ! Number.isInteger(+(FLvalue)) ) {
-					showMessage("Flight Level Error" , "Flight Level must be an integer");
+			if ( ! Number.isInteger(+(FLvalue)) ) {
+				showMessage("Flight Level Error" , "Flight Level must be an integer");
 					elemFL.value = elemMaxFL.value;
-				} else {
-					
-					if ( FLvalue > parseInt( elemMaxFL.value ) ) {
+			} else {
+				if ( FLvalue > parseInt( elemMaxFL.value ) ) {
 						showMessage ("Flight Level Error" ,  "Flight Level must be lower than " + elemMaxFL.value );
 						elemFL.value = elemMaxFL.value;
-					} 
-					if ( FLvalue < parseInt( "0" ) ) {
+				} 
+				if ( FLvalue < parseInt( "0" ) ) {
 						showMessage ("Flight Level Error" ,  "Flight Level must be greater than 0" );
 						elemFL.value = elemMaxFL.value;
-					} 
-				}
+				} 
+			}
 		});
 		
-		// listen to select route change
+		// listen to the route change selector
 		$( "#airlineRouteId" ).change(function() {
 			
 			// get the name of the airline
@@ -504,8 +641,8 @@ class AirlineProfileCosts {
 										
 							let dataJson = eval(data);
 							// airlineRunWays
-							if ( dataJson.hasOwnProperty( "airlineRunWays" )) {
-								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
+							if ( dataJson.hasOwnProperty( "airlineRunWays" ) && dataJson.hasOwnProperty( "airlineRoutes" ) ) {
+								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] , dataJson["airlineRoutes"] );
 							}
 							// each time the route selector changes, it is needed to update the inputs with the ICAO codes
 							SingletonProfileCosts.getInstance().setAirportsICAOcode();
@@ -519,7 +656,7 @@ class AirlineProfileCosts {
 						},
 						complete : function() {
 							stopBusyAnimation();
-							document.getElementById("btnLaunchFlightProfile").disabled = false
+							document.getElementById("btnLaunchFlightProfile").disabled = false;
 						},
 				});
 		});
@@ -535,7 +672,6 @@ class AirlineProfileCosts {
 		document.getElementById("btnLaunchFlightProfile").onclick = function () {
 
 			if ( ! $('#flightProfileMainDivId').is(":visible") ) {
-				
 				/**
 				 * @todo defined in the main.js
 				 *  */ 
@@ -562,8 +698,9 @@ class AirlineProfileCosts {
 								
 								SingletonProfileCosts.getInstance().populateAircraftFlightProfileSelector( dataJson["airlineAircrafts"] );
 								SingletonProfileCosts.getInstance().populateAirlineRoutesFlightProfileSelector( dataJson["airlineRoutes"] );
-								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] );
-	
+								
+								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] , dataJson["airlineRoutes"] );
+								
 								$("#launchComputeId").show();
 							}
 						},
@@ -626,7 +763,6 @@ class AirlineProfileCosts {
 		/**
 		* monitor the button used to launch the profile computation
 		**/
-		
 		//document.getElementById("btnComputeFlightProfileId").disabled = true
 		document.getElementById("btnComputeFlightProfileId").onclick = function () {
 				
@@ -649,13 +785,13 @@ class AirlineProfileCosts {
 			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 			
 			let data = 'aircraft=' + aircraft;
-			data += '&route=' + route;
+			data += '&route='   + route;
 			data += '&AdepRwy=' + departureRunWay;
 			data += '&AdesRwy=' + arrivalRunWay;
-			data += '&mass=' + elemTOMassKg.value;
-			data += '&fl=' + elemFL.value;
+			data += '&mass='    + elemTOMassKg.value;
+			data += '&fl='      + elemFL.value;
 			// 17th July 2023 - add reduced climb power coefficient
-			data += '&reduc=' + elemReduced.value;
+			data += '&reduc='   + elemReduced.value;
 			
 			// init progress bar.
 			initProgressBar();

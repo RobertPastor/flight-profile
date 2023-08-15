@@ -46,10 +46,8 @@ class Command(BaseCommand):
     
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
                     
-                    print ( "Trajectory Compute - distance flown = {0:.2f} meters - {1:.2f} NM".format( flightPath.flightLengthMeters , flightPath.flightLengthMeters * Meter2NauticalMiles ))
-        
-                    print ( "=========== Flight Plan create output files  =========== " )
-                    print ( "=========== Flight Plan end  =========== "  )
+                    print ( "Trajectory Compute - distance flown = {0:.2f} meters - {1:.2f} Nm".format( flightPath.flightLengthMeters , flightPath.flightLengthMeters * Meter2NauticalMiles ))
+                    print ( "=========== Flight Plan create output files -end =========== " )
                     
                     end_time = time()
                     seconds_elapsed = end_time - start_time

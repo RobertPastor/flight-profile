@@ -212,10 +212,10 @@ class FlightPath(FlightPlan):
             
             distanceToLastFixMeters = self.computeDistanceToLastFixMeters(currentPosition = endOfTurnLegWayPoint,
                                                                           fixListIndex = headWayPointIndex)
-            logging.info ( self.className + ' distance to last fix= {0:.2f} NM'.format(distanceToLastFixMeters * Meter2NauticalMiles) )
+            logging.info ( self.className + ' distance to last fix= {0:.2f} Nm'.format(distanceToLastFixMeters * Meter2NauticalMiles) )
             
             distanceStillToFlyMeters = self.flightLengthMeters - self.finalRoute.getLengthMeters()
-            logging.info ( self.className + ' still to fly= {0:.2f} NM'.format(distanceStillToFlyMeters * Meter2NauticalMiles) )
+            logging.info ( self.className + ' still to fly= {0:.2f} Nm'.format(distanceStillToFlyMeters * Meter2NauticalMiles) )
     
             self.endOfSimulation = greatCircle.computeGreatCircle(deltaTimeSeconds = self.deltaTimeSeconds,
                                            elapsedTimeSeconds = endOfTurnLegWayPoint.getElapsedTimeSeconds(),
@@ -232,7 +232,7 @@ class FlightPath(FlightPlan):
             finalHeadingDegrees = lastLeg.getBearingTailHeadDegrees()
     
             distanceStillToFlyMeters = self.flightLengthMeters - self.finalRoute.getLengthMeters()
-            logging.info ( self.className + ' still to fly= {0:.2f} meters - still to fly= {1:.2f} NM'.format(distanceStillToFlyMeters, distanceStillToFlyMeters * Meter2NauticalMiles) )
+            logging.info ( self.className + ' still to fly= {0:.2f} meters - still to fly= {1:.2f} Nm'.format(distanceStillToFlyMeters, distanceStillToFlyMeters * Meter2NauticalMiles) )
             ''' logging.info the way point that has been passed right now '''
             self.printPassedWayPoint(finalWayPoint)
             
@@ -455,7 +455,7 @@ class FlightPath(FlightPlan):
             endOfTurnLegWayPoint = self.finalRoute.getLastVertex().getWeight()
             ''' ============= use touch-down way-point to compute distance to fly ============='''
             distanceStillToFlyMeters = endOfTurnLegWayPoint.getDistanceMetersTo(self.touchDownWayPoint)
-            logging.info ( self.className + ' distance still to fly= {0:.2f} NM'.format(distanceStillToFlyMeters * Meter2NauticalMiles) )
+            logging.info ( self.className + ' distance still to fly= {0:.2f} Nm'.format(distanceStillToFlyMeters * Meter2NauticalMiles) )
     
             #logging.info '==================== add descent slope ================= '
             descentGlideSlope = DescentGlideSlope( runway   = self.arrivalRunway,
@@ -558,7 +558,7 @@ class FlightPath(FlightPlan):
         ''' add a prefix to the file path to identify the departure and arrival airport '''
         
         #self.aircraft.createStateVectorOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
-        logging.info (  '{0} - final route length = {1:.2f} NM'.format(self.className, self.finalRoute.getLengthMeters()*Meter2NauticalMiles) )
+        logging.info (  '{0} - final route length = {1:.2f} Nm'.format(self.className, self.finalRoute.getLengthMeters()*Meter2NauticalMiles) )
         return kmlXmlDocument
     
     def createStateVectorOutputFile(self):

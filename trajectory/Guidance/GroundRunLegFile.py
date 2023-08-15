@@ -173,7 +173,7 @@ class GroundRunLeg(Graph):
         logging.info ('============ end of arrival ground run ======================')
         logElapsedRealTime ( self.className , elapsedTimeSeconds)
         strRunWayEndPointName = self.runway.getName() + '-' + self.airport.getName() 
-        logging.info( '{0}: current distance flown = {1:.2f} meters = {2:.2f} NM'.format ( self.className, self.aircraft.getCurrentDistanceFlownMeters(), self.aircraft.getCurrentDistanceFlownMeters() * Meter2NauticalMiles) )
+        logging.info( '{0}: current distance flown = {1:.2f} meters = {2:.2f} Nm'.format ( self.className, self.aircraft.getCurrentDistanceFlownMeters(), self.aircraft.getCurrentDistanceFlownMeters() * Meter2NauticalMiles) )
         intermediateWayPoint.setName(Name = strRunWayEndPointName)
         
         
