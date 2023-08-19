@@ -18,11 +18,9 @@ class AirlineRoutesWayPointsDatabaseXlsx(object):
         pass
         self.className = self.__class__.__name__
         
-        
     def exists(self):
         airlineRoutes = AirlineRoutesDataBaseXlsx()
         return airlineRoutes.exists()
-    
     
     def read(self):
         pass
@@ -42,8 +40,6 @@ class AirlineRoutesWayPointsDatabaseXlsx(object):
     ''' loads the WayPoints xlsx database '''
     ''' loads the PostGres / MySQL airline routes WayPoints table '''
     def insertWayPointsDatabase(self):
-        pass
-        #assert (isinstance(wayPointsDatabase, WayPointsDatabase))
         
         airlineRoutes = AirlineRoutesDataBaseXlsx()
         if (airlineRoutes.exists()):

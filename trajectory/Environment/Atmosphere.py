@@ -28,9 +28,8 @@ Created on 4 nov. 2014
 density at mean sea level = 1.225 kg / cubic meters
 
 '''
-import unittest
+
 import numpy
-import xlsxwriter
 import os
 import math
 
@@ -104,7 +103,7 @@ class Atmosphere():
             (
             #              sigma      delta      theta    temp    press       density    a      visc     k.visc 
             numpy.array([ '1.21E+00','1.26E+00','1.0451','301.2','1.28E+05','1.48E+00','347.9','18.51','1.25E-05' ]),
-            numpy.array([ '1.0'     ,'1.0'     ,'1.0'   ,'288.1','1.01E+05','1.23E+00','340.3','17.89','1.46E-05' ] ),
+            numpy.array([ '1.0'     ,'1.0'     ,'1.0'   ,'288.1','1.01E+05','1.23E+00','340.3','17.89','1.46E-05' ]),
             numpy.array([ '8.22E-01','7.85E-01','0.9549','275.2','7.95E+04','1.01E+00','332.5','17.26','1.71E-05' ]),
             numpy.array([ '6.69E-01','6.09E-01','0.9098','262.2','6.17E+04','8.19E-01','324.6','16.61','2.03E-05' ]),
             numpy.array([ '5.39E-01','4.66E-01','0.8648','249.2','4.72E+04','6.60E-01','316.5','15.95','2.42E-05' ]),
@@ -190,24 +189,18 @@ class Atmosphere():
     def getAirDensityKilogramsPerCubicMeters(self, altitudeMeters):
         assert (isinstance(altitudeMeters, float)) or isinstance(altitudeMeters, int)
         if (altitudeMeters > -1999.0) and (altitudeMeters <= 86000.0):
-
             airDensityKilogramsPerCubicMeters = numpy.interp(altitudeMeters, self.AltitudeMeters, self.AirDensityKilogramsCubicMeters)
             #print self.className , ': altitude meters= ', altitudeMeters, ' air density= ', airDensityKilogramsPerCubicMeters, ' kilograms per cubic meters'
             return airDensityKilogramsPerCubicMeters
         else:
             raise ValueError(self.className + ' altitude Meters argument out of bound: ' + str(altitudeMeters))     
 
-
     def getTemperatureDegrees(self, altitudeMeters):
         assert (isinstance(altitudeMeters, float))
         if (altitudeMeters > -1999.0) and (altitudeMeters <= 86000.0):
-            
             temperatureKelvins = numpy.interp(altitudeMeters, self.AltitudeMeters, self.AtmosphereTemperatureKelvins)
-            '''
-            The temperature T in degrees Celsius (�C) is equal to the temperature T in Kelvin (K) minus 273.15:
-            '''
+            ''' The temperature T in degrees Celsius (�C) is equal to the temperature T in Kelvin (K) minus 273.15:   '''
             temperatureDegrees = temperatureKelvins - 273.15
-            #print ( self.className , ': altitude= {0} meters - temperature= {1} degrees'.format(altitudeMeters, temperatureDegrees) )
             return temperatureDegrees
         else:
             raise ValueError(self.className + ' altitude Meters argument out of bound: ' + str(altitudeMeters))     
@@ -215,27 +208,17 @@ class Atmosphere():
     def getTemperatureKelvins(self, altitudeMeters):
         assert (isinstance(altitudeMeters, float))
         if (altitudeMeters > -1999.0) and (altitudeMeters <= 86000.0):
-            
             temperatureKelvins = numpy.interp(altitudeMeters, self.AltitudeMeters, self.AtmosphereTemperatureKelvins)
-            '''
-            The temperature T in degrees Celsius (�C) is equal to the temperature T in Kelvin (K) minus 273.15:
-            '''
-            #print ( self.className , ': altitude= {0} meters - temperature= {1} kelvins'.format(altitudeMeters, temperatureKelvins) )
+            '''  The temperature T in degrees Celsius (�C) is equal to the temperature T in Kelvin (K) minus 273.15:       '''
             return temperatureKelvins
         else:
             raise ValueError(self.className + ' altitude Meters argument out of bound: ' + str(altitudeMeters))     
 
-
-
     def getSpeedOfSoundMetersPerSecond(self, altitudeMeters):
         assert (isinstance(altitudeMeters, float))
         if (altitudeMeters > -1999.0) and (altitudeMeters <= 86000.0):
-            
             speedOfSound = numpy.interp(altitudeMeters, self.AltitudeMeters, self.SpeedOfSoundMetersPerSecond)
-            '''
-            speed of sound in Meters per Second
-            '''
-            #print self.className , ': altitude meters= ', altitudeMeters, ' speef of sound= ', speedOfSound, ' meters per second'
+            '''  speed of sound in Meters per Second    '''
             return speedOfSound
         else:
             raise ValueError(self.className + ' altitude Meters argument out of bound: ' + str(altitudeMeters))     
@@ -247,29 +230,19 @@ class Atmosphere():
         return self.getPressurePascals(altitudeMeters = 0.0)
     
     def getPressurePascals(self, altitudeMeters):
-        
         assert isinstance(altitudeMeters, float) or isinstance(altitudeMeters, int)
         if (altitudeMeters > -1999.0) and (altitudeMeters <= 86000.0):
-            
             pressurePascals = numpy.interp(altitudeMeters, self.AltitudeMeters, self.PressurePascals)
             pressurePascals = pressurePascals * self.StandardAtmosphericPressureMslPascal
-            '''
-            speed of sound in Meters per Second
-            '''
-            #print self.className , ': altitude meters= ', altitudeMeters, ' pressure= ', pressurePascals, ' pascals'
             return pressurePascals
         else:
             raise ValueError(self.className + ' altitude Meters argument out of bound: ' + str(altitudeMeters))  
         
-        
     def tas2cas(self, tas , altitude , temp='std', speed_units = 'm/s', alt_units = 'm'):
-    
         if speed_units == 'kt':
             tas = tas * Knots2MeterPerSecond
-            
         elif speed_units == 'm/s':
             pass
-        
         else:
             raise ValueError(' BadaSpeed: tas2cas: unknown speed units= {0}'.format(speed_units))
         
@@ -289,7 +262,6 @@ class Atmosphere():
         
         cas = 1 + ( mu * densityKgm3 * tas * tas) / ( 2 *  pressurePascals)
         cas = math.pow(cas , 1.0 / mu) - 1.0
-        
 
         cas = 1 + (pressurePascals / pressureMSLpascals) * (cas)
         cas = math.pow(cas, mu) - 1.0
@@ -298,30 +270,24 @@ class Atmosphere():
         return cas
     
     def tas2mach(self, tas , altitude , speed_units = 'm/s' , alt_units = 'm'):
-        '''
-        mach = TAS / speed of sound
-        '''
+        '''  mach = TAS / speed of sound  '''
         assert speed_units == 'm/s'
         assert alt_units == 'm'
         a = self.getSpeedOfSoundMetersPerSecond(altitude)
         return tas / a
         
-    
     def cas2tas(self, cas, altitudeMeters, speed_units = 'm/s', altitude_units = 'm'):
-        
         if speed_units == 'kt':
             cas = cas * Knots2MeterPerSecond
-            
         elif speed_units == 'm/s':
             pass
-        
         else:
             raise ValueError(' BadaSpeed: tas2cas: unknown speed units= {0}'.format(speed_units))
         
         if altitude_units == 'm':
             pass
         else:
-            raise ValueError ('not yet implemented')
+            raise ValueError ('units = {0} not yet implemented'.format(altitude_units))
     
             ''' 1.4 adiabatic '''
         mu = (1.4 - 1.0 ) / 1.4
@@ -334,7 +300,6 @@ class Atmosphere():
 
         tas = 1 + ( mu * densityMSLkgm3 * cas * cas) / ( 2 *  pressureMSLpascals)
         tas = math.pow(tas , 1.0 / mu) - 1.0
-        
 
         tas = 1 + (pressureMSLpascals / pressurePascals) * (tas)
         tas = math.pow(tas, mu) - 1.0
@@ -343,62 +308,3 @@ class Atmosphere():
         return tas
 
     
-
-
-class Test_Main(unittest.TestCase):
-
-    def test_mains(self):
-
-        
-        fileName = "Tabular Atmosphere.xlsx"
-        print ( "===================Tabular Atmosphere start======================" )
-        fileName = os.path.dirname(__file__) + os.path.sep  + fileName
-        print ( fileName )
-        
-        workbook = xlsxwriter.Workbook(fileName)
-        worksheet = workbook.add_worksheet('Temperature Degrees')
-        
-        RowIndex = 0
-        ColumnIndex = 0
-        for header in ['Altitude-Meters', 
-                       'Temperature-Degrees',
-                       'Temperature-Kelvins',
-                       'Air-density-kg-per-cubic-meters',
-                       'speed-of-sound',
-                       'pressure-hecto-pascals']:
-            worksheet.write(RowIndex, ColumnIndex, header)
-            ColumnIndex += 1
-        
-        RowIndex += 1
-        # =======================
-        atmos = Atmosphere()
-        for xAltDecaMeters in range (0,2000):
-            
-            AltitudeMeters = xAltDecaMeters*10.
-            ColumnIndex = 0
-            #print  ( '====================================' )
-            
-            worksheet.write( RowIndex, ColumnIndex, AltitudeMeters )
-            ColumnIndex += 1
-            
-            worksheet.write( RowIndex, ColumnIndex, atmos.getTemperatureDegrees(AltitudeMeters))
-            ColumnIndex += 1
-    
-            worksheet.write( RowIndex, ColumnIndex, atmos.getTemperatureKelvins(AltitudeMeters))
-            ColumnIndex += 1
-    
-            worksheet.write( RowIndex, ColumnIndex, atmos.getAirDensityKilogramsPerCubicMeters(AltitudeMeters))
-            ColumnIndex += 1
-    
-            worksheet.write( RowIndex, ColumnIndex, atmos.getSpeedOfSoundMetersPerSecond(AltitudeMeters))
-            ColumnIndex += 1
-            
-            worksheet.write( RowIndex, ColumnIndex, atmos.getPressurePascals(AltitudeMeters)/100.)
-    
-            RowIndex += 1
-        
-        workbook.close()
-        print ( "===================Tabular Atmosphere end======================" )
-    
-if __name__ == '__main__':
-    unittest.main()

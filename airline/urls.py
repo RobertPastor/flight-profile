@@ -17,8 +17,8 @@ app_name = "airline"
 ''' 10th April 2023 - retrieve Airline Costs as xlsx file to download  '''
 urlpatterns = [
     
-    path('airlineRoutes/<slug:airlineName>' , getAirlineRoutes , name='getAirlineRoutes'),
     path('airlineFleet/<slug:airlineName>' , getAirlineFleet , name='getAirlineFleet'),
+    path('airlineRoutes/<slug:airlineName>' , getAirlineRoutes , name='getAirlineRoutes'),
     path('wayPointsRoute/<slug:Adep>/<slug:Ades>' , getRouteWayPoints , name='getRouteWayPoints'),
     path('airlineCosts/<slug:airlineName>' , getAirlineCosts , name = 'getAirlineCosts'),
     path('airlineCostsOptimization/<slug:airlineName>' , getAirlineCostsOptimization , name = 'getAirlineCostsOptimization'),

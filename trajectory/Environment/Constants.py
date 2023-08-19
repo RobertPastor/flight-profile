@@ -52,3 +52,5 @@ GlideSlopeStart2TouchDownNauticalMiles = 5.0 # 5 Nmfrom start of glide slope to 
 RollingFrictionCoefficient = 0.035
 
 ConstantTaxiSpeedCasKnots = 5.0 # Knots CAS ???
+
+EarthRadiusMeters = 6378135.0 # earth’s radius in meters

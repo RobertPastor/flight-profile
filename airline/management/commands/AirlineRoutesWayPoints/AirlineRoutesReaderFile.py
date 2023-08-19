@@ -46,7 +46,7 @@ class AirlineRoutesReader(object):
             
             return npArray
         else:
-            print ( "file is not existing")
+            print ( "file is not existing = {0}".format(self.FilePath) )
         return None
     
     

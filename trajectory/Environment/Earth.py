@@ -27,13 +27,8 @@ Created on Jul 1, 2014
 
 '''
 import math
-import time
-import csv
-import unittest
-import os
 
-EarthRadiusMeters = 6378135.0 # earth’s radius in meters
-
+from trajectory.Environment.Constants import EarthRadiusMeters
 
 class Earth():
     
@@ -55,13 +50,11 @@ class Earth():
     def getRadiusMeters(self):
         return self.radiusMeters
         
-    
     def gravity(self, radius, latitudeRadians):
         # returns gc gnorth
         # (c) 2006 Ashish Tewari
         
         phi = math.pi / 2.0 - latitudeRadians
-        
         Re = self.radiusMeters
         
         J2 = 1.08263e-3
@@ -71,57 +64,13 @@ class Earth():
         gnorth = -3 * self.mu * math.sin(phi)* math.cos(phi) * (Re/radius) * (Re/radius) * (J2 + 0.5 * J3 * (5 * math.cos(phi) ** 2 - 1) * (Re/radius) / math.cos(phi) +(5/6) * J4 * (7 * math.cos(phi)**2-1) * (Re/radius) ** 2)/ (radius**2)
         return gc, gnorth
 
-
     def dump(self):
         print ("earth radius: ", self.radiusMeters, " meters")
         print ("earth's rotation speed: ", self.omega, " radians/sec")
         print ("earth's gravity constant: ", self.mu, " m^3/s^2")
-
 
     def __str__(self):
         strMsg = self.className + " earth radius= {0} meters".format( self.radiusMeters )
         strMsg += " - earth's rotation speed=  {0} radians/sec".format( self.omega,)
         strMsg += " - earth's gravity constant= {0} m^3/s^2".format( self.mu )
         return strMsg
-
-#============================================
-class Test_Main(unittest.TestCase):
-
-    def test_main_one(self):
-    
-        print ("=========== gravity =========== " + time.strftime("%c"))
-        fileName = "gravity.csv"
-        fileName = os.path.dirname(__file__) + os.path.sep + fileName
-            
-        CsvFile = open(fileName, "w")
-        dtr = math.pi/180.
-        earthRadiusMeters = 6378.135e3
-        try:
-            writer = csv.writer(CsvFile, delimiter=";")
-            print (   type (("latitude in degrees").encode()) )
-            #writer.writerow( "latitude in degrees".encode() )
-            writer.writerow( ("latitude in degrees", "latitude radians", "radius in meters", "gc" , "gnorth"))
-            earth = Earth()
-            
-            for latitudeDegrees in range(0, 180):
-                print ('latitude in degrees: ', latitudeDegrees, " degrees")
-                
-                gc , gnorth = earth.gravity(earthRadiusMeters, latitudeDegrees*dtr)
-                print (gc , gnorth)
-                writer.writerow((latitudeDegrees, latitudeDegrees*dtr, earthRadiusMeters, gc , gnorth))
-            
-        finally:
-            CsvFile.close()
-            
-    def test_main_two(self):
-        
-        print ("=========== earth =========== " + time.strftime("%c"))
-
-        earth = Earth()
-        earth.dump()
-        
-        print ("=========== earth =========== " + time.strftime("%c"))
-        print (str(earth))
-        
-if __name__ == '__main__':
-    unittest.main()

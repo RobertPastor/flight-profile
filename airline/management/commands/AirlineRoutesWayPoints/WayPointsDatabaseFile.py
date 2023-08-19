@@ -6,7 +6,6 @@ Created on 13 sept. 2022
 
 import os
 import pandas as pd
-from numpy import isin
 
 
 class WayPointsDatabase(object):
