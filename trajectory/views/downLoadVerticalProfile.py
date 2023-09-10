@@ -185,23 +185,19 @@ def createExcelVerticalProfile(request, airlineName):
                         
                 else:
                     logger.debug ('airline route not found = {0}'.format(airlineRoute))
-                    response_data = {
-                            'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
+                    response_data = {'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
                     return JsonResponse(response_data)                                                                   
             else:
-                logger.debug ('bada aircraft not found = {0}'.format(airlineRoute))
-                response_data = {
-                            'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
+                logger.debug ('Aircraft not found = {0}'.format(badaAircraft))
+                response_data = {'errors' : 'Aircraft not found= {0}'.format(badaAircraft)}
                 return JsonResponse(response_data)   
              
         else:
             logger.debug ('airline  not found = {0}'.format(airlineName))
-            response_data = {
-                        'errors' : 'Airline not found = {0}'.format(airlineName)}
+            response_data = {'errors' : 'Airline not found = {0}'.format(airlineName)}
             return JsonResponse(response_data)
 
     else:
             logger.debug ('expecting a GET - received something else = {0}'.format(request.method))
-            response_data = {
-                        'errors' : 'expecting a GET - received something else = {0}'.format(request.method)}
+            response_data = {'errors' : 'expecting a GET - received something else = {0}'.format(request.method)}
             return JsonResponse(response_data)

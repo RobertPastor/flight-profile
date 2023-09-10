@@ -188,10 +188,10 @@ class GroundRunLeg(Graph):
 
         ''' run-way end point '''
         strRunWayEndPointName =  self.runway.getName() + '-' + self.airport.getName()  
-        runWayEndPoint = WayPoint (Name=strRunWayEndPointName, 
-                                    LatitudeDegrees=self.runway.getLatitudeDegrees(),
-                                    LongitudeDegrees=self.runway.getLongitudeDegrees(),
-                                    AltitudeMeanSeaLevelMeters=self.airport.getFieldElevationAboveSeaLevelMeters())
+        runWayEndPoint = WayPoint (Name = strRunWayEndPointName, 
+                                LatitudeDegrees = self.runway.getLatitudeDegrees(),
+                                LongitudeDegrees = self.runway.getLongitudeDegrees(),
+                                AltitudeMeanSeaLevelMeters = self.airport.getFieldElevationAboveSeaLevelMeters())
         ''' run-way true heading '''
         runwayTrueHeadingDegrees = self.runway.getTrueHeadingDegrees()
         ''' call base class Graph to build Climb Ramp core of the route '''
@@ -203,7 +203,8 @@ class GroundRunLeg(Graph):
         trueAirSpeedMetersSecond = 0.1
         ''' ground run leg distance '''
         self.totalLegDistanceMeters = 0.0
-        self.aircraft.initStateVector(    elapsedTimeSeconds,
+        ''' 9th September 2023 - add characteristic point '''
+        self.aircraft.initStateVector( elapsedTimeSeconds, self.airport.getName()+"/"+self.runway.getName(),
                                             trueAirSpeedMetersSecond,
                                             self.airport.getFieldElevationAboveSeaLevelMeters())
         ''' 

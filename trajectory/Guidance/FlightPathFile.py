@@ -283,9 +283,7 @@ class FlightPath(FlightPlan):
     
     
     def buildDeparturePhase(self):
-        ''' 
-        this function manages the departure phases with a ground run and a climb ramp 
-        '''
+        ''' this function manages the departure phases with a ground run and a climb ramp  '''
         logging.info ( self.className + ' ============== build the departure ground run =========== '  )
         self.finalRoute = GroundRunLeg(runway = self.departureRunway, 
                                  aircraft = self.aircraft,
@@ -490,10 +488,9 @@ class FlightPath(FlightPlan):
             
             self.finalRoute.addGraph(arrivalGroundRun)
             ''' set total elapsed time seconds '''
-            logging.info ("------------------- arrival ground run ----------")
             logging.info ("------------------- elapsed time = {0} seconds -------------".format( int ( arrivalGroundRun.getElapsedTimeSeconds() ) ) ) 
             logElapsedRealTime( self.className , int ( arrivalGroundRun.getElapsedTimeSeconds() ) )
-            logging.info ("------------------- arrival ground run ----------")
+            logging.info ("------------------- end of arrival ground run ----------")
             self.elapsedTimeSeconds = arrivalGroundRun.getElapsedTimeSeconds()
         
       
@@ -546,7 +543,6 @@ class FlightPath(FlightPlan):
             logging.info ("----> flight did not go to a normal end ---> {0}".format(e))
             self.abortedFlight = True
             return False
-            
             
     def createXlsOutputFile(self):
         self.finalRoute.createXlsxOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())

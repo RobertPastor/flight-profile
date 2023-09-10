@@ -31,7 +31,7 @@ import os
 import xml.dom.minidom
 import logging
 
-class KmlOutput():
+class KmlOutput(object):
     
     fileName = ""
     kmlDoc = None

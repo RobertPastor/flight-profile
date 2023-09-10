@@ -18,7 +18,10 @@ curl -v "http://localhost:8000/airline/airlineRoutes/EuropeanWings" -o result-00
 curl -v "http://localhost:8000/airline/airlineRoutes/IndianWings"   -o result-002-3.json
 curl -v "http://localhost:8000/airline/airlineRoutes/UnknownWings"  -o result-002-4.json
 
-curl -v "http://localhost:8000/airline/wayPointsRoute/KATL/KLAX"    -o result-003.json
+curl -v "http://localhost:8000/airline/wayPointsRoute/KATL/KLAX"    -o result-003-1.json
+curl -v "http://localhost:8000/airline/wayPointsRoute/KATL/KBOS"    -o result-003-2.json
+curl -v "http://localhost:8000/airline/wayPointsRoute/KATL/KMSP"    -o result-003-3.json
+curl -v "http://localhost:8000/airline/wayPointsRoute/KATL/PANC"    -o result-003-4.json
 
 curl -v "http://localhost:8000/airline/airlineCosts/AmericanWings" -o result-004-1.json
 curl -v "http://localhost:8000/airline/airlineCosts/EuropeanWings" -o result-004-2.json
@@ -41,6 +44,7 @@ curl -v "http://localhost:8000/trajectory/airports/UnknownWings"   -o result-006
 curl -v "http://localhost:8000/trajectory/waypoints/AmericanWings?minlatitude=-20&maxlatitude=60&minlongitude=-126&maxlongitude=-74"  -o result-007-1.json
 curl -v "http://localhost:8000/trajectory/waypoints/EuropeanWings"  -o result-007-2.json
 curl -v "http://localhost:8000/trajectory/waypoints/IndianWings"    -o result-007-3.json
+curl -v "http://localhost:8000/trajectory/waypoints/UnknownWings"   -o result-007-4.json
 
 curl -v "http://localhost:8000/trajectory/computeFlightProfile/AmericanWings?aircraft=A320&route=KLAX-KATL&AdepRwy=24R&AdesRwy=26L&mass=67000&fl=39000"  -o result-008.json
 

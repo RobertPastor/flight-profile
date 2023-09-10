@@ -292,7 +292,7 @@ class AircraftConfiguration(FlightEnvelope):
         newConfiguration = 'arrival-ground-run'
         if self.aircraftCurrentConfiguration != newConfiguration:
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
-            self.aircraftCurrentConfiguration = newConfiguration
+            self.aircraftCurrentConfiguration = newConfiguration        
             
     def isDepartureGroundRun(self):
         return (self.aircraftCurrentConfiguration=='departure-ground-run')
@@ -1090,7 +1090,7 @@ class AircraftConfiguration(FlightEnvelope):
                             
             ''' compute stall speed to change configuration to approach '''
             VStallSpeedCASKnots = self.computeStallSpeedCasKnots()
-            ''' move to Approach as soon as Approach Stall CAS reached '''
+            ''' move to Approach as soon as Approach Stall CAS speed reached '''
             if  (( self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
                        altitude = altitudeMeanSeaLevelMeters, speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots ) <= (VStallSpeedCASKnots)):
                 ''' as soon as speed decrease to approach configuration => change aircraft configuration '''
@@ -1205,16 +1205,17 @@ class AircraftConfiguration(FlightEnvelope):
             
         #if not endOfSimulation:
         endOfSimulation = self.updateAircraftStateVector(elapsedTimeSeconds + deltaTimeSeconds, 
-                                                      trueAirSpeedMetersSecond      , 
-                                                      altitudeMeanSeaLevelMeters    ,
-                                                      currentDistanceFlownMeters    ,
-                                                      distanceStillToFlyMeters      ,
-                                                      aircraftMassKilograms         ,
-                                                      flightPathAngleDegrees        ,
-                                                      thrustNewtons                 ,
-                                                      dragNewtons                   ,
-                                                      liftNewtons                   ,
-                                                      endOfSimulation)
+                                                    self.aircraftCurrentConfiguration,
+                                                    trueAirSpeedMetersSecond      , 
+                                                    altitudeMeanSeaLevelMeters    ,
+                                                    currentDistanceFlownMeters    ,
+                                                    distanceStillToFlyMeters      ,
+                                                    aircraftMassKilograms         ,
+                                                    flightPathAngleDegrees        ,
+                                                    thrustNewtons                 ,
+                                                    dragNewtons                   ,
+                                                    liftNewtons                   ,
+                                                    endOfSimulation)
 
         ''' return delta distance and altitude changes '''
         return endOfSimulation, deltaDistanceMeters, altitudeMeanSeaLevelMeters

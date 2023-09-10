@@ -293,17 +293,9 @@ class AirlineAirports {
 			let name = airport.AirportName;
 			
 			layerAirport.add(new og.Entity({
-					lonlat: [longitude, latitude],
-					label: {
-							text: name,
-							outline: 0.77,
-							outlineColor: "rgba(255,255,255,.4)",
-							size: 11,
-							color: "black",
-							offset: [10, -2],
-							align: "center"
-							},
-					billboard: {
+					lonlat : [longitude, latitude],
+					label : SingletonMainClass.getInstance().getStandardOgLabel(name),
+					billboard : {
 							src: "/static/images/plane.png",
 							width: 16,
 							height: 16,

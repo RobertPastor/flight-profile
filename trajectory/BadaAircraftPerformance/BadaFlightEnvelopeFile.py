@@ -195,8 +195,10 @@ class FlightEnvelope(AeroDynamics):
         self.elapsedTimeSeconds = elapsedTimeSeconds
 
 
+    ''' 9th September 2023 - add characteristic point '''
     def updateAircraftStateVector(self,
                                   elapsedTimeSeconds            ,
+                                  characteristicPoint           ,
                                   trueAirSpeedMetersPerSecond   ,
                                   altitudeMeanSeaLevelMeters    ,
                                   currentDistanceFlownMeters    ,
@@ -239,6 +241,7 @@ class FlightEnvelope(AeroDynamics):
             endOfSimulation = True
             
         self.StateVector.updateAircraftStateVector(elapsedTimeSeconds           , 
+                                                   characteristicPoint          ,
                                                    trueAirSpeedMetersPerSecond  , 
                                                    altitudeMeanSeaLevelMeters   , 
                                                    currentDistanceFlownMeters   , 

@@ -89,14 +89,7 @@ class AirlineRoutes {
 		// add the waypoint
 		layerRouteWayPoints.add(new og.Entity({
 				lonlat: [longitude, latitude],
-				label: {
-						text: name,
-						outline: 0.77,
-						outlineColor: "rgba(255,255,255,.4)",
-						size: 12,
-						color: "black",
-						offset: [0, -2]
-						},
+				label: SingletonMainClass.getInstance().getStandardOgLabel(name),
 				billboard: {
 						src: "/static/images/marker.png",
 						width: 16,

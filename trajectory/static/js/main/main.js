@@ -344,10 +344,10 @@ function initTools(globus, viewExtent) {
 
 
 function initMain(viewExtent) {
-	
+	// 10th September 2023 - use .de OSM instance
 	var osm = new og.layer.XYZ("OpenStreetMap", {
             isBaseLayer: true,
-            url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            url: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
             visibility: true,
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
     });

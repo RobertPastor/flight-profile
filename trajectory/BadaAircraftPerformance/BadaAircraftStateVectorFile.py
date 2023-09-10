@@ -44,31 +44,34 @@ class StateVector(object):
         self.aircraftICAOcode = str(aircraftICAOcode).upper()
         self.aircraftStateHistory = []
 
-        
-    def initStateVector(self, 
-                          elapsedTimeSeconds, 
-                          trueAirSpeedMetersSecond, 
-                          altitudeMeanSeaLevelMeters,
-                          aircraftMassKilograms,
-                          totalDistanceFlownMeters = 0.0,
-                          distanceStillToFlyMeters = 0.0):
+    def initStateVector(self,
+                        elapsedTimeSeconds, 
+                        characteristicPoint,
+                        trueAirSpeedMetersSecond, 
+                        altitudeMeanSeaLevelMeters,
+                        aircraftMassKilograms,
+                        totalDistanceFlownMeters = 0.0,
+                        distanceStillToFlyMeters = 0.0):
  
         flightPathAngleDegrees = 0.0
+        ''' 9th September 2023 - add characteristic point to state vector '''
         self.updateAircraftStateVector(elapsedTimeSeconds, 
-                                                      trueAirSpeedMetersSecond  , 
-                                                      altitudeMeanSeaLevelMeters,
-                                                      totalDistanceFlownMeters  ,
-                                                      distanceStillToFlyMeters  ,
-                                                      aircraftMassKilograms     ,
-                                                      flightPathAngleDegrees    ,
-                                                      thrustNewtons = 0.0       ,
-                                                      dragNewtons   = 0.0       ,
-                                                      liftNewtons   = 0.0       ,
-                                                      endOfSimulation = False)
+                                    characteristicPoint,
+                                    trueAirSpeedMetersSecond  , 
+                                    altitudeMeanSeaLevelMeters,
+                                    totalDistanceFlownMeters  ,
+                                    distanceStillToFlyMeters  ,
+                                    aircraftMassKilograms     ,
+                                    flightPathAngleDegrees    ,
+                                    thrustNewtons = 0.0       ,
+                                    dragNewtons   = 0.0       ,
+                                    liftNewtons   = 0.0       ,
+                                    endOfSimulation = False)
         
         
     def updateAircraftStateVector(self, 
                                     elapsedTimeSeconds, 
+                                    characteristicPoint,
                                     trueAirSpeedMetersPerSecond,
                                     altitudeMeanSeaLevelMeters,
                                     totalDistanceFlownMeters,
@@ -82,7 +85,9 @@ class StateVector(object):
 
         ''' need to store both TAS and altitude => compute CAS '''
         aircraftStateDict = {}
-        aircraftStateDict[elapsedTimeSeconds] = [altitudeMeanSeaLevelMeters, 
+        ''' 9th September 2023 - add characteristic point '''
+        aircraftStateDict[elapsedTimeSeconds] = [characteristicPoint,
+                                                 altitudeMeanSeaLevelMeters, 
                                                  trueAirSpeedMetersPerSecond, 
                                                  totalDistanceFlownMeters,
                                                  distanceStillToFlyMeters,
@@ -94,13 +99,13 @@ class StateVector(object):
                                                  endOfSimulation]
         self.aircraftStateHistory.append(aircraftStateDict)
 
-
+    ''' <9th September 2023 - characteristic point 1st in stack '''
     def getCurrentAltitudeSeaLevelMeters(self):
         if len(self.aircraftStateHistory) > 0:
             ''' values returns a list whose first element is the expected value '''
             lastDict = self.aircraftStateHistory[-1]
             values = lastDict.values()
-            altitudeMSLmeters = list(values)[0][0]
+            altitudeMSLmeters = list(values)[0][1]
             return altitudeMSLmeters
         else:
             return 0.0
@@ -111,7 +116,7 @@ class StateVector(object):
             ''' values() retrieves a list with one element - take the one with index = 0 '''
             lastDict = self.aircraftStateHistory[-1]
             values = lastDict.values()
-            trueAirSpeedMetersSecond =  list(values)[0][1]
+            trueAirSpeedMetersSecond =  list(values)[0][2]
             return trueAirSpeedMetersSecond
         else:
             raise ValueError(self.className + ': speed history is empty')
@@ -120,7 +125,7 @@ class StateVector(object):
         if len(self.aircraftStateHistory) > 0:
             lastDict = self.aircraftStateHistory[-1]
             values = lastDict.values()
-            currentDistanceMeters = list(values)[0][2]
+            currentDistanceMeters = list(values)[0][3]
             return currentDistanceMeters
         else:
             return 0.0
@@ -129,7 +134,7 @@ class StateVector(object):
         if len(self.aircraftStateHistory) > 0:
             lastDict = self.aircraftStateHistory[-1]
             values = lastDict.values()
-            flightPathAngleDegrees = list(values)[0][5]
+            flightPathAngleDegrees = list(values)[0][6]
             return flightPathAngleDegrees
         else:
             return 0.0        
@@ -141,9 +146,12 @@ class StateVector(object):
             fileName = self.aircraftICAOcode + '-Altitude-MSL-Speed-History'
 
         xlsxOutput = XlsxOutput(fileName)
+        ''' 9th September 2023 - add caracteristic point '''
         xlsxOutput.writeHeaders(['elapsed-time-seconds', 
+                                 
+                                 'characteristic-point',
                                 
-                                'altitude-MSL-meters',
+                                 'altitude-MSL-meters',
                                  'altitude-MSL-feet',
 
                                  'true-air-speed-meters-second',
@@ -174,28 +182,31 @@ class StateVector(object):
         for stateVectorHistory in self.aircraftStateHistory:
             for elapsedTimeSeconds, valueList in stateVectorHistory.items():
 
+                ''' 9th September 2023 - characteristic point '''
+                characteristic_point = valueList[0]
+
                 ''' altitude '''
-                altitudeMeanSeaLevelMeters = valueList[0]
+                altitudeMeanSeaLevelMeters = valueList[1]
                 altitudeMeanSeaLevelFeet = altitudeMeanSeaLevelMeters * Meter2Feet
 
                 ''' speeds '''
-                trueAirSpeedMetersSecond = valueList[1]
+                trueAirSpeedMetersSecond = valueList[2]
                 trueAirSpeedKnots = trueAirSpeedMetersSecond * MeterSecond2Knots 
 
                 ''' total distance flown in Meters '''
-                totalDistanceFlownMeters = valueList[2]
+                totalDistanceFlownMeters = valueList[3]
                 cumulatedDistanceFlownNautics = totalDistanceFlownMeters * Meter2NauticalMiles
                 
-                distanceStillToFlyMeters = valueList[3]
+                distanceStillToFlyMeters = valueList[4]
                 distanceStillToFlyNautics = distanceStillToFlyMeters * Meter2NauticalMiles
                 
                 ''' aircraft Mass History in Kilograms '''
-                aircraftMassKilograms = valueList[4]
-                flightPathAngleDegrees = valueList[5]
+                aircraftMassKilograms = valueList[5]
+                flightPathAngleDegrees = valueList[6]
 
-                thrustNewtons = valueList[6]
-                dragNewtons = valueList[7]
-                liftNewtons = valueList[8]
+                thrustNewtons = valueList[7]
+                dragNewtons = valueList[8]
+                liftNewtons = valueList[9]
                 loadFactor = liftNewtons / aircraftMassKilograms
 
                 calibratedAirSpeedMetersSecond = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond,
@@ -216,28 +227,32 @@ class StateVector(object):
                 
                 previousElapsedTimeSeconds = elapsedTimeSeconds
                 ''' 5th September 2021 - write endOfSimulation '''
-                endOfSimulation = valueList[9]
-                xlsxOutput.writeFifteenFloatValues(elapsedTimeSeconds, 
-                                                 altitudeMeanSeaLevelMeters,
-                                                 altitudeMeanSeaLevelFeet,
+                endOfSimulation = valueList[10]
+                ''' 9th September 2023 - add the characteristic point '''
+                xlsxOutput.writeFifteenFloatCharPointValues(elapsedTimeSeconds,
+                                                            
+                                                characteristic_point,
+                                                   
+                                                altitudeMeanSeaLevelMeters,
+                                                altitudeMeanSeaLevelFeet,
                                                  
-                                                 trueAirSpeedMetersSecond,
-                                                 trueAirSpeedKnots,
-                                                 calibratesAirSpeedKnots,
-                                                 mach,
-                                                 rateOfClimbDescentFeetMinute,
+                                                trueAirSpeedMetersSecond,
+                                                trueAirSpeedKnots,
+                                                calibratesAirSpeedKnots,
+                                                mach,
+                                                rateOfClimbDescentFeetMinute,
                                                  
-                                                 cumulatedDistanceFlownNautics,
-                                                 distanceStillToFlyNautics,
+                                                cumulatedDistanceFlownNautics,
+                                                distanceStillToFlyNautics,
                                                  
-                                                 aircraftMassKilograms,
-                                                 flightPathAngleDegrees,    
+                                                aircraftMassKilograms,
+                                                flightPathAngleDegrees,    
                                                  
-                                                 thrustNewtons          ,
-                                                 dragNewtons            ,
-                                                 liftNewtons            ,
-                                                 loadFactor             ,
-                                                 endOfSimulation)
+                                                thrustNewtons          ,
+                                                dragNewtons            ,
+                                                liftNewtons            ,
+                                                loadFactor             ,
+                                                endOfSimulation)
         xlsxOutput.close()
                     
     def writeHeaders(self, ws, style, headers):
@@ -247,7 +262,7 @@ class StateVector(object):
             ws.write(row, col , header , style)
             col = col + 1
             
-    def writeValues(self, ws, row, elapsedTimeSeconds, 
+    def writeValues(self, ws, row, elapsedTimeSeconds, characteristicPoint,
                                                  altitudeMeanSeaLevelMeters,
                                                  altitudeMeanSeaLevelFeet,
                                                  
@@ -271,6 +286,8 @@ class StateVector(object):
 
         ColumnIndex = 0
         ws.write(row, ColumnIndex, elapsedTimeSeconds)
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, characteristicPoint)    
         ColumnIndex += 1
         ws.write(row, ColumnIndex, altitudeMeanSeaLevelMeters)        
         ColumnIndex += 1
@@ -312,8 +329,10 @@ class StateVector(object):
         ws = workbook.add_worksheet("StateVector")
         #styleEntete = workbook.add_format({'bold': False, 'border':True})
         styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
-
+        ''' 9th September 2023 add characteristic point '''
         self.writeHeaders(ws, styleLavender, ['elapsed-time-seconds', 
+                                              
+                                'characteristic-point',
                                 
                                 'altitude-MSL-meters',
                                  'altitude-MSL-feet',
@@ -348,28 +367,30 @@ class StateVector(object):
         for stateVectorHistory in self.aircraftStateHistory:
             for elapsedTimeSeconds, valueList in stateVectorHistory.items():
 
+                ''' 9th September 2023 - characteristic point '''
+                characteristic_point = valueList[0]
                 ''' altitude '''
-                altitudeMeanSeaLevelMeters = valueList[0]
+                altitudeMeanSeaLevelMeters = valueList[1]
                 altitudeMeanSeaLevelFeet = altitudeMeanSeaLevelMeters * Meter2Feet
 
                 ''' speeds '''
-                trueAirSpeedMetersSecond = valueList[1]
+                trueAirSpeedMetersSecond = valueList[2]
                 trueAirSpeedKnots = trueAirSpeedMetersSecond * MeterSecond2Knots 
 
                 ''' total distance flown in Meters '''
-                totalDistanceFlownMeters = valueList[2]
+                totalDistanceFlownMeters = valueList[3]
                 cumulatedDistanceFlownNautics = totalDistanceFlownMeters * Meter2NauticalMiles
                 
-                distanceStillToFlyMeters = valueList[3]
+                distanceStillToFlyMeters = valueList[4]
                 distanceStillToFlyNautics = distanceStillToFlyMeters * Meter2NauticalMiles
                 
                 ''' aircraft Mass History in Kilograms '''
-                aircraftMassKilograms = valueList[4]
-                flightPathAngleDegrees = valueList[5]
+                aircraftMassKilograms = valueList[5]
+                flightPathAngleDegrees = valueList[6]
 
-                thrustNewtons = valueList[6]
-                dragNewtons = valueList[7]
-                liftNewtons = valueList[8]
+                thrustNewtons = valueList[7]
+                dragNewtons = valueList[8]
+                liftNewtons = valueList[9]
                 loadFactor = liftNewtons / aircraftMassKilograms
 
                 calibratedAirSpeedMetersSecond = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond,
@@ -390,26 +411,28 @@ class StateVector(object):
                 
                 previousElapsedTimeSeconds = elapsedTimeSeconds
                 ''' 5th September 2021 - write endOfSimulation '''
-                endOfSimulation = valueList[9]
+                endOfSimulation = valueList[10]
+                ''' 9th September 2023 - add characteristic point '''
                 row = self.writeValues(ws, row, elapsedTimeSeconds, 
-                                                 altitudeMeanSeaLevelMeters,
-                                                 altitudeMeanSeaLevelFeet,
+                                                characteristic_point,
+                                                altitudeMeanSeaLevelMeters,
+                                                altitudeMeanSeaLevelFeet,
                                                  
-                                                 trueAirSpeedMetersSecond,
-                                                 trueAirSpeedKnots,
-                                                 calibratesAirSpeedKnots,
-                                                 mach,
-                                                 rateOfClimbDescentFeetMinute,
+                                                trueAirSpeedMetersSecond,
+                                                trueAirSpeedKnots,
+                                                calibratesAirSpeedKnots,
+                                                mach,
+                                                rateOfClimbDescentFeetMinute,
                                                  
-                                                 cumulatedDistanceFlownNautics,
-                                                 distanceStillToFlyNautics,
+                                                cumulatedDistanceFlownNautics,
+                                                distanceStillToFlyNautics,
                                                  
-                                                 aircraftMassKilograms,
-                                                 flightPathAngleDegrees,    
+                                                aircraftMassKilograms,
+                                                flightPathAngleDegrees,    
                                                  
-                                                 thrustNewtons          ,
-                                                 dragNewtons            ,
-                                                 liftNewtons            ,
-                                                 loadFactor             ,
-                                                 endOfSimulation)
+                                                thrustNewtons          ,
+                                                dragNewtons            ,
+                                                liftNewtons            ,
+                                                loadFactor             ,
+                                                endOfSimulation)
         

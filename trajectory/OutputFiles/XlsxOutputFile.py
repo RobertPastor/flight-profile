@@ -34,9 +34,8 @@ import xlsxwriter
 import os
 
 
-class XlsxOutput():
+class XlsxOutput(object):
     
-
     FileName = ""
     workbook = None
     worksheet = None
@@ -72,149 +71,6 @@ class XlsxOutput():
             self.worksheet.write(self.RowIndex, ColumnIndex, header)
             ColumnIndex = ColumnIndex + 1
         
-        self.RowIndex += 1
-    
-    def writeOneFloatValue(self,
-                         time,
-                         floatValue ):
-        ColumnIndex = 0
-        self.worksheet.write(self.RowIndex, ColumnIndex, time)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, floatValue)        
-        self.RowIndex += 1
-        
-        
-    def writeTwoFloatValues(self,
-                        time,
-                        firstFloatValue,
-                        secondFloatValue):
-        
-        ColumnIndex = 0
-        self.worksheet.write(self.RowIndex, ColumnIndex, time)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, firstFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, secondFloatValue)        
-        self.RowIndex += 1
-        
-        
-    def writeFourFloatValues(self, time,
-                            firstFloatValue,
-                            secondFloatValue,
-                            thirdFloatValue,
-                            fourthFloatValue):
-        
-        ColumnIndex = 0
-        self.worksheet.write(self.RowIndex, ColumnIndex, time)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, firstFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, secondFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, thirdFloatValue)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, fourthFloatValue)        
-        self.RowIndex += 1
-
-
-    def writeSixFloatValues(self, time,
-                            firstFloatValue, secondFloatValue, thirdFloatValue,
-                            fourthFloatValue, fifthFloatValue, sixthFloatValue):
-        
-        ColumnIndex = 0
-        self.worksheet.write(self.RowIndex, ColumnIndex, time)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, firstFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, secondFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, thirdFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, fourthFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, fifthFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, sixthFloatValue)        
-        self.RowIndex += 1
-
-
-    def writeSevenFloatValues(self, time,
-                            firstFloatValue, secondFloatValue, thirdFloatValue,
-                            fourthFloatValue, fifthFloatValue, sixthFloatValue, seventhFloatValue):
-        
-        ColumnIndex = 0
-        self.worksheet.write(self.RowIndex, ColumnIndex, time)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, firstFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, secondFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, thirdFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, fourthFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, fifthFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, sixthFloatValue)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, seventhFloatValue)        
-        self.RowIndex += 1
-        
-    def writeNineFloatValues(self, elapsedTimeSeconds,
-                            firstFloatValue, secondFloatValue, thirdFloatValue,
-                            fourthFloatValue, fifthFloatValue, sixthFloatValue, 
-                            seventhFloatValue, eighthFloatValue, ninethFloatValue):
-        
-        ColumnIndex = 0
-        self.worksheet.write(self.RowIndex, ColumnIndex, elapsedTimeSeconds)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, firstFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, secondFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, thirdFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, fourthFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, fifthFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, sixthFloatValue)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, seventhFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, eighthFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, ninethFloatValue)        
-        self.RowIndex += 1
-
-    def writeTenFloatValues(self, elapsedTimeSeconds,
-                            firstFloatValue, secondFloatValue, thirdFloatValue,
-                            fourthFloatValue, fifthFloatValue, sixthFloatValue, 
-                            seventhFloatValue, eighthFloatValue, ninethFloatValue,
-                            tenthFloatValue):
-        
-        ColumnIndex = 0
-        self.worksheet.write(self.RowIndex, ColumnIndex, elapsedTimeSeconds)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, firstFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, secondFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, thirdFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, fourthFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, fifthFloatValue)                
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, sixthFloatValue)
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, seventhFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, eighthFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, ninethFloatValue)        
-        ColumnIndex += 1
-        self.worksheet.write(self.RowIndex, ColumnIndex, tenthFloatValue)        
         self.RowIndex += 1
         
     def writeElevenFloatValues(self, elapsedTimeSeconds,
@@ -291,11 +147,55 @@ class XlsxOutput():
         ColumnIndex += 1
         self.worksheet.write(self.RowIndex, ColumnIndex, str(endOfSimulation))     
         self.RowIndex += 1    
+        
+    ''' 9th September 2023 - add a characteristic point '''
+    def writeFifteenFloatCharPointValues(self, elapsedTimeSeconds, stringValue,
+                            firstFloatValue, secondFloatValue, thirdFloatValue,
+                            fourthFloatValue, fifthFloatValue, sixthFloatValue, 
+                            seventhFloatValue, eighthFloatValue, ninethFloatValue,
+                            tenthFloatValue, eleventhFloatValue,
+                            twelvethFloatValue, thirdteenFloatValue, fourteenFloatValue , fifteenFloatValue, endOfSimulation):
+        
+        ColumnIndex = 0
+        self.worksheet.write(self.RowIndex, ColumnIndex, elapsedTimeSeconds)
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, stringValue)        
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, firstFloatValue)        
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, secondFloatValue)                
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, thirdFloatValue)                
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, fourthFloatValue)                
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, fifthFloatValue)                
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, sixthFloatValue)
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, seventhFloatValue)        
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, eighthFloatValue)        
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, ninethFloatValue)        
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, tenthFloatValue)        
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, eleventhFloatValue)        
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, twelvethFloatValue)        
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, thirdteenFloatValue)        
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, fourteenFloatValue)
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, fifteenFloatValue)    
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, str(endOfSimulation))     
+        self.RowIndex += 1  
+        
                                 
-    
     def close(self):
         self.workbook.close()
     
-    
-
         

@@ -75,4 +75,20 @@ class MainClass {
 		return encodeURIComponent($("#airlineSelectId option:selected").val());
 	}
 	
+	// 10th September 2023 - get standard label
+	getStandardOgLabel(name) {
+		return {text: name,
+				outline: 0.58,
+				outlineColor: "rgba(255,255,255,.4)",
+				size: 10,
+				color: "black",
+				offset: [0, -2]};
+	}
+	
+	getStandardOgBillBoard() {
+		return {src: "/static/images/marker.png",
+				width: 16,
+				height: 16,
+				offset: [0,-2]};
+	}
 }

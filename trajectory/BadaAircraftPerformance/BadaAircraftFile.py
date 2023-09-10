@@ -97,14 +97,15 @@ class BadaAircraft(AircraftConfiguration):
 
         return endOfSimulation, deltaDistanceMeters, altitudeMeters
     
-    
+    ''' 9th September 2023 - add characteristic Point '''
     def initStateVector(self, 
                         elapsedTimeSeconds,
+                        characteristicPoint,
                         trueAirSpeedMetersSecond,
                         airportFieldElevationAboveSeaLevelMeters):
          
         aircraftMassKilograms = self.aircraftMass.getCurrentMassKilograms()
-        self.StateVector.initStateVector(elapsedTimeSeconds, 
+        self.StateVector.initStateVector(elapsedTimeSeconds, characteristicPoint,
                                             trueAirSpeedMetersSecond, 
                                             airportFieldElevationAboveSeaLevelMeters,
                                             aircraftMassKilograms)
