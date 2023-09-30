@@ -69,24 +69,25 @@ def fetch_multiple(station_list=list(["CYEG", "CYOJ"])):
 
     ''' start walking the tree '''
     out_dict = {}
-    for node in tree.findall("./data/METAR"):
-        s_metar = {}
-        for x in node:
-            ''' store each tag in a dictionary for that station '''
-            s_metar[x.tag] = x.text
-
-        ''' convert some keys '''
-        if "wind_dir_degrees" in s_metar:
-            s_metar["wind_dir_compass"] = degrees_to_cardinal(s_metar["wind_dir_degrees"])
-        if "temp_c" in s_metar:
-            s_metar["temp_f"] = float(s_metar["temp_c"])*9.0/5.0 + 32.0
-        if "wind_speed_kt" in s_metar:
-            s_metar["wind_speed_mph"] = float(s_metar["wind_speed_kt"]) * 1.150779
-        if "sea_level_pressure_mb" in s_metar:
-            s_metar["sea_level_pressure_kpa"] = float(s_metar["sea_level_pressure_mb"]) / 10.0
-
-        ''' store the entire station metar dictionary in a dictionary '''
-        out_dict[s_metar["station_id"]] = s_metar
+    if tree:
+        for node in tree.findall("./data/METAR"):
+            s_metar = {}
+            for x in node:
+                ''' store each tag in a dictionary for that station '''
+                s_metar[x.tag] = x.text
+    
+            ''' convert some keys '''
+            if "wind_dir_degrees" in s_metar:
+                s_metar["wind_dir_compass"] = degrees_to_cardinal(s_metar["wind_dir_degrees"])
+            if "temp_c" in s_metar:
+                s_metar["temp_f"] = float(s_metar["temp_c"])*9.0/5.0 + 32.0
+            if "wind_speed_kt" in s_metar:
+                s_metar["wind_speed_mph"] = float(s_metar["wind_speed_kt"]) * 1.150779
+            if "sea_level_pressure_mb" in s_metar:
+                s_metar["sea_level_pressure_kpa"] = float(s_metar["sea_level_pressure_mb"]) / 10.0
+    
+            ''' store the entire station metar dictionary in a dictionary '''
+            out_dict[s_metar["station_id"]] = s_metar
 
     return out_dict
 
