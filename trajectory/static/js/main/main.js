@@ -163,6 +163,9 @@ function hideAllDiv(globus) {
 	let fuelPlanner = SingletonFuelPlanner.getInstance();
 	fuelPlanner.hideFuelPlannerDiv();
 	
+	let metars = SingletonMetars.getInstance();
+	metars.hideMetarsDiv();
+	
 	SingletonSidStar.getInstance();
 }
 
@@ -315,6 +318,7 @@ function initTools(globus, viewExtent) {
 		// 1st July 2023 - add Layer Housekeeping
 		let ogLayerCleanerControl = new OgLayerCleanerControl();
 		globus.planet.addControl(ogLayerCleanerControl);
+		
 		let ogLayerCleaner = SingletonOgLayerCleaner.getInstance();
 		ogLayerCleaner.init(globus, ogLayerCleanerControl);
 		
@@ -333,6 +337,15 @@ function initTools(globus, viewExtent) {
 		
 		// prepare to switch from one airline to the other
 		switchAirlines(globus);
+		
+		// 29th September 2023 - 
+		let metarsOgControl = new MetarsOgControl();
+		globus.planet.addControl( metarsOgControl );
+		
+		let metar = SingletonMetars.getInstance();
+		metar.initMetars( globus , metarsOgControl )
+		
+		// 29th September 2023 - init listener to Metars button
 		
 		// show the airports
 		SingletonAirlineAirports.getInstance().showHideAllAirports( true );

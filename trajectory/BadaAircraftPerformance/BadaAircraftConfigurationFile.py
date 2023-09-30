@@ -1202,10 +1202,13 @@ class AircraftConfiguration(FlightEnvelope):
         flightPathAngleDegrees = 0.0
         if deltaDistanceMeters > 0.0:
             flightPathAngleDegrees = math.degrees(math.atan(deltaAltitudeMeters / deltaDistanceMeters))
-            
+        
+        ''' 13th September 2023 - log the flight phase or the last characteristic point '''
+        characteristicPoint = self.aircraftCurrentConfiguration
+        
         #if not endOfSimulation:
         endOfSimulation = self.updateAircraftStateVector(elapsedTimeSeconds + deltaTimeSeconds, 
-                                                    self.aircraftCurrentConfiguration,
+                                                    characteristicPoint,
                                                     trueAirSpeedMetersSecond      , 
                                                     altitudeMeanSeaLevelMeters    ,
                                                     currentDistanceFlownMeters    ,

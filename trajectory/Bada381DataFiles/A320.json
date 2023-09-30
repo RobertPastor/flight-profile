@@ -65,7 +65,8 @@
 				"unit" : "kg",
 				"value": 77000.0
 			},
-			"fuelcapacity" : {
+			"maxFuelCapacity" : {
+				"source": "https://en.wikipedia.org/wiki/Airbus_A320_family",
 				"unit" : "kg",
 				"value": 21100.0
 			}

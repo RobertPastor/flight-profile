@@ -66,7 +66,8 @@ class MainControl extends og.Control {
 	oninit() {
 	}
 
-	onadd() {		
+	onadd() {
+		
 		let mainDiv = document.createElement('div');
 		mainDiv.id = "mainTableId";
 		mainDiv.classList.add('mainTable');
@@ -83,23 +84,25 @@ class MainControl extends og.Control {
 		
 		mainDiv.appendChild(draggableMainDiv);
 
-						
 		let table = document.createElement('table');
 		let tbody = document.createElement('tbody');
 		
+		//===================================
 		// ------- 1st row --- progress bar
+		//===================================
+		
 		let row_0 = document.createElement('tr');
 		
 		let row_0_data_1 = document.createElement('td');
-		row_0_data_1.colSpan = "10";
+		row_0_data_1.colSpan = "11";
 		row_0_data_1.innerHTML = '<div id="workerId" class="w3-container progressBar" style="width:100%"></div>';
 		row_0.appendChild(row_0_data_1);
 						
 		tbody.appendChild(row_0);
 		
-		//===================================
-		// ------- 2nd row --------------
-		//===================================
+		//===================================================
+		// ------- 2nd row --- select the airline -----------
+		//===================================================
 		
 		let row_1 = document.createElement('tr');
 		
@@ -118,7 +121,7 @@ class MainControl extends og.Control {
 		row_1.appendChild(row_1_data_1);
 		
 		let row_1_data_3 = document.createElement('td');
-		row_1_data_3.colSpan = "6";
+		row_1_data_3.colSpan = "7";
 		
 		row_1_data_3.innerHTML = '<div class="alignRight"><span>Fleet Management Tool proposed by </span><a href="https://www.appsintellect.org" target="_blank">appsintellect</a></div>';
 		row_1.appendChild(row_1_data_3);
@@ -138,6 +141,8 @@ class MainControl extends og.Control {
 		
 		let row_2 = document.createElement('tr');
 		
+		// airline fleet
+		
 		let row_2_data_2 = document.createElement('td');
 		row_2_data_2.innerHTML = '<div><button id="btnAirlineFleet" >Fleet</button></div>';
 		row_2_data_2.title = "click to see the airline fleet, aircrafts, number of seats, hourly costs ...";
@@ -145,7 +150,8 @@ class MainControl extends og.Control {
 		
 		//=============================================
 		// sub menu Airports and Airways
-		
+		//=============================================
+
 		let row_2_data_3 = document.createElement('td');
 		row_2_data_3.id = "mainSubMenuTdId";
 		row_2_data_3.colSpan = "2";
@@ -156,12 +162,12 @@ class MainControl extends og.Control {
 		menuEntryAirwaysDiv.id = "menuEntryAirwaysDivId";
 		menuEntryAirwaysDiv.title = "click to open a submenu for Airports & Airways";
 
-		
 		row_2_data_3.appendChild ( menuEntryAirwaysDiv );
 		row_2.appendChild(row_2_data_3);
 		
-		//==============================================
-		
+		//============
+		// profile 
+		//============
 		let row_2_data_6 = document.createElement('td');
 		row_2_data_6.innerHTML = '<div><button id="btnLaunchFlightProfile" >Profile</button></div>';
 		row_2_data_6.title = "click to compute a profile, a cost or download an EXCEL profile";
@@ -174,10 +180,9 @@ class MainControl extends og.Control {
 
 		row_2.appendChild(row_2_data_7);
 		
-		//=============================================
+		//=======================
 		// sub menu optimizations
-		
-		// sub menu
+		//=======================
 		let row_2_data_8 = document.createElement('td');
 		row_2_data_8.id = "mainSubMenuOptimizationsTdId";
 		row_2_data_8.colSpan = "3";
@@ -189,22 +194,32 @@ class MainControl extends og.Control {
 		
 		menuEntryOptimizationsDiv.title = "click to open a submenu for all optimizations";
 
-		
 		row_2_data_8.appendChild ( menuEntryOptimizationsDiv );
 		row_2.appendChild(row_2_data_8);
 		
-		//=============================================
-		
+		//=============
+		// 13th May 2023 - add fuel planner
+		//=============
 		let row_2_data_12 = document.createElement('td');
 		row_2_data_12.innerHTML = '<div><button id="btnLaunchFuelPlanner" >Fuel Planner</button></div>';
 		row_2_data_12.title = "click to support computing aircraft takeoff weight while estimating the needed fuel"; 
 		row_2.appendChild(row_2_data_12);
 		
-		// 13th May 2023 - add fuel planner
+		//======
+		// 25th September 2023 -  METAR
+		//======
 		let row_2_data_13 = document.createElement('td');
-		row_2_data_13.classList.add('question_mark_bg')
-		row_2_data_13.innerHTML = '<div id="helpId" class="exclamation_mark" title="click to obtain some configuration information" onclick="showConfiguration()" ></div>';
+		row_2_data_13.innerHTML = '<div><button id="btnMetar" >Metar</button></div>';
+		row_2_data_13.title = "click to retrieve the METAR for each airline airport"; 
 		row_2.appendChild(row_2_data_13);
+		
+		//===================
+		// show configuration
+		//===================
+		let row_2_data_14 = document.createElement('td');
+		row_2_data_14.classList.add('question_mark_bg')
+		row_2_data_14.innerHTML = '<div id="helpId" class="exclamation_mark" title="click to obtain some configuration information" onclick="showConfiguration()" ></div>';
+		row_2.appendChild(row_2_data_14);
 		
 		// ---------------
 		tbody.appendChild(row_2);

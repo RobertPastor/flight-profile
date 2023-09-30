@@ -12,9 +12,11 @@ from trajectory.views.viewsFuelPlanner import launchFuelPlanner
 from trajectory.views.computeRunwayOvershoot import computeRunwayOvershoot
 from trajectory.views.viewsSidStar import showSidStar
 from trajectory.views.downloadKMLfile import createKMLfile
+from trajectory.views.viewsMetar import getMetar
 
 app_name = "trajectory"
 
+''' 25th September 2023 - add Metar '''
 urlpatterns = [
     
     path('airports/<slug:airlineName>' , getAirports , name='getAirports'),
@@ -26,6 +28,7 @@ urlpatterns = [
     path('fuelPlanner/<slug:airlineName>' , launchFuelPlanner , name='launchFuelPlanner'),
     path('computeRunwayOvershoot/<slug:aircraft>/<slug:airport>/<slug:runway>/<slug:mass>' , computeRunwayOvershoot , name ='computeRunwayOvershoot'),
     path('sidStar/<slug:SidOrStar>/<slug:airport>/<slug:runway>/<slug:waypoint>' , showSidStar , name="showSidStar"),
+    path('metar/<slug:airlineName>' , getMetar , name='getMetar')
 
 ]
 

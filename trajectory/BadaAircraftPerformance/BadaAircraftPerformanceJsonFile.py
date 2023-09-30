@@ -8,6 +8,8 @@ import json
 import os
 from jsonschema import validate , exceptions
 
+from trajectory.Environment.Constants import KeroseneLiter2Kilograms
+
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Bada381DataFiles import getBadaFilePath
 
@@ -64,7 +66,6 @@ class AircraftJsonPerformance(AircraftPerformance):
             print("Invalid JSON:", e)
             return False
         
-        
     def getICAOcode(self):
         acICAO = self.performanceJsonData["aircraft"]["ICAO"]
         print ( acICAO.upper() )
@@ -93,6 +94,10 @@ class AircraftJsonPerformance(AircraftPerformance):
 
     def getMaximumPayLoadMassKilograms(self):
         return self.performanceJsonData["aircraft"]["mass"]["maxpayload"]["value"]
+    
+    def getMaximumFuelCapacityKilograms(self):
+        return self.performanceJsonData["aircraft"]["mass"]["maxFuelCapacity"]["value"]
+
     
     def getVmoCasKnots(self):
         return self.performanceJsonData["aircraft"]["envelope"]["MaxOpSpeedCasKnots"]["value"]

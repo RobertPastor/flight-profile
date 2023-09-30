@@ -82,9 +82,19 @@
 								"value" : {"type" : "number" }
 							},
 							"required": ["unit","value"]
+						},
+						"maxFuelCapacity": {
+							"type": "object",
+							"properties": {
+								"source": {"type" : "string"},
+								"unit" : {"type" : "string"},
+								"value" : {"type" : "number" }
+							},
+							"required": ["unit","value"]
 						}
+						
 					},
-					"required": ["minimum","reference","maximum","maxpayload"]
+					"required": ["minimum","reference","maximum","maxpayload","maxfuelcapacity"]
 				},
 				"aerodynamics": {
 					"type": "object",

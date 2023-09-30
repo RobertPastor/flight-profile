@@ -24,8 +24,6 @@ def indexTrajectory(request):
     context = {'siteMessages' : siteMessages}
     return HttpResponse(template.render(context, request))
 
-
-
 def getAirports(request, airlineName):
     logger.debug ("get Airports")
     if (request.method == 'GET'):

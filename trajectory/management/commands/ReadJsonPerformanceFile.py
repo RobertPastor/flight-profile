@@ -48,6 +48,9 @@ class Command(BaseCommand):
             
             print ( aircraftJsonPerformance.getMaximumPayLoadMassKilograms())
             
+            print ( aircraftJsonPerformance.getMaximumFuelCapacityKilograms() )
+        
+            
             print ("---- envelope ----")
             print ( aircraftJsonPerformance.getMaxOpSpeedCasKnots())
             print ( aircraftJsonPerformance.getMaxOpMachNumber())

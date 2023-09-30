@@ -273,7 +273,6 @@ class GroundRunLeg(Graph):
         intermediateWayPoint.setName(Name = 'takeOff-{0:.1f}-m'.format(self.totalLegDistanceMeters))
         # keep the last true airspeed
         self.lastTrueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
-        
    
     def getElapsedTimeSeconds(self):
         return self.elapsedTimeSeconds

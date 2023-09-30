@@ -1,5 +1,5 @@
 
-//Define custom control class
+// Define custom control class
 // display a floating table related to the right click on an airport 
 class AirlineAirportsRoutesControl extends og.Control {
 	constructor(options) {

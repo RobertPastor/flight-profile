@@ -318,20 +318,18 @@ class AirlineAirports {
 				SingletonAirlineAirports.getInstance().queryRoutesStartingFromAirport( airportICAOcode, position );
 
 			});
-			
+			// show airport ICAO code
 			layerAirport.events.on("mouseenter", function (e) {
 				e.renderer.handler.canvas.style.cursor = "pointer";
 				// show ICAO code of the airport
 				e.renderer.handler.canvas.title = this.name.split("-")[1];
 			});
-
+			// hide airports routes div
 			layerAirport.events.on("mouseleave", function (e) {
 				e.renderer.handler.canvas.style.cursor = "default";
 				e.renderer.handler.canvas.title = "";
-				
 				// hide table with routes starting in this airport
 				$("#airlineAirportsRoutesMainDivId").hide();
-
 			});
 			
 		} else {
@@ -355,7 +353,7 @@ class AirlineAirports {
 
 	showHideAllAirports( showHide ) {
 		
-		//console.log("show hide all airports = " + showHide.toString() );
+		//console.log("show hide all airports = " + showHide.toString());
 	
 		// init progress bar.
 		initProgressBar();

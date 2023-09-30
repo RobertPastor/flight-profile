@@ -47,6 +47,11 @@
 				"maxpayload": {
 					"unit" : "kg",
 					"value": 47400.0
+				},
+				"maxFuelCapacity": {
+					"source": "https://fr.wikipedia.org/wiki/Airbus_A330",
+					"unit" : "kg",
+					"value": 113636.53
 				}
 			}
 	}

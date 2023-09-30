@@ -66,7 +66,8 @@
 				"unit" : "kg",
 				"value": 66350.0
 			},
-			"fuelcapacity" : {
+			"maxFuelCapacity" : {
+				"source": "http://www.b737.org.uk/techspecsdetailed.htm",
 				"unit" : "kg",
 				"value": 22000.0
 			}

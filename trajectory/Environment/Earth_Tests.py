@@ -33,7 +33,6 @@ class Test_Main(unittest.TestCase):
             
             for latitudeDegrees in range(0, 180):
                 print ('latitude in degrees: ', latitudeDegrees, " degrees")
-                
                 gc , gnorth = earth.gravity(earthRadiusMeters, latitudeDegrees*dtr)
                 print (gc , gnorth)
                 writer.writerow((latitudeDegrees, latitudeDegrees*dtr, earthRadiusMeters, gc , gnorth))

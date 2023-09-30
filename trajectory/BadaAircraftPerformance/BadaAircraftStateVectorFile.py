@@ -98,6 +98,17 @@ class StateVector(object):
                                                  liftNewtons ,
                                                  endOfSimulation]
         self.aircraftStateHistory.append(aircraftStateDict)
+        
+    ''' 13th September 2023 - get last characteristic point '''
+    def getLastCharacteristicPoint(self):
+        if len(self.aircraftStateHistory) > 0:
+            ''' values returns a list whose first element is the expected value '''
+            lastDict = self.aircraftStateHistory[-1]
+            values = lastDict.values()
+            characteristicPoint = list(values)[0][0]
+            return characteristicPoint
+        else:
+            return 0.0
 
     ''' <9th September 2023 - characteristic point 1st in stack '''
     def getCurrentAltitudeSeaLevelMeters(self):

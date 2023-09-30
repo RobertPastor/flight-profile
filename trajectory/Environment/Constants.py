@@ -23,8 +23,12 @@ Knot2MetersPerSecond  = 0.514444444 # meters per second
 MeterPerSecond2Knots = 1.9438444924406
 MeterSecond2Knots    = 1.9438444924406
 
+# mass
+
 Kilogram2Pounds = 2.20462262
 Kilogram2Pounds = 2.20462262 # 1 kilogram = 2.204 lbs
+
+KeroseneLiter2Kilograms = 0.817
 
 # minimal radius of the final turn -> /flight-profile/trajectory/Guidance/TurnLegFile.py
 FinalArrivalTurnRadiusNauticalMiles = 5.0
