@@ -78,7 +78,7 @@ class Metars {
 		document.getElementById("btnMetar").onclick = function () {
 			
 			console.log("Metars button clicked");
-
+			/**
 			if ( ! $('#airportsMetarsMainDivId').is(":visible") ) {
 			
 				$('#airportsMetarsMainDivId').show();
@@ -111,6 +111,7 @@ class Metars {
 			} else {
 				SingletonMetars.getInstance().hideMetarsDiv();
 			}
+			*/
 		}
 	}
 	
