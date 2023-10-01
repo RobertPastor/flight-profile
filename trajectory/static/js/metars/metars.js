@@ -86,6 +86,7 @@ class Metars {
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
+				/**
 				// use ajax to get the data 
 				$.ajax( {
 						method: 'get',
@@ -107,6 +108,7 @@ class Metars {
 							document.getElementById("btnMetar").disabled = false;
 						},
 				});
+				*/
 				
 			} else {
 				SingletonMetars.getInstance().hideMetarsDiv();

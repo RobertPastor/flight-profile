@@ -166,7 +166,7 @@ function hideAllDiv(globus) {
 	let metars = SingletonMetars.getInstance();
 	metars.hideMetarsDiv();
 	
-	SingletonSidStar.getInstance();
+	
 }
 
 
@@ -352,6 +352,14 @@ function initTools(globus, viewExtent) {
 		
 		// 19th July 2023 Main Singleton Class
 		new SingletonMainClass.getInstance().init(globus);
+		
+		// 1st October 2023 - sortable
+		let airlineFleetTable = document.getElementById("tableAirlineFleetId");
+		airlineFleetTable.classList.add('sortable');
+		
+		let airlineRoutesTable = document.getElementById("airlineRoutesTableId");
+		airlineRoutesTable.classList.add('sortable');
+
 	}
 }
 
