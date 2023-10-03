@@ -81,12 +81,13 @@ class Metars {
 			
 			if ( ! $('#airportsMetarsMainDivId').is(":visible") ) {
 			
-				$('#airportsMetarsMainDivId').show();
-				
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
+				
+				// init progress bar.
+				initProgressBar();
+				initWorker();
 
-				/**
 				// use ajax to get the data 
 				$.ajax( {
 						method: 'get',
@@ -98,6 +99,8 @@ class Metars {
 							let dataJson = eval(data);
 							// metars
 							SingletonMetars.getInstance().populateMetars( dataJson["metars"] );
+							
+							$('#airportsMetarsMainDivId').show();
 						},
 						error: function(data, status) {
 							console.log("Error - Metars : " + status + " Please contact your admin");
@@ -108,7 +111,6 @@ class Metars {
 							document.getElementById("btnMetar").disabled = false;
 						},
 				});
-				*/
 				
 			} else {
 				SingletonMetars.getInstance().hideMetarsDiv();

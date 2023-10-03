@@ -4,6 +4,10 @@ class AirlineRoutesControl extends og.Control {
 	constructor(options) {
 		super(options);
 	}
+	
+	getMainTableDivId(){
+		return "airlineRoutesTableId";
+	}
 
 	onadd() {
 		//console.log("airline Routes Control - onadd");
