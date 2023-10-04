@@ -98,13 +98,13 @@ class AirlineCasmOptimization {
 						
 						let dataJson = eval(data);
 						if ( dataJson.hasOwnProperty("errors") ) {
+							
 							stopBusyAnimation();
 							showMessage( "Error" , dataJson["errors"] );
 						
 						} else {
 							
 							$("#airlineCasmOptimizationMainDivId").show();
-
 							let resultsArray = dataJson["results"];
 							SingletonAirlineCasmOptimization.getInstance().showCasmResults( resultsArray );
 						}
@@ -116,7 +116,7 @@ class AirlineCasmOptimization {
 					},
 					complete : function() {
 						stopBusyAnimation();
-						document.getElementById("btnLaunchCasmOptimization").disabled = false
+						document.getElementById("btnLaunchCasmOptimization").disabled = false;
 					}
 				});
 				
