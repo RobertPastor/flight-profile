@@ -1,10 +1,12 @@
 
-
-
 //Define custom control class
 class AirlineCostsOptimizationControl extends og.Control {
 	constructor(options) {
 		super(options);
+	}
+	
+	getMainTableDivId(){
+		return "airlineCostsOptimizationTableId";
 	}
 
 	onadd() {
@@ -30,7 +32,7 @@ class AirlineCostsOptimizationControl extends og.Control {
 		mainDiv.appendChild(draggableMainDiv);
 		
 		let table = document.createElement('table');
-		table.id = "airlineCostsOptimizationTableId";
+		table.id = this.getMainTableDivId();
 		
 		let thead = document.createElement('thead');
 		let row_1 = document.createElement('tr');

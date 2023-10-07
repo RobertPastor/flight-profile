@@ -1,9 +1,13 @@
 
 //Define custom control class
-		class AirlineFlightLegCostsResultsControl extends og.Control {
+class AirlineFlightLegCostsResultsControl extends og.Control {
             constructor(options) {
                 super(options);
             }
+            
+            getMainTableDivId(){
+				return "airlineFlightLegCostsTableId";
+			}
 
             onadd() {
 				//console.log("airline Costs Results Control - onadd");
@@ -28,7 +32,7 @@
 				mainDiv.appendChild(draggableMainDiv);
 				
 				let table = document.createElement('table');
-				table.id = "airlineFlightLegCostsTableId";
+				table.id = this.getMainTableDivId();
 				
 				let thead = document.createElement('thead');
 				let row_1 = document.createElement('tr');

@@ -123,7 +123,6 @@ class AirlineCasmOptimization {
 			} else {
 				
 				SingletonAirlineCasmOptimization.getInstance().hideAirlineCasmOptimizationDiv();
-				
 			}
 		}
 	}

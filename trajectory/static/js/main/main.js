@@ -166,7 +166,6 @@ function hideAllDiv(globus) {
 	let metars = SingletonMetars.getInstance();
 	metars.hideMetarsDiv();
 	
-	
 }
 
 
@@ -246,21 +245,24 @@ function initTools(globus, viewExtent) {
 		// control used to display a message to the user
 		globus.planet.addControl(new DialogControl());
 		
-		globus.planet.addControl(new AirlineFleetControl());
+		let airlineFleetControl = new AirlineFleetControl();
+		globus.planet.addControl(airlineFleetControl);
 		
 		// load airline fleet
 		let airlineFleet = SingletonAirlineFleet.getInstance();
 		airlineFleet.initAirlineFleet();
 		
 		// contextual menu to show the routes from one right click selected airport 
-		globus.planet.addControl(new AirlineAirportsRoutesControl());
+		let airlineAirportsRoutesControl = new AirlineAirportsRoutesControl();
+		globus.planet.addControl(airlineAirportsRoutesControl);
 		
 		// load the airline airports
 		let airlineAirports = SingletonAirlineAirports.getInstance();
 		airlineAirports.initAirports(globus);
 		
 		// table allowing to see the Routes 
-		globus.planet.addControl(new AirlineRoutesControl());
+		let airlineRoutesControl = new AirlineRoutesControl();
+		globus.planet.addControl(airlineRoutesControl);
 	
 		// load the airline routes 
 		let airlineRoutes = SingletonAirlineRoutes.getInstance();
@@ -280,7 +282,8 @@ function initTools(globus, viewExtent) {
 		
 		// compute costs
 		// flight profile inputs are shared with flight leg cost controls inputs
-		globus.planet.addControl(new AirlineFlightLegCostsResultsControl());
+		let airlineFlightLegCostsResultsControl = new AirlineFlightLegCostsResultsControl()
+		globus.planet.addControl(airlineFlightLegCostsResultsControl);
 		
 		let airlineFlightLegCosts = SingletonAirlineFlightLegCosts.getInstance();
 		airlineFlightLegCosts.initFlightLegCosts(flightProfileControl);
@@ -291,18 +294,24 @@ function initTools(globus, viewExtent) {
 		airlineCosts.initAirlineCosts();
 		
 		// airline costs optimization
-		globus.planet.addControl(new AirlineCostsOptimizationControl());
+		let airlineCostsOptimizationControl = new AirlineCostsOptimizationControl()
+		globus.planet.addControl(airlineCostsOptimizationControl);
+		
 		let airlineCostsOptimization = SingletonAirlineCostsOptimization.getInstance();
 		airlineCostsOptimization.initAirlineCostsOptimization();
 		
 		// airline CASM
-		globus.planet.addControl(new AirlineCasmControl());
+		let airlineCasmControl = new AirlineCasmControl();
+		globus.planet.addControl(airlineCasmControl);
+		
 		let airlineCASM = SingletonAirlineCASM.getInstance();
 		// need to call this init function to listen to button
 		airlineCASM.initAirlineCASM();
 		
 		// airline CASM Optimization
-		globus.planet.addControl(new AirlineCasmOptimizationControl());
+		let airlineCasmOptimizationControl = new AirlineCasmOptimizationControl();
+		globus.planet.addControl(airlineCasmOptimizationControl);
+		
 		let airlineCasmOptimization = SingletonAirlineCasmOptimization.getInstance();
 		airlineCasmOptimization.initAirlineCasmOptimization();
 		
@@ -354,12 +363,26 @@ function initTools(globus, viewExtent) {
 		new SingletonMainClass.getInstance().init(globus);
 		
 		// 1st October 2023 - sortable
-		let airlineFleetTable = document.getElementById("tableAirlineFleetId");
+		let airlineFleetTable = document.getElementById(airlineFleetControl.getMainTableDivId());
 		airlineFleetTable.classList.add('sortable');
 		
-		let airlineRoutesTable = document.getElementById("airlineRoutesTableId");
+		let airlineRoutesTable = document.getElementById(airlineRoutesControl.getMainTableDivId());
 		airlineRoutesTable.classList.add('sortable');
-
+		
+		let airlineCostsOptimizationTable = document.getElementById(airlineCostsOptimizationControl.getMainTableDivId());
+		airlineCostsOptimizationTable.classList.add('sortable');
+		
+		let airlineCasmTable = document.getElementById(airlineCasmControl.getMainTableDivId());
+		airlineCasmTable.classList.add('sortable');
+		
+		let airlineCasmOptimizationTable = document.getElementById(airlineCasmOptimizationControl.getMainTableDivId());
+		airlineCasmOptimizationTable.classList.add('sortable');
+		
+		let airlineFlightLegCostsResultsTable =  document.getElementById(airlineFlightLegCostsResultsControl.getMainTableDivId());
+		airlineFlightLegCostsResultsTable.classList.add('sortable');
+		
+		let metarsTable =  document.getElementById(metarsOgControl.getMainTableDivId());
+		metarsTable.classList.add('sortable');
 	}
 }
 

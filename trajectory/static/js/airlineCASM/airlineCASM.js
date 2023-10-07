@@ -166,13 +166,11 @@ class AirlineCASM {
 						} else {
 							
 							$("#airlineCasmMainDivId").show();
-									
 							let airlineCasmArray = dataJson["airlineCasmList"]
 											
 							//alert("Data: " + data + "\nStatus: " + status);
 							//showMessage( "End of Costs computations" , dataJson )
 							SingletonAirlineCASM.getInstance().showAirlineCasmResults( airlineCasmArray )
-							
 						}
 					},
 					error: function(data, status) {

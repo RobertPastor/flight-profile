@@ -5,6 +5,10 @@
             constructor(options) {
                 super(options);
             }
+            
+            getMainTableDivId() {
+				return "tableAirlineFleetId";
+			}
 
             onadd() {
 				//console.log("airline Fleet Control - onadd");
@@ -29,7 +33,7 @@
 				mainDiv.appendChild(draggableMainDiv);
 				
 				let table = document.createElement('table');
-				table.id = "tableAirlineFleetId";
+				table.id = this.getMainTableDivId();
 
 				let thead = document.createElement('thead');
 				let row_1 = document.createElement('tr');
@@ -37,8 +41,8 @@
 				let th_list = [ 'Airline' , 'Aircraft ICAO Code' , 'Aircraft Full Name', 
 								'Number of Aircrafts', 'Number of Seats', 
 								'Flying Costs per Hour (US$)', 'Crew Costs per Hour (US$)',
-								'Minimum Take Off Mass (kg)' , 'Reference Mass (kg)' , 'Maximum Take Off Mass (kg)',
-								'Aircraft Turn Around Time (min)'];
+								'Min TakeOff Mass (kg)' , 'Reference Mass (kg)' , 'Max TakeOff Mass (kg)',
+								'Aircraft Turn Around Time (mn)'];
 								
 				let th = undefined;
 				th_list.forEach ( function ( element ) {

@@ -69,8 +69,6 @@ class Metars {
 	
 	initMetars( globus , metarsOgControl ) {
 		
-		console.log("init Metars")
-		
 		this.globus = globus;
 		this.metarsOgControl = metarsOgControl;
 		

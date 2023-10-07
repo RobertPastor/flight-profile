@@ -6,6 +6,10 @@ class AirlineCasmOptimizationControl extends og.Control {
 		super(options);
 	}
 
+	getMainTableDivId(){
+		return "airlineCasmOptimizationTableId";
+	}
+	
 	onadd() {
 		//console.log("airline CASM Optimization Results Control - onadd");
 		
@@ -29,7 +33,7 @@ class AirlineCasmOptimizationControl extends og.Control {
 		mainDiv.appendChild(draggableMainDiv);
 		
 		let table = document.createElement('table');
-		table.id = "airlineCasmOptimizationTableId";
+		table.id = this.getMainTableDivId();
 		table.classList.add ('airlineCasmOptimizationTable');
 		
 		let thead = document.createElement('thead');

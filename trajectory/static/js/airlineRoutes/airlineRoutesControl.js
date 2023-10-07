@@ -32,7 +32,7 @@ class AirlineRoutesControl extends og.Control {
 		mainDiv.appendChild(draggableMainDiv);
 		
 		let table = document.createElement('table');
-		table.id = "airlineRoutesTableId";
+		table.id = this.getMainTableDivId();
 
 		let thead = document.createElement('thead');
 		let row_1 = document.createElement('tr');
@@ -42,6 +42,10 @@ class AirlineRoutesControl extends og.Control {
 		th_list.forEach ( function ( element ) {
 			let th = document.createElement('th');
 			th.innerHTML = element;
+			if (element == "Action"){
+				// sortable no sorting
+				th.classList.add("no-sort");
+			}
 			row_1.appendChild(th);
 		});
 		
