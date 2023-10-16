@@ -93,11 +93,10 @@ class AircraftJsonPerformance(AircraftPerformance):
         return self.performanceJsonData["aircraft"]["mass"]["maximum"]["value"]
 
     def getMaximumPayLoadMassKilograms(self):
-        return self.performanceJsonData["aircraft"]["mass"]["maxpayload"]["value"]
+        return self.performanceJsonData["aircraft"]["mass"]["maxPayload"]["value"]
     
     def getMaximumFuelCapacityKilograms(self):
         return self.performanceJsonData["aircraft"]["mass"]["maxFuelCapacity"]["value"]
-
     
     def getVmoCasKnots(self):
         return self.performanceJsonData["aircraft"]["envelope"]["MaxOpSpeedCasKnots"]["value"]
@@ -114,3 +113,27 @@ class AircraftJsonPerformance(AircraftPerformance):
     def getWingAreaSurfaceSquareMeters(self):
         return self.performanceJsonData["aircraft"]["aerodynamics"]["wingsurface"]["value"]
 
+    def getTakeOffLengthMeters(self):
+        raise ValueError("Json Performance : error - not yet implemented")
+        return 0.0
+    
+    def getLandingLengthMeters(self):
+        raise ValueError("Json Performance : error - not yet implemented")
+        return 0.0
+    
+    def getVstallKcasKnots(self, phase):
+        if phase in self.performanceJsonData["aircraft"]["configuration"]:
+            print ( "phase = {0} is in {1}".format(phase, self.performanceJsonData["aircraft"]["configuration"]))
+            return self.performanceJsonData["aircraft"]["configuration"][phase]["stallSpeed"]["value"]
+        else:
+            raise ValueError("Json Performance : error - phase= {0} not in configuration".format(phase))
+            
+    def getDragCoeff(self, coeffType, phase):
+        if phase in self.performanceJsonData["aircraft"]["configuration"]:
+            print ( "phase = {0} is in {1}".format(phase, self.performanceJsonData["aircraft"]["configuration"]))
+            if coeffType in ["dragCD0","dragCD2"]:
+                return self.performanceJsonData["aircraft"]["configuration"][phase][coeffType]["value"]
+            else:
+                raise ValueError("Json Performance : error - drag coeff type= {0} -- in phase= {1} not in configuration".format(coeffType, phase))
+        else:
+            raise ValueError("Json Performance : error - phase= {0} not in configuration".format(phase))

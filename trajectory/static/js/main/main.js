@@ -363,26 +363,29 @@ function initTools(globus, viewExtent) {
 		new SingletonMainClass.getInstance().init(globus);
 		
 		// 1st October 2023 - sortable
-		let airlineFleetTable = document.getElementById(airlineFleetControl.getMainTableDivId());
+		let airlineFleetTable = document.getElementById(airlineFleetControl.getMainTableId());
 		airlineFleetTable.classList.add('sortable');
 		
-		let airlineRoutesTable = document.getElementById(airlineRoutesControl.getMainTableDivId());
+		let airlineRoutesTable = document.getElementById(airlineRoutesControl.getMainTableId());
 		airlineRoutesTable.classList.add('sortable');
 		
-		let airlineCostsOptimizationTable = document.getElementById(airlineCostsOptimizationControl.getMainTableDivId());
+		let airlineCostsOptimizationTable = document.getElementById(airlineCostsOptimizationControl.getMainTableId());
 		airlineCostsOptimizationTable.classList.add('sortable');
 		
-		let airlineCasmTable = document.getElementById(airlineCasmControl.getMainTableDivId());
+		let airlineCasmTable = document.getElementById(airlineCasmControl.getMainTableId());
 		airlineCasmTable.classList.add('sortable');
 		
-		let airlineCasmOptimizationTable = document.getElementById(airlineCasmOptimizationControl.getMainTableDivId());
+		let airlineCasmOptimizationTable = document.getElementById(airlineCasmOptimizationControl.getMainTableId());
 		airlineCasmOptimizationTable.classList.add('sortable');
 		
-		let airlineFlightLegCostsResultsTable =  document.getElementById(airlineFlightLegCostsResultsControl.getMainTableDivId());
+		let airlineFlightLegCostsResultsTable =  document.getElementById(airlineFlightLegCostsResultsControl.getMainTableId());
 		airlineFlightLegCostsResultsTable.classList.add('sortable');
 		
-		let metarsTable =  document.getElementById(metarsOgControl.getMainTableDivId());
+		let metarsTable =  document.getElementById(metarsOgControl.getMainTableId());
 		metarsTable.classList.add('sortable');
+		
+		let airlineAirportsRoutesTable = document.getElementById(airlineAirportsRoutesControl.getMainTableId());
+		airlineAirportsRoutesTable.classList.add('sortable');
 	}
 }
 

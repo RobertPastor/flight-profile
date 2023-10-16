@@ -9,6 +9,10 @@ class AirlineAirportsRoutesControl extends og.Control {
 	getMainDivId() {
 		return "airlineAirportsRoutesMainDivId";
 	}
+	
+	getMainTableId() {
+		return "airlineAirportsRoutesTableId";
+	}
 
 	onadd() {
 		
@@ -18,8 +22,8 @@ class AirlineAirportsRoutesControl extends og.Control {
 		mainDiv.classList.add('airlineAirportsRoutesMainDiv');
 		
 		let table = document.createElement('table');
-		table.id = "airlineAirportsRoutesTableId";
-		
+		table.id = this.getMainTableId();
+				
 		let thead = document.createElement('thead');
 		let row_1 = document.createElement('tr');
 		
@@ -29,6 +33,10 @@ class AirlineAirportsRoutesControl extends og.Control {
 		th_list.forEach ( function ( element ) {
 			let th = document.createElement('th');
 			th.innerHTML = element;
+			if ( (element == "action") || (element == "direction") ) {
+				// sortable no sorting
+				th.classList.add("no-sort");
+			}
 			row_1.appendChild(th);
 		});
 		

@@ -75,8 +75,6 @@ class Metars {
 		// listen to the button define in MainControl.js
 		document.getElementById("btnMetar").onclick = function () {
 			
-			console.log("Metars button clicked");
-			
 			if ( ! $('#airportsMetarsMainDivId').is(":visible") ) {
 			
 				// get the name of the airline

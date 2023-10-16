@@ -54,7 +54,7 @@
 				"unit" : "kg",
 				"value": 78300.0
 			},
-			"maxpayload": {
+			"maxPayload": {
 				"unit" : "kg",
 				"value": 20300.0
 			},
@@ -72,11 +72,38 @@
 				"value": 22000.0
 			}
 		},
-		"phase": {
-			"groundrun": {
-				"name": "length",
-				"unit": "meters",
-				"value": 2310
+		"configuration": {
+			"takeOff" : {
+				"stallSpeed" : {
+					"unit" : "knots",
+					"value": 117.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
+				}
+			},
+			"initialClimb" : {
+				"stallSpeed" : {
+					"unit" : "knots",
+					"value": 119.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
+				}
 			},
 			"cruise": {
 				"ceiling": {
@@ -84,9 +111,61 @@
 					"unit": "ft",
 					"value": "41000"
 				},
-				"speed": {
-					"unit": "mach",
-					"value": 0.82
+				"stallSpeed": {
+					"unit": "knots",
+					"value": 149.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
+				}
+			},
+			"groundrun": {
+				"name": "length",
+				"unit": "meters",
+				"value": 2310
+			},
+			"approach" : {
+				"stallSpeed": {
+					"unit": "knots",
+					"value": 109.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
+				}
+			},
+			"landing": {
+				"gearDrag": {
+					"name": "landingGearDragCoeff",
+					"unit": "none",
+					"value": 0.83800
+				},
+				"stallSpeed": {
+					"unit": "knots",
+					"value": 107.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
 				}
 			}
 		}

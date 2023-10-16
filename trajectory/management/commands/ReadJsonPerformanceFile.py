@@ -40,7 +40,7 @@ class Command(BaseCommand):
 
             print ( aircraftJsonPerformance.getWakeTurbulenceCategory())
             
-            print ("---- mass ----")
+            print ("---- mass (kg) ----")
 
             print ( aircraftJsonPerformance.getReferenceMassKilograms())
             print ( aircraftJsonPerformance.getMinimumMassKilograms())
@@ -50,8 +50,8 @@ class Command(BaseCommand):
             
             print ( aircraftJsonPerformance.getMaximumFuelCapacityKilograms() )
         
-            
             print ("---- envelope ----")
+            
             print ( aircraftJsonPerformance.getMaxOpSpeedCasKnots())
             print ( aircraftJsonPerformance.getMaxOpMachNumber())
 
@@ -59,3 +59,14 @@ class Command(BaseCommand):
             
             print ("---- aerodynamics ----")
             print ( aircraftJsonPerformance.getWingAreaSurfaceSquareMeters())
+            
+            print ("---- stall speeds ---")
+            for phase in ["takeOff","initialClimb","cruise","approach","landing"]:
+                print ( "--- {0} ---".format(phase) )
+                print ( aircraftJsonPerformance.getVstallKcasKnots(phase))
+                
+            print ("---- Drag Coeff ---")
+            for coeffType in ["dragCD0", "dragCD2"]:
+                for phase in ["takeOff","initialClimb","cruise","approach","landing"]:
+                    print ( "--- {0} ---".format(phase) )
+                    print ( aircraftJsonPerformance.getDragCoeff(coeffType, phase))

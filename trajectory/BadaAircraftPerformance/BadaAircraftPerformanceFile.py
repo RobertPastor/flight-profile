@@ -262,6 +262,7 @@ class AircraftPerformance(object):
     '''======== Configuration Characteristics ===================='''
    
     def getVstallKcasKnots(self):
+        ''' returns a dictionary key-values '''
         VstallKcasKnots = {}
         #logging.info self.className + ': get Cruise Vstall KCAS'
         try:
@@ -280,7 +281,6 @@ class AircraftPerformance(object):
         
         assert (isinstance(index, int) and index >= 0 and index <= 5)
         assert(not(self.EngineLine is None)) and (self.EngineLine > 0)
-
         try:
             if len(self.dataLines) > 0:
                 return fortran_float(str(self.dataLines[self.EngineLine]).split()[index+1])
@@ -293,7 +293,6 @@ class AircraftPerformance(object):
         
         assert (isinstance(index, int) and index >= 0 and index <= 5)
         assert(not(self.EngineLine is None)) and (self.EngineLine > 0)
-
         try:
             if len(self.dataLines) > 0:
                 return fortran_float(str(self.dataLines[self.EngineLine+1]).split()[index+1])

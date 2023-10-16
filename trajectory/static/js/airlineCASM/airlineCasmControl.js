@@ -6,7 +6,7 @@ class AirlineCasmControl extends og.Control {
 		super(options);
 	}
 	
-	getMainTableDivId(){
+	getMainTableId(){
 		return "airlineCasmTableId";
 	}
 
@@ -32,7 +32,7 @@ class AirlineCasmControl extends og.Control {
 		mainDiv.appendChild(draggableMainDiv);
 		
 		let table = document.createElement('table');
-		table.id = this.getMainTableDivId();
+		table.id = this.getMainTableId();
 		table.classList.add ('airlineCostsTable');
 		
 		let thead = document.createElement('thead');

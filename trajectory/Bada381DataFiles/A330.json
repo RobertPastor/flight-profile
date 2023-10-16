@@ -44,7 +44,7 @@
 					"unit" : "kg",
 					"value": 230000.0
 				},
-				"maxpayload": {
+				"maxPayload": {
 					"unit" : "kg",
 					"value": 47400.0
 				},
@@ -52,6 +52,88 @@
 					"source": "https://fr.wikipedia.org/wiki/Airbus_A330",
 					"unit" : "kg",
 					"value": 113636.53
+				}
+			},
+			"configuration": {
+				"takeOff" : {
+					"stallSpeed" : {
+						"unit" : "knots",
+						"value": 117.0
+					},
+					"dragCD0": {
+						"name": "dragCoeffCD0",
+						"unit": "none",
+						"value": 0.025149
+					},
+					"dragCD2": {
+						"name": "dragCoeffCD2",
+						"unit": "none",
+						"value": 0.036138
+					}
+				},
+				"initialClimb" : {
+					"stallSpeed" : {
+						"unit" : "knots",
+						"value": 126.0
+					},
+					"dragCD0": {
+						"name": "dragCoeffCD0",
+						"unit": "none",
+						"value": 0.025149
+					},
+					"dragCD2": {
+						"name": "dragCoeffCD2",
+						"unit": "none",
+						"value": 0.036138
+					}
+				},
+				"cruise" : {
+					"stallSpeed" : {
+						"unit" : "knots",
+						"value": 141.0
+					},
+					"dragCD0": {
+						"name": "dragCoeffCD0",
+						"unit": "none",
+						"value": 0.025149
+					},
+					"dragCD2": {
+						"name": "dragCoeffCD2",
+						"unit": "none",
+						"value": 0.036138
+					}
+				},
+				"approach" : {
+					"stallSpeed" : {
+						"unit" : "knots",
+						"value": 111.0
+					},
+					"dragCD0": {
+						"name": "dragCoeffCD0",
+						"unit": "none",
+						"value": 0.025149
+					},
+					"dragCD2": {
+						"name": "dragCoeffCD2",
+						"unit": "none",
+						"value": 0.036138
+					}
+				},
+				"landing" : {
+					"stallSpeed" : {
+						"unit" : "knots",
+						"value": 104.0
+					},
+					"dragCD0": {
+						"name": "dragCoeffCD0",
+						"unit": "none",
+						"value": 0.025149
+					},
+					"dragCD2": {
+						"name": "dragCoeffCD2",
+						"unit": "none",
+						"value": 0.036138
+					}
 				}
 			}
 	}

@@ -75,7 +75,7 @@
 							},
 							"required": ["unit","value"]
 						},
-						"maxpayload" : {
+						"maxPayload" : {
 							"type": "object",
 							"properties": {
 								"unit" : {"type" : "string"},
@@ -94,7 +94,7 @@
 						}
 						
 					},
-					"required": ["minimum","reference","maximum","maxpayload","maxfuelcapacity"]
+					"required": ["minimum","reference","maximum","maxPayload","maxFuelCapacity"]
 				},
 				"aerodynamics": {
 					"type": "object",
@@ -106,12 +106,166 @@
 								"value": {"type" : "number"}
 							},
 							"required": ["unit","value"]
-
+						}
+					}
+				},
+				"configuration": {
+					"type": "object",
+					"properties": {
+						"takeOff": {
+							"type" : "object",
+							"properties" : {
+								"stallSpeed" : {
+									"type": "object",
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"dragCDO": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"dragCD2": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								}
+							},
+							"required": ["stallSpeed","dragCD0","dragCD2"]
+						},
+						"initialClimb" : {
+							"type" : "object",
+							"properties" : {
+								"stallSpeed" : {
+									"type": "object",
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"dragCDO": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"dragCD2": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								}
+							},
+							"required": ["stallSpeed","dragCD0","dragCD2"]
+						},
+						"clean" : {
+							"type" : "object",
+							"properties" : {
+								"stallSpeed" : {
+									"type": "object",
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"dragCDO": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"dragCD2": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								}
+							},
+							"required": ["stallSpeed","dragCD0","dragCD2"]
+						},
+						"approach" : {
+							"type" : "object",
+							"properties" : {
+								"stallSpeed" : {
+									"type": "object",
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"dragCDO": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"dragCD2": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								}
+							},
+							"required": ["stallSpeed","dragCD0","dragCD2"]
+						},
+						"landing" : {
+							"type" : "object",
+							"properties" : {
+								"stallSpeed" : {
+									"type": "object",
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"dragCDO": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"dragCD2": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								}
+							},
+							"required": ["stallSpeed","dragCD0","dragCD2"]
 						}
 					}
 				}
 			},
-			"required": ["ICAO", "wakeTurbulence" , "engines" ,"envelope", "mass" , "aerodynamics"]
+			"required": ["name" ,"variant" , "ICAO", "wakeTurbulence" , "engines" ,"envelope", "mass" , "aerodynamics" , "configuration"]
 		}
 	}
 }

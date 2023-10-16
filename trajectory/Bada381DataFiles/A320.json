@@ -33,17 +33,13 @@
 				"unit" : "feet",
 				"value": 39000.0
 			}
-			
 		},
 		"aerodynamics": {
 			"wingsurface": {
 				"unit" : "m²",
 				"value": 122.6
-				
 			}
-			
 		},
-		
 		"mass": {
 			"minimum": {
 				"unit" : "kg",
@@ -57,11 +53,11 @@
 				"unit" : "kg",
 				"value": 77000.0
 			},
-			"maxpayload": {
+			"maxPayload": {
 				"unit" : "kg",
 				"value": 21500.0
 			},
-			"maxtakeoff": {
+			"maxTakeoff": {
 				"unit" : "kg",
 				"value": 77000.0
 			},
@@ -71,14 +67,46 @@
 				"value": 21100.0
 			}
 		},
-		"phase": {
+		"configuration": {
+			"takeOff" : {
+				"stallSpeed" : {
+					"unit": "knots",
+					"value": 114.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
+				}
+			},
+			"initialClimb": {
+				"stallSpeed": {
+					"unit": "knots",
+					"value": 120.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
+				}
+			},
 			"groundrun": {
 				"runway": {
 					"name": "length",
 					"unit": "meters",
 					"value": 2200.0
 				},
-				"dragCDO": {
+				"dragCD0": {
 					"name": "dragCoeffCD0",
 					"unit": "none",
 					"value": 0.025149
@@ -95,9 +123,35 @@
 					"unit": "ft",
 					"value": "39000"
 				},
-				"speed": {
-					"unit": "mach",
-					"value": 0.82
+				"stallSpeed": {
+					"unit": "knots",
+					"value": 145.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
+				}
+			},
+			"approach" : {
+				"stallSpeed": {
+					"unit": "knots",
+					"value": 107.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
 				}
 			},
 			"landing": {
@@ -105,8 +159,21 @@
 					"name": "landingGearDragCoeff",
 					"unit": "none",
 					"value": 0.83800
+				},
+				"stallSpeed": {
+					"unit": "knots",
+					"value": 101.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.025149
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.036138
 				}
-				
 			}
 		}
 	}

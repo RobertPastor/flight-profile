@@ -6,7 +6,7 @@
                 super(options);
             }
             
-            getMainTableDivId() {
+            getMainTableId() {
 				return "tableAirlineFleetId";
 			}
 
@@ -33,7 +33,7 @@
 				mainDiv.appendChild(draggableMainDiv);
 				
 				let table = document.createElement('table');
-				table.id = this.getMainTableDivId();
+				table.id = this.getMainTableId();
 
 				let thead = document.createElement('thead');
 				let row_1 = document.createElement('tr');

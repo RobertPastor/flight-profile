@@ -10,7 +10,7 @@ class MetarsOgControl extends og.Control {
 		return "airportsMetarsMainDivId";
 	}
 	
-	getMainTableDivId(){
+	getMainTableId(){
 		return "airportsMetarsTableId";
 	}
 	
@@ -41,7 +41,7 @@ class MetarsOgControl extends og.Control {
 		mainDiv.appendChild(draggableMainDiv);
 		
 		let table = document.createElement('table');
-		table.id = this.getMainTableDivId();
+		table.id = this.getMainTableId();
 		
 		let thead = document.createElement('thead');
 		let row_1 = document.createElement('tr');
