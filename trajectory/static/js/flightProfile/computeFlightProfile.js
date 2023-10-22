@@ -381,9 +381,7 @@ class AirlineProfileCosts {
 	populateBestDepartureRunway(airlineRoutesArray) {
 		
 		$('#airlineDepartureRunWayFlightProfileId').empty();
-		
-		let departureRunwayCheckBoxId = this.flightProfileControl.getBestDepartureRunwayCheckBoxId();
-		
+				
 		for ( let index = 0 ; index < airlineRoutesArray.length ; index++) {
 				
 				let route = $("#airlineRouteId option:selected").val();
@@ -400,9 +398,7 @@ class AirlineProfileCosts {
 	populateBestArrivalRunway( airlineRoutesArray ) {
 		
 		$('#airlineArrivalRunWayFlightProfileId').empty();
-		
-		let arrivalRunwayCheckBoxId = this.flightProfileControl.getBestArrivalRunwayCheckBoxId();
-			
+					
 		for ( let index = 0 ; index < airlineRoutesArray.length ; index++) {
 			
 				let route = $("#airlineRouteId option:selected").val();

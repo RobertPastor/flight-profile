@@ -61,7 +61,6 @@ class AirlineCostsOptimization {
 				.append('<td>'+ dataJson["costs"] +'</td>')
 
 			);
-		
 	}
 	
 	showCostsResults( optimizationResultsArray ) {
@@ -88,8 +87,8 @@ class AirlineCostsOptimization {
 			
 			if ( ! $('#airlineCostsOptimizationMainDivId').is(":visible") ) {
 				
-				document.getElementById("btnLaunchCostsOptimization").disabled = true;
-			
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
+
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
@@ -116,10 +115,7 @@ class AirlineCostsOptimization {
 									//showMessage( "End of Costs computations" , dataJson )
 									let resultsArray = dataJson["results"];
 									SingletonAirlineCostsOptimization.getInstance().showCostsResults( resultsArray );
-								}
-								
-								document.getElementById("btnLaunchCostsOptimization").disabled = false
-								
+								}								
 							},
 							error: function(data, status) {
 								stopBusyAnimation();
@@ -128,7 +124,7 @@ class AirlineCostsOptimization {
 							},
 							complete : function() {
 								stopBusyAnimation();
-								document.getElementById("btnLaunchCostsOptimization").disabled = false
+								SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 							}
 				});
 			} else {

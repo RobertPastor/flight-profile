@@ -323,7 +323,6 @@ class AirlineRoutes {
 		
 		SingletonAirlineRoutes.getInstance().configureRoutesWayPointsButton( oneAirlineRoute );
 		SingletonAirlineRoutes.getInstance().configureSidStarLink( oneAirlineRoute );
-		
 	}
 
 	/**
@@ -385,8 +384,9 @@ class AirlineRoutes {
 			if ( ! $('#airlineRoutesDivId').is(":visible") ) {
 								
 				$("#airlineRoutesDivId").show();
+				
 				// disable the button 
-				document.getElementById("btnAirlineRoutes").disabled = true;
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 				
 				/**
 				 * @todo - encapsulate in the MainSingleton class
@@ -409,7 +409,6 @@ class AirlineRoutes {
 								let airlineRoutesArray = dataJson["airlineRoutes"];
 								SingletonAirlineRoutes.getInstance().addAirlineRoutes(  airlineRoutesArray );
 							}
-							
 						},
 						error: function(data, status) {
 							console.log("Error - show Airline Routes : " + status + " Please contact your admin");
@@ -417,8 +416,7 @@ class AirlineRoutes {
 						},
 						complete : function() {
 							stopBusyAnimation();
-							document.getElementById("btnAirlineRoutes").disabled = false;
-						},
+							SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);						},
 				});
 
 			} else {

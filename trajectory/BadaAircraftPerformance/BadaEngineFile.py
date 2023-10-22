@@ -114,7 +114,7 @@ class Engine(FuelConsumption):
 
         assert isinstance(aircraftPerformance, AircraftPerformance)
         self.className = self.__class__.__name__
-        self.engineType = Engine.EngineType(aircraftPerformance.getStrEngineType())
+        self.engineType = Engine.EngineType(aircraftPerformance.getEngineType())
         
         for index in range(0,5):
             self.maxClimbThrustCoeff[index] = aircraftPerformance.getMaxClimbThrustCoeff(index)

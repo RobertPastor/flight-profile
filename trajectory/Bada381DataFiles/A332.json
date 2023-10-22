@@ -9,7 +9,8 @@
 
 			"engines": {
 				"number": 2,
-				"type": "TRENT 772B"
+				"type": "jet",
+				"name": "TRENT 772B"
 			},
 			"envelope": {
 				"MaxOpSpeedCasKnots" : {
@@ -63,12 +64,12 @@
 					"dragCD0": {
 						"name": "dragCoeffCD0",
 						"unit": "none",
-						"value": 0.025149
+						"value": 0.03263
 					},
 					"dragCD2": {
 						"name": "dragCoeffCD2",
 						"unit": "none",
-						"value": 0.036138
+						"value": 0.03541
 					}
 				},
 				"initialClimb" : {
@@ -79,12 +80,12 @@
 					"dragCD0": {
 						"name": "dragCoeffCD0",
 						"unit": "none",
-						"value": 0.025149
+						"value": 0.0197
 					},
 					"dragCD2": {
 						"name": "dragCoeffCD2",
 						"unit": "none",
-						"value": 0.036138
+						"value": 0.04157
 					}
 				},
 				"cruise" : {
@@ -95,12 +96,12 @@
 					"dragCD0": {
 						"name": "dragCoeffCD0",
 						"unit": "none",
-						"value": 0.025149
+						"value": 0.018953
 					},
 					"dragCD2": {
 						"name": "dragCoeffCD2",
 						"unit": "none",
-						"value": 0.036138
+						"value": 0.032965
 					}
 				},
 				"approach" : {
@@ -111,12 +112,12 @@
 					"dragCD0": {
 						"name": "dragCoeffCD0",
 						"unit": "none",
-						"value": 0.025149
+						"value": 0.056400
 					},
 					"dragCD2": {
 						"name": "dragCoeffCD2",
 						"unit": "none",
-						"value": 0.036138
+						"value": 0.03221
 					}
 				},
 				"landing" : {
@@ -127,12 +128,12 @@
 					"dragCD0": {
 						"name": "dragCoeffCD0",
 						"unit": "none",
-						"value": 0.025149
+						"value": 0.08197
 					},
 					"dragCD2": {
 						"name": "dragCoeffCD2",
 						"unit": "none",
-						"value": 0.036138
+						"value": 0.02995
 					}
 				}
 			}

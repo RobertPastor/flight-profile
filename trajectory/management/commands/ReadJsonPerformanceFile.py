@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
-        acList = ["A320", "A330", "B738"]
+        acList = ["A320", "A332", "B738"]
         #acList = ["AXXX.json"]
         for ac in acList:
             
@@ -32,7 +32,7 @@ class Command(BaseCommand):
             
             print (aircraftJsonPerformance.getICAOcode())
 
-            print ("---- nomber of engines ----")
+            print ("---- number of engines ----")
 
             print (aircraftJsonPerformance.getNumberOfEngines())
             
@@ -54,13 +54,14 @@ class Command(BaseCommand):
             
             print ( aircraftJsonPerformance.getMaxOpSpeedCasKnots())
             print ( aircraftJsonPerformance.getMaxOpMachNumber())
-
             print ( aircraftJsonPerformance.getMaxOpAltitudeFeet())
             
             print ("---- aerodynamics ----")
+            
             print ( aircraftJsonPerformance.getWingAreaSurfaceSquareMeters())
             
             print ("---- stall speeds ---")
+            
             for phase in ["takeOff","initialClimb","cruise","approach","landing"]:
                 print ( "--- {0} ---".format(phase) )
                 print ( aircraftJsonPerformance.getVstallKcasKnots(phase))

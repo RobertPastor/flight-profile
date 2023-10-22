@@ -107,13 +107,9 @@ class AirlineFleet {
 				
 				//hideAllDiv();
 				$('#divAirlineFleetId').show();
-							
-				// change name on the button
-				document.getElementById("btnAirlineFleet").innerText = "Fleet";
-				//document.getElementById("btnAirlineFleet").style.backgroundColor = "green";
 
 				// disable the button 
-				document.getElementById("btnAirlineFleet").disabled = true
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 				
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
@@ -137,8 +133,7 @@ class AirlineFleet {
 						},
 						complete : function() {
 							stopBusyAnimation();
-							document.getElementById("btnAirlineFleet").disabled = false
-						},
+							SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);						},
 				});
 
 			} else {

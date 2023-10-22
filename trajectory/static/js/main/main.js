@@ -165,7 +165,6 @@ function hideAllDiv(globus) {
 	
 	let metars = SingletonMetars.getInstance();
 	metars.hideMetarsDiv();
-	
 }
 
 

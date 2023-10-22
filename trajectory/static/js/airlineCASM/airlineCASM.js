@@ -94,7 +94,7 @@ class AirlineCASM {
 		
 		document.getElementById("btnLaunchCASM").onclick  = function () {
 			
-			document.getElementById("btnLaunchCASM").disabled = true;
+			SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 
 			// get the name of the airline
 			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
@@ -111,7 +111,6 @@ class AirlineCASM {
 			req.onload = function (event) {
 				
 				stopBusyAnimation();
-				document.getElementById("btnLaunchCASM").disabled = false;
 				
 				let blob = req.response;
 				let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
@@ -122,11 +121,13 @@ class AirlineCASM {
 				link.download = fileName;
 				link.click();
 				
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
+				
 			 };
 			 req.onerror = function (event) {
 				 
-				console.error("Error in Download EXCEL Costs");
-				document.getElementById("btnLaunchCASM").disabled = false;
+				console.error("Error in Download EXCEL Costs = " + JSON.stringify(event));
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 
 			 }
 			// send the request

@@ -8,8 +8,6 @@ import json
 import os
 from jsonschema import validate , exceptions
 
-from trajectory.Environment.Constants import KeroseneLiter2Kilograms
-
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 from trajectory.Bada381DataFiles import getBadaFilePath
 
@@ -33,6 +31,15 @@ class AircraftJsonPerformance(AircraftPerformance):
         self.schemaFilePath = getBadaFilePath() 
         self.schemaFilePath = os.path.join( self.schemaFilePath , "schema.json" )
         self.schemaFilePath = os.path.abspath( self.schemaFilePath )
+        
+        
+    def exists(self):
+        if os.path.isfile(self.filePath):
+            #logging.info self.className + ' : Performance file= ' + self.filePath + " exists"
+            return True
+        else:
+            raise ValueError(self.className +": Json Performance File not found: " + self.filePath)
+        return False
             
     def read(self):
         
@@ -44,18 +51,17 @@ class AircraftJsonPerformance(AircraftPerformance):
                 fData = open(self.filePath)
                 #print ( self.schemaFilePath )
                 self.performanceJsonData = json.load(fData)
-                print ( self.performanceJsonData )
+                #print ( self.performanceJsonData )
                 
                 fSchema = open(self.schemaFilePath)
                 schema = json.load(fSchema)
-                print ( schema )
+                #print ( schema )
                 
                 validate(instance = self.performanceJsonData , schema = schema )
                 print ("============================================")
                 print("File = {0} is validated against schema = {1}".format( self.filePath , self.schemaFilePath))
                 print ("============================================")
 
-                assert(  ( self.aircraftICAOcode == self.performanceJsonData["aircraft"]["ICAO"] ) , True )
                 return True
             
             else:
@@ -68,17 +74,18 @@ class AircraftJsonPerformance(AircraftPerformance):
         
     def getICAOcode(self):
         acICAO = self.performanceJsonData["aircraft"]["ICAO"]
-        print ( acICAO.upper() )
         return acICAO.upper()
     
     def getNumberOfEngines(self):
         try:
             nbEngines = int ( self.performanceJsonData["aircraft"]["engines"]["number"])
-            print ( "number of engines = {0}".format( nbEngines ) )
             return nbEngines
         except:
             raise ValueError(self.className + ': error while reading number of engines')
         return 0
+    
+    def getEngineType(self):
+        return self.performanceJsonData["aircraft"]["engines"]["type"]
     
     def getWakeTurbulenceCategory(self):
         return self.performanceJsonData["aircraft"]["wakeTurbulence"]

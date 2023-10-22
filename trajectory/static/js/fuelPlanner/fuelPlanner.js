@@ -278,6 +278,9 @@ class FuelPlanner {
 				
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
+				
+				// disable the button
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 
 				// use ajax to get the data 
 				$.ajax( {
@@ -300,7 +303,7 @@ class FuelPlanner {
 						},
 						complete : function() {
 							stopBusyAnimation();
-							document.getElementById("btnLaunchFuelPlanner").disabled = false;
+							SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 						},
 				});
 				

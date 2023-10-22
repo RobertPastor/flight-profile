@@ -13,7 +13,8 @@
 		},
 		"engines": {
 			"number": 2,
-			"type": "CFM56-7"
+			"type": "jet",
+			"name": "CFM56-7"
 		},
 		"wing" : {
 			"source": "https://www.airliners.net/aircraft-data/boeing-737-800900/96#:~:text=737-800%20-%20Wing%20span%2034.31m%20%28112ft%207in%29%2C%20length,737-900%20-%20Same%20except%20length%2042.11m%20%28138ft%202in%29.",
@@ -28,7 +29,7 @@
 				},
 				"MaxOpMachNumber" : {
 					"unit" : "knots",
-					"value": 0.83
+					"value": 0.82
 				},
 				"MaxOpAltitudeFeet" : {
 					"unit" : "feet",
@@ -44,7 +45,7 @@
 		"mass": {
 			"minimum": {
 				"unit" : "kg",
-				"value": 39000.0
+				"value": 41150.0
 			},
 			"reference": {
 				"unit" : "kg",
@@ -81,12 +82,12 @@
 				"dragCD0": {
 					"name": "dragCoeffCD0",
 					"unit": "none",
-					"value": 0.025149
+					"value": 0.0357
 				},
 				"dragCD2": {
 					"name": "dragCoeffCD2",
 					"unit": "none",
-					"value": 0.036138
+					"value": 0.0423
 				}
 			},
 			"initialClimb" : {
@@ -97,12 +98,12 @@
 				"dragCD0": {
 					"name": "dragCoeffCD0",
 					"unit": "none",
-					"value": 0.025149
+					"value": 0.0262
 				},
 				"dragCD2": {
 					"name": "dragCoeffCD2",
 					"unit": "none",
-					"value": 0.036138
+					"value": 0.0448
 				}
 			},
 			"cruise": {
@@ -118,12 +119,12 @@
 				"dragCD0": {
 					"name": "dragCoeffCD0",
 					"unit": "none",
-					"value": 0.025149
+					"value": 0.025452
 				},
 				"dragCD2": {
 					"name": "dragCoeffCD2",
 					"unit": "none",
-					"value": 0.036138
+					"value": 0.035815
 				}
 			},
 			"groundrun": {
@@ -139,12 +140,12 @@
 				"dragCD0": {
 					"name": "dragCoeffCD0",
 					"unit": "none",
-					"value": 0.025149
+					"value": 0.0492
 				},
 				"dragCD2": {
 					"name": "dragCoeffCD2",
 					"unit": "none",
-					"value": 0.036138
+					"value": 0.0424
 				}
 			},
 			"landing": {
@@ -160,12 +161,12 @@
 				"dragCD0": {
 					"name": "dragCoeffCD0",
 					"unit": "none",
-					"value": 0.025149
+					"value": 0.0689
 				},
 				"dragCD2": {
 					"name": "dragCoeffCD2",
 					"unit": "none",
-					"value": 0.036138
+					"value": 0.0404
 				}
 			}
 		}

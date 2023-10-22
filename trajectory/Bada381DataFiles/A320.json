@@ -12,7 +12,8 @@
 		},
 		"engines": {
 			"number": 2,
-			"type": "CFM56_5_A3"
+			"type": "jet",
+			"name": "CFM56_5_A3"
 		},
 		"wing" : {
 			"source": "https://en.wikipedia.org/wiki/Airbus_A320_family",
@@ -76,12 +77,12 @@
 				"dragCD0": {
 					"name": "dragCoeffCD0",
 					"unit": "none",
-					"value": 0.025149
+					"value": 0.0393
 				},
 				"dragCD2": {
 					"name": "dragCoeffCD2",
 					"unit": "none",
-					"value": 0.036138
+					"value": 0.0396
 				}
 			},
 			"initialClimb": {
@@ -92,12 +93,12 @@
 				"dragCD0": {
 					"name": "dragCoeffCD0",
 					"unit": "none",
-					"value": 0.025149
+					"value": 0.02420
 				},
 				"dragCD2": {
 					"name": "dragCoeffCD2",
 					"unit": "none",
-					"value": 0.036138
+					"value": 0.0469
 				}
 			},
 			"groundrun": {
@@ -146,12 +147,12 @@
 				"dragCD0": {
 					"name": "dragCoeffCD0",
 					"unit": "none",
-					"value": 0.025149
+					"value": 0.045600
 				},
 				"dragCD2": {
 					"name": "dragCoeffCD2",
 					"unit": "none",
-					"value": 0.036138
+					"value": 0.0381
 				}
 			},
 			"landing": {
@@ -167,12 +168,12 @@
 				"dragCD0": {
 					"name": "dragCoeffCD0",
 					"unit": "none",
-					"value": 0.025149
+					"value": 0.0838
 				},
 				"dragCD2": {
 					"name": "dragCoeffCD2",
 					"unit": "none",
-					"value": 0.036138
+					"value": 0.0371
 				}
 			}
 		}

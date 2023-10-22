@@ -104,6 +104,15 @@ class AircraftPerformance(object):
         except:
             raise ValueError(self.className + ': error while reading file = ' + self.filePath)
         
+    def getICAOcode(self):
+        try:
+            if len(self.dataLines)>0:
+                # nb engines placed in line index=0 and position in the split =2
+                return str(str(self.dataLines[self.AircraftTypeLine]).split()[1]).strip().split("__")[0]
+        except:
+            raise ValueError(self.className + ': error while reading number of engines')
+        return ""
+        
     def getNumberOfEngines(self):
         try:
             if len(self.dataLines)>0:
@@ -113,14 +122,13 @@ class AircraftPerformance(object):
             raise ValueError(self.className + ': error while reading number of engines')
         return 0
     
-    def getStrEngineType(self):
+    def getEngineType(self):
         engineType = ''
         try:
             if len(self.dataLines)>0:
                 engineType = str(self.dataLines[self.AircraftTypeLine]).split()[4]
             # check that engine type is known
             return engineType
-            
         except:
             raise ValueError("BadaPerformanceFile: error while reading engine type")
         return engineType

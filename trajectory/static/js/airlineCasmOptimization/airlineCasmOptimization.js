@@ -78,11 +78,8 @@ class AirlineCasmOptimization {
 			
 			if ( ! $('#airlineCasmOptimizationMainDivId').is(":visible") ) {
 				
-				document.getElementById("btnLaunchCasmOptimization").disabled = true;
-				
-				document.getElementById("btnLaunchCasmOptimization").innerText = "CASM Min";
-				//document.getElementById("btnLaunchCasmOptimization").style.backgroundColor = "green";
-				
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
+								
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
@@ -116,7 +113,7 @@ class AirlineCasmOptimization {
 					},
 					complete : function() {
 						stopBusyAnimation();
-						document.getElementById("btnLaunchCasmOptimization").disabled = false;
+						SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 					}
 				});
 				

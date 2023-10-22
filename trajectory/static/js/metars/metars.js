@@ -80,6 +80,7 @@ class Metars {
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 				
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 				// init progress bar.
 				initProgressBar();
 				initWorker();
@@ -104,7 +105,7 @@ class Metars {
 						},
 						complete : function() {
 							stopBusyAnimation();
-							document.getElementById("btnMetar").disabled = false;
+							SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 						},
 				});
 				

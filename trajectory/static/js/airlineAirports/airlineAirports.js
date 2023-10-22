@@ -225,7 +225,6 @@ class AirlineAirports {
 							//console.log( layerName );
 							SingletonAirlineAirports.getInstance().showRouteWayPoints( airlineRoutesWaypointsArray , layerName );
 						}
-
 				},
 				error: function(data, status) {
 					console.log("Error - show Airline Routes : " + status + " Please contact your admin");
@@ -256,7 +255,6 @@ class AirlineAirports {
 						let airlineRoutesArray = dataJson["airlineRoutes"]
 						SingletonAirlineAirports.getInstance().writeRoutesTableFromToAirport( departureAirportICAOcode, airlineRoutesArray , position );
 					}
-					
 				},
 				error: function(data, status) {
 					console.error("Error - show Airline Routes : " + status + " Please contact your admin");
@@ -340,7 +338,6 @@ class AirlineAirports {
 
 	loadAirports( dataJson , showHide ) {
 	
-		//let globus = this.globus;
 		// get all airports
 		let airports = eval(dataJson['airports']);
 
@@ -352,9 +349,7 @@ class AirlineAirports {
 	}
 
 	showHideAllAirports( showHide ) {
-		
-		//console.log("show hide all airports = " + showHide.toString());
-	
+			
 		// init progress bar.
 		initProgressBar();
 		initWorker();
@@ -380,7 +375,7 @@ class AirlineAirports {
 				},
 				complete : function() {
 					stopBusyAnimation();
-					document.getElementById("btnAirports").disabled = false
+					SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 				}
 		} );
 	}

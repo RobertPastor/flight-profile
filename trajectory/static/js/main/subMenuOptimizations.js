@@ -56,8 +56,6 @@ class AirlineOptimizationsSubMenu extends og.Control {
 		
 		// start hiding this table
 		$("#mainSubMenuOptimizationsDivId").hide();
-		
 	}
-		
 }
 		

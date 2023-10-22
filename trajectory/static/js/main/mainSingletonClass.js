@@ -20,7 +20,6 @@ const SingletonMainClass = (function () {
 class MainClass {
 	
 	constructor( ) {
-		
 	}
 	
 	init ( globus ) {
@@ -84,11 +83,26 @@ class MainClass {
 				color: "black",
 				offset: [0, -2]};
 	}
-	
+	// retrieve a standardized marker
 	getStandardOgBillBoard() {
 		return {src: "/static/images/marker.png",
 				width: 16,
 				height: 16,
 				offset: [0,-2]};
+	}
+	
+	enableDisableMainMenuButtons(enable) {
+		const buttonNames = ["btnAirlineFleet","btnAirwaysId", "btnAirports",
+							"btnLaunchFlightProfile","btnLaunchAirlineCosts","btnOptimizationsId","btnLaunchCostsOptimization", "btnLaunchCASM",
+							"btnLaunchCasmOptimization","btnLaunchSeatMilesMaximization","btnLaunchFuelPlanner","btnMetar"];
+		if ( enable ) {
+			for (const button of buttonNames) { 
+				document.getElementById(button).disabled = false;
+			}
+		} else {
+			for (const button of buttonNames) { 
+				document.getElementById(button).disabled = true;
+			}
+		}
 	}
 }

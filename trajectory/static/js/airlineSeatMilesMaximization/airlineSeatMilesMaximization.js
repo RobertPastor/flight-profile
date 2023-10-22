@@ -31,7 +31,7 @@ class AirlineSeatsMilesMaximization {
 		
 		document.getElementById("btnLaunchSeatMilesMaximization").onclick  = function () {
 			
-			document.getElementById("btnLaunchSeatMilesMaximization").disabled = true;
+			SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 			
 			// get the name of the airline
 			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
@@ -60,9 +60,12 @@ class AirlineSeatsMilesMaximization {
 				link.download = fileName;
 				link.click();
 				
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
+				
 			 };
 			 req.onerror = function (event) {
 				console.log("Error in Download EXCEL Costs");
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 			 }
 			// send the request
 			req.send();

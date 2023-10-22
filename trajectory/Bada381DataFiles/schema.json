@@ -13,9 +13,10 @@
 					"type" : "object",
 					"properties" : {
 						"number" : {"type" : "number" },
-						"type" : {"type" : "string"}
+						"type" : {"type" : "string"},
+						"name": {"type" : "string"}
 					},
-					"required": ["number","type"]
+					"required": ["number","type","name"]
 				},
 				"envelope" : {
 					"type" : "object",
