@@ -3,12 +3,10 @@
 const SingletonAirlineCosts = (function () {
 	
 	let instance;
-
     function createInstance() {
         var object = new AirlineCosts();
         return object;
     }
-
     return {
         getInstance: function () {
             if (!instance) {
@@ -108,8 +106,8 @@ class AirlineCosts {
 		// listen to the button
 		document.getElementById("btnLaunchAirlineCosts").onclick  = function () {
 			
-			document.getElementById("btnLaunchAirlineCosts").disabled = true;
-			
+			SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
+
 			// get the name of the airline
 			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 
@@ -135,9 +133,11 @@ class AirlineCosts {
 				link.download = fileName;
 				link.click();
 				
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 			 };
 			 req.onerror = function (event) {
 				console.log("Error in Download EXCEL Costs");
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 			 }
 			// send the request
 			req.send();

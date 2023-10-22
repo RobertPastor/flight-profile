@@ -84,5 +84,10 @@ Successfully installed xlsxwriter-3.0.9
 (airlineservices) 20:52 ~/flight-profile (master)$ 
 
 
+## error -> Manifest not found
+raise ValueError("Missing staticfiles manifest entry for '%s'" % clean_name)
+ValueError: Missing staticfiles manifest entry for 'images/favicon.ico'
+2023-10-22 15:06:47,205: Not Found: /favicon.ico
 
+->>> perform --->>> python manage.py collectstatic
 

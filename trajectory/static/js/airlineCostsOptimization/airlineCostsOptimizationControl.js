@@ -41,10 +41,7 @@ class AirlineCostsOptimizationControl extends og.Control {
 		let th = undefined;
 		th_list.forEach ( function ( element ) {
 			th = document.createElement('th');
-			let thDiv = document.createElement('div');
-			thDiv.innerHTML = element;
-			th.appendChild(thDiv);
-			//th.innerHTML = element;
+			th.innerHTML = element;
 			row_1.appendChild(th);
 		});
 		
