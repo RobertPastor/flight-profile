@@ -63,7 +63,8 @@ def fetch_multiple(station_list=list(["CYEG", "CYOJ"])):
                     intext = rq.text
                     tree = ElementTree.fromstring(intext)
                 success = True
-            except:
+            except Exception as err:
+                print(f"Unexpected {err=}, {type(err)=}")
                 attempts = attempts + 1
                 time.sleep(random.uniform(3,60))
 
@@ -108,7 +109,7 @@ if __name__ == '__main__':
     else:
         station = "CYEG"
         station = "KATL"
-        station = "VABB"
+        #station = "VABB"
 
     if DEBUG:
         import pprint

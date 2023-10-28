@@ -351,7 +351,10 @@ function initTools(globus, viewExtent) {
 		globus.planet.addControl( metarsOgControl );
 		
 		let metar = SingletonMetars.getInstance();
-		metar.initMetars( globus , metarsOgControl )
+		metar.initMetars( globus , metarsOgControl );
+		
+		// temporarily disable metar button
+		document.getElementById("btnMetar").disabled = true;
 		
 		// 29th September 2023 - init listener to Metars button
 		

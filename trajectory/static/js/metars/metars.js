@@ -72,6 +72,9 @@ class Metars {
 		this.globus = globus;
 		this.metarsOgControl = metarsOgControl;
 		
+		// disable temporarily the button
+		document.getElementById("btnMetar").disabled = true;
+		
 		// listen to the button define in MainControl.js
 		document.getElementById("btnMetar").onclick = function () {
 			

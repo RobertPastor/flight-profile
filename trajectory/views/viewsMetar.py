@@ -24,7 +24,6 @@ def getMetarForAirports(request, airline):
                     logger.debug (airport.AirportICAOcode)
                     airportsList.append(airport.AirportICAOcode)
                     
-    
     airportsMetarList = []
     for airportICAOcode in airportsList:
         logger.debug (airportICAOcode)

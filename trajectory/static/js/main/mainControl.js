@@ -236,6 +236,7 @@ class MainControl extends og.Control {
 		// buttons are defined in this js, but ids are defined in each js that is creating a sub menu
 		listenSubMenuAirwaysEntry( "btnAirwaysId" , "mainSubMenuAirwaysDivId");
 		listenSubMenuOptimizationsEntry( "btnOptimizationsId" , "mainSubMenuOptimizationsDivId");
-
+		
+		document.getElementById("btnMetar").disabled = true;
 	}
 };

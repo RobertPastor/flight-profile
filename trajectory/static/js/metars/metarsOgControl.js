@@ -66,6 +66,6 @@ class MetarsOgControl extends og.Control {
 		
 		// Make the Main Div element draggable:
 		dragElement(document.getElementById("airportsMetarsMainDivId"));
+		
 	}
-	
 }
