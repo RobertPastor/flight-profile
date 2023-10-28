@@ -64,7 +64,7 @@ def fetch_multiple(station_list=list(["CYEG", "CYOJ"])):
                     tree = ElementTree.fromstring(intext)
                 success = True
             except Exception as err:
-                print(f"Unexpected {err=}, {type(err)=}")
+                print ( err )
                 attempts = attempts + 1
                 time.sleep(random.uniform(3,60))
 
