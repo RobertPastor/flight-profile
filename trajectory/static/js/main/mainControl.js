@@ -237,6 +237,5 @@ class MainControl extends og.Control {
 		listenSubMenuAirwaysEntry( "btnAirwaysId" , "mainSubMenuAirwaysDivId");
 		listenSubMenuOptimizationsEntry( "btnOptimizationsId" , "mainSubMenuOptimizationsDivId");
 		
-		document.getElementById("btnMetar").disabled = true;
 	}
 };

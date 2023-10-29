@@ -201,13 +201,10 @@ class AirlineAirports {
 	// query the server to retrieve the waypoints of the route
 	queryAirlineRouteWayPoints( id ) {
 		
-		//let globus = this.globus;
-		
 		let LayerNamePrefix = this.LayerNamePrefix;
 	
 		let arr = id.split("-");
 		let Adep = arr[1];
-		//console.log(Adep)
 		let Ades = arr[2];
 		
 		$.ajax( {

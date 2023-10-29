@@ -104,7 +104,5 @@ class MainClass {
 				document.getElementById(button).disabled = true;
 			}
 		}
-		// temporarily disable metar button
-		document.getElementById("btnMetar").disabled = true;
 	}
 }

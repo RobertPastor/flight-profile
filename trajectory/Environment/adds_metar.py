@@ -23,8 +23,8 @@ DEBUG = False
 TESTFILE = "cyeg.xml"
 TESTFILE = "cyeg_cyoj.xml"
 
-URL = 'https://aviationweather.gov/adds/dataserver_current/httpparam?datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&hoursBeforeNow=1.5&stationString='
-
+#URL = 'https://aviationweather.gov/adds/dataserver_current/httpparam?datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&hoursBeforeNow=1.5&stationString='
+URL = "https://aviationweather.gov/api/data/metar?format=xml&ids="
 
 def degrees_to_cardinal(degrees):
     """Convert degrees >= 0 to one of 16 cardinal directions."""
@@ -78,8 +78,11 @@ def fetch_multiple(station_list=list(["CYEG", "CYOJ"])):
                 s_metar[x.tag] = x.text
     
             ''' convert some keys '''
-            if "wind_dir_degrees" in s_metar:
-                s_metar["wind_dir_compass"] = degrees_to_cardinal(s_metar["wind_dir_degrees"])
+            try:
+                if "wind_dir_degrees" in s_metar:
+                    s_metar["wind_dir_compass"] = degrees_to_cardinal(s_metar["wind_dir_degrees"])
+            except:
+                pass
             if "temp_c" in s_metar:
                 s_metar["temp_f"] = float(s_metar["temp_c"])*9.0/5.0 + 32.0
             if "wind_speed_kt" in s_metar:

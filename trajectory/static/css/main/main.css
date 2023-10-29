@@ -143,13 +143,13 @@ th {
 
 .airlineRoutesTableDiv {
 	position: absolute;
-	top : 100px;
+	top : 120px;
 	left : 10px;
 }
 
 .flightProfileTableDiv {
 	position: absolute;
-	top : 100px;
+	top : 140px;
 	left : 10px;
 }
 
@@ -201,16 +201,16 @@ th {
 	top: 100px;
 	left: 10px;
 }
-
+/* top after flight profile Main Div */
 .airlineCostsOptimizationMainDiv {
 	position: absolute;
-	top: 100px;
+	top: 160px;
 	left: 10px;
 }
-
+/* top after Costs Optim Main Div */
 .airlineCasmOptimizationMainDiv {
 	position: absolute;
-	top : 100px;
+	top : 180px;
 	left : 10px;
 }
 

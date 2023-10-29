@@ -668,10 +668,6 @@ class AirlineProfileCosts {
 		document.getElementById("btnLaunchFlightProfile").onclick = function () {
 
 			if ( ! $('#flightProfileMainDivId').is(":visible") ) {
-				/**
-				 * @todo defined in the main.js
-				 *  */ 
-				hideAllDiv(globus);
 				
 				$('#flightProfileMainDivId').show();
 								
