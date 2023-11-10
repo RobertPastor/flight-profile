@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 from django.http import JsonResponse
 
 from trajectory.models import   BadaSynonymAircraft
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 
 def getAircraft(request):
     
@@ -23,7 +23,7 @@ def getAircraft(request):
         
         badaAircraft = BadaSynonymAircraft.objects.filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
-            acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+            acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
             if acPerformance.read():
                 
                 acMaxTakeOffWeightKg = acPerformance.getMaximumMassKilograms()

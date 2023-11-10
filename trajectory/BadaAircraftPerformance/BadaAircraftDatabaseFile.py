@@ -35,33 +35,6 @@ from trajectory.models import BadaSynonymAircraft
 
 BADA_381_DATA_FILES = 'Bada381DataFiles'
 
-'''
-class BadaSynonymAircraft(object):
-    
-    # this class stores the data provided in the synonym file for one aircraft  
-    
-    def __init__(self, 
-                 aircraftICAOcode , 
-                 aircraftFullName ,
-                 OPFfilePrefix ,
-                 useSynonym):
-        
-        self.className = self.__class__.__name__
-        self.aircraftICAOcode = aircraftICAOcode
-        self.aircraftFullName = aircraftFullName
-        self.OPFfilePrefix = OPFfilePrefix
-        self.useSynonym = useSynonym
-
-    def getICAOcode(self):
-        return self.aircraftICAOcode
-    
-    def getAircraftFullName(self):
-        return self.aircraftFullName
-    
-    def getAircraftOPFfilePrefix(self):
-        return self.OPFfilePrefix
-    
-'''
     
 class BadaAircraftDatabase(object):
     ''' this class is responsible for reading the synonym file '''
@@ -69,7 +42,9 @@ class BadaAircraftDatabase(object):
     def __init__(self):
         self.className = self.__class__.__name__
         
-        self.OPFfileExtension = '.OPF'
+        #self.OPFfileExtension = '.OPF'
+        self.JsonFileExtension = '.json'
+
         self.BadaSynonymFilePath = 'SYNONYM.NEW'
         
         self.FilesFolder = os.path.dirname(__file__)
@@ -77,7 +52,7 @@ class BadaAircraftDatabase(object):
         self.BadaSynonymFilePath = (self.FilesFolder + os.path.sep + self.BadaSynonymFilePath)
 
         self.aircraftFilesFolder = BADA_381_DATA_FILES
-        self.aircraftFilesFolder = (os.path.dirname(__file__) + os.path.sep   + self.aircraftFilesFolder)
+        self.aircraftFilesFolder = os.path.join (os.path.dirname(__file__) , self.aircraftFilesFolder )
                
         self.aircraftDict = {}
 
@@ -122,7 +97,8 @@ class BadaAircraftDatabase(object):
                             aircraftFullName += item
                         
                         itemIndex += 1
-                    OPFfilePrefix = str(str(line).split()[-3])
+                    ''' 2-November-2023- move to json performance files  '''
+                    filePrefix = str(str(line).split()[-3]).replace("_","")
                     ''' situation after the item finishing with two underscores __ '''
                     if aircraftICAOcode in self.aircraftDict:
                         logging.info ( self.className + ' aircraft ICAO code already in Database' )
@@ -130,7 +106,7 @@ class BadaAircraftDatabase(object):
                         
                         badaSynonymAircraft = BadaSynonymAircraft(      AircraftICAOcode = aircraftICAOcode,
                                                                         AircraftModel = aircraftFullName,
-                                                                        AircraftFile = OPFfilePrefix,
+                                                                        AircraftFile = filePrefix,
                                                                         useSynonym = useSynonym)
                         
                         self.aircraftDict[aircraftICAOcode] = badaSynonymAircraft
@@ -142,12 +118,10 @@ class BadaAircraftDatabase(object):
             raise ValueError(self.className + ' error= {0} while reading= {1} '.format(e, self.BadaSynonymFilePath))
         return False    
 
-
     def aircraftExists(self, aircraftICAOcode):
         aircraftICAOcode = str(aircraftICAOcode).upper()
         logging.info ( self.className + ' aircraft= {0} exists= {1}'.format(aircraftICAOcode, aircraftICAOcode in self.aircraftDict ) )
         return aircraftICAOcode in self.aircraftDict
-
 
     def getAircraftFullName(self, aircraftICAOcode):
         aircraftICAOcode = str(aircraftICAOcode).upper()
@@ -157,15 +131,26 @@ class BadaAircraftDatabase(object):
         else:
             return ''
 
-
     def getAircraftPerformanceFile(self, aircraftICAOcode):
         aircraftICAOcode = str(aircraftICAOcode).upper()
         if aircraftICAOcode in self.aircraftDict:
             
             ac = self.aircraftDict[aircraftICAOcode]
-            OPFfilePrefix = ac.getAircraftOPFfilePrefix()
+            filePrefix = ac.getAircraftOPFfilePrefix().replace("_","")
             
-            filePath = os.path.dirname(__file__) + os.path.sep + ".." + os.path.sep + BADA_381_DATA_FILES + os.path.sep + OPFfilePrefix + self.OPFfileExtension
+            filePath = os.path.join ( os.path.dirname(__file__) , ".." , BADA_381_DATA_FILES , filePrefix + self.JsonFileExtension )
+            return filePath
+        
+        return ''
+    
+    def getAircraftJsonPerformanceFile(self, aircraftICAOcode):
+        aircraftICAOcode = str(aircraftICAOcode).upper()
+        if aircraftICAOcode in self.aircraftDict:
+            
+            ac = self.aircraftDict[aircraftICAOcode]
+            filePrefix = ac.getAircraftOPFfilePrefix().replace("_","")
+            
+            filePath = os.path.join ( os.path.dirname(__file__) , ".." , BADA_381_DATA_FILES , filePrefix + self.JsonFileExtension )
             return filePath
         
         return ''
@@ -184,9 +169,22 @@ class BadaAircraftDatabase(object):
         if aircraftICAOcode in self.aircraftDict:
             logging.info ( self.className + ' aircraft= {0} - found in database'.format(aircraftICAOcode) )
             ac = self.aircraftDict[aircraftICAOcode]
-            OPFfilePrefix = ac.getAircraftOPFfilePrefix()
-
-            filePath = os.path.dirname(__file__) + os.path.sep + ".." + os.path.sep + BADA_381_DATA_FILES + os.path.sep + OPFfilePrefix + self.OPFfileExtension
+            ''' 2-November-2023 - move to json performance files '''
+            filePrefix = ac.getAircraftOPFfilePrefix().replace("_","")
+            filePath = os.path.join ( os.path.dirname(__file__) , ".." , BADA_381_DATA_FILES , filePrefix + self.JsonFileExtension )
+            return os.path.exists(filePath) and os.path.isfile(filePath)
+        
+        return False
+    
+    def aircraftPerformanceJsonFileExists(self, aircraftICAOcode):
+        ''' checks that the performance file OPF exists in its specific folder '''
+        aircraftICAOcode = str(aircraftICAOcode).upper()
+        if aircraftICAOcode in self.aircraftDict:
+            logging.info ( self.className + ' aircraft= {0} - found in database'.format(aircraftICAOcode) )
+            ac = self.aircraftDict[aircraftICAOcode]
+            ''' 2-November-2023 - move to json performance files '''
+            filePrefix = ac.getAircraftOPFfilePrefix().replace("_","")
+            filePath = os.path.join ( os.path.dirname(__file__) , ".." , BADA_381_DATA_FILES , filePrefix + self.JsonFileExtension )
             return os.path.exists(filePath) and os.path.isfile(filePath)
         
         return False

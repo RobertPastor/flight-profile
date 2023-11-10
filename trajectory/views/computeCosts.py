@@ -10,7 +10,7 @@ from django.http import  JsonResponse
 
 from trajectory.models import BadaSynonymAircraft
 from airline.models import Airline, AirlineRoute, AirlineAircraft
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
 from trajectory.Environment.Constants import Kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
@@ -33,7 +33,7 @@ def computeDurationHours( durationSeconds ):
 def computeCosts(request, airlineName):
     ''' @TODO same inputs as compute profile , compute costs and comput state vector  '''
     logger.setLevel(logging.DEBUG)
-    logger.debug ("compute Flight leg related costs")
+    logger.debug ("computeCosts - compute Flight leg related costs")
     
     #routeWayPointsList = []
     if (request.method == 'GET'):
@@ -42,12 +42,12 @@ def computeCosts(request, airlineName):
         
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
 
-            logger.debug ("selected aircraft = {0}".format( aircraftICAOcode ) )
+            logger.debug ("computeCosts è selected aircraft = {0}".format( aircraftICAOcode ) )
             
             # route as string
             airlineRoute = request.GET['route']
             
-            logger.debug(airlineRoute)
+            logger.debug("computeCosts - " + airlineRoute)
             
             logger.debug ( str(airlineRoute).split("-")[0] )
             logger.debug ( str(airlineRoute).split("-")[1] )
@@ -81,7 +81,7 @@ def computeCosts(request, airlineName):
                     routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                     logger.debug ( routeAsString )
                     
-                    acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                    acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
                     if ( acPerformance.read() ):
                         #logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
                         #logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
@@ -124,8 +124,8 @@ def computeCosts(request, airlineName):
                                         }
                         return JsonResponse(response_data)
                     else:
-                        logger.info ('Error - acPerformance read failed = {0}'.format(badaAircraft.getAircraftPerformanceFile()))
-                        response_data = { 'errors' : 'acPerformance read failed = {0}'.format(badaAircraft.getAircraftPerformanceFile()) }
+                        logger.info ('Error - acPerformance read failed = {0}'.format(badaAircraft.getAircraftJsonPerformanceFile()))
+                        response_data = { 'errors' : 'acPerformance read failed = {0}'.format(badaAircraft.getAircraftJsonPerformanceFile()) }
                         return JsonResponse(response_data)
                     
                 else:
@@ -134,7 +134,7 @@ def computeCosts(request, airlineName):
                     return JsonResponse(response_data)
                 
             else:
-                logger.info ('airline  not found = {0}'.format(airlineName))
+                logger.info ('airline not found = {0}'.format(airlineName))
                 response_data = {'errors' : 'Airline not found = {0}'.format(airlineName)}
                 return JsonResponse(response_data)
                 

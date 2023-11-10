@@ -25,8 +25,7 @@ Created on 6 mars 2015
         
 '''
 
-from trajectory.BadaAircraftPerformance.BadaAircraftDatabaseFile import BadaAircraftDatabase
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 
 from trajectory.Environment.Constants import MeterSecond2Knots#  1.9438444924406
 
@@ -38,7 +37,7 @@ class FuelConsumption(object):
     
     def __init__(self, aircraftPerformance):
         self.className = self.__class__.__name__
-        assert (isinstance(aircraftPerformance, AircraftPerformance))
+        assert (isinstance(aircraftPerformance, AircraftJsonPerformance))
         self.fuelConsumptionCoeff = aircraftPerformance.getFuelConsumptionCoeff()
 
     def getFuelConsumptionCoeff(self):
@@ -50,8 +49,6 @@ class FuelConsumption(object):
             strMsg += ': fuel consumption coeff= ' + str(index) + ' coeff= ' + str(self.fuelConsumptionCoeff[index])
         return strMsg
     
-    
-
 class Engine(FuelConsumption):
     '''
     Engine Thrust Block
@@ -107,13 +104,13 @@ class Engine(FuelConsumption):
         def isPiston(self):
             return self.engineType=='Piston'
     
-    
     def __init__(self, aircraftPerformance):
         
+        self.className = self.__class__.__name__
         FuelConsumption.__init__(self, aircraftPerformance)
 
-        assert isinstance(aircraftPerformance, AircraftPerformance)
-        self.className = self.__class__.__name__
+        assert (isinstance(aircraftPerformance, AircraftJsonPerformance))
+        
         self.engineType = Engine.EngineType(aircraftPerformance.getEngineType())
         
         for index in range(0,5):
@@ -140,7 +137,6 @@ class Engine(FuelConsumption):
         assert index >= 0 and index < 5
         return self.descentThrustCoeff[index]
     
-    
     def computeNominalFuelFlowKilograms(self, 
                                         trueAirSpeedMetersSecond, 
                                         thrustNewtons, 
@@ -156,6 +152,7 @@ class Engine(FuelConsumption):
         fuel flow in Kilograms per minutes
         '''
         fuelConsumptionCoeff = self.getFuelConsumptionCoeff()
+        #print ( self.className + " - computeNominalFuelFlowKilograms - " + str(fuelConsumptionCoeff))
         if self.isJet():
             ''' true airspeed should be expressed in Knots here '''
             thrustSpecificFuelConsumption = fuelConsumptionCoeff[0] * ( 1 + ( (trueAirSpeedMetersSecond * MeterSecond2Knots) / fuelConsumptionCoeff[1]))
@@ -164,10 +161,8 @@ class Engine(FuelConsumption):
             fuelFlowKilograms = fuelFlowKilogramsPerMinute * (deltaTimeSeconds / 60.0)
             #print self.className + ': delta time = {0} second(s) - fuel flow kilograms= {1} kilograms'.format(deltaTimeSeconds, fuelFlowKilograms)
         elif self.isTurboProp():
-            raise ValueError(self.className + ': computeNominalFuelFlow: not yet implemented')
+            raise ValueError(self.className + ': computeNominalFuelFlow: - TurboProp - not yet implemented')
         else:
             raise ValueError(self.className + ': computeNominalFuelFlow: not yet implemented')
         return fuelFlowKilograms
-
-
 

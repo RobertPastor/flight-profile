@@ -13,7 +13,7 @@ from time import time
 from django.core.management.base import BaseCommand
 from airline.models import Airline, AirlineAircraft, AirlineRoute, AirlineCosts
 from trajectory.models import BadaSynonymAircraft
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
 import logging
@@ -51,7 +51,7 @@ class Command(BaseCommand):
                         routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=adepRunway, AdesRunWayName=adesRunway)
                         logger.info ( routeAsString )
                         
-                        acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                        acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftJsonPerformanceFile())
                         if ( acPerformance.read() ):
                             #print ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
                             #print ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   

@@ -142,18 +142,18 @@ def writeAirlineCostsResults(workbook , airlineName):
                     
         worksheet.autofit()
     else:
-        print ( "airline not found")
+        logger.debug ("Error - airline = {0} not found".format( airlineName ) )
         
         
 def writeAirlineCostsMinimization( workbook , airlineName ):
-    pass
+    
     worksheet = workbook.add_worksheet("Airline Costs Minimization")
     styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
     writeHeaders(worksheet, styleLavender , costsMinimizationHeaders)
     
     airline = Airline.objects.all().filter(Name=airlineName).first()
     if airline:
-            pass
+            
             nbFligthtLegs = AirlineRoute.objects.filter(airline=airline).count()
             aircraftInstances = AirlineAircraftInstances()
             aircraftInstancesList = aircraftInstances.computeAirlineAircraftInstances(airlineName , nbFligthtLegs)
@@ -370,7 +370,6 @@ def getAirlineCosts(request, airlineName):
     if (request.method == 'GET'):
         airline = Airline.objects.all().filter(Name=airlineName).first()
         if airline:
-            
             for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
                 
                 for airlineRoute in AirlineRoute.objects.filter(airline=airline):

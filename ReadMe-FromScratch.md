@@ -297,26 +297,6 @@ KATL/09L
 ......
 
 
-
-
-airport = PANC
-PANC/07L
-airport = PANC
-PANC/07R
-airport = PANC
-PANC/15
-airport = VABB
-VABB/09
-airport = VABB
-VABB/14
-airport = VECC
-VECC/01L
-airport = VECC
-VECC/01R
-airport = VIDP
-VIDP/09
-airport = VIDP
-VIDP/10
 airport = VIDP
 VIDP/11
 airport = VIJP

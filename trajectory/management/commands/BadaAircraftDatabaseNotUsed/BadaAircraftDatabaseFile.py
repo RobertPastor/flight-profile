@@ -42,17 +42,18 @@ class BadaAircraftDatabase(object):
     def __init__(self):
         self.className = self.__class__.__name__
         
-        self.OPFfileExtension = '.OPF'
+        #self.OPFfileExtension = '.OPF'
+        self.JsonFileExtension = '.json'
         self.BadaSynonymFilePath = 'SYNONYM.NEW'
         
         self.FilesFolder = os.path.dirname(__file__)
             
         print ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
-        self.BadaSynonymFilePath = (self.FilesFolder + os.path.sep + self.BadaSynonymFilePath)
+        self.BadaSynonymFilePath = os.path.join (self.FilesFolder ,  self.BadaSynonymFilePath)
         print ( self.className + ': file path= {0}'.format(self.BadaSynonymFilePath) )
 
         self.aircraftFilesFolder = BADA_381_DATA_FILES
-        self.aircraftFilesFolder = (os.path.dirname(__file__) + os.path.sep   + self.aircraftFilesFolder)
+        self.aircraftFilesFolder = os.path.join (os.path.dirname(__file__) , self.aircraftFilesFolder)
                
         self.aircraftDict = {}
 
@@ -123,12 +124,10 @@ class BadaAircraftDatabase(object):
             raise ValueError(self.className + ': error= {0} while reading= {1} '.format(e, self.BadaSynonymFilePath))
         return False    
 
-
     def aircraftExists(self, aircraftICAOcode):
         aircraftICAOcode = str(aircraftICAOcode).upper()
         print ( self.className + ': aircraft= {0} exists= {1}'.format(aircraftICAOcode, aircraftICAOcode in self.aircraftDict ) )
         return aircraftICAOcode in self.aircraftDict
-
 
     def getAircraftFullName(self, aircraftICAOcode):
         aircraftICAOcode = str(aircraftICAOcode).upper()
@@ -138,19 +137,18 @@ class BadaAircraftDatabase(object):
         else:
             return ''
 
-
     def getAircraftPerformanceFile(self, aircraftICAOcode):
         aircraftICAOcode = str(aircraftICAOcode).upper()
         if aircraftICAOcode in self.aircraftDict:
             
             ac = self.aircraftDict[aircraftICAOcode]
-            OPFfilePrefix = ac.getAircraftOPFfilePrefix()
+            filePrefix = ac.getAircraftOPFfilePrefix().replace("_","")
             
-            filePath = os.path.dirname(__file__) + os.path.sep + ".." + os.path.sep + BADA_381_DATA_FILES + os.path.sep + OPFfilePrefix + self.OPFfileExtension
+            #filePath = os.path.join ( os.path.dirname(__file__) , ".." , BADA_381_DATA_FILES , filePrefix + self.OPFfileExtension )
+            filePath = os.path.join ( os.path.dirname(__file__) , ".." , BADA_381_DATA_FILES , filePrefix + self.JsonFileExtension )
             return filePath
         
         return ''
-        
         
     def aircraftPerformanceFileExists(self, aircraftICAOcode):
         ''' checks that the performance file OPF exists in its specific folder '''
@@ -158,22 +156,19 @@ class BadaAircraftDatabase(object):
         if aircraftICAOcode in self.aircraftDict:
             print ( self.className + ': aircraft= {0} - found in database'.format(aircraftICAOcode) )
             ac = self.aircraftDict[aircraftICAOcode]
-            OPFfilePrefix = ac.getAircraftOPFfilePrefix()
+            filePrefix = ac.getAircraftOPFfilePrefix().replace("_","")
 
-            filePath = os.path.dirname(__file__) + os.path.sep + ".." + os.path.sep + BADA_381_DATA_FILES + os.path.sep + OPFfilePrefix + self.OPFfileExtension
+            filePath = os.path.join ( os.path.dirname(__file__) , ".." , BADA_381_DATA_FILES , filePrefix + self.JsonFileExtension )
             print ( self.className + ': aircraft= {0} - OPF file= {1} - exists= {2}'.format(aircraftICAOcode,
                                                                                           filePath,
                                                                                           os.path.exists(filePath)) )
             return os.path.exists(filePath) and os.path.isfile(filePath)
-        
         return False
-
 
     def dump(self):
         for key, value in self.aircraftDict.items():
             print ( key )
             print ( self.getAircraftFullName(key) )
-
 
     def getAircraftICAOcodes(self):
         for key, value in self.aircraftDict.items():

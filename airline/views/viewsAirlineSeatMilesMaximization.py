@@ -148,7 +148,6 @@ def writeAirlineSeatMilesResults(workbook, airlineName):
     if airline:
         
         row  = 1
-            
         for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
                                                 
                 nbSeats = airlineAircraft.getMaximumNumberOfPassengers()
@@ -226,11 +225,10 @@ def writeAirlineSeatMilesMaximization(workbook, airlineName):
     styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
     
     writeHeaders(worksheet, styleLavender , headersMaximization)
-    
+    row  = 1
     airline = Airline.objects.all().filter(Name=airlineName).first()
     if airline:
         
-        row  = 1
         airlineSeatsMiles , airlineFlightLegsList = computeSeatMilesResults(airline, airlineName)
         
         prob = LpProblem("Seat-Miles-Problem", LpMaximize)
@@ -344,6 +342,7 @@ def writeAirlineSeatMilesMaximization(workbook, airlineName):
         worksheet.autofit()
         return value(prob.objective)
     else:
+        row = 1
         ColumnIndex = 0
         worksheet.write(row, ColumnIndex, "airline not found - {0}".format(airlineName))
         return 0.0

@@ -52,7 +52,8 @@ class BadaAircraft(AircraftConfiguration):
         self.ICAOcode = ICAOcode
         self.aircraftFullName = aircraftFullName
                         
-        ''' initialize the mother class aircraftConfiguration => is the Chef-d-orchestre '''
+        ''' initialize the mother class aircraftConfiguration => is the Chef d'Orchestre '''
+        print ( "Performance file path = " + badaPerformanceFilePath)
         AircraftConfiguration.__init__(self, badaPerformanceFilePath, ICAOcode , atmosphere, earth)
 
     def getWakeTurbulenceCategory(self):

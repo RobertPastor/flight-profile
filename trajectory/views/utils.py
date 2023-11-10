@@ -7,7 +7,7 @@ Created on 26 déc. 2022
 from airline.models import Airline,  AirlineAircraft, AirlineRoute, AirlineCosts
 
 from trajectory.models import  AirlineRunWay , BadaSynonymAircraft
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 
 from trajectory.Environment.Earth import EarthRadiusMeters
 from trajectory.Environment.Constants import Meter2NauticalMiles
@@ -163,7 +163,7 @@ def getAirlineTripPerformanceFromDB( airline ):
     for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
         badaAircraft = BadaSynonymAircraft.objects.all().filter( AircraftICAOcode=airlineAircraft.aircraftICAOcode ).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
-            acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+            acPerformance = AircraftJsonPerformance(airlineAircraft.aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
             if acPerformance.read():
                 for airlineRoute in AirlineRoute.objects.filter(airline = airline):
                     pass
@@ -224,8 +224,8 @@ def getAirlineAircraftsFromDB(airline):
         acReferenceWeightKg  = 0.0
         
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=airlineAircraft.aircraftICAOcode).first()
-        if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
-            acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+        if ( badaAircraft and badaAircraft.aircraftJsonPerformanceFileExists()):
+            acPerformance = AircraftJsonPerformance(airlineAircraft.aircraftICAOcode, badaAircraft.getAircraftJsonPerformanceFile())
             if acPerformance.read():
                 acMaxTakeOffWeightKg = acPerformance.getMaximumMassKilograms()
                 acMinTakeOffWeightKg = acPerformance.getMinimumMassKilograms()

@@ -27,7 +27,7 @@ Created on 12 avr. 2015
         
 '''
 
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 
 class GroundMovement(object):
     className = ''
@@ -37,7 +37,8 @@ class GroundMovement(object):
     
     def __init__(self, aircraftPerformance):
         self.className = self.__class__.__name__
-        assert (isinstance(aircraftPerformance, AircraftPerformance))
+        assert (isinstance(aircraftPerformance, AircraftJsonPerformance))
+        
         self.TakeOffLengthMeters = aircraftPerformance.getTakeOffLengthMeters()
         self.LandingLengthMeters = aircraftPerformance.getLandingLengthMeters()
     

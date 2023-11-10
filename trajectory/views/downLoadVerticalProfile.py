@@ -23,7 +23,7 @@ from django.http import JsonResponse
 
 
 from airline.models import Airline, AirlineRoute, AirlineAircraft
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 from trajectory.models import AirlineAirport
 
@@ -138,7 +138,7 @@ def createExcelVerticalProfile(request, airlineName):
                         '''  use run-ways defined in the web page '''
                         routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
                         #logger.debug ( routeAsString )
-                        acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                        acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
                         if ( acPerformance.read() ):
             
                             flightPath = FlightPath(

@@ -6,6 +6,7 @@ from trajectory.Guidance.WayPointFile import Airport
 
 BADA_381_DATA_FILES = 'Bada381DataFiles'
 OPFfileExtension = '.OPF'
+JsonFileExtension = '.json'
 # Create your models here.
 
 class BadaSynonymAircraft(models.Model):
@@ -29,12 +30,22 @@ class BadaSynonymAircraft(models.Model):
         return "{0}-{1}-{2}".format(self.AircraftICAOcode, self.Manufacturer, self.AircraftModel)
     
     def getAircraftPerformanceFile(self):
-        OPFfilePrefix = self.AircraftFile    
-        filePath = os.path.join ( os.path.dirname(__file__) , BADA_381_DATA_FILES , OPFfilePrefix + OPFfileExtension )
+    
+        aircraftFileWithoutUnderscores = str(self.AircraftFile).replace("_", "")
+        filePath =  os.path.join ( os.path.dirname(__file__) , BADA_381_DATA_FILES , aircraftFileWithoutUnderscores  + JsonFileExtension )
+        return filePath
+    
+    def getAircraftJsonPerformanceFile(self):
+        aircraftFileWithoutUnderscores = str(self.AircraftFile).replace("_", "")
+        filePath =  os.path.join ( os.path.dirname(__file__) , BADA_381_DATA_FILES , aircraftFileWithoutUnderscores  + JsonFileExtension )
         return filePath
         
     def aircraftPerformanceFileExists(self):
         filePath = self.getAircraftPerformanceFile()
+        return os.path.exists(filePath) and os.path.isfile(filePath)
+    
+    def aircraftJsonPerformanceFileExists(self):
+        filePath = self.getAircraftJsonPerformanceFile()
         return os.path.exists(filePath) and os.path.isfile(filePath)
     
     def getICAOcode(self):

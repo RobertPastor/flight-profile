@@ -22,8 +22,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 
 
-from airline.models import Airline, AirlineRoute, AirlineAircraft
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from airline.models import Airline, AirlineRoute
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
 from trajectory.models import BadaSynonymAircraft
@@ -36,7 +36,7 @@ def createKMLfile(request, airlineName):
     locale.setlocale(locale.LC_TIME, French_Locale)
     
     logger.setLevel(logging.DEBUG)
-    logging.info ("compute Flight Profile - for airline = {0}".format(airlineName))
+    logging.info ("Download KML - compute KML Profile - for airline = {0}".format(airlineName))
     
     if request.method == 'GET':
         
@@ -69,7 +69,7 @@ def createKMLfile(request, airlineName):
                 if (airlineRoute):
                     '''  use run-ways defined in the web page '''
                     routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
-                    acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                    acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
                     if ( acPerformance.read() ):
         
                         flightPath = FlightPath(

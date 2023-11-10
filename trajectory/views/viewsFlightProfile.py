@@ -15,7 +15,7 @@ from trajectory.models import  AirlineAirport
 from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB, getAirlineRoutesFromDB
 
 from trajectory.models import BadaSynonymAircraft
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
 # Create your views here.
@@ -103,7 +103,7 @@ def computeFlightProfile(request, airlineName):
     if (request.method == 'GET'):
         aircraftICAOcode = request.GET['aircraft']
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
-        if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
+        if ( badaAircraft and badaAircraft.aircraftJsonPerformanceFileExists()):
             
             airlineRoute = request.GET['route']
                                     
@@ -131,7 +131,7 @@ def computeFlightProfile(request, airlineName):
                     logger.debug( airlineRoute )
                     '''  use run-ways defined in the page '''
                     routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
-                    acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                    acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
                     if acPerformance.read():
         
                         flightPath = FlightPath(

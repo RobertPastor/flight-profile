@@ -1,16 +1,15 @@
 
 from time import time
-import logging
 
 from django.core.management.base import BaseCommand
 from trajectory.models import BadaSynonymAircraft
 from airline.models import AirlineRoute
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
 class Command(BaseCommand):
-    help = 'Coùputes one predefined trajectory for test purpose only'
+    help = 'Computes one predefined trajectory for test purpose only'
 
     def handle(self, *args, **options):
         
@@ -23,7 +22,7 @@ class Command(BaseCommand):
         AdepRunway = "36R"
         AdesRunway = "25L"
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
-        if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
+        if ( badaAircraft and badaAircraft.aircraftJsonPerformanceFileExists()):
             print ( badaAircraft )
             Adep = str(route).split("-")[0]
             Ades = str(route).split("-")[1]
@@ -31,23 +30,22 @@ class Command(BaseCommand):
             if ( airlineRoute ):
                 routeAsString = airlineRoute.getRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway )
                 print ( routeAsString )
-                acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                acPerformance = AircraftJsonPerformance(badaAircraft.getICAOcode(), badaAircraft.getAircraftJsonPerformanceFile())
                 if acPerformance.read():
                     print ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
                     print ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
                     print ( "Cruise Mach = {0}".format(acPerformance.getMaxOpMachNumber() ) )   
     
                     flightPath = FlightPath(
-                                    route = routeAsString, 
-                                    aircraftICAOcode = aircraftICAOcode,
+                                    route                = routeAsString, 
+                                    aircraftICAOcode     = aircraftICAOcode,
                                     RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
-                                    cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                    takeOffMassKilograms = 67000.0)
+                                    cruiseMach           = acPerformance.getMaxOpMachNumber(), 
+                                    takeOffMassKilograms = acPerformance.getReferenceMassKilograms())
     
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
                     
                     print ( "Trajectory Compute - distance flown = {0:.2f} meters - {1:.2f} Nm".format( flightPath.flightLengthMeters , flightPath.flightLengthMeters * Meter2NauticalMiles ))
-                    print ( "=========== Flight Plan create output files -end =========== " )
                     
                     end_time = time()
                     seconds_elapsed = end_time - start_time

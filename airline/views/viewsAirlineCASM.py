@@ -123,7 +123,7 @@ def writeAirlineCasmResults(workbook , airlineName):
     
         worksheet.autofit()
     else:
-        logger.error ( " airline not found = {0}".format( airlineName ))
+        #logger.error ( " airline not found = {0}".format( airlineName ))
         ColumnIndex = 0
         worksheet.write(row, ColumnIndex, airlineName)
         
@@ -277,7 +277,7 @@ def writeAirlineCasmOptimizationResults(workbook , airlineName):
 
     else:
         ''' worksheet will contain only the headers '''
-        print ( "airline not found = {}".format( airlineName ))
+        #print ( "airline not found = {}".format( airlineName ))
         return value_prob_objective
         
 

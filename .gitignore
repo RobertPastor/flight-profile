@@ -155,4 +155,13 @@ trajectory/ResultsFiles/A320-KLAX-KATL-24R-Los-Angeles-Intl-27R-Atlanta-Hartsfie
 trajectory/ResultsFiles/A320-KLAX-KATL-Altitude-MSL-Speed-History-04-Jun-2023-17h50m53.xlsx
 
 # flight profile tests results
-FlightProfile/tests/*.json
+FlightProfile/tests/results/*.json
+FlightProfile/tests/results/*.xlsx
+
+# old configuration files
+trajectory/Bada381DataFiles/A320__.OPF.txt
+trajectory/Bada381DataFiles/A332__.OPF.txt
+trajectory/Bada381DataFiles/B738__.OPF.txt
+trajectory/Bada381DataFiles/A320__.OPF.txt
+trajectory/Bada381DataFiles/A332__.OPF.txt
+trajectory/Bada381DataFiles/B738__.OPF.txt

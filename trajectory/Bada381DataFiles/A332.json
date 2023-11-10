@@ -1,141 +1,206 @@
 {
 	"aircraft" : {
-			"name" : "Airbus A330",
-			"manufacturer": "Airbus",
-			"variant": "A330-200",
-			"ICAO": "A332",
-			"source": "https://www.airbus.com/sites/g/files/jlcbta136/files/2022-08/Airbus-Commercial-Aircraft-AC-A330.pdf"	,
-			"wakeTurbulence" : "High",
-
-			"engines": {
-				"number": 2,
-				"type": "jet",
-				"name": "TRENT 772B"
+		"name" : "Airbus A330",
+		"manufacturer": "Airbus",
+		"variant": "A330-200",
+		"ICAO": "A332",
+		"source": "https://www.airbus.com/sites/g/files/jlcbta136/files/2022-08/Airbus-Commercial-Aircraft-AC-A330.pdf"	,
+		"wakeTurbulence" : "High",
+		"engines": {
+			"number": 2,
+			"type": "jet",
+			"name": "TRENT 772B"
+		},
+		"envelope": {
+			"MaxOpSpeedCasKnots" : {
+				"unit" : "knots",
+				"value": 330.0
 			},
-			"envelope": {
-				"MaxOpSpeedCasKnots" : {
+			"MaxOpMachNumber" : {
+				"unit" : "knots",
+				"value": 0.86
+			},
+			"MaxOpAltitudeFeet" : {
+				"unit" : "feet",
+				"value": 41000.0
+			}
+		},
+		"aerodynamics": {
+			"wingsurface": {
+				"unit" : "m²",
+				"value": 361.6	
+			}
+		},
+		"mass": {
+			"minimum": {
+				"unit" : "kg",
+				"value": 120600.0
+			},
+			"reference": {
+				"unit" : "kg",
+				"value": 190000.0
+			},
+			"maximum": {
+				"unit" : "kg",
+				"value": 230000.0
+			},
+			"maxPayload": {
+				"unit" : "kg",
+				"value": 47400.0
+			},
+			"maxFuelCapacity": {
+				"source": "https://fr.wikipedia.org/wiki/Airbus_A330",
+				"unit" : "kg",
+				"value": 113636.53
+			}
+		},
+		"configuration": {
+			"takeOff" : {
+				"takeOffLength" : {
+					"unit": "meters",
+					"value": 2713.0
+				},
+				"stallSpeed" : {
 					"unit" : "knots",
-					"value": 330.0
+					"value": 117.0
 				},
-				"MaxOpMachNumber" : {
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.03263
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.03541
+				}
+			},
+			"initialClimb" : {
+				"stallSpeed" : {
 					"unit" : "knots",
-					"value": 0.86
+					"value": 126.0
 				},
-				"MaxOpAltitudeFeet" : {
-					"unit" : "feet",
-					"value": 41000.0
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.0197
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.04157
 				}
 			},
-			"aerodynamics": {
-				"wingsurface": {
-					"unit" : "m²",
-					"value": 361.6	
+			"cruise" : {
+				"stallSpeed" : {
+					"unit" : "knots",
+					"value": 141.0
+				},
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.018953
+				},
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.032965
 				}
 			},
-			"mass": {
-				"minimum": {
-					"unit" : "kg",
-					"value": 120600.0
+			"approach" : {
+				"stallSpeed" : {
+					"unit" : "knots",
+					"value": 111.0
 				},
-				"reference": {
-					"unit" : "kg",
-					"value": 190000.0
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.056400
 				},
-				"maximum": {
-					"unit" : "kg",
-					"value": 230000.0
-				},
-				"maxPayload": {
-					"unit" : "kg",
-					"value": 47400.0
-				},
-				"maxFuelCapacity": {
-					"source": "https://fr.wikipedia.org/wiki/Airbus_A330",
-					"unit" : "kg",
-					"value": 113636.53
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.03221
 				}
 			},
-			"configuration": {
-				"takeOff" : {
-					"stallSpeed" : {
-						"unit" : "knots",
-						"value": 117.0
-					},
-					"dragCD0": {
-						"name": "dragCoeffCD0",
-						"unit": "none",
-						"value": 0.03263
-					},
-					"dragCD2": {
-						"name": "dragCoeffCD2",
-						"unit": "none",
-						"value": 0.03541
-					}
+			"landing" : {
+				"landingLength" : {
+					"unit": "meters",
+					"value": 1660.0
 				},
-				"initialClimb" : {
-					"stallSpeed" : {
-						"unit" : "knots",
-						"value": 126.0
-					},
-					"dragCD0": {
-						"name": "dragCoeffCD0",
-						"unit": "none",
-						"value": 0.0197
-					},
-					"dragCD2": {
-						"name": "dragCoeffCD2",
-						"unit": "none",
-						"value": 0.04157
-					}
+				"stallSpeed" : {
+					"unit" : "knots",
+					"value": 104.0
 				},
-				"cruise" : {
-					"stallSpeed" : {
-						"unit" : "knots",
-						"value": 141.0
-					},
-					"dragCD0": {
-						"name": "dragCoeffCD0",
-						"unit": "none",
-						"value": 0.018953
-					},
-					"dragCD2": {
-						"name": "dragCoeffCD2",
-						"unit": "none",
-						"value": 0.032965
-					}
+				"dragCD0": {
+					"name": "dragCoeffCD0",
+					"unit": "none",
+					"value": 0.08197
 				},
-				"approach" : {
-					"stallSpeed" : {
-						"unit" : "knots",
-						"value": 111.0
-					},
-					"dragCD0": {
-						"name": "dragCoeffCD0",
-						"unit": "none",
-						"value": 0.056400
-					},
-					"dragCD2": {
-						"name": "dragCoeffCD2",
-						"unit": "none",
-						"value": 0.03221
-					}
-				},
-				"landing" : {
-					"stallSpeed" : {
-						"unit" : "knots",
-						"value": 104.0
-					},
-					"dragCD0": {
-						"name": "dragCoeffCD0",
-						"unit": "none",
-						"value": 0.08197
-					},
-					"dragCD2": {
-						"name": "dragCoeffCD2",
-						"unit": "none",
-						"value": 0.02995
-					}
+				"dragCD2": {
+					"name": "dragCoeffCD2",
+					"unit": "none",
+					"value": 0.02995
 				}
 			}
+		},
+		"fuelConsumption" : {
+				"coeffOne" : {
+					"unit": "no",
+					"value": 0.59426
+				},
+				"coeffTwo" :{
+					"unit": "no",
+					"value": 825.84
+				}
+		},
+		"engineThrust": {
+			"maxClimbThrust" : {
+				"coeffOne": {
+					"unit": "no",
+					"value": 369950.0
+				},
+				"coeffTwo": {
+						"unit": "no",
+						"value": 55285.0
+				},
+				"coeffThree": {
+						"unit": "no",
+						"value": 0.000000000019651
+				}
+			},
+			"thrustTemperature": {
+					"coeffOne": {
+						"unit": "no",
+						"value": 8.9208
+					},
+					"coeffTwo": {
+						"unit": "no",
+						"value": 0.0089919
+					}
+			},
+			"descentThrust": {
+					"coeffLow": {
+						"unit": "no",
+						"value": 0.064051  
+					},
+					"coeffHigh" : {
+						"unit": "no",
+						"value":  0.070769
+					},
+					"coeffLevel" : {
+						"unit": "no",
+						"value":  14396.0
+					},
+					"coeffApproach" : {
+						"unit": "no",
+						"value":  0.21852
+					},
+					"coeffLanding" : {
+						"unit": "no",
+						"value": 0.33313
+					}
+			}
+		}
 	}
 }

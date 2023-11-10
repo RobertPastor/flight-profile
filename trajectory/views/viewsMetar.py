@@ -39,7 +39,7 @@ def getMetarForAirports(request, airline):
                             "TemperatureCelsius"   : metar["temp_c"],
                             "DewPointCelsius"      : metar["dewpoint_c"],
                             "WindSpeedKt"          : metar["wind_speed_kt"],
-                            "WindDirectionCompass" : metar["wind_dir_compass"],
+                            "WindDirectionCompass" : metar["wind_dir_compass"] if ("wind_dir_compass" in metar) else "",
                             "WindDirectionDegrees" : metar["wind_dir_degrees"],
                             "WindGustKt"           : metar["wind_gust_kt"] if ("wind_gust_kt" in metar) else " ",
                             "SeaLevelPressureHpa"  : metar["sea_level_pressure_mb"] if ("sea_level_pressure_mb" in metar) else " ",

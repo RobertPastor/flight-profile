@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 from trajectory.Environment.Constants  import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes, Knots2MetersPerSecond
 from trajectory.Environment.Constants  import  Meter2Feet , Feet2Meter, MeterSecond2Knots, Meter2NauticalMiles, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
 
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.BadaAircraftPerformance.BadaEngineFile import Engine
 from trajectory.BadaAircraftPerformance.BadaAircraftMassFile import AircraftMass
 from trajectory.BadaAircraftPerformance.BadaGroundMovementFile import GroundMovement
@@ -148,7 +148,10 @@ class AircraftConfiguration(FlightEnvelope):
         self.className = self.__class__.__name__ 
         
         self.badaPerformanceFilePath = badaPerformanceFilePath
-        aircraftPerformance = AircraftPerformance(badaPerformanceFilePath)
+        print ( badaPerformanceFilePath )
+        print ( ICAOcode )
+        ''' 2-November-2023 - moving to json performance files '''
+        aircraftPerformance = AircraftJsonPerformance(ICAOcode, badaPerformanceFilePath)
         assert ( aircraftPerformance.read() , True )
         
         ''' initialize base class '''

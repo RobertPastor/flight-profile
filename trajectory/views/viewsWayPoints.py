@@ -11,7 +11,7 @@ from django.http import HttpResponse , JsonResponse
 from airline.models import AirlineRoute, AirlineAircraft, Airline,    AirlineRouteWayPoints
 from trajectory.models import AirlineWayPoint, AirlineAirport
 from trajectory.models import BadaSynonymAircraft
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
 from trajectory.views.utils import  getAirlineAircraftsFromDB, getAirlineRoutesFromDB
@@ -181,7 +181,7 @@ def computeFlightProfile(request):
                 #print ( airlineRoute )
                 routeAsString = airlineRoute.getRouteAsString()
                 logger.debug ( routeAsString )
-                acPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+                acPerformance = AircraftJsonPerformance(badaAircraft.getAircraftPerformanceFile())
                 if acPerformance.read():
                     logger.debug ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
                     logger.debug ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   

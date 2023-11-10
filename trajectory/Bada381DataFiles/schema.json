@@ -47,7 +47,6 @@
 						}
 					},
 					"required": ["MaxOpSpeedCasKnots" , "MaxOpMachNumber" , "MaxOpAltitudeFeet"]
-					
 				},
 				"mass": {
 					"type": "object",
@@ -93,7 +92,6 @@
 							},
 							"required": ["unit","value"]
 						}
-						
 					},
 					"required": ["minimum","reference","maximum","maxPayload","maxFuelCapacity"]
 				},
@@ -116,6 +114,14 @@
 						"takeOff": {
 							"type" : "object",
 							"properties" : {
+								"takeOffLength" : {
+									"type": "object",
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
 								"stallSpeed" : {
 									"type": "object",
 									"properties" : {
@@ -173,7 +179,7 @@
 							},
 							"required": ["stallSpeed","dragCD0","dragCD2"]
 						},
-						"clean" : {
+						"cruise" : {
 							"type" : "object",
 							"properties" : {
 								"stallSpeed" : {
@@ -236,6 +242,14 @@
 						"landing" : {
 							"type" : "object",
 							"properties" : {
+								"landingLength" : {
+									"type": "object",
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
 								"stallSpeed" : {
 									"type": "object",
 									"properties" : {
@@ -261,12 +275,139 @@
 									"required": ["unit","value"]
 								}
 							},
-							"required": ["stallSpeed","dragCD0","dragCD2"]
+							"required": ["landingLength","stallSpeed","dragCD0","dragCD2"]
 						}
-					}
+					},
+					"required": ["takeOff", "initialClimb", "cruise" , "approach", "landing"]
+				},
+				"fuelConsumption" : {
+					"type": "object" ,
+					"properties" : {
+						"coeffOne" : {
+							"type": "object" ,
+							"properties" : {
+								"unit" : {"type" : "string"},
+								"value": {"type" : "number"}
+							},
+							"required": ["unit","value"]
+						},
+						"coeffTwo" : {
+							"type": "object" ,
+							"properties" : {
+								"unit" : {"type" : "string"},
+								"value": {"type" : "number"}
+							},
+							"required": ["unit","value"]
+						}
+					},
+					"required": ["coeffOne","coeffTwo"]
+				},
+				"engineThrust": {
+					"type" : "object",
+					"properties" : {
+						"maxClimbThrust" : {
+							"type" : "object",
+							"properties" : {
+								"coeffOne": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"coeffTwo": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"coeffThree": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								}
+							},
+							"required": ["coeffOne","coeffTwo","coeffThree"]
+						},
+						"thrustTemperature" : {
+							"type" : "object",
+							"properties" : {
+								"coeffOne": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"coeffTwo": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								}
+							},
+							"required": ["coeffOne","coeffTwo"]
+						},
+						"descentThrust": {
+							"type" : "object",
+							"properties" : {
+								"coeffLow": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"coeffHigh": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"coeffLevel": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"coeffApproach": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								},
+								"coeffLanding": {
+									"type": "object" ,
+									"properties" : {
+										"unit" : {"type" : "string"},
+										"value": {"type" : "number"}
+									},
+									"required": ["unit","value"]
+								}
+							},
+							"required": ["coeffLow","coeffHigh","coeffLevel","coeffApproach","coeffLanding"]
+						}
+					},
+					"required": ["maxClimbThrust","thrustTemperature","descentThrust"]
 				}
 			},
-			"required": ["name" ,"variant" , "ICAO", "wakeTurbulence" , "engines" ,"envelope", "mass" , "aerodynamics" , "configuration"]
+			"required": ["name" ,"variant" , "ICAO", "wakeTurbulence" , "engines" ,"envelope", "mass" , "aerodynamics" , "configuration", "fuelConsumption", "engineThrust"]
 		}
 	}
 }

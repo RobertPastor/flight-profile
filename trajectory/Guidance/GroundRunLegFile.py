@@ -219,10 +219,10 @@ class GroundRunLeg(Graph):
         endOfSimulation = False
         while ((endOfSimulation == False) and
                ( tas2cas(tas = trueAirSpeedMetersSecond ,
-                       altitude = self.airport.getFieldElevationAboveSeaLevelMeters(),
-                                                  temp='std',
-                                                  speed_units = 'm/s',
-                                                  alt_units = 'm') * MeterPerSecond2Knots )  < (1.2 * VStallSpeedCASKnots)):
+                         altitude = self.airport.getFieldElevationAboveSeaLevelMeters(),
+                         temp='std',
+                         speed_units = 'm/s',
+                         alt_units = 'm') * MeterPerSecond2Knots )  < (1.2 * VStallSpeedCASKnots)):
             ''' initial loop index '''
             if index == 1:
                 intermediateWayPoint = runWayEndPoint
@@ -230,11 +230,11 @@ class GroundRunLeg(Graph):
             ''' fly => increase in true air speed '''
             ''' during ground run => all the energy is used to increase the Kinetic energy => no potential energy increase '''
             endOfSimulation, deltaDistanceMeters , altitudeMeters = self.aircraft.fly(
-                                                                     elapsedTimeSeconds = elapsedTimeSeconds,
-                                                                     deltaTimeSeconds = deltaTimeSeconds, 
+                                                                     elapsedTimeSeconds       = elapsedTimeSeconds,
+                                                                     deltaTimeSeconds         = deltaTimeSeconds, 
                                                                      distanceStillToFlyMeters = distanceStillToFlyMeters,
-                                                                     currentPosition  = intermediateWayPoint,
-                                                                     distanceToLastFixMeters = distanceToLastFixMeters)
+                                                                     currentPosition          = intermediateWayPoint,
+                                                                     distanceToLastFixMeters  = distanceToLastFixMeters)
             
             trueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
             assert (((self.airport.getFieldElevationAboveSeaLevelMeters() - 10.0) <= altitudeMeters) and

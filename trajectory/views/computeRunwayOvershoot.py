@@ -5,7 +5,7 @@ Created on 23 mai 2023
 '''
 
 from airline.models import Airline
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.models import BadaSynonymAircraft
 from trajectory.models import  AirlineAirport, AirlineRunWay
 
@@ -32,13 +32,13 @@ def getBadaAircraft(aircraftICAOcode):
     if ( acBd.aircraftExists( aircraftICAOcode ) and
         acBd.aircraftPerformanceFileExists( aircraftICAOcode)):
             
-        logger.info ( 'performance file= {0}'.format(acBd.getAircraftPerformanceFile(aircraftICAOcode)) )
-        aircraft = BadaAircraft(ICAOcode = aircraftICAOcode, 
-                                        aircraftFullName = acBd.getAircraftFullName(aircraftICAOcode),
-                                        badaPerformanceFilePath = acBd.getAircraftPerformanceFile(aircraftICAOcode),
-                                        atmosphere = atmosphere,
-                                        earth = earth)
-        aircraft.dump()
+        #logger.info ( 'performance file= {0}'.format(acBd.getAircraftJsonPerformanceFile(aircraftICAOcode)) )
+        aircraft = BadaAircraft(ICAOcode                = aircraftICAOcode, 
+                                aircraftFullName        = acBd.getAircraftFullName(aircraftICAOcode),
+                                badaPerformanceFilePath = acBd.getAircraftPerformanceFile(aircraftICAOcode),
+                                atmosphere              = atmosphere,
+                                earth                   = earth)
+        #aircraft.dump()
         return aircraft
     else:
         raise ValueError( 'aircraft not found= ' + aircraftICAOcode)
@@ -48,8 +48,7 @@ def buildDepartureGroungRun(departureRunway , aircraft , departureAirport):
     ''' 
         this function manages the departure phases with a ground run 
     '''
-    
-    logger.info ( '================ build Departure Ground Run =================' )
+    logger.info ( 'RunWay Overshoot ================ build Departure Ground Run =================' )
 
     groundRun = GroundRunLeg(runway = departureRunway, aircraft = aircraft, airport = departureAirport)
     # default values not used here
@@ -72,23 +71,23 @@ def buildDepartureGroungRun(departureRunway , aircraft , departureAirport):
     return groundRun.getTotalLegDistanceMeters() , groundRun.getLastTrueAirSpeedMetersSecond()
 
 
-def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
+def computeRunwayOvershoot(request, aircraftICAOcode , airport, runway , mass):
 
     if request.method == 'GET':
 
         airline = Airline.objects.first()
         if ( airline ):
                 
-            badaSynonymAircraft = BadaSynonymAircraft.objects.filter(AircraftICAOcode=aircraft).first()
+            badaSynonymAircraft = BadaSynonymAircraft.objects.filter(AircraftICAOcode=aircraftICAOcode).first()
             if ( badaSynonymAircraft and badaSynonymAircraft.aircraftPerformanceFileExists()):
                 
-                acPerformance = AircraftPerformance(badaSynonymAircraft.getAircraftPerformanceFile()) 
+                acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaSynonymAircraft.getAircraftPerformanceFile()) 
                 if ( acPerformance.read() ):
                     
                     airportObj = AirlineAirport.objects.filter(AirportICAOcode = airport).first()
                     if ( airportObj ):
                         
-                        badaAircraft = getBadaAircraft ( aircraft )
+                        badaAircraft = getBadaAircraft ( aircraftICAOcode )
                         if ( badaAircraft ):
                             
                             runwayObj = AirlineRunWay.objects.filter( Airport = airportObj, Name = runway ).first()
@@ -139,8 +138,8 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                                 return JsonResponse(response_data)
                             
                         else:
-                            logger.info ('Aircraft  not found = {0}'.format(aircraft))
-                            response_data = {'errors' : 'Aircraft not found = {0}'.format(aircraft)}
+                            logger.info ('Aircraft  not found = {0}'.format(aircraftICAOcode))
+                            response_data = {'errors' : 'Aircraft not found = {0}'.format(aircraftICAOcode)}
                             return JsonResponse(response_data)
                         
                     else:
@@ -153,8 +152,8 @@ def computeRunwayOvershoot(request, aircraft , airport, runway , mass):
                     return JsonResponse(response_data)
                                                                                            
             else:
-                logger.info ('Aircraft  not found = {0}'.format(aircraft))
-                response_data = {'errors' : 'Aircraft not found = {0}'.format(aircraft)}
+                logger.info ('Aircraft  not found = {0}'.format(aircraftICAOcode))
+                response_data = {'errors' : 'Aircraft not found = {0}'.format(aircraftICAOcode)}
                 return JsonResponse(response_data)
                 
         else:

@@ -9,7 +9,7 @@ from django.http import  JsonResponse
 # Create your views here.
 from airline.models import Airline, AirlineAircraft
 from trajectory.models import BadaSynonymAircraft
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 
 import logging
 logger = logging.getLogger(__name__)
@@ -20,10 +20,10 @@ def getAirlineFleetFromDB(airline):
     for airlineAircraft in AirlineAircraft.objects.filter(airline = airline):
         
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=airlineAircraft.aircraftICAOcode).first()
-        if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
-            #print ( badaAircraft )
+        if ( badaAircraft and badaAircraft.aircraftJsonPerformanceFileExists()):
+            print ( badaAircraft.getAircraftJsonPerformanceFile() )
             
-            aircraftPerformance = AircraftPerformance(badaAircraft.getAircraftPerformanceFile())
+            aircraftPerformance = AircraftJsonPerformance(badaAircraft.getICAOcode(), badaAircraft.getAircraftJsonPerformanceFile())
             if ( aircraftPerformance.read() ):
             
                 #logger.debug ( str ( airlineAircraft ) )
@@ -35,9 +35,9 @@ def getAirlineFleetFromDB(airline):
                     "MaxNumberOfPassengers"       : airlineAircraft.maximumOfPassengers,
                     "CostsFlyingHoursDollars"     : airlineAircraft.costsFlyingPerHoursDollars,
                     "CrewCostsFlyingHoursDollars" : airlineAircraft.crewCostsPerFlyingHoursDollars,
-                    "MinimumTakeOffMassKg"        : aircraftPerformance.getMinimumMassTons() * 1000.0,
+                    "MinimumTakeOffMassKg"        : aircraftPerformance.getMinimumMassKilograms() ,
                     "ReferenceMassKg"             : aircraftPerformance.getReferenceMassKilograms(),
-                    "MaximumTakeOffMassKg"        : aircraftPerformance.getMaximumMassTons() * 1000.0,
+                    "MaximumTakeOffMassKg"        : aircraftPerformance.getMaximumMassKilograms() ,
                     "AircraftTurnAroundTimeMinutes"       : airlineAircraft.getTurnAroundTimesMinutes()
                     })
             

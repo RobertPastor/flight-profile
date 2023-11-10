@@ -6,7 +6,7 @@ Created on 1 juil. 2023
 
 import os
 from django.core.management.base import BaseCommand
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceJsonFile import AircraftJsonPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.Bada381DataFiles import getBadaFilePath
 
 class Command(BaseCommand):

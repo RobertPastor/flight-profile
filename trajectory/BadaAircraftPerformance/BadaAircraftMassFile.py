@@ -23,7 +23,7 @@
         You should have received a copy of the GNU General Public License
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 
 Kilogram2Pounds = 2.20462262 # 1 kilogram = 2.204 lbs
 
@@ -47,11 +47,11 @@ class AircraftMass(object):
     
     def __init__(self, aircraftPerformance):
         
-        assert isinstance(aircraftPerformance, AircraftPerformance)
+        assert isinstance(aircraftPerformance, AircraftJsonPerformance)
         self.className = self.__class__.__name__
-        self.referenceMassKilograms = aircraftPerformance.getReferenceMassTons()*1000.
-        self.minimumMassKilograms = aircraftPerformance.getMinimumMassTons()*1000.
-        self.maximumMassKilograms = aircraftPerformance.getMaximumMassTons()*1000.
+        self.referenceMassKilograms = aircraftPerformance.getReferenceMassKilograms()
+        self.minimumMassKilograms = aircraftPerformance.getMinimumMassKilograms()
+        self.maximumMassKilograms = aircraftPerformance.getMaximumMassKilograms()
         self.maximumPayLoadMassKilograms = aircraftPerformance.getMaximumPayLoadMassKilograms()
         ''' aircraft mass is computed adding the pay-load to the minimum and adding the fuel mass '''
         self.currentMassKilograms = self.referenceMassKilograms

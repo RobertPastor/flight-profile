@@ -28,7 +28,7 @@ this class is responsible for managing the AeroDynamics data provided for each a
 '''
 import logging 
 
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 
 from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.Environment.Earth import Earth
@@ -39,7 +39,7 @@ class AeroDynamics(object):
     className = ''
     AeroDynamicsLine = 3
     WingAreaSurfaceSquareMeters = 0.0
-    VstallKcas = {}
+    #VstallKcas = {}
     DragCoeff = {}
     LandingGearDragCoeff = 0.0
     atmosphere = None
@@ -53,7 +53,10 @@ class AeroDynamics(object):
         
         ''' need atmosphere to compute stall speed from air density at airport altitude '''
         self.className = self.__class__.__name__
-        assert (isinstance(aircraftPerformance, AircraftPerformance))
+        
+        assert (isinstance(aircraftPerformance, AircraftJsonPerformance))
+        self.aircraftPerformance = aircraftPerformance
+        
         self.WingAreaSurfaceSquareMeters = aircraftPerformance.getWingAreaSurfaceSquareMeters()
         
         assert (isinstance(atmosphere, Atmosphere) and not(atmosphere is None))
@@ -72,20 +75,37 @@ class AeroDynamics(object):
         CD 4 AP   2         .10000E+03   .46986E-01   .35779E-01   .00000E+00 /
         CD 5 LD   FULL      .94000E+02   .97256E-01   .36689E-01   .00000E+00 /
         '''
-        self.VstallKcas = aircraftPerformance.getVstallKcasKnots()
-        self.DragCoeff = aircraftPerformance.getDragCoeff()
-        self.LandingGearDragCoeff = aircraftPerformance.getLandingGearDragCoeff()
+        #self.VstallKcas = aircraftPerformance.getVstallKcasKnots()
+        #self.LandingGearDragCoeff = aircraftPerformance.getLandingGearDragCoeff()
+        self.DragCoeff["CD0"]={}
+        self.DragCoeff["CD2"]={}
+        for phase in ['CR', 'IC', 'TO', 'AP', 'LD']:
+            if phase =="TO":
+                newPhase = "takeOff"
+            if phase == "IC":
+                newPhase = "initialClimb"
+            if phase == "CR":
+                newPhase = "cruise"
+            if phase == "AP":
+                newPhase = "approach"
+            if phase == "LD":
+                newPhase = "landing"
+            self.DragCoeff["CD0"][phase] = aircraftPerformance.getDragCoeff("dragCD0",newPhase)
+            self.DragCoeff["CD2"][phase] = aircraftPerformance.getDragCoeff("dragCD2",newPhase)
         
         logging.info ( self.className + ': Wing Area Surface= {0} Square-Meters'.format(self.WingAreaSurfaceSquareMeters) )
-        logging.info ( self.className + ': stall speed= {0} knots'.format(self.VstallKcas) )
-        
+        #logging.info ( self.className + ': stall speed= {0} knots'.format(self.VstallKcas) )
         
     def getVstallKcas(self, phase):
         ''' calibrated air speed in Knots '''
         assert (phase in ['CR', 'IC', 'TO', 'AP', 'LD'])
-        return self.VstallKcas[phase]
+            
+        ''' 2-November-2023 - moving to json performance files '''
+        return self.aircraftPerformance.getVstallKcasKnots(phase)
+        #return self.VstallKcas[phase]
         
     def getDragCoeff(self, phase):
+        #print ( self.className + " Drag Coeff -> phase = {0}".format(phase) )
         assert (phase in ['CR', 'IC', 'TO', 'AP', 'LD'])
         CD0 = self.DragCoeff['CD0'][phase]
         CD2 = self.DragCoeff['CD2'][phase]

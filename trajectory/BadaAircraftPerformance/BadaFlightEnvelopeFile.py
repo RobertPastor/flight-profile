@@ -26,7 +26,7 @@ Created on 26 mars 2015
 '''
 import logging
 
-from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
+from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.BadaAircraftPerformance.BadaAeroDynamicsFile import AeroDynamics
 from trajectory.BadaAircraftPerformance.BadaAircraftStateVectorFile import StateVector
 
@@ -91,7 +91,8 @@ class FlightEnvelope(AeroDynamics):
         assert isinstance(atmosphere, Atmosphere)
         self.atmosphere = atmosphere
         
-        assert isinstance(aircraftPerformance, AircraftPerformance)
+        assert (isinstance(aircraftPerformance, AircraftJsonPerformance))
+        
         self.MaxOpSpeedCasKnots = aircraftPerformance.getVmoCasKnots()
         self.MaxOpMachNumber = aircraftPerformance.getMaxOpMachNumber()
         self.MaxOpAltitudeFeet = aircraftPerformance.getMaxOpAltitudeFeet()

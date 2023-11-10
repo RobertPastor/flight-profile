@@ -56,7 +56,6 @@ def fortran_float(input_string):
             raise ValueError()
     return fl
 
-
 class AircraftPerformance(object):
     className = ''
     ''' line in the OPF file - first line has index 0 '''
@@ -74,7 +73,7 @@ class AircraftPerformance(object):
     
     def __init__(self, aircraftPerformanceFilePath):
         self.className = self.__class__.__name__
-
+        print ( self.className + " --> file path = " + aircraftPerformanceFilePath)
         self.filePath = aircraftPerformanceFilePath
             
     def exists(self):
