@@ -759,6 +759,7 @@ class AirlineProfileCosts {
 		document.getElementById("btnComputeFlightProfileId").onclick = function () {
 				
 			document.getElementById("btnComputeFlightProfileId").disabled = true;
+			SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 			
 			let aircraft = $("#airlineAircraftId option:selected").val();
 			let route =  $("#airlineRouteId option:selected").val();
@@ -844,7 +845,7 @@ class AirlineProfileCosts {
 						},
 						complete : function() {
 							stopBusyAnimation();
-							document.getElementById("btnComputeFlightProfileId").disabled = false;
+							SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 						}
 				});
 		}

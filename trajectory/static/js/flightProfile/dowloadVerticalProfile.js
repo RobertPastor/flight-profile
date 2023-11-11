@@ -5,7 +5,7 @@ function initDownloadVerticalProfile(flightProfileControl) {
 	
 	document.getElementById("btnDownLoadVerticalProfileId").onclick = function () {
 
-		document.getElementById("btnDownLoadVerticalProfileId").disabled = true;
+		SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 
 		let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
 		let route =  $("#airlineRouteId option:selected").val();
@@ -53,10 +53,14 @@ function initDownloadVerticalProfile(flightProfileControl) {
 			link.click();
 			
 			document.getElementById("btnDownLoadVerticalProfileId").disabled = false;
+			SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
+
 
 		 };
 		 req.onerror = function (event) {
 			console.log("Error in Download Vertical Profile");
+			SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
+
 		 }
 		// send the request
 		req.send();

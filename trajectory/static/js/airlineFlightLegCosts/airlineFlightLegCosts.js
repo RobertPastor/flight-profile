@@ -91,8 +91,8 @@ class AirlineFlightLegCosts {
 		// listen to the button
 		document.getElementById("btnComputeCostsId").onclick = function () {
 			
-			document.getElementById("btnComputeCostsId").disabled = true;
-			
+			SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
+
 			let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
 			let route =  $("#airlineRouteId option:selected").val();
 			
@@ -166,7 +166,8 @@ class AirlineFlightLegCosts {
 						},
 						complete : function() {
 							stopBusyAnimation();
-							document.getElementById("btnLaunchFlightProfile").disabled = false
+							SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
+
 						},
 				});
 		}

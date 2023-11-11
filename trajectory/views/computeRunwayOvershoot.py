@@ -105,7 +105,7 @@ def computeRunwayOvershoot(request, aircraftICAOcode , airport, runway , mass):
                                     badaAircraft.setDepartureGroundRunConfiguration( 0.0 )
                                     
                                     takeOffStallSpeedCasKnots = badaAircraft.computeStallSpeedCasKnots()
-                                    logger.info ( "TakeOff Stall speed = {0} Kcas Knots".format( badaAircraft.computeStallSpeedCasKnots() ) )
+                                    logger.info ( "TakeOff Stall speed = {0:.2f} Kcas Knots".format( badaAircraft.computeStallSpeedCasKnots() ) )
                                     
                                     airportObj = airportObj.convertToEnvAirport()
                                     

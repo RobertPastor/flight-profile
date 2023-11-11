@@ -10,7 +10,7 @@ function initDownloadKMLfile(flightProfileControl) {
 	try {
 		document.getElementById(buttonId).onclick = function () {
 	
-			document.getElementById(buttonId).disabled = true;
+			SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 	
 			let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
 			let route =  $("#airlineRouteId option:selected").val();
@@ -66,11 +66,14 @@ function initDownloadKMLfile(flightProfileControl) {
 				
 				// enable button again
 				document.getElementById(buttonId).disabled = false;
-	
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
+
 			 };
 			 req.onerror = function (event) {
 				 console.error("Error in Download KML file");
 				 console.error(JSON.stringify(event));
+				 SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
+
 			 }
 			// send the request
 			req.send();

@@ -83,6 +83,7 @@ class MainClass {
 				color: "black",
 				offset: [0, -2]};
 	}
+	
 	// retrieve a standardized marker
 	getStandardOgBillBoard() {
 		return {src: "/static/images/marker.png",
@@ -94,7 +95,8 @@ class MainClass {
 	enableDisableMainMenuButtons(enable) {
 		const buttonNames = ["btnAirlineFleet","btnAirwaysId", "btnAirports",
 							"btnLaunchFlightProfile","btnLaunchAirlineCosts","btnOptimizationsId","btnLaunchCostsOptimization", "btnLaunchCASM",
-							"btnLaunchCasmOptimization","btnLaunchSeatMilesMaximization","btnLaunchFuelPlanner","btnMetar"];
+							"btnLaunchCasmOptimization","btnLaunchSeatMilesMaximization","btnLaunchFuelPlanner","btnMetar",
+							"btnComputeFlightProfileId","btnComputeCostsId","btnDownLoadVerticalProfileId","btnDownLoadKMLfileId"];
 		if ( enable ) {
 			for (const button of buttonNames) { 
 				document.getElementById(button).disabled = false;
