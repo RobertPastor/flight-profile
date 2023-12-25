@@ -112,7 +112,7 @@ class BadaAircraftDatabase(object):
                         self.aircraftDict[aircraftICAOcode] = badaSynonymAircraft
                         
             f.close()
-            logging.info ( self.className + ' number of aircrafts in db= {0}'.format(len(self.aircraftDict)) )
+            logging.info ( self.className + ' number of aircrafts in db = {0}'.format(len(self.aircraftDict)) )
             return True
         except Exception as e:
             raise ValueError(self.className + ' error= {0} while reading= {1} '.format(e, self.BadaSynonymFilePath))
@@ -120,7 +120,7 @@ class BadaAircraftDatabase(object):
 
     def aircraftExists(self, aircraftICAOcode):
         aircraftICAOcode = str(aircraftICAOcode).upper()
-        logging.info ( self.className + ' aircraft= {0} exists= {1}'.format(aircraftICAOcode, aircraftICAOcode in self.aircraftDict ) )
+        logging.info ( self.className + ' - aircraft= {0} exists= {1}'.format(aircraftICAOcode, aircraftICAOcode in self.aircraftDict ) )
         return aircraftICAOcode in self.aircraftDict
 
     def getAircraftFullName(self, aircraftICAOcode):
@@ -136,6 +136,7 @@ class BadaAircraftDatabase(object):
         if aircraftICAOcode in self.aircraftDict:
             
             ac = self.aircraftDict[aircraftICAOcode]
+            ''' November 2023 - move to json performance files '''
             filePrefix = ac.getAircraftOPFfilePrefix().replace("_","")
             
             filePath = os.path.join ( os.path.dirname(__file__) , ".." , BADA_381_DATA_FILES , filePrefix + self.JsonFileExtension )
@@ -162,7 +163,6 @@ class BadaAircraftDatabase(object):
                 acICAOcode = key
         return acICAOcode
             
-        
     def aircraftPerformanceFileExists(self, aircraftICAOcode):
         ''' checks that the performance file OPF exists in its specific folder '''
         aircraftICAOcode = str(aircraftICAOcode).upper()

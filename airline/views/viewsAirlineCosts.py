@@ -14,7 +14,6 @@ from django.shortcuts import HttpResponse
 
 from pulp import LpProblem , LpMinimize ,  LpVariable, lpSum, LpStatus ,  PULP_CBC_CMD, value, LpBinary
 
-
 from django.http import  JsonResponse
 from airline.models import Airline, AirlineCosts, AirlineAircraft, AirlineRoute
 
@@ -30,7 +29,7 @@ costsHeaders = ['airline' , 'aircraft'  , 'departureAirport' , 'adepRunway' , 'a
 costsMinimizationHeaders = [ 'airline' , 'Solver Status', 'aircraft' , 'departureAirport' , 'adepRunway' , 'arrivalAirport' , 'adesRunway' , 'totalCostsUSdollars' ]
 
 
-def writeReadMe(workbook, request, airlineName):
+def writeReadMe(workbook, airlineName):
 
     wsReadMe = workbook.add_worksheet("ReadMe")
     styleEntete = workbook.add_format({'bold': False, 'border':True})
@@ -136,8 +135,7 @@ def writeAirlineCostsResults(workbook , airlineName):
                     
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, totalCostsUSdollars )
-                    
-                    
+                         
                     row = row + 1
                     
         worksheet.autofit()
@@ -320,7 +318,7 @@ def createExcelWorkbook(memoryFile, request, airlineName):
     ''' create the EXCEL workbook '''
     wb = Workbook(memoryFile)
     ''' write the readme sheet '''
-    row , wsReadMe = writeReadMe(workbook=wb, request=request, airlineName=airlineName)
+    row , wsReadMe = writeReadMe(workbook=wb, airlineName=airlineName)
     ''' write the costs results '''
     writeAirlineCostsResults(workbook=wb , airlineName=airlineName)
     ''' write costs minimization '''

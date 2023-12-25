@@ -105,7 +105,6 @@ class AeroDynamics(object):
         #return self.VstallKcas[phase]
         
     def getDragCoeff(self, phase):
-        #print ( self.className + " Drag Coeff -> phase = {0}".format(phase) )
         assert (phase in ['CR', 'IC', 'TO', 'AP', 'LD'])
         CD0 = self.DragCoeff['CD0'][phase]
         CD2 = self.DragCoeff['CD2'][phase]

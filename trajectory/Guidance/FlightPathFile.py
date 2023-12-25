@@ -57,7 +57,7 @@ from trajectory.Guidance.WayPointFile import Airport
 
 from trajectory.Environment.Constants import Meter2Feet , GravityMetersPerSquareSeconds , Meter2NauticalMiles #= 0.000539956803 # One Meter = 0.0005 nautical miles
 from trajectory.Environment.Constants import Kilogram2Pounds # = 2.20462262 # 1 kilogram = 2.204 lbs
-from trajectory.Environment.Constants import MinFlightLevel, MaxFlightLevel , DescentGlideSlopeThreeDegrees
+from trajectory.Environment.Constants import MinFlightLevel, MaxFlightLevel , DescentGlideSlopeThreeDegrees, DescentGlideSlopeDistanceNauticalMiles
 
 
 class FlightPath(FlightPlan):
@@ -362,9 +362,10 @@ class FlightPath(FlightPlan):
                                                descentGlideSlopeDegrees = DescentGlideSlopeThreeDegrees)
         
         ''' if there is a fix nearer to 5 Nm of the touch-down then limit size of simulated glide slope '''
-        descentGlideSlopeSizeNautics = min(distanceToLastFixNautics / 2.0 , 5.0)
+        descentGlideSlopeSizeNautics = min(distanceToLastFixNautics / 2.0 , DescentGlideSlopeDistanceNauticalMiles)
         ''' build simulated glide slope '''
         descentGlideSlope.buildSimulatedGlideSlope(descentGlideSlopeSizeNautics)
+        
         self.firstGlideSlopeWayPoint = descentGlideSlope.getVertex(v=0).getWeight()
         logging.info ( self.className + ' top of arrival glide slope= {0}'.format(self.firstGlideSlopeWayPoint) )
         

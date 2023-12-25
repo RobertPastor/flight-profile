@@ -46,12 +46,10 @@ class AircraftJsonPerformance(object):
             if os.path.isfile(self.filePath) and os.path.isfile(self.schemaFilePath):
                                 
                 fData = open(self.filePath)
-                #print ( self.schemaFilePath )
                 self.performanceJsonData = json.load(fData)
                 
                 fSchema = open(self.schemaFilePath)
                 schema = json.load(fSchema)
-                #print ( schema )
                 
                 validate(instance = self.performanceJsonData , schema = schema )
                 #logging.info( self.className + "File = {0} is validated against schema = {1}".format( self.filePath , self.schemaFilePath))
@@ -62,7 +60,7 @@ class AircraftJsonPerformance(object):
                 return False
 
         except exceptions.ValidationError as e:
-            print(self.className + " - Invalid JSON:", e)
+            print(self.className + " - Invalid JSON: ", e)
             return False
         
     def getICAOcode(self):
@@ -140,7 +138,7 @@ class AircraftJsonPerformance(object):
             raise ValueError("Json Performance : getVstallKcasKnots - error - phase = {0} not in configuration".format(phase))
         
     def getMaxClimbThrustCoeff(self, index):
-        #print ( "Aircraft Json Performance -> Max Climb Thrust Coeff -> index = " + str(index) )
+        assert (index in range(5))
         if index==0:
             return self.performanceJsonData["aircraft"]["engineThrust"]["maxClimbThrust"]["coeffOne"]["value"]
         if index==1:
@@ -151,10 +149,12 @@ class AircraftJsonPerformance(object):
             return self.performanceJsonData["aircraft"]["engineThrust"]["thrustTemperature"]["coeffOne"]["value"]
         if index==4:
             return self.performanceJsonData["aircraft"]["engineThrust"]["thrustTemperature"]["coeffTwo"]["value"]
+        
         return ValueError("Json Performance : getMaxClimbThrustCoeff - error - index = {0} not correct".format(index))
     
     def getDescentThrustCoeff(self, index):
-        print ( "Aircraft Json Performance -> Descent Thrust Coeff -> index = " + str(index) )
+        #print ( "Aircraft Json Performance -> Descent Thrust Coeff -> index = " + str(index) )
+        assert (index in range(5))
         if index==0:
             return self.performanceJsonData["aircraft"]["engineThrust"]["descentThrust"]["coeffLow"]["value"]
         if index==1:
@@ -166,7 +166,7 @@ class AircraftJsonPerformance(object):
         if index==4:
             return self.performanceJsonData["aircraft"]["engineThrust"]["descentThrust"]["coeffLanding"]["value"]
 
-        return 0.0
+        return ValueError("Json Performance : getDescentThrustCoeff - error - index = {0} not correct".format(index))
             
     def getDragCoeff(self, coeffType, phase):
         if phase in self.performanceJsonData["aircraft"]["configuration"]:

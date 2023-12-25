@@ -42,7 +42,7 @@ NumberOfSlopeParts = 100 # dimension less number (number of elementary legs in t
 
 class DescentGlideSlope(Graph):
     '''
-    the glide slope starts 5 Nautical miles ahead of the touch-down point
+    the glide slope starts 10 Nautical miles (ILS) ahead of the touch-down point
     '''
     className = ''
     descentGlideSlopeDegrees = 0.0
@@ -66,7 +66,7 @@ class DescentGlideSlope(Graph):
         assert isinstance(descentGlideSlopeDegrees, float)
         self.descentGlideSlopeDegrees = descentGlideSlopeDegrees
         
-        # sanity check 
+        ''' sanity check '''
         assert isinstance(arrivalAirport, Airport)
         self.arrivalAirport = arrivalAirport
 

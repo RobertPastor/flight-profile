@@ -29,12 +29,14 @@ Kilogram2Pounds = 2.20462262
 Kilogram2Pounds = 2.20462262 # 1 kilogram = 2.204 lbs
 
 KeroseneLiter2Kilograms = 0.817
+KeroseneKilogram2Liter = 1.2345679012345678
 
 # minimal radius of the final turn -> /flight-profile/trajectory/Guidance/TurnLegFile.py
 FinalArrivalTurnRadiusNauticalMiles = 5.0
 ThreeDegreesGlideSlope = 3.0
 
 DescentGlideSlopeThreeDegrees = 3.0
+DescentGlideSlopeDistanceNauticalMiles = 10.0
 
 MaxRateOfClimbFeetPerMinutes = 2000.0
 MaxRateOfDescentFeetPerMinutes = -2200.0
@@ -58,3 +60,6 @@ RollingFrictionCoefficient = 0.035
 ConstantTaxiSpeedCasKnots = 5.0 # Knots CAS ???
 
 EarthRadiusMeters = 6378135.0 # earth’s radius in meters
+
+MaxSpeedNoiseRestrictionsKnots = 250.0
+MaxSpeedNoiseRestrictionMeanSeaLevelFeet = 10000.0

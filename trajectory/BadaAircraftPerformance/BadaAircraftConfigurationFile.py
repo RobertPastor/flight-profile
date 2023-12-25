@@ -31,8 +31,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from trajectory.Environment.Constants  import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes, Knots2MetersPerSecond
-from trajectory.Environment.Constants  import  Meter2Feet , Feet2Meter, MeterSecond2Knots, Meter2NauticalMiles, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
+from trajectory.Environment.Constants import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes, Knots2MetersPerSecond
+from trajectory.Environment.Constants import  Meter2Feet , Feet2Meter, MeterSecond2Knots, Meter2NauticalMiles, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
+from trajectory.Environment.Constants import MaxSpeedNoiseRestrictionsKnots, MaxSpeedNoiseRestrictionMeanSeaLevelFeet
 
 from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.BadaAircraftPerformance.BadaEngineFile import Engine
@@ -148,11 +149,10 @@ class AircraftConfiguration(FlightEnvelope):
         self.className = self.__class__.__name__ 
         
         self.badaPerformanceFilePath = badaPerformanceFilePath
-        print ( badaPerformanceFilePath )
-        print ( ICAOcode )
+        
         ''' 2-November-2023 - moving to json performance files '''
         aircraftPerformance = AircraftJsonPerformance(ICAOcode, badaPerformanceFilePath)
-        assert ( aircraftPerformance.read() , True )
+        assert ( aircraftPerformance.read() == True )
         
         ''' initialize base class '''
         FlightEnvelope.__init__(self, aircraftPerformance, ICAOcode , atmosphere, earth)
@@ -793,6 +793,34 @@ class AircraftConfiguration(FlightEnvelope):
                 ROCD = ( MaxRateOfDescentFeetPerMinutes * Feet2Meter ) / 60.0
                 
         return ROCD
+    
+    def applySpeedRestrictionsDuringClimb(self, trueAirSpeedMetersSecond, altitudeMeanSeaLevelMeters):
+        
+        ''' during climb apply speed restriction below 10.000 feet -> speed not higher than 250 knots '''
+        if self.isInitialClimb() or self.isClimb():
+            altitudeMeanSeaLevelFeet = altitudeMeanSeaLevelMeters * Meter2Feet
+            trueAirSpeedKnots = trueAirSpeedMetersSecond * MeterSecond2Knots
+            
+            if (trueAirSpeedKnots >= MaxSpeedNoiseRestrictionsKnots) and altitudeMeanSeaLevelFeet <= MaxSpeedNoiseRestrictionMeanSeaLevelFeet:
+                return MaxSpeedNoiseRestrictionsKnots * Knots2MetersPerSecond
+            else:
+                return trueAirSpeedMetersSecond
+        else:
+            return trueAirSpeedMetersSecond
+        
+    def applySpeedRestrictionsDuringDescent(self, trueAirSpeedMetersSecond, deltaAltitudeMeters, altitudeMeanSeaLevelMeters):
+        if self.isDescent():
+            altitudeMeanSeaLevelFeet = altitudeMeanSeaLevelMeters * Meter2Feet
+            ''' wait until speed is lower than 250 knots before descending below 10.000 feet '''
+            trueAirSpeedKnots = trueAirSpeedMetersSecond * MeterSecond2Knots
+            if (trueAirSpeedKnots >= MaxSpeedNoiseRestrictionsKnots) and altitudeMeanSeaLevelFeet <= MaxSpeedNoiseRestrictionMeanSeaLevelFeet:
+                ''' do not descend more, wait until speed is reduced '''
+                return 0.0
+            else:
+                return deltaAltitudeMeters
+        else:
+            return deltaAltitudeMeters
+            
 
     def fly(self, 
             elapsedTimeSeconds, 
@@ -835,17 +863,18 @@ class AircraftConfiguration(FlightEnvelope):
                        altitude = altitudeMeanSeaLevelMeters,
                         temp='std', speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots
                         
+            ''' apply rolling friction '''
             aircraftAcceleration = thrustNewtons - dragNewtons - self.rollingFrictionCoefficient * ( aircraftMassKilograms * gravityCenterMetersPerSquaredSeconds - liftNewtons)
             aircraftAcceleration = aircraftAcceleration / aircraftMassKilograms
             trueAirSpeedMetersSecond += aircraftAcceleration * deltaTimeSeconds
             
             VStallSpeedCASKnots = self.computeStallSpeedCasKnots()
-            ''' move to Take-Off as soon as Stall CAS reached '''
+            ''' move to Take-Off as soon as 1.2 * Stall CAS reached '''
             if ( ( self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
                        altitude = altitudeMeanSeaLevelMeters,
                         temp='std', 
                         speed_units = 'm/s', 
-                        alt_units = 'm') * MeterSecond2Knots )  >= (1.2*VStallSpeedCASKnots)):
+                        alt_units = 'm') * MeterSecond2Knots )  >= (1.2 * VStallSpeedCASKnots)):
                 ''' stall speed reached '''
                 cas = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
                        altitude = altitudeMeanSeaLevelMeters,
@@ -888,7 +917,7 @@ class AircraftConfiguration(FlightEnvelope):
                                                   speed_units = 'm/s',
                                                   alt_units = 'm') * MeterSecond2Knots 
             if ((casKnots >= initialClimbStallSpeedCasKnots) 
-                and (altitudeMeanSeaLevelMeters >= (self.departureAirportAltitudeMSLmeters+50.0))):
+                and (altitudeMeanSeaLevelMeters >= (self.departureAirportAltitudeMSLmeters + 50.0))):
                 logger.debug ( self.className + ' CAS= {0:.2f} knots >= Initial Climb Stall Speed= {1:.2f} knots'.format(casKnots, initialClimbStallSpeedCasKnots) )
                 self.setInitialClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
                 
@@ -913,17 +942,20 @@ class AircraftConfiguration(FlightEnvelope):
             ''' compute new True Air Speed '''
             aircraftAcceleration = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * ROCD) / trueAirSpeedMetersSecond) 
             trueAirSpeedMetersSecond += aircraftAcceleration * deltaTimeSeconds
+            ''' 14th November 2023 - apply speed restriction below 10.000 feets '''
+            trueAirSpeedMetersSecond = self.applySpeedRestrictionsDuringClimb(trueAirSpeedMetersSecond , altitudeMeanSeaLevelMeters)
+            
             ''' distance flown '''
             deltaDistanceMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees))* deltaTimeSeconds
            
-            casKnots = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
-                       altitude = altitudeMeanSeaLevelMeters ,
-                                                  temp='std',
-                                                  speed_units = 'm/s',
-                                                  alt_units = 'm') * MeterSecond2Knots 
+            casKnots = self.atmosphere.tas2cas(tas      = trueAirSpeedMetersSecond ,
+                                               altitude = altitudeMeanSeaLevelMeters ,
+                                               temp        ='std',
+                                               speed_units = 'm/s',
+                                               alt_units   = 'm') * MeterSecond2Knots 
                                                   
             ''' move from initial climb to climb as soon as speed over 250 knots and altitude above 10.000 feet '''
-            # 24th July 2022 - condition upon casKnots never reached or depending upon aircraft performaces
+            # 24th July 2022 - condition upon casKnots never reached or depending upon aircraft performances
             #if ((casKnots >= 250.0) or ((altitudeMeanSeaLevelMeters * Meter2Feet) >= 10000.0)):
             #    self.setClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
            
@@ -1086,9 +1118,11 @@ class AircraftConfiguration(FlightEnvelope):
                 else:
                     endOfSimulation = True
                 deltaAltitudeMeters = math.tan(math.radians(approachGlideSlopeDegrees)) * deltaDistanceMeters           
-
+                ''' 15th November 2023 - apply speed restrictions - wait at 10.000 feet until speed is lower to 250 knots '''
+                deltaAltitudeMeters = self.applySpeedRestrictionsDuringDescent(trueAirSpeedMetersSecond, deltaAltitudeMeters, altitudeMeanSeaLevelMeters)
                 ''' compute ROCD Rate Of Climb Descent '''
                 ROCD = deltaAltitudeMeters / deltaTimeSeconds
+                ''' compute new altitude '''
                 altitudeMeanSeaLevelMeters += deltaAltitudeMeters
                             
             ''' compute stall speed to change configuration to approach '''
@@ -1106,9 +1140,9 @@ class AircraftConfiguration(FlightEnvelope):
                 
             ''' compute new True Air Speed '''
             aircraftDeceleration = self.computeApproachDecelerationMeterPerSquareSeconds(trueAirSpeedMetersSecond = trueAirSpeedMetersSecond, 
-                                                                                         currentPosition = currentPosition,
+                                                                                         currentPosition          = currentPosition,
                                                                                          distanceStillToFlyMeters = distanceStillToFlyMeters,
-                                                                                         distanceToLastFixMeters = distanceToLastFixMeters)
+                                                                                         distanceToLastFixMeters  = distanceToLastFixMeters)
             trueAirSpeedMetersSecond += aircraftDeceleration * deltaTimeSeconds
             deltaDistanceMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees))* deltaTimeSeconds
             
