@@ -19,8 +19,8 @@ from airline.models import Airline, AirlineCosts, AirlineAircraft, AirlineRoute
 from trajectory.Environment.Constants import KeroseneKilogram2Liter
 
 
-Headers = ['airline' , 'aircraft' , 'nbPassengers' , 'departureAirport' , 'adepRunway' , 'arrivalAirport' ,  'adesRunway' ,  
-                'isAborted' , 'takeOffMassKg'  ,  'finalMassKg' , 'massLossKg' , 'KeroseneLiter' , 'LegLenghtKiloMeters' , 'FuelEfficiencyLitersPerHundredKMPerPassenger']
+Headers = ['airline' , 'aircraft' , 'nb Passengers' , 'departure Airport' , 'adep Runway' , 'arrival Airport' ,  'ades Runway' ,  
+                'isAborted' , 'takeOff Mass Kg'  ,  'final Mass Kg' , 'mass Loss Kg' , 'Kerosene Liter' , 'Leg Length Km' , 'Fuel Efficiency - Liters per 100 Km per Passenger']
 
 def writeReadMe(workbook, airlineName):
 
@@ -39,6 +39,10 @@ def writeReadMe(workbook, airlineName):
     row = row + 1
     wsReadMe.write(row, 0 , "Date", styleLavender)
     wsReadMe.write(row, 1 , datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") , styleEntete)
+    
+    row = row + 1
+    wsReadMe.write(row, 0 , "Computation", styleLavender)
+    wsReadMe.write(row, 1 , " ( ( Kerosene Liters / leg length kilometers ) / nb passengers ) * 100. " , styleEntete)
     
     ''' Autofit the worksheet - adjust column width '''
     wsReadMe.autofit()

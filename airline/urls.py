@@ -29,7 +29,7 @@ urlpatterns = [
     path('getAirlineCasmOptimization/<slug:airlineName>' , getAirlineCasmOptimization , name = 'getAirlineCasmOptimization'),
     path('getAirlineSeatMilesXlsx/<slug:airlineName>' , getAirlineSeatsMilesMaxXlsx , name = 'getAirlineSeatsMilesMaxXlsx'),
     
-    path('getAirlineFuelEfficiency/<slug:airlineName>', getAirlineFuelEfficiencyXlsx , name = 'getAirlineFuelEfficiencyXlsx'),
+    path('airlineFuelEfficiency/<slug:airlineName>', getAirlineFuelEfficiencyXlsx , name = 'getAirlineFuelEfficiencyXlsx'),
     path('users' , viewUsers , name = 'viewUsers')
     
 ]
