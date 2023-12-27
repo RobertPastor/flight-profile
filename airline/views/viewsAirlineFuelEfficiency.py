@@ -42,7 +42,7 @@ def writeReadMe(workbook, airlineName):
     
     row = row + 1
     wsReadMe.write(row, 0 , "Computation", styleLavender)
-    wsReadMe.write(row, 1 , " ( ( Kerosene Liters / leg length kilometers ) / nb passengers ) * 100. " , styleEntete)
+    wsReadMe.write(row, 1 , " ( ( Kerosene Liters / leg length kilometers ) / seats ) * 100. " , styleEntete)
     
     ''' Autofit the worksheet - adjust column width '''
     wsReadMe.autofit()
