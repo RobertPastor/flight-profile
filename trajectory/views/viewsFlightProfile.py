@@ -130,7 +130,10 @@ def computeFlightProfile(request, airlineName):
                 if (airlineRoute):
                     logger.debug( airlineRoute )
                     '''  use run-ways defined in the page '''
-                    routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
+                    routeAsString = airlineRoute.getRouteAsString(AdepRunWayName = departureAirportRunWayName, AdesRunWayName = arrivalAirportRunWayName)
+                    ''' compute direct route when requested '''
+                    #routeAsString = airlineRoute.getDirectRouteAsString( AdepRunWayName = departureAirportRunWayName, AdesRunWayName = arrivalAirportRunWayName )
+
                     acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
                     if acPerformance.read():
         

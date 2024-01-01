@@ -31,7 +31,7 @@ def computeDurationHours( durationSeconds ):
         
 
 def computeCosts(request, airlineName):
-    ''' @TODO same inputs as compute profile , compute costs and comput state vector  '''
+    ''' @TODO same inputs as compute profile , compute costs and compute state vector  '''
     logger.setLevel(logging.DEBUG)
     logger.debug ("computeCosts - compute Flight leg related costs")
     

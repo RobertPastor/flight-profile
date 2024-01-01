@@ -17,18 +17,19 @@ class Command(BaseCommand):
         
         aircraftICAOcode = 'A320'
         route = 'KLAX-KATL'
-        route = "MMMX-KSEA"
-        route = "LEMD-EDDB"
-        AdepRunway = "36R"
-        AdesRunway = "25L"
-        badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
+        
+        AdepRunway = "24R"
+        AdesRunway = "26L"
+        badaAircraft = BadaSynonymAircraft.objects.filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftJsonPerformanceFileExists()):
             print ( badaAircraft )
             Adep = str(route).split("-")[0]
             Ades = str(route).split("-")[1]
-            airlineRoute = AirlineRoute.objects.all().filter(DepartureAirportICAOCode=Adep, ArrivalAirportICAOCode=Ades).first()
+            airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode=Adep, ArrivalAirportICAOCode=Ades).first()
             if ( airlineRoute ):
-                routeAsString = airlineRoute.getRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway )
+                ''' try with direct route '''
+                routeAsString = airlineRoute.getDirectRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway )
+                #routeAsString = airlineRoute.getRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway )
                 print ( routeAsString )
                 acPerformance = AircraftJsonPerformance(badaAircraft.getICAOcode(), badaAircraft.getAircraftJsonPerformanceFile())
                 if acPerformance.read():

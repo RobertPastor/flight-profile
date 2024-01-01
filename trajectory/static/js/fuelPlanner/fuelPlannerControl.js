@@ -86,7 +86,7 @@ class FuelPlannerControl extends og.Control {
 		div_1_0.appendChild(select_1_0);
 		
 		let label_1_1 = document.createElement("label");
-		label_1_1.innerHTML = " Adep ->" ;
+		label_1_1.innerHTML = " Departure ->" ;
 		div_1_0.appendChild(label_1_1);
 		
 		let input_1_0 = document.createElement("input");
@@ -96,7 +96,7 @@ class FuelPlannerControl extends og.Control {
 		div_1_0.appendChild(input_1_0);
 		
 		let label_1_2 = document.createElement("label");
-		label_1_2.innerHTML = " Ades ->" ;
+		label_1_2.innerHTML = " Arrival ->" ;
 		div_1_0.appendChild(label_1_2);
 		
 		let input_1_1 = document.createElement("input");
@@ -106,13 +106,15 @@ class FuelPlannerControl extends og.Control {
 		div_1_0.appendChild(input_1_1);
 		
 		let label_1_3 = document.createElement("label");
-		label_1_3.innerHTML = " Great Circle Miles ->" ;
+		label_1_3.innerHTML = " Great Circle NM ->" ;
+		label_1_3.title = " Great Circle distance between Departure and Arrival in Nautical Miles" ;
 		div_1_0.appendChild(label_1_3);
 		
 		let input_1_2 = document.createElement("input");
 		input_1_2.id = "fuelPlannerRouteLengthId" ;
 		input_1_2.maxlength = "6";
 		input_1_2.size = "6";
+		input_1_2.title = " Great Circle distance between Departure and Arrival in Nautical Miles" ;
 		div_1_0.appendChild(input_1_2);
 
 		// add div to td
@@ -128,7 +130,6 @@ class FuelPlannerControl extends og.Control {
 		let td_2_0 = document.createElement('td');
 		
 		// div
-		
 		let div_2_0 = document.createElement('div');
 		div_2_0.id = "fuelPlannerWeightId";
 		
@@ -206,13 +207,15 @@ class FuelPlannerControl extends og.Control {
 		// ------------
 		// leg length
 		let label_3_2 = document.createElement("label");
-		label_3_2.innerHTML = " Leg Length (miles) ->" ;
+		label_3_2.innerHTML = " Leg Length NM ->" ;
+		label_3_2.title = "Flight Leg Length in Nautical Miles" ;
 		div_3_0.appendChild(label_3_2);
 
 		let input_3_2 = document.createElement("input");
 		input_3_2.id = "fuelPlannerLegLengthId" ;
 		input_3_2.maxlength = "6";
 		input_3_2.size = "6";
+		input_3_2.title = "Flight Leg Length in Nautical Miles" ;
 		div_3_0.appendChild(input_3_2);
 		
 		// ------------

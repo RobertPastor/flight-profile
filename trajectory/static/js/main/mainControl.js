@@ -1,13 +1,40 @@
 
 
+function listenSubMenuFuelEntry( btnSubMenuFuelId , mainSubMenuFuelDivId) {
+	
+	document.getElementById(btnSubMenuFuelId).onclick = function () {
+		
+			let position =  $("#"+ btnSubMenuFuelId).offset();
+				
+    		// show the submenu defined in SubMenuAirways.js
+    		if ( document.getElementById(mainSubMenuFuelDivId) ) {
+				
+				$("#" + mainSubMenuFuelDivId).css({
+					'position': 'absolute',
+					'top': position.top + 5, // Leave some margin
+					'left': position.left + 5 , // Leave some margin
+					'display': 'block'
+				});
+				
+				$("#"+ mainSubMenuFuelDivId).show();
+				
+				document.getElementById(mainSubMenuFuelDivId).addEventListener("mouseleave", function (e) {
+					$("#"+ mainSubMenuFuelDivId).hide();
+				});
+			}
+    		return false;
+		};
+	
+}
+
 function listenSubMenuOptimizationsEntry( btnOptimizationsId , mainSubMenuOptimizationsDivId) {
 		
 		document.getElementById(btnOptimizationsId).onclick = function () {
 			
-			//console.log("button airways was clicked")
+			//console.log("button Optimizations was clicked")
 			let position =  $("#"+ btnOptimizationsId).offset();
 				
-    		// show the submenu defined in SubMenuAirways.js
+    		// show the submenu defined in SubMenuOptimizations.js
     		if ( document.getElementById(mainSubMenuOptimizationsDivId) ) {
 				
 				$("#" + mainSubMenuOptimizationsDivId).css({
@@ -188,21 +215,25 @@ class MainControl extends og.Control {
 		row_2_data_8.colSpan = "3";
 		
 		let menuEntryOptimizationsDiv = document.createElement('div');
-		
 		menuEntryOptimizationsDiv.innerHTML = '<div><button id="btnOptimizationsId" >Optimizations</button></div>';
 		menuEntryOptimizationsDiv.id = "menuEntryOptimizationsDivId";
-		
 		menuEntryOptimizationsDiv.title = "click to open a submenu for all optimizations";
 
 		row_2_data_8.appendChild ( menuEntryOptimizationsDiv );
 		row_2.appendChild(row_2_data_8);
 		
 		//=============
-		// 13th May 2023 - add fuel planner
+		// 13th May 2023 - add fuel subMenu
 		//=============
 		let row_2_data_12 = document.createElement('td');
-		row_2_data_12.innerHTML = '<div><button id="btnLaunchFuelPlanner" >Fuel Planner</button></div>';
-		row_2_data_12.title = "click to support computing aircraft takeoff weight while estimating the needed fuel"; 
+		row_2_data_12.id = "mainSubMenuFuelTdId";
+
+		let menuEntryFuelDiv = document.createElement('div');
+		menuEntryFuelDiv.innerHTML = '<div><button id="btnSubMenuFuelId" >Fuel</button></div>';
+		menuEntryFuelDiv.id = "menuEntryFuelDivId";
+		menuEntryFuelDiv.title = "click to open a submenu for Fuel Efficiency and Fuel Planner";
+		
+		row_2_data_12.appendChild ( menuEntryFuelDiv );
 		row_2.appendChild(row_2_data_12);
 		
 		//======
@@ -236,6 +267,8 @@ class MainControl extends og.Control {
 		// buttons are defined in this js, but ids are defined in each js that is creating a sub menu
 		listenSubMenuAirwaysEntry( "btnAirwaysId" , "mainSubMenuAirwaysDivId");
 		listenSubMenuOptimizationsEntry( "btnOptimizationsId" , "mainSubMenuOptimizationsDivId");
+		// 30th December 2023 - add a submenu for fuel efficiency and fuel planning
+		listenSubMenuFuelEntry("btnSubMenuFuelId", "mainSubMenuFuelDivId");
 		
 	}
 };

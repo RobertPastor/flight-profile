@@ -269,8 +269,8 @@ class FuelPlanner {
 	initFuelPlanner( globus ) {
 		
 		this.globus = globus;
-		// listen to the button define in MainControl.js
-		document.getElementById("btnLaunchFuelPlanner").onclick = function () {
+		// listen to the button defined in MainSubMenuFuel.js
+		document.getElementById("btnFuelPlanner").onclick = function () {
 
 			if ( ! $('#mainFuelPlannerDivId').is(":visible") ) {
 			

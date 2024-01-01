@@ -508,7 +508,7 @@ class FlightPath(FlightPlan):
         try:
             if self.isDomestic() or self.isOutBound():
                 self.endOfSimulation, initialHeadingDegrees , initialWayPoint = self.buildDeparturePhase()
-          
+            ''' end of simulation = True means the flight is aborted '''
             if ( self.endOfSimulation == False ) and ( self.isDomestic() or self.isInBound() ):
                 assert not(self.arrivalAirport is None)
                 finalRadiusOfTurnMeters = self.buildSimulatedArrivalPhase()

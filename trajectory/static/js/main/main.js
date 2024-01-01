@@ -234,6 +234,7 @@ function initTools(globus, viewExtent) {
 		globus.planet.addControl(new MainControl());
 		globus.planet.addControl(new AirlineRoutesAirwaysSubMenu());
 		globus.planet.addControl(new AirlineOptimizationsSubMenu());
+		globus.planet.addControl(new FuelSubMenu());
 		
 		// control to display help or configuration information
 		globus.planet.addControl(new HelpControl());
@@ -322,6 +323,10 @@ function initTools(globus, viewExtent) {
 		globus.planet.addControl(new FuelPlannerControl());
 		let fuelPlanner = SingletonFuelPlanner.getInstance();
 		fuelPlanner.initFuelPlanner(globus);
+		
+		// 30th December 2023 - Fuel Efficiency
+		let fuelEfficiency = SingletonFuelEfficiency.getInstance();
+		fuelEfficiency.initAirlineFuelEfficiency();
 		
 		// 1st July 2023 - add Layer Housekeeping
 		let ogLayerCleanerControl = new OgLayerCleanerControl();

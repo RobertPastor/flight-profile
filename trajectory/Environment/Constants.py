@@ -17,7 +17,6 @@ NauticalMiles2Meters = 1852.0 # in meters
 
 Knots2MetersSeconds   = 0.514444444 # meters / second
 Knots2MetersPerSecond = 0.514444444 # meters / second
-
 Knot2MetersPerSecond  = 0.514444444 # meters per second
 
 MeterPerSecond2Knots = 1.9438444924406
