@@ -37,7 +37,7 @@ class AirlineCostsOptimizationControl extends og.Control {
 		let thead = document.createElement('thead');
 		let row_1 = document.createElement('tr');
 
-		let th_list = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned', 'Adep', 'Runway', 'Ades' , 'Runway' , 'Costs US$'];
+		let th_list = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned', 'Adep', 'Runway', 'Ades' , 'Runway' , 'Reduced Climb Power' , 'Costs US$'];
 		let th = undefined;
 		th_list.forEach ( function ( element ) {
 			th = document.createElement('th');

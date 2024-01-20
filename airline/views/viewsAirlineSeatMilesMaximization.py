@@ -24,12 +24,12 @@ from trajectory.Environment.Constants import Meter2NauticalMiles
 
 from airline.views.utils import computeAirportNumberOfRunways
 
-headersResults = [ 'Airline' , 'Aircraft ICAO' , 'Aircraft' , 'Is Aborted', 'Departure', 'Airport Turn Around Time Seconds', 'Arrival', 'Airport Turn Around Time Seconds' ,
-                   'nb Seats' , 'Aircraft Turn Around Time Seconds' ,'Leg Duration Seconds' , 
-                  'Leg Distance (miles)' , 'Nb Rotations in 20 hours', 'Seat Miles Flown 20 hours (miles)']
+headersResults = [ 'Airline' , 'Aircraft ICAO' , 'Aircraft' , 'Is Aborted', 'Departure', 'Adep Turn Around Time Sec', 'Arrival', 'Ades Turn Around Time Sec' ,
+                   'nb Seats' , 'Aircraft Turn Around Time Sec' ,'Reduced Climb Power Coeff' , 'Leg Duration Sec' , 
+                  'Leg Distance Nm' , 'Nb Rotations in 20 hours', 'Seat Miles Flown 20 hours Nm']
 
-headersMaximization = [ 'Airline' , 'Aircraft' , 'Solver Status', 'Assigned', 'Departure', 'Arrival',  'nb Seats' , 'Aircraft Turn Around Times Seconds' ,'Leg Duration Seconds' , 
-                  'Leg Distance (miles)' , 'Nb Rotations in 20 hours', 'Seat Miles Flown 20 hours (miles)']
+headersMaximization = [ 'Airline' , 'Aircraft' , 'Solver Status', 'Assigned', 'Departure', 'Arrival',  'nb Seats' , 'Aircraft Turn Around Times Sec' ,'Reduced Climb Power Coeff', 
+                       'Leg Duration Sec' , 'Leg Distance Nm' , 'Nb Rotations in 20 hours', 'Seat Miles Flown 20 hours Nm']
 
 maxDailyHours= 20.0
 
@@ -100,11 +100,11 @@ def computeSeatMilesResults(airline, airlineName):
     return airlineSeatsMiles , airlineFlightLegsList
                 
                 
-def writeReadMe(workbook, request, airlineName):
+def writeReadMe(workbook, airlineName):
 
     wsReadMe = workbook.add_worksheet("ReadMe")
-    styleEntete = workbook.add_format({'bold': False, 'border':True})
-    styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
+    styleEntete = workbook.add_format({'bold': False, 'border': True})
+    styleLavender = workbook.add_format({'bold': True, 'border': True, 'bg_color': 'yellow'})
     
     row = 0
     wsReadMe.write(row, 0 , "Airline Services", styleLavender)
@@ -152,9 +152,7 @@ def writeAirlineSeatMilesResults(workbook, airlineName):
                                                 
                 nbSeats = airlineAircraft.getMaximumNumberOfPassengers()
                 turnAroundTimesSeconds = airlineAircraft.getTurnAroundTimesMinutes() * 60
-            
-                #print ( "aircraft = {0} - number of seats = {1} - turnAround times Seconds = {2}".format( airlineAircraft , nbSeats , turnAroundTimesSeconds) )
-                
+                            
                 airlineFlightLegsList = []
                 
                 for airlineRoute in AirlineRoute.objects.filter(airline=airline):
@@ -201,6 +199,10 @@ def writeAirlineSeatMilesResults(workbook, airlineName):
                         
                         ColumnIndex += 1
                         worksheet.write(row, ColumnIndex, (turnAroundTimesSeconds) )
+                        
+                        ''' 20th January 2024 - add Reduced Climb Power Coeff '''
+                        ColumnIndex += 1
+                        worksheet.write(row, ColumnIndex, (airlineCosts.reducedClimbPowerCoeff) )
                         
                         ColumnIndex += 1
                         worksheet.write(row, ColumnIndex, (airlineCosts.flightDurationSeconds) )
@@ -317,6 +319,10 @@ def writeAirlineSeatMilesMaximization(workbook, airlineName):
                     airlineCosts = AirlineCosts.objects.filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
                     if airlineCosts:
                         
+                        ''' 20th January 2024 - add Reduced Climb Power Coeff '''
+                        ColumnIndex += 1
+                        worksheet.write(row, ColumnIndex, airlineCosts.reducedClimbPowerCoeff)
+                        
                         milesFlownPerLeg = airlineCosts.finalLengthMeters * Meter2NauticalMiles
                         #print ("aircraft = {0} - flight leg = {1} - flight duration (Seconds) = {2} - distance flown (nautics) = {3}".format(airlineAircraft, airlineRoute.getFlightLegAsString() , airlineCosts.flightDurationSeconds, milesFlownPerLeg))
                         nbRotationsDay = computeNumberOfRotations ( airlineCosts.flightDurationSeconds , turnAroundTimesSeconds , airlineRoute )
@@ -338,7 +344,6 @@ def writeAirlineSeatMilesMaximization(workbook, airlineName):
                     
                     row = row + 1
                     
-        
         worksheet.autofit()
         return value(prob.objective)
     else:
@@ -348,13 +353,13 @@ def writeAirlineSeatMilesMaximization(workbook, airlineName):
         return 0.0
     
     
-def createExcelWorkbook(memoryFile, request, airlineName):
+def createExcelWorkbook(memoryFile, airlineName):
     
     ''' create the EXCEL workbook '''
     wb = Workbook(memoryFile)
     
     ''' write the readme sheet '''
-    wsReadMe, row = writeReadMe(workbook=wb, request=request, airlineName=airlineName)
+    wsReadMe, row = writeReadMe(workbook=wb, airlineName=airlineName)
     ''' write the seat miles results '''
     writeAirlineSeatMilesResults(workbook=wb , airlineName=airlineName)
     ''' write the maximisation results '''
@@ -364,9 +369,7 @@ def createExcelWorkbook(memoryFile, request, airlineName):
     wsReadMe.write(row, 0 , "Objective function - max Sum Seat Miles")
     wsReadMe.write(row, 1 , maxSumSeatMiles)
     wsReadMe.autofit()
-    
     return wb
-
 
     
 def getAirlineSeatsMilesMaxXlsx(request, airlineName):
@@ -376,23 +379,23 @@ def getAirlineSeatsMilesMaxXlsx(request, airlineName):
             
     if (request.method == 'GET'):
             
-            ''' Robert - python2 to python 3 '''
-            memoryFile = io.BytesIO() # create a file-like object 
+        ''' Robert - python2 to python 3 '''
+        memoryFile = io.BytesIO() # create a file-like object 
                         
-            # warning : we get strings from the URL query
-            wb = createExcelWorkbook(memoryFile, request, airlineName)
-            wb.close()
+        # warning : we get strings from the URL query
+        wb = createExcelWorkbook(memoryFile, airlineName)
+        wb.close()
                                 
-            filename = 'AirlineSeatMilesMaximization-{}.xlsx'.format( datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") )
+        filename = 'AirlineSeatMilesMaximization-{}.xlsx'.format( datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") )
                                 
-            response = HttpResponse( memoryFile.getvalue() )
-            response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8'
-            #response['Content-Type'] = 'application/vnd.ms-excel'
-            response["Content-Transfer-Encoding"] = "binary"
-            response['Set-Cookie'] = 'fileDownload=true; path=/'
-            response['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=filename)
-            response['Content-Length'] = memoryFile.tell()
-            return response         
+        response = HttpResponse( memoryFile.getvalue() )
+        response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8'
+        #response['Content-Type'] = 'application/vnd.ms-excel'
+        response["Content-Transfer-Encoding"] = "binary"
+        response['Set-Cookie'] = 'fileDownload=true; path=/'
+        response['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=filename)
+        response['Content-Length'] = memoryFile.tell()
+        return response         
             
     else:
-            return JsonResponse({'errors': "expecting GET method"})
+        return JsonResponse({'errors': "expecting GET method"})

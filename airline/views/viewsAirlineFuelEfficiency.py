@@ -19,8 +19,8 @@ from airline.models import Airline, AirlineCosts, AirlineAircraft, AirlineRoute
 from trajectory.Environment.Constants import KeroseneKilogram2Liter
 
 
-Headers = ['airline' , 'aircraft' , 'nb Passengers' , 'departure Airport' , 'adep Runway' , 'arrival Airport' ,  'ades Runway' ,  
-                'isAborted' , 'takeOff Mass Kg'  ,  'final Mass Kg' , 'mass Loss Kg' , 'Kerosene Liter' , 'Leg Length Km' , 'Fuel Efficiency - Liters per 100 Km per Passenger']
+Headers = ['airline' , 'aircraft' , 'nb Seats' , 'Departure Airport' , 'Departure Runway' , 'Arrival Airport' ,  'Arrival Runway' ,  
+                'isAborted' , 'takeOff Mass Kg'  ,  'final Mass Kg' , 'mass Loss Kg' , 'Kerosene Liter' , 'Leg Length Km' , 'Fuel Efficiency - Liters per 100 Km per Seat']
 
 def writeReadMe(workbook, airlineName):
 

@@ -559,8 +559,8 @@ class AirlineProfileCosts {
 			
 			let elemReducedClimbPowerCoeffInput = document.getElementById(reducedClimbPowerCoeffInputId);
 			let elemValue = elemReducedClimbPowerCoeffInput.value;
-			if ( ! Number.isInteger(+(elemValue)) ) {
-				showMessage("Reduced Climb Power Error" , "Reduced Climb must be an integer");
+			if ( ( ! Number.isInteger(+(elemValue)) ) || ( elemValue.length == 0) ) {
+				showMessage("Reduced Climb Power Error" , "Reduced Climb Power Coeff must be an integer");
 				elemReducedClimbPowerCoeffInput.value = elemDefaultMaxValue;
 			} else {
 				if ( elemValue > parseInt( elemDefaultMaxValue ) ) {
@@ -607,7 +607,7 @@ class AirlineProfileCosts {
 			//console.log(elemFL.value);
 			let elemMaxFL = document.getElementById('maxFlightLevelId');
 			
-			if ( ! Number.isInteger(+(FLvalue)) ) {
+			if ( ( ! Number.isInteger(+(FLvalue)) ) || ( FLvalue.length == 0 ) ) {
 				showMessage("Flight Level Error" , "Flight Level must be an integer");
 					elemFL.value = elemMaxFL.value;
 			} else {

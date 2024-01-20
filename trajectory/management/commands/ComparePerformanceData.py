@@ -11,7 +11,7 @@ from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import A
 from trajectory.BadaAircraftPerformance.BadaAircraftPerformanceFile import AircraftPerformance
 
 class Command(BaseCommand):
-    help = 'Load the Airports table'
+    help = 'Compare JSON Performance to legacy Performance data'
 
     def handle(self, *args, **options):
         

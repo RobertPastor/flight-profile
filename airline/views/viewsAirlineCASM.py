@@ -24,8 +24,8 @@ from airline.views.viewsAirlineCasmOptimization import computeAirlineCostsArray
 from trajectory.Environment.Constants import Kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
-headersCASM = [ 'Airline' , 'Aircraft' , 'Departure', 'Arrival', 'Is Aborted', 'nb Seats' , 'leg length Nm' , 'total Costs US$' , 'Costs per Available Seat Mile US$' ]
-headersCASMoptim = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned' , 'Departure', 'Arrival', 'nb Seats' , 'leg length (nm)' , 'total Costs US$' , 'Costs per Available Seat Mile US$' ]
+headersCASM = [ 'Airline' , 'Aircraft' , 'Departure', 'Arrival', 'Is Aborted', 'ReducedClimbPowerCoeff', 'nb Seats' , 'leg length Nm' , 'total Costs US$' , 'Costs per Available Seat Mile US$' ]
+headersCASMoptim = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'Assigned' , 'Departure', 'Arrival', 'nb Seats' , 'ReducedClimbPowerCoeff',  'leg length Nm' , 'total Costs US$' , 'Costs per Available Seat Mile US$' ]
 
 
 def writeReadMe(workbook, request, airlineName):
@@ -106,6 +106,10 @@ def writeAirlineCasmResults(workbook , airlineName):
                     
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, str(airlineCosts.isAborted) )
+                    
+                    ''' 20th January 2024 - add Reduced Climb Power Coeff '''
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, airlineCosts.reducedClimbPowerCoeff )
             
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, (nbSeats) )
@@ -234,6 +238,10 @@ def writeAirlineCasmOptimizationResults(workbook , airlineName):
                             
                             airlineCosts = AirlineCosts.objects.filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
                             if airlineCosts:
+                                
+                                ''' 20th January 2024 - add Reduced Climb Power Coeff '''
+                                ColumnIndex += 1
+                                worksheet.write(row, ColumnIndex, airlineCosts.reducedClimbPowerCoeff ) 
                                 
                                 massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
                                 fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars

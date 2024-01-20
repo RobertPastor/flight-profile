@@ -165,13 +165,15 @@ def getAirlineCostsOptimization(request, airlineName):
                 airlineRoute = AirlineRoute.objects.filter(airline=airline , DepartureAirportICAOCode=Adep  , ArrivalAirportICAOCode=Ades).first()
                 if ( airlineRoute ):
                     
-                    result["Adep"]       = airlineRoute.DepartureAirport
-                    result["Ades"]       = airlineRoute.ArrivalAirport
+                    result["Adep"] = airlineRoute.DepartureAirport
+                    result["Ades"] = airlineRoute.ArrivalAirport
                     
                     airlineAircraft = AirlineAircraft.objects.filter(airline=airline, aircraftICAOcode=acICAOcode).first()
                     if airlineAircraft:
                         airlineCosts = AirlineCosts.objects.filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
                         if airlineCosts:
+                            ''' 20th January 2024 - added Reduced Climb Performance '''
+                            result["ReducedClimbPowerCoeff"] = airlineCosts.reducedClimbPowerCoeff
                             
                             result["AdepRunway"] = airlineCosts.adepRunway
                             result["AdesRunway"] = airlineCosts.adesRunway
@@ -186,7 +188,6 @@ def getAirlineCostsOptimization(request, airlineName):
                 else:
                     result["assigned"] = "no"
                 
-
             # The optimized objective function value is printed to the screen
             logger.debug ( "Total Cost  = {0}".format( value(prob.objective) ) )
             return JsonResponse({'results': results})

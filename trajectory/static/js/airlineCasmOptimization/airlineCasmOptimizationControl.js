@@ -39,7 +39,7 @@ class AirlineCasmOptimizationControl extends og.Control {
 		let thead = document.createElement('thead');
 		let row_1 = document.createElement('tr');
 
-		let th_list = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'assigned', 'Departure', 'Arrival',  
+		let th_list = [ 'Airline' , 'Solver Status' , 'Aircraft' , 'assigned', 'Departure', 'Arrival', 'ReducedClimbPower', 
 						'Seats', 'Distance (nm)', 'Costs US$' , 'CASM US$' ];
 						
 		let th = undefined;

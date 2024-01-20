@@ -24,7 +24,6 @@ function listenSubMenuFuelEntry( btnSubMenuFuelId , mainSubMenuFuelDivId) {
 			}
     		return false;
 		};
-	
 }
 
 function listenSubMenuOptimizationsEntry( btnOptimizationsId , mainSubMenuOptimizationsDivId) {
@@ -164,6 +163,7 @@ class MainControl extends og.Control {
 		
 		//==================================================================
 		// --------- 3rd row -----------------------------------------------
+		// airfleet ... Airports ... Airways 
 		//==================================================================
 		
 		let row_2 = document.createElement('tr');

@@ -50,6 +50,9 @@ class AirlineCasmOptimization {
 				
 				.append('<td>'+ dataJson["Adep"] +'</td>')
 				.append('<td>'+ dataJson["Ades"] +'</td>')
+				
+				.append('<td>'+ dataJson["ReducedClimbPowerCoeff"] +'</td>')
+				
 				.append('<td>'+ dataJson["Seats"] +'</td>')
 				.append('<td>'+ dataJson["Miles"] +'</td>')
 				.append('<td>'+ dataJson["Costs"] +'</td>')

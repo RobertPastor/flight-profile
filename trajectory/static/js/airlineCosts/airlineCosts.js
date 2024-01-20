@@ -92,7 +92,6 @@ class AirlineCosts {
 		}
 		// set height
 		document.getElementById("airlineCostsTableId").style.height = (airlineCostsArray.length * 1)  + "px";
-
 	}
 
 

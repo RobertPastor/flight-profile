@@ -43,10 +43,11 @@ class AirlineCostsOptimization {
 	
 	showOneResult( dataJson ) {
 		// 29th April 2023 - add Adep and Ades runways 
+		// 20th January 2024 - add Reduced Climb Power Coeff
 		$("#airlineCostsOptimizationTableId")
 			.find('tbody')
 			.append($('<tr>')
-
+			
 				.append('<td>'+ dataJson["airline"] +'</td>')
 				.append('<td>'+ dataJson["status"] +'</td>')
 				.append('<td>'+ dataJson["aircraft"] +'</td>')
@@ -58,6 +59,7 @@ class AirlineCostsOptimization {
 				.append('<td>'+ dataJson["Ades"] +'</td>')
 				.append('<td>'+ dataJson["AdesRunway"] +'</td>')
 				
+				.append('<td>'+ dataJson["ReducedClimbPowerCoeff"] +'</td>')
 				.append('<td>'+ dataJson["costs"] +'</td>')
 
 			);
@@ -110,11 +112,16 @@ class AirlineCostsOptimization {
 								} else {
 									
 									$("#airlineCostsOptimizationMainDivId").show();
-											
-									//alert("Data: " + data + "\nStatus: " + status);
 									//showMessage( "End of Costs computations" , dataJson )
-									let resultsArray = dataJson["results"];
-									SingletonAirlineCostsOptimization.getInstance().showCostsResults( resultsArray );
+									if ( dataJson.hasOwnProperty("results")) {
+										let resultsArray = dataJson["results"];
+										SingletonAirlineCostsOptimization.getInstance().showCostsResults( resultsArray );
+									} else {
+										stopBusyAnimation();
+										console.error("Error - compute Costs Optim - results property is missing - Please contact your admin");
+										showMessage( "Error" , data );
+										SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
+									}
 								}								
 							},
 							error: function(data, status) {
@@ -130,7 +137,6 @@ class AirlineCostsOptimization {
 			} else {
 				
 				SingletonAirlineCostsOptimization.getInstance().hideAirlineCostsOptimizationDiv();
-				
 			}
 		}
 	}

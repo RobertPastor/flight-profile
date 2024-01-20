@@ -429,11 +429,12 @@ class AirlineCosts(models.Model):
     isAborted             = models.BooleanField()
     flightDurationSeconds = models.FloatField()
     initialTakeOffMassKg  = models.FloatField()
-    targetCruiseLevelFeet = models.FloatField(  default = 0.0 )
+    targetCruiseLevelFeet = models.FloatField( default = 0.0 )
     adepRunway            = models.CharField( max_length = 50 , default=None )
     adesRunway            = models.CharField( max_length = 50 , default=None )
     finalMassKg           = models.FloatField()
     finalLengthMeters     = models.FloatField( default = 0.0)
+    reducedClimbPowerCoeff = models.FloatField( default = 0.0)
     
     def getTakeOffMassKg(self):
         return self.initialTakeOffMassKg
@@ -452,6 +453,8 @@ class AirlineCosts(models.Model):
     
     def getFlightLegFuelBurnKg(self):
         return ( self.initialTakeOffMassKg - self.finalMassKg)
+    
+  
     
 ''' add user to track IP address of the anonymous guests '''
 class User(models.Model):

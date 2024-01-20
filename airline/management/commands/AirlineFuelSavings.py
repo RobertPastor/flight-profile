@@ -1,14 +1,15 @@
 '''
-Created on 26 janv. 2023
+Created on 16 janv. 2024
 
 @author: robert
-
 for each airline, for each aircraft, for each flight leg compute
 1) flight leg duration in seconds
 2) Take off Mass 
 3) Final Mass Kg to compute Kerosene used
+') fuel savings according to reduced climb power
 
 '''
+
 from time import time
 from django.core.management.base import BaseCommand
 from airline.models import Airline, AirlineAircraft, AirlineRoute, AirlineCosts
@@ -26,8 +27,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         
         start_time = time()
-        
-        AirlineCosts.objects.all().delete()
         
         for airline in Airline.objects.all():
             logger.info ( airline )
@@ -54,7 +53,7 @@ class Command(BaseCommand):
                         acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftJsonPerformanceFile())
                         if ( acPerformance.read() ):
                             #print ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
-                            #print ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
+                            #print ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )
                             
                             for reducedClimbPowerCoeff in range(16):
                             
@@ -64,28 +63,12 @@ class Command(BaseCommand):
                                         RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
                                         cruiseMach = acPerformance.getMaxOpMachNumber(), 
                                         takeOffMassKilograms = acPerformance.getReferenceMassKilograms(),
-                                        reducedClimbPowerCoeff = reducedClimbPowerCoeff)
+                                        reducedClimbPowerCoeff = float(reducedClimbPowerCoeff))
         
                                 abortedFlight = flightPath.computeFlight(deltaTimeSeconds = 1.0)
                                 if ( abortedFlight == False ):
                                     raise ValueError( "flight did not go to a normal end")
-                                
-                                airlineCosts = AirlineCosts(
-                                            airline = airline ,
-                                            airlineAircraft = airlineAircraft,
-                                            airlineRoute = airlineRoute,
-                                            isAborted = flightPath.abortedFlight,
-                                            flightDurationSeconds = flightPath.getFlightDurationSeconds(),
-                                            initialTakeOffMassKg = flightPath.aircraft.getAircraftInitialMassKilograms(),
-                                            targetCruiseLevelFeet = acPerformance.getMaxOpAltitudeFeet(),
-                                            adepRunway = adepRunway,
-                                            adesRunway = adesRunway,
-                                            finalMassKg =  flightPath.aircraft.getAircraftCurrentMassKilograms() ,
-                                            finalLengthMeters = flightPath.finalRoute.getLengthMeters(),
-                                            reducedClimbPowerCoeff = reducedClimbPowerCoeff
-                                            )
-                                airlineCosts.save()
-        
+
         end_time = time()
         seconds_elapsed = end_time - start_time
 

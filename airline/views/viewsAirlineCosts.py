@@ -23,7 +23,8 @@ from airline.views.utils import compute_total_costs
 
 
 ''' 29th April 2023 add cruise level and adep . Ades runways '''
-costsHeaders = ['airline' , 'aircraft'  , 'departureAirport' , 'adepRunway' , 'arrivalAirport' ,  'adesRunway' ,  'isAborted' , 'takeOffMassKg'  ,  'finalMassKg' , 'cruiseLevelFeet'  \
+''' 17th January 2024 - add Reduced Climb Power Coeff '''
+costsHeaders = ['airline' , 'aircraft'  , 'departureAirport' , 'adepRunway' , 'arrivalAirport' ,  'adesRunway' ,  'isAborted' , 'reducedClimbPowerCoeff','takeOffMassKg'  ,  'finalMassKg' , 'cruiseLevelFeet'  \
               , 'leg length Nm' , 'Specific Range Nm/kg' , 'flightDurationHours' , 'fuelCosts US$' , 'operationalCosts US$' , 'crewCosts US$' , 'totalCosts US$' ]       
 
 costsMinimizationHeaders = [ 'airline' , 'Solver Status', 'aircraft' , 'departureAirport' , 'adepRunway' , 'arrivalAirport' , 'adesRunway' , 'totalCostsUSdollars' ]
@@ -104,6 +105,10 @@ def writeAirlineCostsResults(workbook , airlineName):
                     
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, str(airlineCosts.isAborted) )
+                    
+                    ''' 17th January 2024 - add Reduced Power Climb Coeff '''
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, str(airlineCosts.reducedClimbPowerCoeff) )
                     
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, airlineCosts.initialTakeOffMassKg )

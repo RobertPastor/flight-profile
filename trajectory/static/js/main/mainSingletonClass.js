@@ -91,11 +91,13 @@ class MainClass {
 				height: 16,
 				offset: [0,-2]};
 	}
-	
+	/**
+	 * To disable or enable the buttons while a process is ongoing
+	 */
 	enableDisableMainMenuButtons(enable) {
 		const buttonNames = ["btnAirlineFleet","btnAirwaysId", "btnAirports",
 							"btnLaunchFlightProfile","btnLaunchAirlineCosts","btnOptimizationsId","btnLaunchCostsOptimization", "btnLaunchCASM",
-							"btnLaunchCasmOptimization","btnLaunchSeatMilesMaximization","mainSubMenuFuelDivId","btnMetar",
+							"btnLaunchCasmOptimization","btnLaunchSeatMilesMaximization","btnSubMenuFuelId","btnMetar",
 							"btnComputeFlightProfileId","btnComputeCostsId","btnDownLoadVerticalProfileId","btnDownLoadKMLfileId"];
 		if ( enable ) {
 			for (const button of buttonNames) { 

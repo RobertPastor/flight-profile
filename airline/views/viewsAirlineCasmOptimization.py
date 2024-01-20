@@ -161,6 +161,9 @@ def getAirlineCasmOptimization(request, airlineName):
                         airlineCosts = AirlineCosts.objects.filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
                         if airlineCosts:
                             
+                            ''' 20th January 2024 - added Reduced Climb Performance '''
+                            result["ReducedClimbPowerCoeff"] = airlineCosts.reducedClimbPowerCoeff
+
                             massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
                             fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
                                     
@@ -188,7 +191,6 @@ def getAirlineCasmOptimization(request, airlineName):
 
             # The optimized objective function value is printed to the screen
             logger.debug ( "Total CASM Objective  = {0}".format( value(prob.objective) ) )
-            
             return JsonResponse({'results': results})
             
         else:
