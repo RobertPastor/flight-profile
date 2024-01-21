@@ -20,7 +20,7 @@ from trajectory.Environment.Constants import KeroseneKilogram2Liter
 
 
 Headers = ['airline' , 'aircraft' , 'nb Seats' , 'Departure Airport' , 'Departure Runway' , 'Arrival Airport' ,  'Arrival Runway' ,  
-                'isAborted' , 'takeOff Mass Kg'  ,  'final Mass Kg' , 'mass Loss Kg' , 'Kerosene Liter' , 'Leg Length Km' , 'Fuel Efficiency - Liters per 100 Km per Seat']
+                'isAborted' , 'Reduced Climb Power Coeff', 'takeOff Mass Kg'  ,  'final Mass Kg' , 'mass Loss Kg' , 'Kerosene Liter' , 'Leg Length Km' , 'Fuel Efficiency - Liters per 100 Km per Seat']
 
 def writeReadMe(workbook, airlineName):
 
@@ -55,20 +55,25 @@ def writeHeaders(worksheet, style, headers):
     for header in headers:
         worksheet.write(row, col , header , style)
         col = col + 1
-        
+    row = row + 1
+    return row
 
 def writeAirlineFuelEfficiency(workbook, airlineName):
-    worksheet = workbook.add_worksheet("Airline Fuel Efficiency")
+    
     styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
-    writeHeaders(worksheet, styleLavender , Headers)
     
     airline = Airline.objects.all().filter(Name=airlineName).first()
     if airline:
-            
-        row  = 1
+        
         for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
-                
+            aircraftICAO = airlineAircraft.aircraftICAOcode
+            
             for airlineRoute in AirlineRoute.objects.filter(airline=airline):
+                Adep = airlineRoute.getDepartureAirportICAOcode()
+                Ades = airlineRoute.getArrivalAirportICAOcode()
+                
+                worksheet = workbook.add_worksheet("FuelEfficiency-"+aircraftICAO+"-"+Adep+"-"+Ades)
+                row = writeHeaders(worksheet, styleLavender , Headers)
                 
                 for airlineCosts in AirlineCosts.objects.all().filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute):    
                     
@@ -97,6 +102,10 @@ def writeAirlineFuelEfficiency(workbook, airlineName):
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, str(airlineCosts.isAborted) )
                     
+                    ''' add Reduced Climb Power '''
+                    ColumnIndex += 1
+                    worksheet.write(row, ColumnIndex, (airlineCosts.reducedClimbPowerCoeff) )
+                    
                     ColumnIndex += 1
                     worksheet.write(row, ColumnIndex, airlineCosts.initialTakeOffMassKg )
                     
@@ -120,31 +129,30 @@ def writeAirlineFuelEfficiency(workbook, airlineName):
                     
                     row = row + 1
                     
-        worksheet.autofit()
+                worksheet.autofit()
     else:
         logger.debug ("Error - airline = {0} not found".format( airlineName ) )
 
 
-def createExcelWorkbook(memoryFile, request, airlineName):
+def createExcelWorkbook(memoryFile, airlineName):
     ''' create the EXCEL workbook '''
     wb = Workbook(memoryFile)
     ''' write the ReadMe sheet '''
-    row , wsReadMe = writeReadMe(workbook=wb, airlineName=airlineName)
+    writeReadMe(workbook=wb, airlineName=airlineName)
     
     ''' write the airline results '''
     writeAirlineFuelEfficiency(workbook=wb , airlineName=airlineName)
-    
     return wb
 
 def getAirlineFuelEfficiencyXlsx(request, airlineName):
-    pass
+    
     if (request.method == 'GET'):
     
         ''' Robert - python2 to python 3 '''
         memoryFile = io.BytesIO() # create a file-like object 
                     
         # warning : we get strings from the URL query
-        wb = createExcelWorkbook(memoryFile, request, airlineName)
+        wb = createExcelWorkbook(memoryFile, airlineName)
         wb.close()
                             
         filename = 'AirlineFuelEfficiency-{}.xlsx'.format( datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") )
