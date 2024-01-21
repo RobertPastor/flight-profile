@@ -12,10 +12,14 @@ from trajectory.models import AirlineWayPoint
 
 class Airline(models.Model):
     Name = models.CharField( max_length = 250 , unique=True)
+    ''' define the 4 corners of the airline main airports base '''
     MinLongitudeDegrees = models.FloatField()
     MinLatitudeDegrees  = models.FloatField()
     MaxLongitudeDegrees = models.FloatField()
     MaxLatitudeDegrees  = models.FloatField()
+    
+    def getName(self):
+        return self.Name
 
     def __str__(self):
         return "{0}".format(self.Name)
@@ -202,6 +206,7 @@ class AirlineRoute(models.Model):
         strRoute += self.getAdesRouteAsString(AdesRunWayName = AdesRunWayName)
             
         # clean after duplicates suppression
+        strRoute = str(strRoute).replace("---", "-")   
         strRoute = str(strRoute).replace("--", "-")        
         return strRoute
   
