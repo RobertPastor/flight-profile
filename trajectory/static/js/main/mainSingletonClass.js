@@ -108,5 +108,6 @@ class MainClass {
 				document.getElementById(button).disabled = true;
 			}
 		}
+		document.getElementById("btnOptimizationsId").disabled = true;
 	}
 }

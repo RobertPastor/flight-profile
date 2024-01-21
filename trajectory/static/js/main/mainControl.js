@@ -27,6 +27,8 @@ function listenSubMenuFuelEntry( btnSubMenuFuelId , mainSubMenuFuelDivId) {
 }
 
 function listenSubMenuOptimizationsEntry( btnOptimizationsId , mainSubMenuOptimizationsDivId) {
+	
+		document.getElementById(btnOptimizationsId).disabled = true;
 		
 		document.getElementById(btnOptimizationsId).onclick = function () {
 			
