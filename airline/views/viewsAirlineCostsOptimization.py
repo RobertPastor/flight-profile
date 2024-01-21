@@ -76,6 +76,8 @@ def getAirlineCostsOptimization(request, airlineName):
                         #print ( "{0} - {1} - {2}".format(airlineAircraft.aircraftICAOcode, airlineRoute.getFlightLegAsString() , type(totalCostsUSdollars) ))
                             
                         aircraftCostsArray.append( float(totalCostsUSdollars) )
+                    else:
+                        aircraftCostsArray.append( float(0.0) )
                         
                 airlineCostsArray.append(aircraftCostsArray)
                 
