@@ -194,6 +194,8 @@ def writeAirlineCostsMinimization( workbook , airlineName ):
                         #print ( "{0} - {1} - {2}".format(airlineAircraft.aircraftICAOcode, airlineRoute.getFlightLegAsString() , type(totalCostsUSdollars) ))
                             
                         aircraftCostsArray.append( float(totalCostsUSdollars) )
+                    else:
+                        aircraftCostsArray.append( float(0.0) )
                         
                 airlineCostsArray.append(aircraftCostsArray)
                 
@@ -235,86 +237,86 @@ def writeAirlineCostsMinimization( workbook , airlineName ):
                 for j in range(num_flight_legs):
                     pass
                     #objective_terms.append(float(airlineCostsArray[i][j]) * x[i, j])
-            prob += lpSum( [ airlineCostsArray[i][j] * x_vars[i,j] for i in range(num_aircraft_instances) for j in range(num_flight_legs) ])
-                    
-            logger.debug ("--- add constraints ----")
-            '''  Each aircraft is assigned to at most 1 flight leg. '''
-            for i in range(num_aircraft_instances):
-                pass
-                #solver.Add(solver.Sum([x[i, j] for j in range(num_flight_legs)]) <= 1)
-                prob += lpSum( [ x_vars[i,j] for j in range(num_flight_legs) ] ) <= 1
-                #c_list = lpSum ( [x_vars[i,j] for j in range(num_flight_legs)] ) <= 1
-                #check_constraints(prob, c_list)
-                
-            ''' Each flight leg is assigned to exactly one aircraft '''
-            for j in range(num_flight_legs):
-                pass
-                prob += lpSum ( [ x_vars[i,j] for i in range(num_aircraft_instances) ] ) == 1
-                #check_constraints(prob, c_list)
-
-                #solver.Add(solver.Sum([x[i, j] for i in range(num_aircrafts)]) <= 1)
-                
-            ''' minimize the costs '''
-            #solver.Minimize(solver.Sum(objective_terms))
-            prob.solve(PULP_CBC_CMD(msg=0))
-            logger.debug ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
-            
-            #for name, c in list(prob.constraints.items()):
-            #    print(name, ":", c, "\t", c.pi, "\t\t", c.slack)
-            
-            #prob.writeLP("pulp_problem.lp", writeSOS=1, mip=1 )
-            
-            row = 1
-            for v in prob.variables():
-                pass
-            
-                if ( v.varValue > 0.0 ):
-                
-                    ColumnIndex = 0
-                    worksheet.write(row, ColumnIndex, airlineName)   
-                    
-                    ColumnIndex = ColumnIndex + 1
-                    worksheet.write(row, ColumnIndex, str(LpStatus[prob.status]))  
-                    
-                    acICAOcode = str(v.name).split("_")[0]
-                    
-                    ColumnIndex += 1
-                    worksheet.write(row, ColumnIndex,  str(acICAOcode) )
-                    
-                    Adep = str(v.name).split("_")[2]
-                    Ades = str(v.name).split("_")[3]
-                    
-                    airlineRoute = AirlineRoute.objects.filter(airline=airline , DepartureAirportICAOCode=Adep  , ArrivalAirportICAOCode=Ades).first()
-                    if ( airlineRoute ):
+            try:
+                prob += lpSum( [ airlineCostsArray[i][j] * x_vars[i,j] for i in range(num_aircraft_instances) for j in range(num_flight_legs) ])
                         
-                        airlineAircraft = AirlineAircraft.objects.filter(airline=airline, aircraftICAOcode=acICAOcode).first()
-                        if airlineAircraft:
-                            airlineCosts = AirlineCosts.objects.filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
-                            if airlineCosts:
-                                
-                                ColumnIndex += 1
-                                worksheet.write(row, ColumnIndex,  str(Adep) )
-                                
-                                ColumnIndex += 1
-                                worksheet.write(row, ColumnIndex,  str(airlineCosts.adepRunway) )
-                                
-                                ColumnIndex += 1
-                                worksheet.write(row, ColumnIndex,  str(Ades) )
-                                
-                                ColumnIndex += 1
-                                worksheet.write(row, ColumnIndex,  str(airlineCosts.adesRunway) )
-                                
-                                totalCostsUSdollars = compute_total_costs(airlineCosts, airlineAircraft )
-                                
-                                ColumnIndex += 1
-                                worksheet.write(row, ColumnIndex,  (round ( totalCostsUSdollars , 2 )) )
+                logger.debug ("--- add constraints ----")
+                '''  Each aircraft is assigned to at most 1 flight leg. '''
+                for i in range(num_aircraft_instances):
+                    pass
+                    #solver.Add(solver.Sum([x[i, j] for j in range(num_flight_legs)]) <= 1)
+                    prob += lpSum( [ x_vars[i,j] for j in range(num_flight_legs) ] ) <= 1
+                    #c_list = lpSum ( [x_vars[i,j] for j in range(num_flight_legs)] ) <= 1
+                    #check_constraints(prob, c_list)
+                    
+                ''' Each flight leg is assigned to exactly one aircraft '''
+                for j in range(num_flight_legs):
+                    pass
+                    prob += lpSum ( [ x_vars[i,j] for i in range(num_aircraft_instances) ] ) == 1
+                    #check_constraints(prob, c_list)
+    
+                    #solver.Add(solver.Sum([x[i, j] for i in range(num_aircrafts)]) <= 1)
+                    
+                ''' minimize the costs '''
+                #solver.Minimize(solver.Sum(objective_terms))
+                prob.solve(PULP_CBC_CMD(msg=0))
+                logger.debug ("Status: {0}".format( str( LpStatus[prob.status] ) ) )
+            
+                #for name, c in list(prob.constraints.items()):
+                #    print(name, ":", c, "\t", c.pi, "\t\t", c.slack)
                 
+                #prob.writeLP("pulp_problem.lp", writeSOS=1, mip=1 )
+                
+                row = 1
+                for v in prob.variables():
+                    pass
+                
+                    if ( v.varValue > 0.0 ):
                     
-                                 
-                    row = row + 1
+                        ColumnIndex = 0
+                        worksheet.write(row, ColumnIndex, airlineName)   
                     
-            worksheet.autofit()
-            return value(prob.objective)
+                        ColumnIndex = ColumnIndex + 1
+                        worksheet.write(row, ColumnIndex, str(LpStatus[prob.status]))  
+                        
+                        acICAOcode = str(v.name).split("_")[0]
+                        
+                        ColumnIndex += 1
+                        worksheet.write(row, ColumnIndex,  str(acICAOcode) )
+                        
+                        Adep = str(v.name).split("_")[2]
+                        Ades = str(v.name).split("_")[3]
+                        
+                        airlineRoute = AirlineRoute.objects.filter(airline=airline , DepartureAirportICAOCode=Adep  , ArrivalAirportICAOCode=Ades).first()
+                        if ( airlineRoute ):
+                        
+                            airlineAircraft = AirlineAircraft.objects.filter(airline=airline, aircraftICAOcode=acICAOcode).first()
+                            if airlineAircraft:
+                                airlineCosts = AirlineCosts.objects.filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
+                                if airlineCosts:
+                                    
+                                    ColumnIndex += 1
+                                    worksheet.write(row, ColumnIndex,  str(Adep) )
+                                    
+                                    ColumnIndex += 1
+                                    worksheet.write(row, ColumnIndex,  str(airlineCosts.adepRunway) )
+                                    
+                                    ColumnIndex += 1
+                                    worksheet.write(row, ColumnIndex,  str(Ades) )
+                                    
+                                    ColumnIndex += 1
+                                    worksheet.write(row, ColumnIndex,  str(airlineCosts.adesRunway) )
+                                    
+                                    totalCostsUSdollars = compute_total_costs(airlineCosts, airlineAircraft )
+                                    
+                                    ColumnIndex += 1
+                                    worksheet.write(row, ColumnIndex,  (round ( totalCostsUSdollars , 2 )) )
+                
+                        row = row + 1
+                worksheet.autofit()
+                return value(prob.objective)
+            except:        
+                return 0.0
     else:
         return "Error : airline not found"
     
