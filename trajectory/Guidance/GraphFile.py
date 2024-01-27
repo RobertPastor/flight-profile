@@ -158,7 +158,7 @@ class Graph(object):
             raise ValueError('Graph: getVertex: vertex index out of bounds!!!')
     
     def addEdge(self, baseEdge):
-        '''logging.info 'Graph: add edge'''
+        '''logging.debug 'Graph: add edge'''
         if (isinstance(baseEdge, Edge)):
             self._edge.append(baseEdge)
             ''' update the graph length '''
@@ -260,7 +260,7 @@ class Graph(object):
             ''' this is where the xml / kml document is pushed into the StringIO '''
             kmlFileLike.close(memoryFile)
             ''' no need to return anything as the memoryFile is directly written in '''
-            logging.info ( "{0} - {1}".format(self.className , strFileName) )
+            logging.debug ( "{0} - {1}".format(self.className , strFileName) )
         
         return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")
     
@@ -298,7 +298,7 @@ class Graph(object):
                                     wayPoint.getLatitudeDegrees(), 
                                     wayPoint.getAltitudeMeanSeaLevelMeters())
             kmlXmlDocument = kmlOutputFile.close()
-            logging.info ( "{0} - {1}".format(self.className , strFileName) )
+            logging.debug ( "{0} - {1}".format(self.className , strFileName) )
             return kmlXmlDocument
     
         return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")

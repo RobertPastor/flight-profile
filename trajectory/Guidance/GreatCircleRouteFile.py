@@ -122,13 +122,13 @@ class GreatCircleRoute(Graph):
         ''' 6371.009 represents the mean radius of the earth'''
         ''' shortest path distance'''
         distanceMeters = EarthMeanRadiusMeters * distance_radians
-        #logging.info self.className + ': computeGreatCircle shortest path distance= ' + str(distanceMeters) + ' meters'
+        #logging.debug self.className + ': computeGreatCircle shortest path distance= ' + str(distanceMeters) + ' meters'
 
         ''' init the loop index '''
         index = 0
         elapsedTimeSeconds = elapsedTimeSeconds
         
-        #logging.info self.className + ': initial True Air Speed= ' + str(trueAirSpeedMetersSecond) + ' meters/second'
+        #logging.debug self.className + ': initial True Air Speed= ' + str(trueAirSpeedMetersSecond) + ' meters/second'
         overflownDistanceMeters = 0.0
         ''' loop over the over-flown distance '''
         endOfSimulation = False
@@ -136,7 +136,7 @@ class GreatCircleRoute(Graph):
             
             ''' initialization of the loop '''
             if index == 0:
-                logging.info ( self.className + ': initial way-point= {0}'.format(self.initialWayPoint) )
+                logging.debug ( self.className + ': initial way-point= {0}'.format(self.initialWayPoint) )
                 intermediateWayPoint = self.initialWayPoint
             
             if self.aircraft.isCruiseSpeedReached():
@@ -153,7 +153,7 @@ class GreatCircleRoute(Graph):
                                                                     distanceStillToFlyMeters = distanceStillToFlyMeters,
                                                                     currentPosition = intermediateWayPoint,
                                                                     distanceToLastFixMeters = distanceToLastFixMeters)
-            #logging.info self.className + ': True AirSpeed= ' + str(trueAirSpeedMetersSecond) + ' meters/second'
+            #logging.debug self.className + ': True AirSpeed= ' + str(trueAirSpeedMetersSecond) + ' meters/second'
 
             ''' cumulated  over-flown distance '''
             overflownDistanceMeters += deltaDistanceMeters
@@ -161,7 +161,7 @@ class GreatCircleRoute(Graph):
             distanceToLastFixMeters -= deltaDistanceMeters
             fprime = overflownDistanceMeters / distanceMeters
             
-            #logging.info self.className + ': altitude= ' + str(altitudeMeanSeaLevelMeters) + ' meters'
+            #logging.debug self.className + ': altitude= ' + str(altitudeMeanSeaLevelMeters) + ' meters'
 
             ''' fprime is expressed as a fraction along the route from point 1 to point 2 '''
             A = math.sin((1-fprime)*distance_radians) / math.sin(distance_radians)
@@ -204,8 +204,8 @@ class GreatCircleRoute(Graph):
 #                                                     altitudeMeanSeaLevelMeters * Meter2Feet,
 #                                                     self.computeLengthMeters()* Meter2NauticalMiles,
 #                                                     elapsedTimeSeconds, int(minutes), int(seconds))
-#         logging.info self.className + strMsg                                               
-        logging.info ( self.className + ': final way-point= {0}'.format(intermediateWayPoint) )
+#         logging.debug self.className + strMsg                                               
+        logging.debug ( self.className + ': final way-point= {0}'.format(intermediateWayPoint) )
         return endOfSimulation
        
 

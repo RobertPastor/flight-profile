@@ -78,7 +78,7 @@ class DescentGlideSlope(Graph):
         self.aircraft = aircraft
         
         fieldElevationAboveSeaLevelMeters = arrivalAirport.getFieldElevationAboveSeaLevelMeters()
-        logging.info ( self.className + ': airport field Elevation Above Sea Level= {0:.2f} meters'.format(fieldElevationAboveSeaLevelMeters) )
+        logging.debug ( self.className + ': airport field Elevation Above Sea Level= {0:.2f} meters'.format(fieldElevationAboveSeaLevelMeters) )
 
         strName = arrivalAirport.getName() + '-' + 'RunWay'+'-'+self.runway.getName()
         self.runWayEndPoint = WayPoint (Name=strName, 
@@ -98,10 +98,10 @@ class DescentGlideSlope(Graph):
         ''' elevation of touch down point = field elevation'''
         self.runWayTouchDownPoint.setAltitudeMeanSeaLevelMeters(fieldElevationAboveSeaLevelMeters)
         strMsg =   "{0} - distance from RunWay - TouchDown to RunWay - End= {1:.2f} meters".format(self.className, self.runWayTouchDownPoint.getDistanceMetersTo(self.runWayEndPoint))
-        logging.info ( strMsg )
+        logging.debug ( strMsg )
         
         self.bearingDegrees = self.runWayTouchDownPoint.getBearingDegreesTo(self.runWayEndPoint)
-        logging.info ( self.className + ": bearing from touch-down to runway end= {0:.2f} degrees".format(self.bearingDegrees) )
+        logging.debug ( self.className + ": bearing from touch-down to runway end= {0:.2f} degrees".format(self.bearingDegrees) )
                 
         
     def buildGlideSlope(self,
@@ -181,10 +181,10 @@ class DescentGlideSlope(Graph):
         ''======================================================'''
         #logging.info self.className + ' ======= simulated glide slope ========='
         glideSlopeLengthMeters = descentGlideSlopeSizeNautics * NauticalMiles2Meters
-        logging.info ( self.className + ': glide slope Length= {0} meters'.format(str(glideSlopeLengthMeters)) )
+        logging.debug ( self.className + ': glide slope Length= {0} meters'.format(str(glideSlopeLengthMeters)) )
 
         bearingDegrees = self.runway.getTrueHeadingDegrees()
-        logging.info ( self.className + ': glide slope orientation= {0} degrees'.format ( str(bearingDegrees) ) )
+        logging.debug ( self.className + ': glide slope orientation= {0} degrees'.format ( str(bearingDegrees) ) )
 
         fieldElevationAboveSeaLevelMeters = self.arrivalAirport.getFieldElevationAboveSeaLevelMeters()
 
@@ -236,7 +236,7 @@ class DescentGlideSlope(Graph):
         for point in reversed(intermediateGlideSlopeRoute):
             self.addVertex(point)
         simulatedGlideSlopeLengthMeters = newIntermediatePoint.getDistanceMetersTo(self.runWayTouchDownPoint)
-        logging.info ( self.className + ': distance from last way point to touch-down: {0:.2f} nautics'.format(simulatedGlideSlopeLengthMeters * Meter2NauticalMiles) )
+        logging.debug ( self.className + ': distance from last way point to touch-down: {0:.2f} nautics'.format(simulatedGlideSlopeLengthMeters * Meter2NauticalMiles) )
 
 
 

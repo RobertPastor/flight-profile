@@ -283,7 +283,7 @@ class ArrivalRunWayTouchDownConstraint(Constraints):
     def __init__(self, touchDownWayPoint):
         
         Constraints.__init__(self, fixIndex = -1)
-        logging.info ( self.className + ': add touch down constraint= {0}'.format(touchDownWayPoint) )
+        logging.debug ( self.className + ': add touch down constraint= {0}'.format(touchDownWayPoint) )
         
         assert isinstance(touchDownWayPoint, WayPoint)
         self.touchDownWayPoint = touchDownWayPoint
@@ -295,7 +295,7 @@ class TargetApproachConstraint(Constraints):
     def __init__(self, targetApproachWayPoint):
         
         Constraints.__init__(self, fixIndex = -1)
-        logging.info ( self.className + ': add target approach way point constraint= {0}'.format(targetApproachWayPoint) )
+        logging.debug ( self.className + ': add target approach way point constraint= {0}'.format(targetApproachWayPoint) )
         
         assert isinstance(targetApproachWayPoint, WayPoint)
         self.targetApproachWayPoint = targetApproachWayPoint

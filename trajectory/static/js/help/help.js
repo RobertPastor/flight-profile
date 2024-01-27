@@ -154,7 +154,7 @@ class Help extends baseHelpConfiguration {
 		contents = [];
 		contents.push("There are 3 defined airlines, each with its fleet, airports, routes, and unitary costs.<br>");
 		contents.push("All these informations are some kind of parameters, they are configurable.<br>");
-		contents.push("An airline is also defined by a South-West and a North-East geograpical points to display an earth map.<br>");
+		contents.push("An airline is also defined by a South-West and a North-East geograpical points to scope its display an earth map.<br>");
 		
 		this.pushSection("Airlines" , contents , "2");
 
@@ -207,7 +207,6 @@ class Help extends baseHelpConfiguration {
 		contents.push("This Mass difference expressed in Kilograms is converted into US gallons -> Mass Kg * 0.33 <br>");
 		contents.push("Finally the value in US gallons is timed by a US Gallon to US Dollar constant -> US gallons *  3.25.<br>");
 		contents.push("<br>");
-		contents.push("Future improvement : show the runways used for the costs computations.<br>");
 		contents.push('Use the fuel planner to compare fuel costs : <a href="http://fuelplanner.com/index.php" target="_blank">Fuel Planner</a>');
 
 		this.pushSection("Airline Costs" , contents , "7");
@@ -230,7 +229,6 @@ class Help extends baseHelpConfiguration {
 		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/airlineFleet/AmericanWings" target="_blank">Fleet Definition</a> to retrieve the fleet definition.<br>');
 		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/airlineRoutes/AmericanWings" target="_blank">Routes Definition</a> to retrieve the routes.<br>');
 		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/airlineCosts/AmericanWings" target="_blank">Costs</a> to retrieve the costs.<br>');
-		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/airline/wayPointsRoute/KATL/KLAX" target="_blank">WayPoints</a> to retrieve the wayPoints.<br>');
 		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/trajectory/airports/AmericanWings" target="_blank">Airports</a> to retrieve the airports of the airline.<br>');
 		contents.push('Use the following URL : <a href="https://airlineservices.eu.pythonanywhere.com/trajectory/computeRunwayOvershoot/A332/KATL/08L/230" target="_blank">Runway overshoot</a> to retrieve the ground run length.<br>');
 

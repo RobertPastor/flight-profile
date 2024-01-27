@@ -61,7 +61,7 @@ class BaseTurnLeg(object):
         strMsg = self.className + ' - initial Heading= ' + str(self.initialHeadingDegrees) + ' degrees'
         strMsg += ' final Heading= ' + str(self.finalHeadingDegrees)+ ' degrees '
         strMsg += ' increment= ' + str(self.incrementDegrees) + ' degrees'
-        logging.info( strMsg )
+        logging.debug( strMsg )
         
         self.turnLegList = []
                     
@@ -73,7 +73,7 @@ class BaseTurnLeg(object):
         self.turnLegList.append(self.initialHeadingDegrees)
         
         if self.incrementDegrees > 0.0:
-            logging.info ( self.className + ': increment is > 0.0 => turn clock-wise ' )
+            logging.debug ( self.className + ': increment is > 0.0 => turn clock-wise ' )
             if self.initialHeadingDegrees < self.finalHeadingDegrees:
                 while self.initialHeadingDegrees < self.finalHeadingDegrees:
                     self.initialHeadingDegrees += self.incrementDegrees

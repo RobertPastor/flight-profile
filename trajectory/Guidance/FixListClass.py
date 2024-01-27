@@ -5,15 +5,10 @@ Created on 11 août 2023
 '''
 
 
-import math
 import logging
 
-from trajectory.models import  AirlineWayPoint, AirlineAirport, AirlineRunWay
-from trajectory.Guidance.WayPointFile import WayPoint, Airport
-from trajectory.Environment.RunWayFile import RunWay
 
 from trajectory.Guidance.ConstraintsFile import analyseConstraint
-from trajectory.Environment.Constants import Meter2NauticalMiles
 
 '''
 this list is not exactly as an airline route
@@ -44,7 +39,7 @@ class FixList(object):
         self.arrivalRunwayName = ""
         
         assert isinstance(strRoute, (str))
-        logging.info (self.className + ': route= ' + strRoute)
+        logging.debug (self.className + ': route= ' + strRoute)
         self.strRoute = strRoute
         
         
@@ -83,7 +78,7 @@ class FixList(object):
                     ''' ADEP is the first fix of the route '''
                     if len(str(fix).split('/')) >= 2:
                         self.departureAirportICAOcode = str(fix).split('/')[1]
-                        logging.info (self.className + ': departure airport= {0}'.format( self.departureAirportICAOcode))
+                        logging.debug (self.className + ': departure airport= {0}'.format( self.departureAirportICAOcode))
     
                     self.departureRunwayName = ''
                     if len(str(fix).split('/')) >= 3:
@@ -99,12 +94,11 @@ class FixList(object):
                     ''' ADES is the last fix of the route '''
                     if len(str(fix).split('/')) >= 2:
                         self.arrivalAirportICAOcode = str(fix).split('/')[1]
-                        logging.info (self.className + ': arrival airport= {0}'.format( self.arrivalAirportICAOcode))
+                        logging.debug (self.className + ': arrival airport= {0}'.format( self.arrivalAirportICAOcode))
 
                     self.arrivalRunwayName = ''
                     if len(str(fix).split('/')) >= 3:
                         self.arrivalRunwayName = str(fix).split('/')[2]
-                    
                     
                 else:
                     raise ValueError (self.classeName + ': ADES must be the last fix of the route!!!' )

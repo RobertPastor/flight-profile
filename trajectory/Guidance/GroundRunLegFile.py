@@ -69,7 +69,7 @@ class GroundRunLeg(Graph):
         assert (isinstance(runway, RunWay) and not(runway is None))
         
         self.runway = runway
-        logging.info ( self.className + ': ground run - run-way true heading= ' + str(self.runway.getTrueHeadingDegrees()) + ' degrees' )
+        logging.debug ( self.className + ': ground run - run-way true heading= ' + str(self.runway.getTrueHeadingDegrees()) + ' degrees' )
         
         assert (isinstance(aircraft, BadaAircraft) and not(aircraft is None))
         self.aircraft = aircraft
@@ -143,7 +143,7 @@ class GroundRunLeg(Graph):
                                                                     distanceToLastFixMeters = 0.0)
             distanceStillToFlyMeters -= deltaDistanceMeters
             #trueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
-            #logging.info 'true air speed= ' + str(trueAirSpeedMetersSecond) + ' meters/second'
+            #logging.debug 'true air speed= ' + str(trueAirSpeedMetersSecond) + ' meters/second'
             
             ''' name of the next point '''
             Name = ''
@@ -170,10 +170,10 @@ class GroundRunLeg(Graph):
             ''' increment the index '''
             index += 1
   
-        logging.info ('============ end of arrival ground run ======================')
+        logging.debug ('============ end of arrival ground run ======================')
         logElapsedRealTime ( self.className , elapsedTimeSeconds)
         strRunWayEndPointName = self.runway.getName() + '-' + self.airport.getName() 
-        logging.info( '{0}: current distance flown = {1:.2f} meters = {2:.2f} Nm'.format ( self.className, self.aircraft.getCurrentDistanceFlownMeters(), self.aircraft.getCurrentDistanceFlownMeters() * Meter2NauticalMiles) )
+        logging.debug( '{0}: current distance flown = {1:.2f} meters = {2:.2f} Nm'.format ( self.className, self.aircraft.getCurrentDistanceFlownMeters(), self.aircraft.getCurrentDistanceFlownMeters() * Meter2NauticalMiles) )
         intermediateWayPoint.setName(Name = strRunWayEndPointName)
         
         
@@ -214,7 +214,7 @@ class GroundRunLeg(Graph):
         These V speeds are normally published as IAS rather than CAS so they can be read directly from the airspeed indicator.
         '''
         VStallSpeedCASKnots = self.aircraft.computeStallSpeedCasKnots()
-        logging.info ( self.className + ': V stall Calibrated AirSpeed= {0:.2f} knots'.format(VStallSpeedCASKnots) )
+        logging.debug ( self.className + ': V stall Calibrated AirSpeed= {0:.2f} knots'.format(VStallSpeedCASKnots) )
         ''' loop until 1.2 * Stall CAS speed reached '''
         endOfSimulation = False
         while ((endOfSimulation == False) and
@@ -239,7 +239,7 @@ class GroundRunLeg(Graph):
             trueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
             assert (((self.airport.getFieldElevationAboveSeaLevelMeters() - 10.0) <= altitudeMeters) and
                     ( altitudeMeters <= (self.airport.getFieldElevationAboveSeaLevelMeters() + 10.0)))
-            #logging.info self.className + ': delta distance= ' + str(deltaDistanceMeters) + ' meters'
+            #logging.debug self.className + ': delta distance= ' + str(deltaDistanceMeters) + ' meters'
             # name of the next point            
             self.totalLegDistanceMeters += deltaDistanceMeters
             distanceStillToFlyMeters -= deltaDistanceMeters

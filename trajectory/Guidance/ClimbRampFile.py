@@ -85,7 +85,7 @@ class ClimbRamp(Graph):
         
         ''' from the run-way , we get the orientation or run-way true heading in degrees '''
         runWayOrientationDegrees = self.runway.getTrueHeadingDegrees()     
-        logging.info ( self.className + ': run-way orientation degrees= ' + str(runWayOrientationDegrees) + ' degrees' )
+        logging.debug ( self.className + ': run-way orientation degrees= ' + str(runWayOrientationDegrees) + ' degrees' )
                 
         ''' climb ramp length in meters '''
         ClimbSlopeLengthMeters = climbRampLengthNautics * NauticalMiles2Meter
