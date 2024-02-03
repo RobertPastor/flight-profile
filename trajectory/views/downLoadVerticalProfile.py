@@ -7,10 +7,10 @@ donwload vertical profile as an EXCEL file
 '''
 
 import locale
-#import StringIO
 import io
 
 import logging
+from trajectory.views.utils import getRouteFromRequest
 logger = logging.getLogger(__name__)
 
 French_Locale = ""
@@ -28,6 +28,8 @@ from trajectory.Guidance.FlightPathFile import FlightPath
 from trajectory.models import AirlineAirport
 
 from trajectory.models import BadaSynonymAircraft
+from trajectory.views.utils import getAircraftFromRequest, getRouteFromRequest, getAdepRunwayFromRequest, getAdesRunwayFromRequest , getMassFromRequest, getFlightLevelFromRequest
+from trajectory.views.utils import getReducedClimbPowerCoeffFromRequest
 
 def writeReadMeRow(worksheet, row, headerStr , styleHeader, dataStr,  styleData):
     worksheet.write(row, 0 , headerStr, styleHeader)
@@ -47,45 +49,44 @@ def writeReadMe(workbook, request, airlineName):
     writeReadMeRow(wsReadMe, row, "Airline" , styleLavender , airlineName, styleEntete)
 
     row = row + 1
-    writeReadMeRow(wsReadMe, row, "Aircraft ICAO code" , styleLavender , request.GET['ac'], styleEntete)
+    writeReadMeRow(wsReadMe, row, "Aircraft ICAO code" , styleLavender , getAircraftFromRequest(request) , styleEntete)
     
-    aircraft = AirlineAircraft.objects.all().filter(aircraftICAOcode=request.GET['ac']).first()
+    aircraft = AirlineAircraft.objects.all().filter(aircraftICAOcode=getAircraftFromRequest(request) ).first()
     if ( aircraft ):
         row = row + 1
         writeReadMeRow(wsReadMe, row, "Aircraft" , styleLavender , aircraft.getAircraftFullName() , styleEntete)
     
     row = row + 1
-    writeReadMeRow(wsReadMe, row, "Departure Airport ICAO code" , styleLavender , str(request.GET['route']).split("-")[0] , styleEntete)
+    writeReadMeRow(wsReadMe, row, "Departure Airport ICAO code" , styleLavender , str(getRouteFromRequest(request)).split("-")[0] , styleEntete)
     
-    airport = AirlineAirport.objects.filter(AirportICAOcode = str(request.GET['route']).split("-")[0]).first()
+    airport = AirlineAirport.objects.filter(AirportICAOcode = str(getRouteFromRequest(request)).split("-")[0]).first()
     if airport:
         row = row + 1
         writeReadMeRow(wsReadMe, row, "Departure Airport" , styleLavender , airport.getAirportName() , styleEntete)
         
     row = row + 1
-    writeReadMeRow(wsReadMe, row, "Departure Airport Runway" , styleLavender , request.GET['adepRwy'] , styleEntete)
+    writeReadMeRow(wsReadMe, row, "Departure Airport Runway" , styleLavender , getAdepRunwayFromRequest(request) , styleEntete)
 
     row = row + 1
-    writeReadMeRow(wsReadMe, row, "Arrival Airport ICAO code" , styleLavender , str(request.GET['route']).split("-")[1] , styleEntete)
+    writeReadMeRow(wsReadMe, row, "Arrival Airport ICAO code" , styleLavender , str(getRouteFromRequest(request)).split("-")[1] , styleEntete)
     
-    airport = AirlineAirport.objects.filter(AirportICAOcode = str(request.GET['route']).split("-")[1]).first()
+    airport = AirlineAirport.objects.filter(AirportICAOcode = str(getRouteFromRequest(request)).split("-")[1]).first()
     if airport:
         row = row + 1
         writeReadMeRow(wsReadMe, row, "Arrival Airport" , styleLavender , airport.getAirportName() , styleEntete)
     
     row = row + 1
-    writeReadMeRow(wsReadMe, row, "Arrival Airport Runway" , styleLavender , request.GET['adesRwy'] , styleEntete)
+    writeReadMeRow(wsReadMe, row, "Arrival Airport Runway" , styleLavender , getAdesRunwayFromRequest(request) , styleEntete)
 
     row = row + 1
-    writeReadMeRow(wsReadMe, row, "TakeOff Mass (kg)" , styleLavender , request.GET['mass'] , styleEntete)
+    writeReadMeRow(wsReadMe, row, "TakeOff Mass (kg)" , styleLavender , getMassFromRequest(request) , styleEntete)
 
     row = row + 1
-    writeReadMeRow(wsReadMe, row, "Cruise Flight Level (feet)" , styleLavender , request.GET['fl'] , styleEntete)
+    writeReadMeRow(wsReadMe, row, "Cruise Flight Level (feet)" , styleLavender , getFlightLevelFromRequest(request) , styleEntete)
 
     row = row + 1
-    writeReadMeRow(wsReadMe, row, "Reduced Climb Power Coefficient (%)" , styleLavender , request.GET['reduc'] , styleEntete)
+    writeReadMeRow(wsReadMe, row, "Reduced Climb Power Coefficient (%)" , styleLavender , getReducedClimbPowerCoeffFromRequest(request) , styleEntete)
 
-    
     wsReadMe.autofit()
 
 def createExcelWorkbook(memoryFile, request, airlineName):
@@ -108,28 +109,27 @@ def createExcelVerticalProfile(request, airlineName):
     
     if request.method == 'GET':
         
-        aircraftICAOcode = request.GET['ac']
+        aircraftICAOcode = getAircraftFromRequest(request)
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
             
             badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
             if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
                             
-                airlineRoute = request.GET['route']
+                airlineRoute = getRouteFromRequest(request)
                 
                 departureAirportICAOcode = str(airlineRoute).split("-")[0]
-                departureAirportRunWayName = request.GET['adepRwy']
+                departureAirportRunWayName = getAdepRunwayFromRequest(request)
                 
                 arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
-                arrivalAirportRunWayName = request.GET['adesRwy']
+                arrivalAirportRunWayName = getAdesRunwayFromRequest(request)
                 
-                takeOffMassKg = request.GET['mass']
-                cruiseFLfeet = request.GET['fl'] 
+                takeOffMassKg = getMassFromRequest(request)
+                cruiseFLfeet = getFlightLevelFromRequest(request) 
                 
                 reducedClimbPowerCoeff = 0.0
                 try:
-                    reducedClimbPowerCoeff = request.GET['reduc']
-                    reducedClimbPowerCoeff = float(reducedClimbPowerCoeff)
+                    reducedClimbPowerCoeff = float(getReducedClimbPowerCoeffFromRequest(request))
                 except:
                     reducedClimbPowerCoeff = 0.0
                 

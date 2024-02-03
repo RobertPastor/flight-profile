@@ -17,7 +17,7 @@ function initDownloadVerticalProfile(flightProfileControl) {
 		let elemTOMassKg = document.getElementById('TakeOffMassKgId');
 		let elemFL = document.getElementById('requestedFlightLevelId');
 		
-		// cannot used this keyword in call back
+		// cannot used "this" keyword in call back
 		let reducedClimbPowerCoeffInputId = flightProfileControl.getReducedClimbPowerCoeffInputId();
 		let elemReduced = document.getElementById(reducedClimbPowerCoeffInputId);
 		
@@ -28,7 +28,7 @@ function initDownloadVerticalProfile(flightProfileControl) {
 		initProgressBar();
 		initWorker();
 		
-		let urlToSend =  "trajectory/excel/" + airlineName + "?ac=" + aircraftICAOcode;
+		let urlToSend =  "trajectory/excel/" + airlineName + "?aircraft=" + aircraftICAOcode;
 		urlToSend += "&route=" + route;
 		urlToSend += "&adepRwy=" + departureRunWay;
 		urlToSend += "&adesRwy=" + arrivalRunWay;
@@ -40,7 +40,7 @@ function initDownloadVerticalProfile(flightProfileControl) {
 		req.open("GET", urlToSend, true);
 		req.responseType = "blob";
 
-		req.onload = function (event) {
+		req.onload = function () {
 			
 			stopBusyAnimation();
 			
@@ -55,15 +55,12 @@ function initDownloadVerticalProfile(flightProfileControl) {
 			document.getElementById("btnDownLoadVerticalProfileId").disabled = false;
 			SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 
-
 		 };
 		 req.onerror = function (event) {
 			console.log("Error in Download Vertical Profile");
 			SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
-
 		 }
 		// send the request
 		req.send();
-
 	}
 }

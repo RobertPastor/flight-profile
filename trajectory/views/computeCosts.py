@@ -14,7 +14,7 @@ from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import A
 from trajectory.Guidance.FlightPathFile import FlightPath
 
 from trajectory.Environment.Constants import Kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
-
+from trajectory.views.utils import getAircraftFromRequest, getRouteFromRequest
 
 def computeDurationHours( durationSeconds ):
     durationMinutes = 0.0
@@ -37,15 +37,16 @@ def computeCosts(request, airlineName):
     
     #routeWayPointsList = []
     if (request.method == 'GET'):
-        aircraftICAOcode = request.GET['aircraft']
+        
+        aircraftICAOcode = getAircraftFromRequest(request)
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
         
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
 
-            logger.debug ("computeCosts è selected aircraft = {0}".format( aircraftICAOcode ) )
+            logger.debug ("computeCosts for selected aircraft = {0}".format( aircraftICAOcode ) )
             
             # route as string
-            airlineRoute = request.GET['route']
+            airlineRoute = getRouteFromRequest(request)
             
             logger.debug("computeCosts - " + airlineRoute)
             

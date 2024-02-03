@@ -15,6 +15,26 @@ from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
 
 from trajectory.models import AirlineStandardDepartureArrivalRoute, AirlineAirport
 
+def getAircraftFromRequest(request):
+    return request.GET['aircraft']
+
+def getRouteFromRequest(request):
+    return request.GET['route']
+
+def getAdepRunwayFromRequest(request):
+    return request.GET['adepRwy']
+
+def getAdesRunwayFromRequest(request):
+    return request.GET['adesRwy']
+
+def getMassFromRequest(request):
+    return request.GET['mass']
+
+def getFlightLevelFromRequest(request):
+    return request.GET['fl']
+
+def getReducedClimbPowerCoeffFromRequest(request):
+    return request.GET['reduc']
 
 def convertDegreeMinuteSecondToDecimal(DegreeMinuteSecond='43-40-51.00-N'):
     '''
@@ -70,7 +90,7 @@ def convertDegreeMinuteSecondToDecimal(DegreeMinuteSecond='43-40-51.00-N'):
             if TenthOfSecondsValue < 10.0:
                 DecimalValue += (float(TenthOfSecondsValue)/float(3600.0)) / 10.0
             else:
-                ''' two digits of millis seconds '''
+                ''' two digits of milliseconds '''
                 DecimalValue += (float(TenthOfSecondsValue)/float(3600.0)) / 100.0
                     
             DecimalValue = coeff * DecimalValue

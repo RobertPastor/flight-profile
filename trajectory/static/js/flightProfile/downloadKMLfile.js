@@ -33,7 +33,7 @@ function initDownloadKMLfile(flightProfileControl) {
 			initProgressBar();
 			initWorker();
 			
-			let urlToSend =  "trajectory/kml/" + airlineName + "?ac=" + aircraftICAOcode;
+			let urlToSend =  "trajectory/kml/" + airlineName + "?aircraft=" + aircraftICAOcode;
 			urlToSend += "&route=" + route;
 			urlToSend += "&adepRwy=" + departureRunWay;
 			urlToSend += "&adesRwy=" + arrivalRunWay;

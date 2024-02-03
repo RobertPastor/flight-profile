@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 French_Locale = ""
 from datetime import datetime 
 
-from xlsxwriter import Workbook
 from django.shortcuts import HttpResponse
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
@@ -27,6 +26,8 @@ from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import A
 from trajectory.Guidance.FlightPathFile import FlightPath
 
 from trajectory.models import BadaSynonymAircraft
+from trajectory.views.utils import getAircraftFromRequest, getRouteFromRequest, getAdepRunwayFromRequest, getAdesRunwayFromRequest
+from trajectory.views.utils import getMassFromRequest, getFlightLevelFromRequest, getReducedClimbPowerCoeffFromRequest
 
 
 @csrf_protect
@@ -40,28 +41,27 @@ def createKMLfile(request, airlineName):
     
     if request.method == 'GET':
         
-        aircraftICAOcode = request.GET['ac']
+        aircraftICAOcode = getAircraftFromRequest(request)
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
             
             badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
             if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
                             
-                airlineRoute = request.GET['route']
+                airlineRoute = getRouteFromRequest(request)
                                                 
                 departureAirportICAOcode = str(airlineRoute).split("-")[0]
-                departureAirportRunWayName = request.GET['adepRwy']
+                departureAirportRunWayName = getAdepRunwayFromRequest(request)
                 
                 arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
-                arrivalAirportRunWayName = request.GET['adesRwy']
+                arrivalAirportRunWayName = getAdesRunwayFromRequest(request)
                 
-                takeOffMassKg = request.GET['mass']
-                cruiseFLfeet = request.GET['fl'] 
+                takeOffMassKg = getMassFromRequest(request)
+                cruiseFLfeet = getFlightLevelFromRequest(request)
                 ''' 10th August 2023 - Reduced Climb Power % '''
                 reducedClimbPowerCoeff = 0.0
                 try:
-                    reducedClimbPowerCoeff = request.GET['reduc']
-                    reducedClimbPowerCoeff = float(reducedClimbPowerCoeff)
+                    reducedClimbPowerCoeff = float(getReducedClimbPowerCoeffFromRequest(request))
                 except:
                     reducedClimbPowerCoeff = 0.0
                 

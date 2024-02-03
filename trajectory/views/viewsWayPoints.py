@@ -14,7 +14,8 @@ from trajectory.models import BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
-from trajectory.views.utils import  getAirlineAircraftsFromDB, getAirlineRoutesFromDB
+from trajectory.views.utils import  getAirlineAircraftsFromDB, getAirlineRoutesFromDB,\
+    getRouteFromRequest, getAircraftFromRequest
 
 
 # Create your views here.
@@ -32,7 +33,6 @@ def indexTrajectory(request):
     context = {'siteMessages' : siteMessages}
     return HttpResponse(template.render(context, request))
 
-    
     
 def getPlaceMarks(XmlDocument):
     placeMarksList = []
@@ -155,21 +155,19 @@ def getAirport(airportICAOcode):
     
 def computeFlightProfile(request):
     
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     logger.debug ("compute Flight Profile")
     
     #routeWayPointsList = []
     if (request.method == 'GET'):
-        aircraftICAOcode = request.GET['aircraft']
+        aircraftICAOcode = getAircraftFromRequest(request)
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
 
             logger.debug ("selected aircraft = {0}".format( aircraftICAOcode ) )
             
-            airlineRoute = request.GET['route']
-            
-            logger.debug(airlineRoute)
-            
+            airlineRoute = getRouteFromRequest(request)
+                        
             logger.debug ( "airport = {0}".format( str(airlineRoute).split("-")[0] ) )
             logger.debug ( str(airlineRoute).split("-")[1] )
             
