@@ -57,9 +57,7 @@ from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
 from trajectory.Guidance.GraphFile import Graph
 from trajectory.Guidance.WayPointFile import WayPoint
 
-EarthMeanRadiusMeters = 6378135.0 # earth’s radius in meters
-Meter2Feet = 3.2808399 # one meter approx == 3 feet (3 feet 3⅜ inches)
-Meter2NauticalMiles = 0.000539956803 # nautical mile
+from trajectory.Environment.Constants import EarthMeanRadiusMeters
 
 class GreatCircleRoute(Graph):
     

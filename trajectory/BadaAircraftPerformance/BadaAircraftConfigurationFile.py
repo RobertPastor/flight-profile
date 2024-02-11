@@ -150,7 +150,7 @@ class AircraftConfiguration(FlightEnvelope):
         
         self.badaPerformanceFilePath = badaPerformanceFilePath
         
-        ''' 2-November-2023 - moving to json performance files '''
+        ''' 2nd-November-2023 - moving to json performance files '''
         aircraftPerformance = AircraftJsonPerformance(ICAOcode, badaPerformanceFilePath)
         assert ( aircraftPerformance.read() == True )
         
@@ -1228,8 +1228,8 @@ class AircraftConfiguration(FlightEnvelope):
         
         try:
             aircraftMassKilograms = self.aircraftMass.updateAircraftMassKilograms(fuelFlowKilograms)
-        except:
-            logger.info ( self.className + ' - no more fuel !!!!' )
+        except Exception as ex:
+            logger.info ( self.className + '-' + str(ex) + ' - no more fuel !!!!' )
             endOfSimulation = True
             raise ValueError ( self.className + ' - no more fuel !!!! ' )
 

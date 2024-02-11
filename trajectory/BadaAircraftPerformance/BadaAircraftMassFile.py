@@ -44,6 +44,7 @@ class AircraftMass(object):
     maximumPayLoadMassKilograms = 0.0
     currentMassKilograms = 0.0
     initialMassKilograms = 0.0
+    fuelCapacityKilograms = 0.0
     
     def __init__(self, aircraftPerformance):
         
@@ -56,6 +57,7 @@ class AircraftMass(object):
         ''' aircraft mass is computed adding the pay-load to the minimum and adding the fuel mass '''
         self.currentMassKilograms = self.referenceMassKilograms
         self.initialMassKilograms = self.referenceMassKilograms
+        self.fuelCapacityKilograms = aircraftPerformance.getMaximumFuelCapacityKilograms()
         self.dump()
         
     def setAircraftMassKilograms(self, massKilograms):
@@ -90,7 +92,11 @@ class AircraftMass(object):
         range = Cruise Speed / acceleration of gravity ) * ( 1 / SFC ) * log Nep ( Initial Weight / Final Weight) 
         range = ( speed of sound * Mach ) * ( 1 / ct ) * (CL / CD ) * log nep ( initial Weight / final Weight )
         '''
-        return self.aircraftMass.referenceMassKilograms - self.aircraftMass.minimumMassKilograms     
+        #return self.aircraftMass.referenceMassKilograms - self.aircraftMass.minimumMassKilograms  
+        return self.fuelCapacityKilograms   
+    
+    def getMaximumFuelCapacityKilograms(self):
+        return self.fuelCapacityKilograms
     
     def computeAircraftMass(self, rangeMeters):
         '''
@@ -101,7 +107,6 @@ class AircraftMass(object):
         logging.info ( self.className + ': compute aircraft mass - from the range expressed in Meters ' )
         return self.referenceMassKilogramms
     
-    
     def updateAircraftMassKilograms(self, fuelFlowKilograms):
         
         self.currentMassKilograms = self.currentMassKilograms - fuelFlowKilograms
@@ -110,6 +115,9 @@ class AircraftMass(object):
             raise ValueError (self.className + ': current mass greater to Maximum Mass')
         
         if self.currentMassKilograms < self.minimumMassKilograms:
+            raise ValueError (self.className + ': no more fuel !!!')
+        
+        if self.currentMassKilograms < self.getInitialMassKilograms() - self.getMaximumFuelCapacityKilograms():
             raise ValueError (self.className + ': no more fuel !!!')
         
         return self.currentMassKilograms

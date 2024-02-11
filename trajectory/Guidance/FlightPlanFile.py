@@ -44,7 +44,7 @@ from trajectory.models import  AirlineWayPoint, AirlineAirport, AirlineRunWay
 from trajectory.Guidance.WayPointFile import WayPoint, Airport
 from trajectory.Environment.RunWayFile import RunWay
 
-from trajectory.Guidance.ConstraintsFile import analyseConstraint
+#from trajectory.Guidance.ConstraintsFile import analyseConstraint
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
 from trajectory.Guidance.FixListClass import FixList

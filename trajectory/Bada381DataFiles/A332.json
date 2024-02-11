@@ -51,7 +51,7 @@
 			"maxFuelCapacity": {
 				"source": "https://fr.wikipedia.org/wiki/Airbus_A330",
 				"unit" : "kg",
-				"value": 113636.53
+				"value": 97530.53
 			}
 		},
 		"configuration": {
