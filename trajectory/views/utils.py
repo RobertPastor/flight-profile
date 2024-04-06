@@ -14,6 +14,7 @@ from trajectory.Environment.Constants import Meter2NauticalMiles
 from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
 
 from trajectory.models import AirlineStandardDepartureArrivalRoute, AirlineAirport
+from pickle import TRUE
 
 def getAircraftFromRequest(request):
     return request.GET['aircraft']
@@ -35,6 +36,12 @@ def getFlightLevelFromRequest(request):
 
 def getReducedClimbPowerCoeffFromRequest(request):
     return request.GET['reduc']
+
+def getDirectRouteFromRequest(request):
+    if ( request.GET['direct'] == 'true'):
+        return True
+    else:
+        return False
 
 def convertDegreeMinuteSecondToDecimal(DegreeMinuteSecond='43-40-51.00-N'):
     '''
@@ -133,7 +140,7 @@ def computeListOfDepartureRunWaysWithSID(airlineRoute):
             if ( airlineRoute.getDepartureAirportICAOcode() == sidStar.getDepartureArrivalAirport().getICAOcode() ):
                 ''' there is a SID with the same departure airport '''
                 #print ( sidStar )
-                firstRouteWayPoint = airlineRoute.getfirstRouteWayPoint()
+                firstRouteWayPoint = airlineRoute.getFirstRouteWayPoint()
                 #print ( firstRouteWayPoint )
                 
                 if ( sidStar.getFirstLastRouteWayPoint() == firstRouteWayPoint):

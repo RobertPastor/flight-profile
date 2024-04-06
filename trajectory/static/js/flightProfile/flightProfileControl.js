@@ -198,9 +198,14 @@ class FlightProfileControl extends og.Control {
 	getBestDepartureRunwayCheckBoxId() {
 		return "BestDepartureRunwayCheckBoxId";
 	}
+	
 	// 14th August 2023 - checkbox to select best arrival runway
 	getBestArrivalRunwayCheckBoxId() {
 		return "BestArrivalRunwayCheckBoxId";
+	}
+	
+	getDirectRouteCheckBoxId() {
+		return "DirectRouteCheckBoxId";
 	}
 	
 	createRowWithRouteSelector() {
@@ -250,7 +255,7 @@ class FlightProfileControl extends og.Control {
 		let div_3 = document.createElement('div');
 		div_3.classList.add("horizontal-align-right");
 
-		// input to store ICAO code of the Adep
+		// input to store ICAO code of the Ades
 		let input_2 = document.createElement("input");
 		input_2.id = this.getAdesICAOcodeInputId();
 		input_2.hidden = false;
@@ -262,6 +267,25 @@ class FlightProfileControl extends og.Control {
 		
 		div_3.appendChild(input_2);
 		td.appendChild(div_3);
+		
+		// 1st April 2024 - add checkbox to fly direct route
+		let div_4 = document.createElement('div');
+		div_4.classList.add("horizontal-align-right");
+		
+		let label_3 = document.createElement("label");
+		label_3.innerHTML = "Fly Direct Route ->" ;
+		div_4.appendChild(label_3);
+		
+		// add a checkbox
+		let checkboxDirectRoute = document.createElement('input');
+		checkboxDirectRoute.type = "checkbox";
+		checkboxDirectRoute.name = "DirectRouteCheckBox";
+		checkboxDirectRoute.value = "value";
+		checkboxDirectRoute.title = "tick to fly direct route"
+		checkboxDirectRoute.id    = this.getDirectRouteCheckBoxId();
+		
+		div_4.appendChild(checkboxDirectRoute);
+		td.appendChild(div_4);
 		
 		row.appendChild(td);
 		return row;
@@ -284,7 +308,7 @@ class FlightProfileControl extends og.Control {
 		checkboxBestDepartureRunway.type = "checkbox";
 		checkboxBestDepartureRunway.name = "BestDepartureRunwayCheckBox";
 		checkboxBestDepartureRunway.value = "value";
-		checkboxBestDepartureRunway.title = "When ticked best runway is selected"
+		checkboxBestDepartureRunway.title = "When ticked, best runway is selected"
 		checkboxBestDepartureRunway.id    = this.getBestDepartureRunwayCheckBoxId();
 		
 		div_3.appendChild(checkboxBestDepartureRunway);
@@ -313,7 +337,7 @@ class FlightProfileControl extends og.Control {
 		checkboxBestArrivalRunway.type  = "checkbox";
 		checkboxBestArrivalRunway.name  = "BestDepartureRunwayCheckBox";
 		checkboxBestArrivalRunway.value = "value";
-		checkboxBestArrivalRunway.title = "When ticked best runway is selected"
+		checkboxBestArrivalRunway.title = "When ticked, best runway is selected"
 		checkboxBestArrivalRunway.id    = this.getBestArrivalRunwayCheckBoxId();
 		
 		div_4.appendChild(checkboxBestArrivalRunway);

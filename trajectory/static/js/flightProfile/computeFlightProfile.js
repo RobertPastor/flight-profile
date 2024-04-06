@@ -779,12 +779,15 @@ class AirlineProfileCosts {
 			
 			let data = 'aircraft=' + aircraft;
 			data += '&route='   + route;
-			data += '&AdepRwy=' + departureRunWay;
-			data += '&AdesRwy=' + arrivalRunWay;
+			data += '&adepRwy=' + departureRunWay;
+			data += '&adesRwy=' + arrivalRunWay;
 			data += '&mass='    + elemTOMassKg.value;
 			data += '&fl='      + elemFL.value;
 			// 17th July 2023 - add reduced climb power coefficient
 			data += '&reduc='   + elemReduced.value;
+			
+			// 1st April 2024 - fly direct route
+			data += "&direct=" + document.getElementById(flightProfileControl.getDirectRouteCheckBoxId()).checked;
 			
 			// init progress bar.
 			initProgressBar();

@@ -50,6 +50,7 @@ class AirlineFlightLegCosts {
 				.append('<td>'+ arrivalRunWay +'</td>')
 
 				.append('<td>'+ dataJson["isAborted"] +'</td>')
+				.append('<td>'+ dataJson["direct"] +'</td>')
 				.append('<td>'+ dataJson["takeOffMassKilograms"] +'</td>')
 				
 				.append('<td>'+ dataJson["cruiseLevelFeet"] +'</td>')
@@ -128,11 +129,12 @@ class AirlineFlightLegCosts {
 			let data = {
 				aircraft : aircraftICAOcode,
 				route    : route,
-				AdepRwy  : departureRunWay,
-				AdesRwy  : arrivalRunWay,
+				adepRwy  : departureRunWay,
+				adesRwy  : arrivalRunWay,
 				mass     : elemTOMassKg.value,
 				fl       : elemFL.value,
-				reduc    : elemReducedValue
+				reduc    : elemReducedValue,
+				direct   : document.getElementById(flightProfileControl.getDirectRouteCheckBoxId()).checked
 			}
 			
 			$.ajax( {

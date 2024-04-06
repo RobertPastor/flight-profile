@@ -14,7 +14,9 @@ from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import A
 from trajectory.Guidance.FlightPathFile import FlightPath
 
 from trajectory.Environment.Constants import Kerosene_kilo_to_US_gallons , US_gallon_to_US_dollars
-from trajectory.views.utils import getAircraftFromRequest, getRouteFromRequest
+from trajectory.views.utils import getAircraftFromRequest, getRouteFromRequest , getReducedClimbPowerCoeffFromRequest
+from trajectory.views.utils import getAdepRunwayFromRequest, getAdesRunwayFromRequest, getMassFromRequest , getFlightLevelFromRequest
+from trajectory.views.utils import getDirectRouteFromRequest
 
 def computeDurationHours( durationSeconds ):
     durationMinutes = 0.0
@@ -54,22 +56,25 @@ def computeCosts(request, airlineName):
             logger.debug ( str(airlineRoute).split("-")[1] )
             
             departureAirportICAOcode = str(airlineRoute).split("-")[0]
-            departureAirportRunWayName = request.GET['AdepRwy']
+            departureAirportRunWayName = getAdepRunwayFromRequest(request)
             
             arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
-            arrivalAirportRunWayName = request.GET['AdesRwy']
+            arrivalAirportRunWayName = getAdesRunwayFromRequest(request)
             
-            takeOffMassKg = request.GET['mass']
+            takeOffMassKg = getMassFromRequest(request)
             logger.debug( "takeOff mass Kg = {0}".format( takeOffMassKg ) )
-            cruiseFLfeet = request.GET['fl'] 
+            cruiseFLfeet = getFlightLevelFromRequest(request)
             logger.debug( "cruise FL feet = {0}".format( cruiseFLfeet ) )
             
             reducedClimbPowerCoeff = 0.0
             try:
-                reducedClimbPowerCoeff = request.GET['reduc']
+                reducedClimbPowerCoeff = getReducedClimbPowerCoeffFromRequest(request)
                 reducedClimbPowerCoeff = float(reducedClimbPowerCoeff)
             except:
                 reducedClimbPowerCoeff = 0.0
+                
+            ''' 1st April 2024 - checkbox to fly direct route '''
+            direct = getDirectRouteFromRequest(request)
             
             airline = Airline.objects.filter(Name=airlineName).first()
             if (airline):
@@ -79,7 +84,7 @@ def computeCosts(request, airlineName):
                 if (airlineRoute):
                     #print ( airlineRoute )
                     '''  use runways defined in the web page '''
-                    routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
+                    routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=departureAirportRunWayName, AdesRunWayName=arrivalAirportRunWayName, direct=direct)
                     logger.debug ( routeAsString )
                     
                     acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
@@ -107,7 +112,7 @@ def computeCosts(request, airlineName):
                         #print ( flightPath.getFlightDurationSeconds() / 3600.0  )
                         ''' 21st September 2022 - Crew Costs '''
                         crewCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
-                           
+                        ''' 6th April 204 add direct route '''
                         response_data = {
                                         'seats' : airlineAircraft.getMaximumNumberOfPassengers(),
                                         'isAborted': flightPath.abortedFlight ,
@@ -115,6 +120,7 @@ def computeCosts(request, airlineName):
                                         'takeOffMassKilograms'   : flightPath.aircraft.getAircraftInitialMassKilograms(),
                                         'cruiseLevelFeet'        : cruiseFLfeet,
                                         'reducedClimbPowerCoeff' : reducedClimbPowerCoeff,
+                                        'direct'                 : direct,
                                         'finalMassKilograms'     : round ( flightPath.aircraft.getAircraftCurrentMassKilograms() , 1),
                                         'massLossFilograms'      : round ( flightPath.aircraft.getAircraftInitialMassKilograms()-flightPath.aircraft.getAircraftCurrentMassKilograms() , 1 ),
                                         'fuelCostsDollars'       : round( fuelCostsUSdollars , 0),

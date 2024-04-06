@@ -29,7 +29,7 @@ from trajectory.models import AirlineAirport
 
 from trajectory.models import BadaSynonymAircraft
 from trajectory.views.utils import getAircraftFromRequest, getRouteFromRequest, getAdepRunwayFromRequest, getAdesRunwayFromRequest , getMassFromRequest, getFlightLevelFromRequest
-from trajectory.views.utils import getReducedClimbPowerCoeffFromRequest
+from trajectory.views.utils import getReducedClimbPowerCoeffFromRequest , getDirectRouteFromRequest
 
 def writeReadMeRow(worksheet, row, headerStr , styleHeader, dataStr,  styleData):
     worksheet.write(row, 0 , headerStr, styleHeader)
@@ -97,7 +97,6 @@ def createExcelWorkbook(memoryFile, request, airlineName):
     writeReadMe(workbook=wb, request=request, airlineName=airlineName)
     return wb
 
-
 @csrf_protect
 def createExcelVerticalProfile(request, airlineName):
     ''' @TODO same inputs as compute profile , compute costs and compute state vector  '''
@@ -132,11 +131,14 @@ def createExcelVerticalProfile(request, airlineName):
                     reducedClimbPowerCoeff = float(getReducedClimbPowerCoeffFromRequest(request))
                 except:
                     reducedClimbPowerCoeff = 0.0
+                    
+                ''' 1st April 2024 - checkbox to fly direct route '''
+                direct = getDirectRouteFromRequest(request)
                 
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 if (airlineRoute):
                         '''  use run-ways defined in the web page '''
-                        routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
+                        routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=departureAirportRunWayName, AdesRunWayName=arrivalAirportRunWayName, direct=direct)
                         #logger.debug ( routeAsString )
                         acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
                         if ( acPerformance.read() ):

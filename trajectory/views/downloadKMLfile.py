@@ -27,7 +27,7 @@ from trajectory.Guidance.FlightPathFile import FlightPath
 
 from trajectory.models import BadaSynonymAircraft
 from trajectory.views.utils import getAircraftFromRequest, getRouteFromRequest, getAdepRunwayFromRequest, getAdesRunwayFromRequest
-from trajectory.views.utils import getMassFromRequest, getFlightLevelFromRequest, getReducedClimbPowerCoeffFromRequest
+from trajectory.views.utils import getMassFromRequest, getFlightLevelFromRequest, getReducedClimbPowerCoeffFromRequest, getDirectRouteFromRequest
 
 
 @csrf_protect
@@ -64,11 +64,14 @@ def createKMLfile(request, airlineName):
                     reducedClimbPowerCoeff = float(getReducedClimbPowerCoeffFromRequest(request))
                 except:
                     reducedClimbPowerCoeff = 0.0
+                    
+                ''' 1st April 2024 - checkbox to fly direct route '''
+                direct = getDirectRouteFromRequest(request)
                 
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 if (airlineRoute):
                     '''  use run-ways defined in the web page '''
-                    routeAsString = airlineRoute.getRouteAsString(departureAirportRunWayName, arrivalAirportRunWayName)
+                    routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=departureAirportRunWayName, AdesRunWayName=arrivalAirportRunWayName, direct=direct)
                     acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
                     if ( acPerformance.read() ):
         

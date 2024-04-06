@@ -177,7 +177,7 @@ def computeFlightProfile(request):
             
             if (airlineRoute):
                 #print ( airlineRoute )
-                routeAsString = airlineRoute.getRouteAsString()
+                routeAsString = airlineRoute.getRouteAsString(AdepRunWayName = None, AdesRunWayName = None, direct = False)
                 logger.debug ( routeAsString )
                 acPerformance = AircraftJsonPerformance(badaAircraft.getAircraftPerformanceFile())
                 if acPerformance.read():

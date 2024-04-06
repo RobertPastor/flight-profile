@@ -35,6 +35,8 @@ function initDownloadVerticalProfile(flightProfileControl) {
 		urlToSend += "&mass=" + elemTOMassKg.value;
 		urlToSend += "&fl=" + elemFL.value;
 		urlToSend += "&reduc=" + elemReduced.value;
+		// 1st April 2024 - direct route
+		urlToSend += "&direct=" + document.getElementById(flightProfileControl.getDirectRouteCheckBoxId()).checked
 		
 		let req = new XMLHttpRequest();
 		req.open("GET", urlToSend, true);

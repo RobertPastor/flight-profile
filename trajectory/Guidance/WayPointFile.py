@@ -81,20 +81,17 @@ class WayPoint(GeographicalPoint):
     def setName(self, Name):
         self.Name = Name
     
-
     def getDistanceMetersTo(self, nextWayPoint):
         if isinstance(nextWayPoint, WayPoint)==True:
             return points2distanceMeters([self.LatitudeDegrees,self.LongitudeDegrees],
                                          [nextWayPoint.LatitudeDegrees, nextWayPoint.LongitudeDegrees])
         return 0.0
     
-    
     def getBearingDegreesTo(self, nextWayPoint):
         if isinstance(nextWayPoint, WayPoint)==True:
             return to_positive_angle(points2bearingDegrees([self.LatitudeDegrees,self.LongitudeDegrees],
                                          [nextWayPoint.LatitudeDegrees, nextWayPoint.LongitudeDegrees]))
         return 0.0
-    
     
     def getWayPointAtDistanceBearing(self, Name='', DistanceMeters=0.0, BearingDegrees=0.0):
         '''
@@ -179,33 +176,24 @@ class Airport(WayPoint):
     def isArrival(self):
         return self.isArrival
     
-    
     def getFieldElevationAboveSeaLevelMeters(self):
         return self.fieldElevationAboveSeaLevelMeters
-    
     
     def hasRunWays(self, runwaysDatabase):
         ''' return true if this airport has at least one run-way in the database '''
         assert isinstance(runwaysDatabase, RunWayDataBase) and not(runwaysDatabase is None)
         return runwaysDatabase.hasRunWays(self.ICAOcode)
     
-    
     def getRunWaysAsDict(self, runwaysDatabase):
         assert isinstance(runwaysDatabase, RunWayDataBase) and not(runwaysDatabase is None)
         return runwaysDatabase.getRunWaysAsDict(self.ICAOcode)
     
-    
     def getRunWays(self, runwaysDatabase):
         assert isinstance(runwaysDatabase, RunWayDataBase) and not(runwaysDatabase is None)
         return runwaysDatabase.getRunWays(self.ICAOcode)
-    
     
     def dump(self):
         WayPoint.dump(self)
         logging.debug ( "airport field Elevation above Sea Level Meters= {0} meters".format(self.fieldElevationAboveSeaLevelMeters) )
         logging.debug ( 'airport ICAO code= {0}'.format(self.ICAOcode ) )
 
-
-
-
-    

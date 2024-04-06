@@ -12,8 +12,9 @@ from django.http import HttpResponse , JsonResponse
 from airline.models import Airline, AirlineRoute
 from trajectory.models import  AirlineAirport
 
-from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB, getAirlineRoutesFromDB,\
-    getAircraftFromRequest, getRouteFromRequest
+from trajectory.views.utils import getAirlineRunWaysFromDB , getAirlineAircraftsFromDB, getAirlineRoutesFromDB
+from trajectory.views.utils import getAircraftFromRequest, getRouteFromRequest, getAdepRunwayFromRequest, getAdesRunwayFromRequest 
+from trajectory.views.utils import getMassFromRequest , getFlightLevelFromRequest , getReducedClimbPowerCoeffFromRequest, getDirectRouteFromRequest
 
 from trajectory.models import BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
@@ -109,20 +110,23 @@ def computeFlightProfile(request, airlineName):
             airlineRoute = getRouteFromRequest(request)
                                     
             departureAirportICAOcode = str(airlineRoute).split("-")[0]
-            departureAirportRunWayName = request.GET['AdepRwy']
+            departureAirportRunWayName = getAdepRunwayFromRequest(request)
             
             arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
-            arrivalAirportRunWayName = request.GET['AdesRwy']
+            arrivalAirportRunWayName = getAdesRunwayFromRequest(request)
             
-            takeOffMassKg = request.GET['mass']
-            cruiseFLfeet = request.GET['fl']
+            takeOffMassKg = getMassFromRequest(request)
+            cruiseFLfeet = getFlightLevelFromRequest(request)
             
             reducedClimbPowerCoeff = 0.0
             try:
-                reducedClimbPowerCoeff = request.GET['reduc']
+                reducedClimbPowerCoeff = getReducedClimbPowerCoeffFromRequest(request)
                 reducedClimbPowerCoeff = float(reducedClimbPowerCoeff)
             except:
                 reducedClimbPowerCoeff = 0.0
+                
+            ''' 1st April 2024 - checkbox to fly direct route '''
+            direct = getDirectRouteFromRequest(request)
             
             airline = Airline.objects.filter(Name=airlineName).first()
             if (airline):
@@ -131,7 +135,7 @@ def computeFlightProfile(request, airlineName):
                 if (airlineRoute):
                     logger.debug( airlineRoute )
                     '''  use run-ways defined in the page '''
-                    routeAsString = airlineRoute.getRouteAsString(AdepRunWayName = departureAirportRunWayName, AdesRunWayName = arrivalAirportRunWayName)
+                    routeAsString = airlineRoute.getRouteAsString(AdepRunWayName = departureAirportRunWayName, AdesRunWayName = arrivalAirportRunWayName, direct=direct)
                     ''' compute direct route when requested '''
                     #routeAsString = airlineRoute.getDirectRouteAsString( AdepRunWayName = departureAirportRunWayName, AdesRunWayName = arrivalAirportRunWayName )
 

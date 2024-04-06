@@ -28,8 +28,8 @@ class Command(BaseCommand):
             airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode=Adep, ArrivalAirportICAOCode=Ades).first()
             if ( airlineRoute ):
                 ''' try with direct route '''
-                routeAsString = airlineRoute.getDirectRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway )
-                #routeAsString = airlineRoute.getRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway )
+                #routeAsString = airlineRoute.getDirectRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway )
+                routeAsString = airlineRoute.getRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway , direct = True)
                 print ( routeAsString )
                 acPerformance = AircraftJsonPerformance(badaAircraft.getICAOcode(), badaAircraft.getAircraftJsonPerformanceFile())
                 if acPerformance.read():

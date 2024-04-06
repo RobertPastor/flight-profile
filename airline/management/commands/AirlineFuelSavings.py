@@ -47,7 +47,7 @@ class Command(BaseCommand):
                         logger.info ( airlineRoute )
                         
                         ''' 30th April 2023 - compute route with best runways '''
-                        routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=adepRunway, AdesRunWayName=adesRunway)
+                        routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=adepRunway, AdesRunWayName=adesRunway, direct=False)
                         logger.info ( routeAsString )
                         
                         acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftJsonPerformanceFile())

@@ -119,7 +119,7 @@ class AirlineRoute(models.Model):
         
         return ""
     
-    def getfirstRouteWayPoint(self):
+    def getFirstRouteWayPoint(self):
         airlineRouteWayPoint = AirlineRouteWayPoints.objects.filter(Route=self).distinct().order_by("Order").first()
         if ( airlineRouteWayPoint ):
             airlineWayPoint = AirlineWayPoint.objects.filter ( WayPointName = airlineRouteWayPoint.getWayPointName() ).first()
@@ -146,7 +146,7 @@ class AirlineRoute(models.Model):
             if (AdepRunWayName):
                 strRoute += "/" + AdepRunWayName
                 ''' 3th June 2023 - extend with SID when available '''
-                strRoute += self.extendRouteWithSID( Adep , AdepRunWayName , self.getfirstRouteWayPoint() )
+                strRoute += self.extendRouteWithSID( Adep , AdepRunWayName , self.getFirstRouteWayPoint() )
             else:
                 #print ( "Best Departure Runway = {0}".format(self.computeBestDepartureRunWay()))
                 AdepRunway = AirlineRunWay.objects.filter(Airport=Adep).first()
@@ -188,7 +188,7 @@ class AirlineRoute(models.Model):
     def getDirectRouteAsString(self, AdepRunWayName = None, AdesRunWayName = None):
         strRoute = self.getAdepRouteAsString(AdepRunWayName = AdepRunWayName)
         strRoute += "-"
-        strRoute += self.getfirstRouteWayPoint().getWayPointName()
+        strRoute += self.getFirstRouteWayPoint().getWayPointName()
         strRoute += "-"
         strRoute += self.getLastRouteWayPoint().getWayPointName()
         strRoute += "-"
@@ -196,11 +196,17 @@ class AirlineRoute(models.Model):
         strRoute = str(strRoute).replace("--", "-")    
         return strRoute
     
-    def getRouteAsString(self, AdepRunWayName = None, AdesRunWayName = None):
+    ''' direct route - 1st April 2024 '''
+    def getRouteAsString(self, AdepRunWayName = None, AdesRunWayName = None, direct = False):
         strRoute = self.getAdepRouteAsString(AdepRunWayName = AdepRunWayName)
             
         strRoute += "-"
-        strRoute += self.getWayPointsRouteAsString()
+        if direct:
+            strRoute += self.getFirstRouteWayPoint().getWayPointName()
+            strRoute += "-"
+            strRoute += self.getLastRouteWayPoint().getWayPointName()
+        else:
+            strRoute += self.getWayPointsRouteAsString()
         
         strRoute += "-"
         strRoute += self.getAdesRouteAsString(AdesRunWayName = AdesRunWayName)

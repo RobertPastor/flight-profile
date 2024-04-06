@@ -157,7 +157,7 @@ class FlightPlan(FixList):
         
     def insert(self, position, wayPoint):
         ''' 
-        insert a waypoint is the list and add the way-point to the flight plan dictionary 
+        insert a waypoint in the list and add the waypoint to the flight plan dictionary 
         '''
         assert (isinstance(wayPoint, WayPoint))
 
@@ -184,7 +184,6 @@ class FlightPlan(FixList):
             ''' fix list is empty => need a departure airport at least '''
             assert not(self.departureAirport is None) and isinstance( self.departureAirport, Airport)
             return self.departureAirport
-      
       
     def getLastWayPoint(self):
         ''' if fix list is empty, return arrival airport '''
@@ -239,7 +238,6 @@ class FlightPlan(FixList):
 
         return True
 
-
     def isDistanceLessThan(self, 
                            firstIndex, 
                            secondIndex, 
@@ -259,7 +257,6 @@ class FlightPlan(FixList):
             logging.debug ( self.className + ': WARNING - distance between {0} and {1} less than 10 Nm = {2:.2f}'.format(firstWayPoint.getName(), secondWayPoint.getName(), IntervalDistanceNm) )
             return True
         return False
-
 
     def allAnglesLessThan90degrees(self, minIntervalNautics = 10.0):
         ''' returns True if all contiguous angles lower to 90 degrees '''
@@ -412,5 +409,4 @@ class FlightPlan(FixList):
 #             lengthMeters += self.wayPointsDict[self.fixList[-1]].getDistanceMetersTo(self.arrivalAirport)
 
         return lengthMeters
-    
     
