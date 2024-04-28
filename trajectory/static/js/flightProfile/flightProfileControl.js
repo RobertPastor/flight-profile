@@ -308,7 +308,7 @@ class FlightProfileControl extends og.Control {
 		checkboxBestDepartureRunway.type = "checkbox";
 		checkboxBestDepartureRunway.name = "BestDepartureRunwayCheckBox";
 		checkboxBestDepartureRunway.value = "value";
-		checkboxBestDepartureRunway.title = "When ticked, best runway is selected"
+		checkboxBestDepartureRunway.title = "Tick to select best departure runway"
 		checkboxBestDepartureRunway.id    = this.getBestDepartureRunwayCheckBoxId();
 		
 		div_3.appendChild(checkboxBestDepartureRunway);
@@ -335,9 +335,9 @@ class FlightProfileControl extends og.Control {
 		// add a checkbox
 		let checkboxBestArrivalRunway   = document.createElement('input');
 		checkboxBestArrivalRunway.type  = "checkbox";
-		checkboxBestArrivalRunway.name  = "BestDepartureRunwayCheckBox";
+		checkboxBestArrivalRunway.name  = "BestArrivalRunwayCheckBox";
 		checkboxBestArrivalRunway.value = "value";
-		checkboxBestArrivalRunway.title = "When ticked, best runway is selected"
+		checkboxBestArrivalRunway.title = "Tick to select best arrival runway"
 		checkboxBestArrivalRunway.id    = this.getBestArrivalRunwayCheckBoxId();
 		
 		div_4.appendChild(checkboxBestArrivalRunway);
@@ -381,6 +381,7 @@ class FlightProfileControl extends og.Control {
 		button_5.innerHTML = "Compute Flight Profile";
 		button_5.classList.add("buttonWidth");
 		button_5.title = "click to compute the Flight Profile";
+		//button_5.disabled = true;
 		div_5.appendChild(button_5);
 		
 		firstMainDiv.appendChild(div_5);

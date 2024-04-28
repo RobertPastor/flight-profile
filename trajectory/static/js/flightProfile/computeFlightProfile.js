@@ -441,7 +441,6 @@ class AirlineProfileCosts {
 			}
 		}
 		
-		
 		// empty the arrival runway selector
 		$('#airlineArrivalRunWayFlightProfileId').empty();
 		
@@ -673,6 +672,9 @@ class AirlineProfileCosts {
 								
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
+				
+				// disable all buttons
+				SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 
 				// use ajax to get the data 
 				$.ajax( {
@@ -703,6 +705,8 @@ class AirlineProfileCosts {
 						complete : function() {
 							stopBusyAnimation();
 							document.getElementById("btnLaunchFlightProfile").disabled = false;
+							// enable all buttons
+							SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
 						},
 				});
 			} else {
