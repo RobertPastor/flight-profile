@@ -28,7 +28,8 @@ from trajectory.Guidance.FlightPathFile import FlightPath
 from trajectory.models import AirlineAirport
 
 from trajectory.models import BadaSynonymAircraft
-from trajectory.views.utils import getAircraftFromRequest, getRouteFromRequest, getAdepRunwayFromRequest, getAdesRunwayFromRequest , getMassFromRequest, getFlightLevelFromRequest
+from trajectory.views.utils import getAircraftFromRequest, getAdepRunwayFromRequest
+from trajectory.views.utils import getAdesRunwayFromRequest , getMassFromRequest, getFlightLevelFromRequest
 from trajectory.views.utils import getReducedClimbPowerCoeffFromRequest , getDirectRouteFromRequest
 
 def writeReadMeRow(worksheet, row, headerStr , styleHeader, dataStr,  styleData):

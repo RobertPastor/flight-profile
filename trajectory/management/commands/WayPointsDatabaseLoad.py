@@ -18,4 +18,4 @@ class Command(BaseCommand):
             ret = wayPointsBD.read()
             print ("read wayPoints database result = {0}".format(ret))
         else:
-            print("wayPoints database does not exists")
+            print("Error - wayPoints database does not exist")

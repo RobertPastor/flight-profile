@@ -312,5 +312,8 @@ class AirlineSidStarWayPointsRoute(models.Model):
         #logging.info ( routeAsString )
         return routeAsString
     
-    
+
+''' 11th August 2024 '''
+class WindTemperatureAloft(models.Model):
+    TextLine     = models.CharField(max_length = 1500, blank = True)
     
