@@ -8,31 +8,52 @@ https://www.faa.gov/regulationspolicies/handbooksmanuals/aviation/phak/chapter-1
 
 '''
 
-def ExploitFeetLine(feetLine):
-    print ( feetLine )
+class WeatherStationFeet(object):
+    
     feetLevels = []
-    if str(feetLine).startswith( "FT" ):
-        print ( "Feet line starts with FT as expected ")
-        feetLine = str(feetLine)[2:]
+    
+    def readTextLines(self, windTemperatureList):
+        assert ( isinstance ( windTemperatureList , list))
+        for textLine in windTemperatureList:
+            if ( str(textLine).startswith("FT") ):
+                self.exploitFeetLine(textLine)
+        return self.feetLevels
+
+    def exploitFeetLine(self, feetLine):
         print ( feetLine )
-        splitArray = str(feetLine).split(" ")
-        for elem in splitArray:
-            elem = str( elem.strip( ))
-            if len ( elem ) > 0:
-                print (elem.strip(" "))
-                feetLevels.append(elem.strip(" "))
-                
-    else:
-        print ( "Error = Feet line does not start with FT as expected ")
-    return feetLevels
+        self.feetLevels = []
+        if str(feetLine).startswith( "FT" ):
+            print ( "Feet line starts with FT as expected ")
+            feetLine = str(feetLine)[2:]
+            print ( feetLine )
+            splitArray = str(feetLine).split(" ")
+            for elem in splitArray:
+                elem = str( elem.strip( ))
+                if len ( elem ) > 0:
+                    print (elem.strip(" "))
+                    self.feetLevels.append(elem.strip(" "))
+                    
+        else:
+            print ( "Error = Feet line does not start with FT as expected ")                  
+    
+                                                   
 
 if __name__ == '__main__':
     feetLine = "FT  3000    6000    9000   12000   18000   24000  30000  34000  39000"
-    feetLevels = ExploitFeetLine(feetLine)
+    windTemperatureList = []
+    windTemperatureList.append(feetLine)
+    weatherStationFeet = WeatherStationFeet()
+    
+    feetLevels = weatherStationFeet.readTextLines(windTemperatureList)
     print ( feetLevels )
     
     print ( "------------------")
     
     feetLine = "FE 3000    6000    9000   12000   18000   24000  30000  34000  39000"
-    feetLevels = ExploitFeetLine(feetLine)
+    windTemperatureList = []
+    windTemperatureList.append(feetLine)
+    weatherStationFeet = WeatherStationFeet()
+    
+    feetLevels = weatherStationFeet.readTextLines(windTemperatureList)
     print ( feetLevels )
+    

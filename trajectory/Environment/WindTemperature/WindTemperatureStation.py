@@ -45,7 +45,6 @@ def ExploitStationData( stationData , numberOfLevels ):
             if len( str(elem).strip()) > 0:
                 levelsData.append( str(elem).strip() )
                 
-                
         ''' insert empty elements '''
         for n in range ( numberOfLevels - len(levelsData) ):      
             levelsData.insert( n , " " )
@@ -55,6 +54,8 @@ def ExploitStationData( stationData , numberOfLevels ):
     else:
         print ( "Error = cannot find station name")
     return stationDataDict
+
+
 
 if __name__ == '__main__':
     stationData = "ABI      9900+17 0507+13 0414+08 9900-08 3416-19 363832 363440 352550"

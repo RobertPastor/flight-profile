@@ -5,7 +5,7 @@ Created on 9 août 2024
 
 '''
 
-class WindTemperatureHead(object):
+class WindTemperatureHeader(object):
     transmissionDay = ""
     transmissionTimeZulu = ""
     measurementDayTimeZulu = ""
@@ -85,7 +85,7 @@ class WindTemperatureHead(object):
             self.forUsePeriodEndTimeZulu = self.forUseDayTimeZulu[5:10]
         
     
-    def analyseHead(self, headLineList ):
+    def analyseHeader(self, headLineList ):
         assert ( isinstance ( headLineList , list))
         print (" --- analyse head ----")
         
@@ -117,8 +117,8 @@ if __name__ == '__main__':
     headLine = "VALID 100000Z   FOR USE 2100-0600Z. TEMPS NEG ABV 24000"
     headLineList.append(headLine)
     
-    windTemperatureHead = WindTemperatureHead()
-    windTemperatureHead.analyseHead( headLineList )
+    windTemperatureHead = WindTemperatureHeader()
+    windTemperatureHead.analyseHeader( headLineList )
     
     print ("-----------")
     

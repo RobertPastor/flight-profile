@@ -6,7 +6,6 @@ Created on 11 août 2024
 
 
 from django.core.management.base import BaseCommand
-from trajectory.Environment.adds_metar import fetch
 from trajectory.models import WindTemperatureAloft
 
 from trajectory.Environment.WindTemperature.WindTemperatureFetch import fetchWindTemperature

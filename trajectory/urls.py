@@ -13,6 +13,7 @@ from trajectory.views.computeRunwayOvershoot import computeRunwayOvershoot
 from trajectory.views.viewsSidStar import showSidStar
 from trajectory.views.downloadKMLfile import createKMLfile
 from trajectory.views.viewsMetar import getMetar
+from trajectory.views.viewsWindTemperature import getWindTemperatureExcel
 
 app_name = "trajectory"
 
@@ -28,7 +29,9 @@ urlpatterns = [
     path('fuelPlanner/<slug:airlineName>' , launchFuelPlanner , name='launchFuelPlanner'),
     path('computeRunwayOvershoot/<slug:aircraftICAOcode>/<slug:airport>/<slug:runway>/<slug:mass>' , computeRunwayOvershoot , name ='computeRunwayOvershoot'),
     path('sidStar/<slug:SidOrStar>/<slug:airport>/<slug:runway>/<slug:waypoint>' , showSidStar , name="showSidStar"),
-    path('metar/<slug:airlineName>' , getMetar , name='getMetar')
+    path('metar/<slug:airlineName>' , getMetar , name='getMetar'),
+    
+    path('windTemperature/<slug:airlineName>' , getWindTemperatureExcel , name='getWindTemperatureExcel')
 
 ]
 
