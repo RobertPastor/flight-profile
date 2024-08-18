@@ -27,6 +27,7 @@ from django.views.decorators.csrf import csrf_protect
 from trajectory.Environment.WindTemperature.WindTemperatureFetch import fetchWindTemperature
 from trajectory.Environment.WindTemperature.WindTemperatureHeader import WindTemperatureHeader
 from trajectory.Environment.WindTemperature.WindTemperatureFeet import WeatherStationFeet
+from trajectory.Environment.WindTemperature.WeatherStationClass import WeatherStation
 
 
 def writeReadMeRow(worksheet, row, headerStr , styleHeader, dataStr,  styleData):
@@ -71,13 +72,33 @@ def writeReadMe(workbook, request, airlineName, windTemperatureList):
 def writeRawData(workbook, request, airlineName , windTemperatureList):
     assert ( isinstance ( windTemperatureList , list))
     wsRawData = workbook.add_worksheet("Raw Data")
-    styleData = workbook.add_format({'bold': False, 'border':True})
+    styleData = workbook.add_format({'bold': False, 'border': True})
     row = 0
     for textLine in windTemperatureList:
         wsRawData.write(row , 0 , textLine , styleData)
         row = row + 1
         
     wsRawData.autofit()
+    
+    
+def writeWeatherStationDataSecond(worksheet, row, windTemperatureList, numberOfLevels, styleData):
+    assert ( isinstance ( windTemperatureList , list))
+    feetLineFound = False
+    for textLine in windTemperatureList:
+        if feetLineFound:
+            row = row + 1
+            weatherStation = WeatherStation() 
+            weatherStation.ExploitStationData(textLine, numberOfLevels)
+            worksheet.write(row, 0 , weatherStation.getStationName() , styleData )
+            #worksheet.write(row, 1 , weatherStation.getStationsFirstLevel() , styleData )
+            col = 1
+            for stationDataLevel in weatherStation.getStationLevels():
+                worksheet.write(row, col , stationDataLevel , styleData )
+                col = col + 1
+            
+        if ( str(textLine).startswith("FT")):
+            feetLineFound = True
+            
     
 def writeWeatherStationData(workbook, request, airlineName , windTemperatureList):
     assert ( isinstance ( windTemperatureList , list))
@@ -89,10 +110,13 @@ def writeWeatherStationData(workbook, request, airlineName , windTemperatureList
     feetLevels = weatherStationFeet.readTextLines(windTemperatureList)
     row = 0
     col = 0
-    wsWeatherStationData.write(row, 0 , "FT", styleLavender)
+    wsWeatherStationData.write(row, 0 , "FEET", styleLavender)
+    ''' write a Feet only row '''
     for feetLevel in feetLevels:
         col = col + 1
         wsWeatherStationData.write(row, col , str(feetLevel), styleLavender)
+    ''' write the weather stations data '''
+    writeWeatherStationDataSecond(wsWeatherStationData , row , windTemperatureList , len(feetLevels), styleData)
         
     wsWeatherStationData.autofit()
 
