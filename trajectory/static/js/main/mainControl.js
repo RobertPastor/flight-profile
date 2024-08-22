@@ -1,4 +1,31 @@
 
+function listenSubMenuMeteoEntry( btnSubMenuMeteoId, mainSubMenuMeteoDivId ) {
+	
+	document.getElementById(btnSubMenuMeteoId).onclick = function () {
+		
+			let position =  $("#"+ btnSubMenuMeteoId).offset();
+				
+    		// show the submenu defined in SubMenuAirways.js
+    		if ( document.getElementById(mainSubMenuMeteoDivId) ) {
+				
+				$("#" + mainSubMenuMeteoDivId).css({
+					'position': 'absolute',
+					'top': position.top + 5, // Leave some margin
+					'left': position.left + 5 , // Leave some margin
+					'display': 'block'
+				});
+				
+				$("#"+ mainSubMenuMeteoDivId).show();
+				
+				document.getElementById(mainSubMenuMeteoDivId).addEventListener("mouseleave", function (e) {
+					$("#"+ mainSubMenuMeteoDivId).hide();
+				});
+			}
+    		return false;
+		};
+	
+}
+
 
 function listenSubMenuFuelEntry( btnSubMenuFuelId , mainSubMenuFuelDivId) {
 	
@@ -237,11 +264,17 @@ class MainControl extends og.Control {
 		row_2.appendChild(row_2_data_12);
 		
 		//======
-		// 25th September 2023 -  METAR
+		// 22nd August 2024 -  metar and wind temperature
 		//======
 		let row_2_data_13 = document.createElement('td');
-		row_2_data_13.innerHTML = '<div><button id="btnMetar" >Metar</button></div>';
-		row_2_data_13.title = "click to retrieve the METAR for each airline airport"; 
+		row_2_data_13.id = "mainSubMenuMeteoTdId";
+		
+		let menuEntryMeteoDiv = document.createElement('div');
+		menuEntryMeteoDiv.innerHTML = '<div><button id="btnSubMenuMeteoId" >Meteo</button></div>';
+		menuEntryMeteoDiv.id = "menuEntryMeteoDivId";
+		menuEntryMeteoDiv.title = "click to open a submenu for Metar and Wind Temperature";
+		
+		row_2_data_13.appendChild ( menuEntryMeteoDiv );
 		row_2.appendChild(row_2_data_13);
 		
 		//===================
@@ -269,6 +302,8 @@ class MainControl extends og.Control {
 		listenSubMenuOptimizationsEntry( "btnOptimizationsId" , "mainSubMenuOptimizationsDivId");
 		// 30th December 2023 - add a submenu for fuel efficiency and fuel planning
 		listenSubMenuFuelEntry("btnSubMenuFuelId", "mainSubMenuFuelDivId");
+		// 22nd August 2024 - listen to sub menu Meteo - metar and wind temperature
+		listenSubMenuMeteoEntry("btnSubMenuMeteoId" , "mainSubMenuMeteoDivId");
 		
 	}
 };

@@ -235,6 +235,8 @@ function initTools(globus, viewExtent) {
 		globus.planet.addControl(new AirlineRoutesAirwaysSubMenu());
 		globus.planet.addControl(new AirlineOptimizationsSubMenu());
 		globus.planet.addControl(new FuelSubMenu());
+		// 22nd August 2024 
+		globus.planet.addControl(new MeteoSubMenu());
 		
 		// control to display help or configuration information
 		globus.planet.addControl(new HelpControl());

@@ -66,7 +66,13 @@ def writeReadMe(workbook, request, airlineName, windTemperatureList):
     row = row + 1
     writeReadMeRow(wsReadMe, row, "For Use End Time (Zulu)" , styleLavender , windTemperatureHeader.getForUseEndTimeZulu(), styleEntete)
 
-    
+    row = row + 1
+    writeReadMeRow(wsReadMe, row, "Wind Speed" , styleLavender , "expressed in Knots", styleEntete)
+    row = row + 1
+    writeReadMeRow(wsReadMe, row, "Wind Direction" , styleLavender , "expressed in Degrees from True North", styleEntete)
+    row = row + 1
+    writeReadMeRow(wsReadMe, row, "Temperature" , styleLavender , "expressed in Degrees Celsius", styleEntete)
+
     wsReadMe.autofit()
     
 def writeRawData(workbook, request, airlineName , windTemperatureList):
@@ -81,7 +87,7 @@ def writeRawData(workbook, request, airlineName , windTemperatureList):
     wsRawData.autofit()
     
     
-def writeWeatherStationDataSecond(worksheet, row, windTemperatureList, numberOfLevels, styleData):
+def writeWeatherStationDataDetails(worksheet, row, windTemperatureList, numberOfLevels, styleData):
     assert ( isinstance ( windTemperatureList , list))
     feetLineFound = False
     for textLine in windTemperatureList:
@@ -99,26 +105,119 @@ def writeWeatherStationDataSecond(worksheet, row, windTemperatureList, numberOfL
         if ( str(textLine).startswith("FT")):
             feetLineFound = True
             
+def writeWeatherStationTemperatureDataDetails(worksheet, row, windTemperatureList, numberOfLevels, styleData):
+    assert ( isinstance ( windTemperatureList , list))
+    feetLineFound = False
+    for textLine in windTemperatureList:
+        if feetLineFound:
+            row = row + 1
+            weatherStation = WeatherStation() 
+            weatherStation.ExploitStationData(textLine, numberOfLevels)
+            worksheet.write(row, 0 , weatherStation.getStationName() , styleData )
+            #worksheet.write(row, 1 , weatherStation.getStationsFirstLevel() , styleData )
+            col = 1
+            for stationTemperatureDataLevel in weatherStation.getStationTemperatureLevels():
+                worksheet.write(row, col , stationTemperatureDataLevel , styleData )
+                col = col + 1
+            
+        if ( str(textLine).startswith("FT")):
+            feetLineFound = True
+            
+            
+def writeWeatherStationWindDirectionDataDetails(worksheet, row, windTemperatureList, numberOfLevels, styleData):
+    assert ( isinstance ( windTemperatureList , list))
+    feetLineFound = False
+    for textLine in windTemperatureList:
+        if feetLineFound:
+            row = row + 1
+            weatherStation = WeatherStation() 
+            weatherStation.ExploitStationData(textLine, numberOfLevels)
+            worksheet.write(row, 0 , weatherStation.getStationName() , styleData )
+            #worksheet.write(row, 1 , weatherStation.getStationsFirstLevel() , styleData )
+            col = 1
+            for stationWindDirectionDataLevel in weatherStation.getStationWindDirectionLevels():
+                worksheet.write(row, col , stationWindDirectionDataLevel , styleData )
+                col = col + 1
+            
+        if ( str(textLine).startswith("FT")):
+            feetLineFound = True
+            
+def writeWeatherStationWindSpeedDataDetails(worksheet, row, windTemperatureList, numberOfLevels, styleData):
+    assert ( isinstance ( windTemperatureList , list))
+    feetLineFound = False
+    for textLine in windTemperatureList:
+        if feetLineFound:
+            row = row + 1
+            weatherStation = WeatherStation() 
+            weatherStation.ExploitStationData(textLine, numberOfLevels)
+            worksheet.write(row, 0 , weatherStation.getStationName() , styleData )
+            #worksheet.write(row, 1 , weatherStation.getStationsFirstLevel() , styleData )
+            col = 1
+            for stationWindSpeedDataLevel in weatherStation.getStationWindSpeedLevels():
+                worksheet.write(row, col , stationWindSpeedDataLevel , styleData )
+                col = col + 1
+            
+        if ( str(textLine).startswith("FT")):
+            feetLineFound = True
+    
+            
+def writeFeetHeader(worksheet, style, windTemperatureList):
+    weatherStationFeet = WeatherStationFeet()
+    feetLevels = weatherStationFeet.readTextLines(windTemperatureList)
+    row = 0
+    col = 0
+    worksheet.write(row, 0 , "FEET", style)
+    ''' write a Feet only row '''
+    for feetLevel in feetLevels:
+        col = col + 1
+        worksheet.write(row, col , str(feetLevel), style)
+    return len(feetLevels)
     
 def writeWeatherStationData(workbook, request, airlineName , windTemperatureList):
     assert ( isinstance ( windTemperatureList , list))
     wsWeatherStationData = workbook.add_worksheet("Weather Station Data")
     styleData = workbook.add_format({'bold': False, 'border':True})
-    styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
+    styleHeader = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
 
-    weatherStationFeet = WeatherStationFeet()
-    feetLevels = weatherStationFeet.readTextLines(windTemperatureList)
-    row = 0
-    col = 0
-    wsWeatherStationData.write(row, 0 , "FEET", styleLavender)
-    ''' write a Feet only row '''
-    for feetLevel in feetLevels:
-        col = col + 1
-        wsWeatherStationData.write(row, col , str(feetLevel), styleLavender)
+    feetLevelsLength = writeFeetHeader(wsWeatherStationData, styleHeader, windTemperatureList)
     ''' write the weather stations data '''
-    writeWeatherStationDataSecond(wsWeatherStationData , row , windTemperatureList , len(feetLevels), styleData)
-        
+    row = 0
+    writeWeatherStationDataDetails(wsWeatherStationData , row , windTemperatureList , feetLevelsLength, styleData)
     wsWeatherStationData.autofit()
+    
+def writeWindSpeedData(workbook, request, airlineName , windTemperatureList):
+    assert ( isinstance ( windTemperatureList , list))
+    wsWindSpeedData = workbook.add_worksheet("Wind Speed Data")
+    styleData = workbook.add_format({'bold': False, 'border':True})
+    styleHeader = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
+    
+    feetLevelsLength = writeFeetHeader(wsWindSpeedData, styleHeader, windTemperatureList)
+    row = 0
+    writeWeatherStationWindSpeedDataDetails(wsWindSpeedData, row , windTemperatureList , feetLevelsLength, styleData)
+    wsWindSpeedData.autofit()
+    
+    
+def writeWindDirectionData(workbook, request, airlineName , windTemperatureList):
+    assert ( isinstance ( windTemperatureList , list))
+    wsWindDirectionData = workbook.add_worksheet("Wind Direction Data")
+    styleData = workbook.add_format({'bold': False, 'border':True})
+    styleHeader = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
+    
+    feetLevelsLength = writeFeetHeader(wsWindDirectionData, styleHeader, windTemperatureList)
+    row = 0
+    writeWeatherStationWindDirectionDataDetails(wsWindDirectionData, row , windTemperatureList , feetLevelsLength, styleData)
+    wsWindDirectionData.autofit()
+    
+def writeTemperatureData(workbook, request, airlineName , windTemperatureList):
+    assert ( isinstance ( windTemperatureList , list))
+    wsTemperatureData = workbook.add_worksheet("Temperature Data")
+    styleData = workbook.add_format({'bold': False, 'border':True})
+    styleHeader = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
+    
+    feetLevelsLength = writeFeetHeader(wsTemperatureData, styleHeader, windTemperatureList)
+    row = 0
+    writeWeatherStationTemperatureDataDetails(wsTemperatureData, row , windTemperatureList , feetLevelsLength, styleData)
+    wsTemperatureData.autofit()
 
 def createExcelWorkbook(memoryFile, request, airlineName, windTemperatureList):
     ''' create the workbook '''
@@ -127,6 +226,9 @@ def createExcelWorkbook(memoryFile, request, airlineName, windTemperatureList):
     writeReadMe(workbook=wb, request=request, airlineName=airlineName, windTemperatureList=windTemperatureList)
     writeRawData(workbook=wb, request=request, airlineName=airlineName, windTemperatureList=windTemperatureList)
     writeWeatherStationData(workbook=wb, request=request, airlineName=airlineName, windTemperatureList=windTemperatureList)
+    writeWindSpeedData(workbook=wb, request=request, airlineName=airlineName, windTemperatureList=windTemperatureList)
+    writeWindDirectionData(workbook=wb, request=request, airlineName=airlineName, windTemperatureList=windTemperatureList)
+    writeTemperatureData(workbook=wb, request=request, airlineName=airlineName, windTemperatureList=windTemperatureList)
     return wb
 
 
