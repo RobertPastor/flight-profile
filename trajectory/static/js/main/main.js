@@ -347,6 +347,10 @@ function initTools(globus, viewExtent) {
 		let sidStar = SingletonSidStar.getInstance();
 		sidStar.initSidStar(globus);
 		
+		// 23rd August 2024 - Wind Temperature
+		let windTemperature = SingletonWindTemperature.getInstance();
+		windTemperature.initWindTemperature();
+		
 		// now finish by loading the different airlines
 		loadAirlinesSelector();
 		

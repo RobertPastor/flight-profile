@@ -187,7 +187,7 @@ def writeWeatherStationData(workbook, request, airlineName , windTemperatureList
     
 def writeWindSpeedData(workbook, request, airlineName , windTemperatureList):
     assert ( isinstance ( windTemperatureList , list))
-    wsWindSpeedData = workbook.add_worksheet("Wind Speed Data")
+    wsWindSpeedData = workbook.add_worksheet("Wind Speed Knots")
     styleData = workbook.add_format({'bold': False, 'border':True})
     styleHeader = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
     
@@ -199,7 +199,7 @@ def writeWindSpeedData(workbook, request, airlineName , windTemperatureList):
     
 def writeWindDirectionData(workbook, request, airlineName , windTemperatureList):
     assert ( isinstance ( windTemperatureList , list))
-    wsWindDirectionData = workbook.add_worksheet("Wind Direction Data")
+    wsWindDirectionData = workbook.add_worksheet("Wind Direction DegreesTrueNorth")
     styleData = workbook.add_format({'bold': False, 'border':True})
     styleHeader = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
     
@@ -210,7 +210,7 @@ def writeWindDirectionData(workbook, request, airlineName , windTemperatureList)
     
 def writeTemperatureData(workbook, request, airlineName , windTemperatureList):
     assert ( isinstance ( windTemperatureList , list))
-    wsTemperatureData = workbook.add_worksheet("Temperature Data")
+    wsTemperatureData = workbook.add_worksheet("Temperature Degrees Celsius")
     styleData = workbook.add_format({'bold': False, 'border':True})
     styleHeader = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
     
