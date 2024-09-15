@@ -1254,6 +1254,7 @@ class AircraftConfiguration(FlightEnvelope):
                                                     thrustNewtons                 ,
                                                     dragNewtons                   ,
                                                     liftNewtons                   ,
+                                                    currentPosition               ,
                                                     endOfSimulation)
 
         ''' return delta distance and altitude changes '''

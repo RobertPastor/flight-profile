@@ -196,10 +196,10 @@ class TurnLeg(Graph):
         ''' case of last turn '''
         if lastTurn == True:
             tasMetersPerSecond = cas2tas(cas = self.aircraft.computeLandingStallSpeedCasKnots(),
-                                               altitude = altitudeMeanSeaLevelMeters,
-                                               temp = 'std',
-                                               speed_units = 'kt',
-                                               alt_units = 'm' ) * Knots2MetersPerSecond
+                                         altitude = altitudeMeanSeaLevelMeters,
+                                         temp = 'std',
+                                         speed_units = 'kt',
+                                         alt_units = 'm' ) * Knots2MetersPerSecond
             tasKnots = tasMetersPerSecond * MeterPerSecond2Knots
         
             ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
@@ -218,7 +218,7 @@ class TurnLeg(Graph):
             radiusOfTurnMeters = finalRadiusOfTurnMeters
             logging.debug ("{0} - final radius of turn = {1:.2f} in meters".format(self.className, radiusOfTurnMeters))
 
-        logging.debug ( self.className + ': tas= {0:.2f} knots - radius of turn= {1:.2f} meters - radius of turn= {2:.2f} nautics'.format(tasKnots, radiusOfTurnMeters, radiusOfTurnMeters*Meter2NauticalMiles) )           
+        logging.debug ( self.className + ': tas= {0:.2f} knots - radius of turn= {1:.2f} meters - radius of turn= {2:.2f} Nm'.format(tasKnots, radiusOfTurnMeters, radiusOfTurnMeters*Meter2NauticalMiles) )           
 
         ''' index used to initialize the loop '''        
         index = 0
@@ -241,7 +241,7 @@ class TurnLeg(Graph):
             ''' initial index - loop initialisation '''
             #logging.debug 'altitude= ' + str(altitudeMeanSeaLevelMeters) + ' meters'
             
-            ''' init the loop '''
+            ''' initialize the loop '''
             if index == 0:
                 ''' set initial way Point altitude '''
                 self.initialWayPoint.setAltitudeAboveSeaLevelMeters(altitudeMeanSeaLevelMeters)             
@@ -462,10 +462,10 @@ class TurnLeg(Graph):
         
         ''' if it is the last turn then need to reach the final way point => top of glide slope '''
         tasMetersPerSecond = cas2tas(cas = self.aircraft.computeLandingStallSpeedCasKnots(),
-                                               altitude = simulatedAltitudeSeaLevelMeters,
-                                               temp = 'std',
-                                               speed_units = 'kt',
-                                               alt_units = 'm' ) * Knots2MetersPerSecond
+                                    altitude = simulatedAltitudeSeaLevelMeters,
+                                    temp = 'std',
+                                    speed_units = 'kt',
+                                    alt_units = 'm' ) * Knots2MetersPerSecond
         tasKnots = tasMetersPerSecond * MeterPerSecond2Knots
         
         ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
@@ -577,6 +577,3 @@ class TurnLeg(Graph):
         ''' 16th January 2022 - return the radius of turn '''
         return radiusOfTurnMeters        
         
-
-
-    

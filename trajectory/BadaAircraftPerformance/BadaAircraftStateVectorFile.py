@@ -29,11 +29,17 @@ from trajectory.Environment.Constants import MeterSecond2Knots , Meter2Feet, Met
 
 from trajectory.OutputFiles.XlsxOutputFile import XlsxOutput
 from trajectory.Environment.Atmosphere import Atmosphere
+from trajectory.Environment.WindTemperature.NoaaStations.NoaaStationsClass import NoaaStations
+from trajectory.Guidance.WayPointFile import WayPoint
 
 class StateVector(object):
     
     className = ''
     aircraftStateHistory = []
+    nooaWeatherStations = None
+    distanceFlowMeters = 0.0
+    First = True
+    nearestNoaaWeatherStation = ""
 
     def __init__(self, aircraftICAOcode, atmosphere):
         
@@ -43,6 +49,15 @@ class StateVector(object):
         self.atmosphere = atmosphere
         self.aircraftICAOcode = str(aircraftICAOcode).upper()
         self.aircraftStateHistory = []
+        
+        fileName = "noaa-stations.json"
+        self.nooaWeatherStations = NoaaStations(fileName)
+        self.nooaWeatherStations.readStations()
+        
+        self.distanceFlowMeters = 0.0
+        self.First = True
+        
+        self.nearestNoaaWeatherStation = ""
 
     def initStateVector(self,
                         elapsedTimeSeconds, 
@@ -66,9 +81,10 @@ class StateVector(object):
                                     thrustNewtons = 0.0       ,
                                     dragNewtons   = 0.0       ,
                                     liftNewtons   = 0.0       ,
+                                    currentPosition = "None"  ,
                                     endOfSimulation = False)
         
-        
+    ''' 15th Septembe 2024 - currentPosition used to retrieve the nearest weather station '''
     def updateAircraftStateVector(self, 
                                     elapsedTimeSeconds, 
                                     characteristicPoint,
@@ -81,10 +97,27 @@ class StateVector(object):
                                     thrustNewtons,
                                     dragNewtons,
                                     liftNewtons,
+                                    currentPosition,
                                     endOfSimulation):
 
         ''' need to store both TAS and altitude => compute CAS '''
         aircraftStateDict = {}
+        
+        if (not currentPosition is None)  and ( isinstance ( currentPosition , WayPoint ) ) :
+            if self.First == True:
+                self.First = False
+                self.nearestNoaaWeatherStation = self.nooaWeatherStations.getNearestWeatherStationICAOname(currentPosition)
+                self.distanceFlowMeters = totalDistanceFlownMeters
+            else:
+                ''' 15th September 2024 - every 50 Kilo mzters - compute nearest weather station '''
+                if totalDistanceFlownMeters > self.distanceFlowMeters + 50000.0:
+                    self.nearestNoaaWeatherStation = self.nooaWeatherStations.getNearestWeatherStationICAOname(currentPosition)
+                    self.distanceFlowMeters = totalDistanceFlownMeters
+                    
+        else:
+            self.nearestNoaaWeatherStation = "None"
+                
+                
         ''' 9th September 2023 - add characteristic point '''
         aircraftStateDict[elapsedTimeSeconds] = [characteristicPoint,
                                                  altitudeMeanSeaLevelMeters, 
@@ -96,6 +129,7 @@ class StateVector(object):
                                                  thrustNewtons,
                                                  dragNewtons,
                                                  liftNewtons ,
+                                                 self.nearestNoaaWeatherStation,
                                                  endOfSimulation]
         self.aircraftStateHistory.append(aircraftStateDict)
         
@@ -183,6 +217,7 @@ class StateVector(object):
                                  'lift-newtons'                 ,
                                  
                                  'load-factor-g'                ,
+                                 'nearest-Weather-Station'      ,
                                  'end of simulation'
                                  ])
 
@@ -237,8 +272,12 @@ class StateVector(object):
                 previousAltitudeMeanSeaLevelFeet = altitudeMeanSeaLevelFeet
                 
                 previousElapsedTimeSeconds = elapsedTimeSeconds
+                
+                ''' 15th September 024 - nearest NOAA Weather Station '''
+                nearestWeatherStation = valueList[10]
+                
                 ''' 5th September 2021 - write endOfSimulation '''
-                endOfSimulation = valueList[10]
+                endOfSimulation = valueList[11]
                 ''' 9th September 2023 - add the characteristic point '''
                 xlsxOutput.writeFifteenFloatCharPointValues(elapsedTimeSeconds,
                                                             
@@ -262,7 +301,9 @@ class StateVector(object):
                                                 thrustNewtons          ,
                                                 dragNewtons            ,
                                                 liftNewtons            ,
+                                                
                                                 loadFactor             ,
+                                                nearestWeatherStation  ,
                                                 endOfSimulation)
         xlsxOutput.close()
                     
@@ -292,7 +333,9 @@ class StateVector(object):
                                                  thrustNewtons          ,
                                                  dragNewtons            ,
                                                  liftNewtons            ,
+                                                 
                                                  loadFactor             ,
+                                                 nearestWeatherStation  ,
                                                  endOfSimulation):
 
         ColumnIndex = 0
@@ -330,6 +373,8 @@ class StateVector(object):
         ColumnIndex += 1
         ws.write(row, ColumnIndex, loadFactor)    
         ColumnIndex += 1
+        ws.write(row, ColumnIndex, nearestWeatherStation)  
+        ColumnIndex += 1
         ws.write(row, ColumnIndex, str(endOfSimulation))     
         row += 1    
         return row
@@ -366,6 +411,7 @@ class StateVector(object):
                                  'lift-newtons'                 ,
                                  
                                  'load-factor-g'                ,
+                                 'nearest-weather-station'      ,
                                  'end of simulation'
                                  ])
 
@@ -421,8 +467,10 @@ class StateVector(object):
                 previousAltitudeMeanSeaLevelFeet = altitudeMeanSeaLevelFeet
                 
                 previousElapsedTimeSeconds = elapsedTimeSeconds
+                ''' 15th September 2024 - nearest weather station '''
+                nearestWeatherStation = valueList[10]
                 ''' 5th September 2021 - write endOfSimulation '''
-                endOfSimulation = valueList[10]
+                endOfSimulation = valueList[11]
                 ''' 9th September 2023 - add characteristic point '''
                 row = self.writeValues(ws, row, elapsedTimeSeconds, 
                                                 characteristic_point,
@@ -445,5 +493,6 @@ class StateVector(object):
                                                 dragNewtons            ,
                                                 liftNewtons            ,
                                                 loadFactor             ,
+                                                nearestWeatherStation  ,
                                                 endOfSimulation)
         

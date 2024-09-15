@@ -209,6 +209,7 @@ class FlightEnvelope(AeroDynamics):
                                   thrustNewtons                 ,
                                   dragNewtons                   ,
                                   liftNewtons                   ,
+                                  currentPosition               ,
                                   endOfSimulation):
         
         ''' 12th September 2021 - Robert - need to know real time spent during flying '''
@@ -252,6 +253,7 @@ class FlightEnvelope(AeroDynamics):
                                                    thrustNewtons                 ,
                                                    dragNewtons                   ,
                                                    liftNewtons                   ,
+                                                   currentPosition               ,
                                                    endOfSimulation)
 
         return endOfSimulation

@@ -5,18 +5,26 @@ Created on 24 juil. 2024
 '''
 
 import json
+import os
 from trajectory.Guidance.ConstraintsFile import Meters2Feet
+from trajectory.Guidance.WayPointFile import WayPoint
+
 
 class NoaaStations(object):
     fileName = ""
     stations = None
+    FilesFolder = ""
+    FilePath = ""
 
     def __init__(self, fileName)->None:
         object.__init__(self)
         self.fileName = fileName
         
+        self.FilesFolder = os.path.dirname(__file__)
+        self.FilePath = os.path.join(self.FilesFolder , self.fileName)
+        
     def readStations(self):
-        with open("./" + self.fileName) as json_data:
+        with open( self.FilePath ) as json_data:
             self.stations = json.load(json_data)
             #for station in self.stations:
             #    if str(station['icaoId']).startswith("K"):
@@ -63,7 +71,35 @@ class NoaaStations(object):
             if str(station['faaId']) == stationFAAname :
                 return float(station['elev']) * Meters2Feet
         return None
-        
+    
+    def getNearestWeatherStationICAOname(self, currentPosition):
+        assert( isinstance( currentPosition , WayPoint ))
+        First = True
+        lowestDistanceMeters = 0.0 
+        nearestWeatherStationsICAOname = ""
+        for station in self.stations:
+            if ( len(str(station['icaoId'])) == 4 ) and ( float(station['lat']) > -90.0 ) and str(station['icaoId']).startswith("K") :
+                    
+                #print ( str(station['icaoId']) )
+                #print ( float(station['lat']) )
+                #print ( float(station['lon']) )
+                
+                stationWayPoint = WayPoint(Name = str(station['icaoId']),
+                                           LatitudeDegrees = float(station['lat']),
+                                           LongitudeDegrees = float(station['lon']),
+                                           AltitudeMeanSeaLevelMeters = 0.0)
+                
+                currentDistanceMeters = currentPosition.getDistanceMetersTo(stationWayPoint)
+                #print ( currentDistanceMeters )
+                if ( First == True ):
+                    First = False
+                    lowestDistanceMeters = currentDistanceMeters
+                    nearestWeatherStationsICAOname = str(station['icaoId'])
+                else:
+                    if ( currentDistanceMeters < lowestDistanceMeters):
+                        nearestWeatherStationsICAOname = str(station['icaoId'])
+                        lowestDistanceMeters = currentDistanceMeters
+        return nearestWeatherStationsICAOname
         
 if __name__ == '__main__':
     fileName = "noaa-stations.json"
@@ -90,4 +126,10 @@ if __name__ == '__main__':
     
     stationFAAname = "JFK"
     print ( "station = {0} - elevation meters = {1}".format( stationFAAname , noaaStations.getStationElevationMeters( stationFAAname ) ) )
+    
+    currentPosition = WayPoint(Name = "NearKATL",
+                                           LatitudeDegrees = 33.70,
+                                           LongitudeDegrees = -84.500,
+                                           AltitudeMeanSeaLevelMeters = 0.0)
+    print ( "nearest weather station = {0}".format ( noaaStations.getNearestWeatherStationICAOname(currentPosition) ) )
 

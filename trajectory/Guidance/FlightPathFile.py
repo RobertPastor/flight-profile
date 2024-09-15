@@ -160,9 +160,9 @@ class FlightPath(FlightPlan):
                             reverse = False)
         
         distanceToLastFixMeters = self.computeDistanceToLastFixMeters(currentPosition = tailWayPoint, fixListIndex = headWayPointIndex)
-        logging.debug ( self.className + ' distance to last fix= {0:.2f} nautics'.format(distanceToLastFixMeters * Meter2NauticalMiles) )
+        logging.debug ( self.className + ' distance to last fix= {0:.2f} Nm'.format(distanceToLastFixMeters * Meter2NauticalMiles) )
         distanceStillToFlyMeters = self.flightLengthMeters - self.finalRoute.getLengthMeters()
-        logging.debug ( self.className + ' still to fly= {0:.2f} nautics'.format(distanceStillToFlyMeters * Meter2NauticalMiles) )
+        logging.debug ( self.className + ' still to fly= {0:.2f} Nm'.format(distanceStillToFlyMeters * Meter2NauticalMiles) )
 
         self.endOfSimulation = turnLeg.buildTurnLeg(deltaTimeSeconds = self.deltaTimeSeconds,
                              elapsedTimeSeconds = tailWayPoint.getElapsedTimeSeconds(), 
