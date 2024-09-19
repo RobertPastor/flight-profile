@@ -29,7 +29,7 @@ from trajectory.Environment.Constants import MeterSecond2Knots , Meter2Feet, Met
 
 from trajectory.OutputFiles.XlsxOutputFile import XlsxOutput
 from trajectory.Environment.Atmosphere import Atmosphere
-from trajectory.Environment.WindTemperature.NoaaStations.NoaaStationsClass import NoaaStations
+from trajectory.Environment.WindTemperature.NoaaStations.NoaaWeatherStationsFile import NoaaWeatherStationsClass
 from trajectory.Guidance.WayPointFile import WayPoint
 
 class StateVector(object):
@@ -51,7 +51,7 @@ class StateVector(object):
         self.aircraftStateHistory = []
         
         fileName = "noaa-stations.json"
-        self.nooaWeatherStations = NoaaStations(fileName)
+        self.nooaWeatherStations = NoaaWeatherStationsClass(fileName)
         self.nooaWeatherStations.readStations()
         
         self.distanceFlowMeters = 0.0

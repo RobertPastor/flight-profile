@@ -10,7 +10,6 @@ from trajectory.models import WindTemperatureAloft
 
 from trajectory.Environment.WindTemperature.WindTemperatureFetch import fetchWindTemperature
 
-
 class Command(BaseCommand):
     help = 'Load the Wind Temperature data'
 

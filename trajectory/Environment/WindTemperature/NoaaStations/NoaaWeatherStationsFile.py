@@ -10,13 +10,58 @@ from trajectory.Guidance.ConstraintsFile import Meters2Feet
 from trajectory.Guidance.WayPointFile import WayPoint
 
 
-class NoaaStations(object):
+class NoaaWeatherStationClass(object):
+    FAAname = ""
+    ICAOname = ""
+    LatitudeDegrees = 0.0
+    LongitudeDegrees = 0.0
+    ElevationMeters = 0.0
+    Site = ""
+    State = ""
+    Country = ""
+    
+    def __init__(self, station):
+        self.FAAname = str(station['faaId'])
+        self.ICAOname = str(station['icaoId'])
+        self.LatitudeDegrees = float(station['lat'])
+        self.LongitudeDegrees = float(station['lon'])
+        self.ElevationMeters = float(station['elev'])
+        self.Site = str(station['site'])
+        self.State = str(station['state'])
+        self.Country = str(station['country'])
+        
+    def getFAAname(self):
+        return self.FAAname
+    
+    def getICAOname(self):
+        return self.ICAOname
+    
+    def getLatitudeDegrees(self):
+        return self.LatitudeDegrees
+    
+    def getLongitudeDegrees(self):
+        return self.LongitudeDegrees
+    
+    def getElevationMeters(self):
+        return self.ElevationMeters
+    
+    def getSite(self):
+        return self.Site
+    
+    def getState(self):
+        return self.State
+    
+    def getCountry(self):
+        return self.Country
+
+
+class NoaaWeatherStationsClass(object):
     fileName = ""
     stations = None
     FilesFolder = ""
     FilePath = ""
 
-    def __init__(self, fileName)->None:
+    def __init__(self, fileName):
         object.__init__(self)
         self.fileName = fileName
         
@@ -72,6 +117,12 @@ class NoaaStations(object):
                 return float(station['elev']) * Meters2Feet
         return None
     
+    def getNextStation(self):
+        for station in self.stations:
+            if ( len ( str(station['faaId'] ) ) >= 3 ) and ( len ( str(station['icaoId'] ) ) >= 3 ):
+                nooaWeatherStation = NoaaWeatherStationClass(station)
+                yield nooaWeatherStation
+                
     def getNearestWeatherStationICAOname(self, currentPosition):
         assert( isinstance( currentPosition , WayPoint ))
         First = True
@@ -116,13 +167,9 @@ if __name__ == '__main__':
     
     stationFAAname = "DEN"
     print ( "station = {0} - latitude degrees = {1}".format( stationFAAname , noaaStations.getStationLatitudeDegrees( stationFAAname ) ) )
-    
     print ( "station = {0} - longitude degrees = {1}".format( stationFAAname , noaaStations.getStationLongitudeDegrees( stationFAAname ) ) )
-    
     print ( "station = {0} - elevation meters = {1}".format( stationFAAname , noaaStations.getStationElevationMeters( stationFAAname ) ) )
-    
     print ( "station = {0} - elevation feet = {1}".format( stationFAAname , noaaStations.getStationElevationFeet( stationFAAname ) ) )
-
     
     stationFAAname = "JFK"
     print ( "station = {0} - elevation meters = {1}".format( stationFAAname , noaaStations.getStationElevationMeters( stationFAAname ) ) )

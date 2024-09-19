@@ -1,6 +1,5 @@
 
 
-
  cd "C:\Users\rober\Documents\04 - Workspace\flight-profile"
  
 # list all available commands

@@ -317,3 +317,14 @@ class AirlineSidStarWayPointsRoute(models.Model):
 class WindTemperatureAloft(models.Model):
     TextLine     = models.CharField(max_length = 1500, blank = True)
     
+class NoaaWeatherStation(models.Model):
+    FAAid = models.CharField(max_length = 10, primary_key = True)
+    ICAOid = models.CharField(max_length = 10)
+    LatitudeDegrees = models.FloatField(blank = False)
+    LongitudeDegrees = models.FloatField(blank = False)
+    ElevationMeters = models.FloatField(blank = False)
+    Site = models.CharField(max_length = 1500)
+    State = models.CharField(max_length = 150)
+    Country = models.CharField(max_length = 150)
+    
+    
