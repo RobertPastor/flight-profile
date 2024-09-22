@@ -23,20 +23,27 @@ class WeatherStationFeet(object):
         print ( feetLine )
         self.feetLevels = []
         if str(feetLine).startswith( "FT" ):
-            print ( "Feet line starts with FT as expected ")
+            #print ( "Feet line starts with FT as expected ")
             feetLine = str(feetLine)[2:]
-            print ( feetLine )
+            #print ( feetLine )
             splitArray = str(feetLine).split(" ")
             for elem in splitArray:
                 elem = str( elem.strip( ))
                 if len ( elem ) > 0:
-                    print (elem.strip(" "))
+                    #print (elem.strip(" "))
                     self.feetLevels.append(elem.strip(" "))
                     
         else:
-            print ( "Error = Feet line does not start with FT as expected ")                  
-    
-                                                   
+            print ( "Error = Feet line does not start with FT as expected ")     
+            
+    def getLevelFeet(self, levelIndex):
+        index = 0
+        for feetLevel in self.feetLevels:
+            if ( index == levelIndex ):
+                return float(feetLevel)
+            index = index + 1
+        return 0.0
+       
 
 if __name__ == '__main__':
     feetLine = "FT  3000    6000    9000   12000   18000   24000  30000  34000  39000"
@@ -46,6 +53,8 @@ if __name__ == '__main__':
     
     feetLevels = weatherStationFeet.readTextLines(windTemperatureList)
     print ( feetLevels )
+    print ( weatherStationFeet.getLevelFeet( 0 ))
+    print ( weatherStationFeet.getLevelFeet( 1 ))
     
     print ( "------------------")
     
@@ -56,4 +65,5 @@ if __name__ == '__main__':
     
     feetLevels = weatherStationFeet.readTextLines(windTemperatureList)
     print ( feetLevels )
+    print ( weatherStationFeet.getLevelFeet(0 ))
     

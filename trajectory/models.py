@@ -317,6 +317,7 @@ class AirlineSidStarWayPointsRoute(models.Model):
 class WindTemperatureAloft(models.Model):
     TextLine     = models.CharField(max_length = 1500, blank = True)
     
+''' 20th September 2024 '''
 class NoaaWeatherStation(models.Model):
     FAAid = models.CharField(max_length = 10, primary_key = True)
     ICAOid = models.CharField(max_length = 10)
@@ -327,4 +328,15 @@ class NoaaWeatherStation(models.Model):
     State = models.CharField(max_length = 150)
     Country = models.CharField(max_length = 150)
     
+''' 21st September 2024 '''
+class NoaaWeatherStationMeasure(models.Model):
+    ''' for each station, for each level (feet) gives speed , direction and temperature '''
+    ''' read FAA Aviation Weather Services - Chapter 13 '''
+    ''' https://www.faa.gov/sites/faa.gov/files/15_phak_ch13.pdf '''
+    NoaaWeatherStationInstance = models.ForeignKey(NoaaWeatherStation, on_delete=models.CASCADE)
+    LevelFeet = models.FloatField(blank = False)
+    WindSpeedKnots = models.FloatField(blank = False)
+    ''' Wind speed direction from True North '''
+    WindDirectionTrueNorthDegrees = models.FloatField(blank = False)
+    TemperatureDegreesCelsius = models.FloatField(blank = False)
     

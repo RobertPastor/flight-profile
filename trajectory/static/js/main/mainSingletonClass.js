@@ -81,6 +81,9 @@ class MainClass {
 				outlineColor: "rgba(255,255,255,.4)",
 				size: 10,
 				color: "black",
+				align: "center",
+				style: "normal",
+				weight : "normal",
 				offset: [0, -2]};
 	}
 	

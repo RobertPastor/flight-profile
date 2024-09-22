@@ -220,7 +220,7 @@ class AirlineProfileCosts {
 						outlineColor: "rgba(255,255,255,.4)",
 						size: 12,
 						color: "black",
-						offset: [10, -2]
+						offset: [-100, -2]
 						},
 				billboard: {
 						src: "/static/images/plane.png",

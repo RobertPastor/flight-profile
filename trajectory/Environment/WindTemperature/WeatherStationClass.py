@@ -37,34 +37,69 @@ class WeatherStation(object):
     def getStationTemperatureLevels(self):
         return self.stationDataDict['temperatureData']
     
+    def getStationTemperatureOneLevel(self, levelIndex):
+        index = 0
+        for stationTemperatureDataLevel in self.getStationTemperatureLevels():
+            if ( index == levelIndex):
+                return stationTemperatureDataLevel
+            index = index + 1
+        return 0.0
+    
     def getStationWindSpeedLevels(self):
         return self.stationDataDict['windSpeedData']
+    
+    def getStationWindSpeedOneLevel(self, levelIndex):
+        index = 0
+        for stationWindSpeedDataLevel in self.getStationWindSpeedLevels():
+            if ( index ==  levelIndex):
+                return stationWindSpeedDataLevel
+            index = index + 1
+        return 0.0
     
     def getStationWindDirectionLevels(self):
         return self.stationDataDict['windDirectionData']
     
+    def getStationWindDirectionOneLevel(self, levelIndex):
+        index = 0
+        for stationWindDirectionDataLevel in self.getStationWindDirectionLevels():
+            if ( index == levelIndex):
+                return stationWindDirectionDataLevel
+            index = index + 1
+        return 0.0
+    
     def extractTemperature(self, levelDataStr):
         assert( isinstance( levelDataStr , str ))
+        strResult = ""
         if ( len ( levelDataStr ) == 4 ):
-            return " "
+            strResult = " "
         posPlus = str(levelDataStr).find("+")
         if ( posPlus>0 ):
-            return str(levelDataStr)[posPlus:]
+            strResult = str(levelDataStr)[posPlus:]
         posMinus = str(levelDataStr).find("-")
         if ( posMinus>0 ):
-            return str(levelDataStr)[posMinus:]
+            strResult = str(levelDataStr)[posMinus:]
         if (posPlus==-1)and(posMinus==-1):
-            return "-"+str(levelDataStr)[-2:]
+            strResult = "-"+str(levelDataStr)[-2:]
+        try:
+            return float(strResult)
+        except:
+            return 0.0
         
     def extractWindSpeed(self, levelDataStr ):
         ''' wind speed in knots '''
         assert( isinstance( levelDataStr , str ))
-        return str(levelDataStr)[2:4]
+        try:
+            return float(str(levelDataStr)[2:4])
+        except:
+            return 0.0
         
     def extractWindDirection(self, levelDataStr):
         ''' wind direction in degrees '''
         assert( isinstance( levelDataStr , str ))
-        return str(levelDataStr)[0:2] + "0"
+        try:
+            return float(str(levelDataStr)[0:2] + "0")
+        except:
+            return 0.0
     
     def ExploitStationData( self, stationData , numberOfLevels ):
         pass
@@ -72,16 +107,16 @@ class WeatherStation(object):
         assert( isinstance( numberOfLevels , int ))
         self.stationDataDict = {}
     
-        print( stationData )
+        #print( stationData )
         if len ( str ( stationData ) ) > 3:
             stationName = str(stationData)[0:3]
-            print ( "Station name = {0}".format(stationName) )
+            #print ( "Station name = {0}".format(stationName) )
             self.stationDataDict['name'] = stationName
             self.stationName = stationName
             
             '''1st level data is always composed of 4 digits '''
             firstLevelData = str(stationData)[4:8]
-            print ( firstLevelData )
+            #print ( firstLevelData )
             self.stationDataDict["firstLevel"] = firstLevelData
                 
             levelsData = []
@@ -94,16 +129,16 @@ class WeatherStation(object):
             for elem in stationArr:
                 if len( str(elem).strip()) > 0:
                     levelsData.append( str(elem).strip() )
-                    temperatureData.append( self.extractTemperature(str(elem).strip()))
-                    windSpeedData.append( self.extractWindSpeed(str(elem).strip()))
-                    windDirectionData.append( self.extractWindDirection(str(elem).strip()))
+                    temperatureData.append( self.extractTemperature( str(elem).strip()) )
+                    windSpeedData.append( self.extractWindSpeed( str(elem).strip() ) )
+                    windDirectionData.append( self.extractWindDirection( str(elem).strip() ) )
                     
             ''' insert empty elements '''
             for n in range ( numberOfLevels - len(levelsData) ):      
-                levelsData.insert( n , " " )
-                temperatureData.insert( n , " ")
-                windSpeedData.insert( n , " ")
-                windDirectionData.insert( n , " ")
+                levelsData.insert( n , 0.0 )
+                temperatureData.insert( n , 0.0)
+                windSpeedData.insert( n , 0.0)
+                windDirectionData.insert( n , 0.0)
                 
             self.stationDataDict['levelsData'] = levelsData
             self.stationDataDict['temperatureData'] = temperatureData
