@@ -11,16 +11,19 @@ from trajectory.models import WindTemperatureAloft, NoaaWeatherStationMeasure, N
 from trajectory.Environment.WindTemperature.WindTemperatureFetch import fetchWindTemperature
 from trajectory.Environment.WindTemperature.WindTemperatureFeet import WeatherStationFeet
 from trajectory.Environment.WindTemperature.WeatherStationClass import WeatherStation
+from trajectory.Environment.WindTemperature.WindTemperatureHeader import WindTemperatureHeader
 
+''' to be used in a python anywhere task '''
+''' cd $HOME && source .virtualenvs/airlineservices/bin/activate && cd flight-profile && python manage.py WindTemperatureAloft '''
 
 class Command(BaseCommand):
     help = 'Load the Wind Temperature data'
 
     def handle(self, *args, **options):
         
-        print ( " --- about to delete Wind Temperature aloft --- ")
+        print ( "--- about to delete Wind Temperature aloft --- ")
         WindTemperatureAloft.objects.all().delete()
-        print ( " delete done")
+        print ( "--- delete done ---")
         
         USregion = "All"
         ForecastHour = "12-Hour"
@@ -35,9 +38,15 @@ class Command(BaseCommand):
                 windTemperatureAloft = WindTemperatureAloft ( TextLine = str(weatherDataLine).strip() )
                 windTemperatureAloft.save()
                 
-        print ( " --- about to delete Noaa Weather Station Measure --- ")
+        ''' ------------ analyse header ------------- '''
+        windTemperatureHead = WindTemperatureHeader()
+        windTemperatureHead.analyseHeader( weatherDataStrList )
+        
+        ''' ----------------------------------------- '''
+                
+        print ( "--- about to delete Noaa Weather Station Measure --- ")
         NoaaWeatherStationMeasure.objects.all().delete()
-        print ( " delete done")
+        print ( "--- delete done ---")
         
         weatherStationFeet = WeatherStationFeet()
         feetLevels = weatherStationFeet.readTextLines(weatherDataStrList)
