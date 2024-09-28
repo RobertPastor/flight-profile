@@ -38,6 +38,7 @@ class WeatherStation(object):
         return self.stationDataDict['temperatureData']
     
     def getStationTemperatureOneLevel(self, levelIndex):
+        ''' zero based level index '''
         index = 0
         for stationTemperatureDataLevel in self.getStationTemperatureLevels():
             if ( index == levelIndex):
@@ -121,24 +122,36 @@ class WeatherStation(object):
                 
             levelsData = []
             temperatureData = []
+            temperatureFirstValue = 0.0
             windSpeedData = []
             windDirectionData = []
+            First = True
             
             stationData = stationData[4:]
             stationArr = str(stationData).split(" ")
             for elem in stationArr:
                 if len( str(elem).strip()) > 0:
+                    
                     levelsData.append( str(elem).strip() )
-                    temperatureData.append( self.extractTemperature( str(elem).strip()) )
+                    if len(str(elem).strip()) > 4:
+                        temperatureData.append( self.extractTemperature( str(elem).strip()) )
+                        if First == True:
+                            First = False
+                            temperatureFirstValue = self.extractTemperature( str(elem).strip())
+                        
                     windSpeedData.append( self.extractWindSpeed( str(elem).strip() ) )
                     windDirectionData.append( self.extractWindDirection( str(elem).strip() ) )
+                    
                     
             ''' insert empty elements '''
             for n in range ( numberOfLevels - len(levelsData) ):      
                 levelsData.insert( n , 0.0 )
-                temperatureData.insert( n , 0.0)
                 windSpeedData.insert( n , 0.0)
                 windDirectionData.insert( n , 0.0)
+                
+            ''' insert initial temperature '''
+            for n in range ( numberOfLevels - len ( temperatureData )):
+                temperatureData.insert( n , temperatureFirstValue)
                 
             self.stationDataDict['levelsData'] = levelsData
             self.stationDataDict['temperatureData'] = temperatureData
@@ -165,6 +178,8 @@ if __name__ == '__main__':
     weatherStation.ExploitStationData(stationData, numberOfLevels)
     
     print ( weatherStation.getStationName() )
+    print ( weatherStation.getStationTemperatureOneLevel(0))
+    print ( weatherStation.getStationTemperatureLevels())
     
     stationData = "ABR 0906 1005+14 3306+11 3217+07 3227-08 3135-20 305135 295444 306751"
     

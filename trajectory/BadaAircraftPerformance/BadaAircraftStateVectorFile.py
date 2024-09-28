@@ -31,6 +31,8 @@ from trajectory.OutputFiles.XlsxOutputFile import XlsxOutput
 from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.Environment.WindTemperature.NoaaStations.NoaaWeatherStationsFile import NoaaWeatherStationsClass
 from trajectory.Guidance.WayPointFile import WayPoint
+from trajectory.models import NoaaWeatherStation
+import numpy as np
 
 class StateVector(object):
     
@@ -57,7 +59,7 @@ class StateVector(object):
         self.distanceFlowMeters = 0.0
         self.First = True
         
-        self.nearestNoaaWeatherStation = ""
+        self.nearestNoaaWeatherStation = "None"
 
     def initStateVector(self,
                         elapsedTimeSeconds, 
@@ -84,6 +86,40 @@ class StateVector(object):
                                     currentPosition = "None"  ,
                                     endOfSimulation = False)
         
+    
+    def computeNoaaWeatherStationNearest(self, currentPosition, totalDistanceFlownMeters):
+        nearestNoaaWeatherStationFAA = self.nearestNoaaWeatherStation
+        if (not currentPosition is None)  and ( isinstance ( currentPosition , WayPoint ) ) :
+            if self.First == True:
+                self.First = False
+                nearestNoaaWeatherStationFAA = self.nooaWeatherStations.getNearestWeatherStationFAAname(currentPosition)
+                self.distanceFlowMeters = totalDistanceFlownMeters
+            else:
+                ''' 15th September 2024 - every 50 Kilo mzters - compute nearest weather station '''
+                if totalDistanceFlownMeters > self.distanceFlowMeters + 50000.0:
+                    nearestNoaaWeatherStationFAA = self.nooaWeatherStations.getNearestWeatherStationFAAname(currentPosition)
+                    self.distanceFlowMeters = totalDistanceFlownMeters
+        return nearestNoaaWeatherStationFAA
+    
+    def computeTemperatureAtStationLevel(self , weatherStationFAAname , altitudeMeanSeaLevelMeters):
+        temperatureDegreesCelsius = 0.0
+        #print ( weatherStationFAAname )
+        altitudeMeanSeaLevelFeet = altitudeMeanSeaLevelMeters * Meter2Feet
+
+        noaaWeatherStation = NoaaWeatherStation.objects.filter(FAAid=weatherStationFAAname).first()
+        if noaaWeatherStation:
+            levelsFeetList = noaaWeatherStation.getWeatherStationForecastsLevels()
+            temperaturesForecastsList = noaaWeatherStation.getWeatherStationForecastsTemperatures()
+            
+            try:
+                #print ( "interpolate > {0}  ".format( np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList) ) )
+                temperatureDegreesCelsius = np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList)
+            except:
+                pass
+                #print (" feet levels list size = {0} - temperature values list size {1}".format ( len ( levelsFeetList ) , len ( temperaturesForecastsList ) ) )
+            
+        return temperatureDegreesCelsius
+    
     ''' 15th Septembe 2024 - currentPosition used to retrieve the nearest weather station '''
     def updateAircraftStateVector(self, 
                                     elapsedTimeSeconds, 
@@ -102,21 +138,10 @@ class StateVector(object):
 
         ''' need to store both TAS and altitude => compute CAS '''
         aircraftStateDict = {}
-        
-        if (not currentPosition is None)  and ( isinstance ( currentPosition , WayPoint ) ) :
-            if self.First == True:
-                self.First = False
-                self.nearestNoaaWeatherStation = self.nooaWeatherStations.getNearestWeatherStationICAOname(currentPosition)
-                self.distanceFlowMeters = totalDistanceFlownMeters
-            else:
-                ''' 15th September 2024 - every 50 Kilo mzters - compute nearest weather station '''
-                if totalDistanceFlownMeters > self.distanceFlowMeters + 50000.0:
-                    self.nearestNoaaWeatherStation = self.nooaWeatherStations.getNearestWeatherStationICAOname(currentPosition)
-                    self.distanceFlowMeters = totalDistanceFlownMeters
-                    
-        else:
-            self.nearestNoaaWeatherStation = "None"
-                
+        ''' 28th September 2024 '''
+        self.nearestNoaaWeatherStation = self.computeNoaaWeatherStationNearest(currentPosition, totalDistanceFlownMeters)
+        ''' 28th September 2024 '''
+        temperatureAtWeatherStationLevelDegreesCelsius = self.computeTemperatureAtStationLevel(self.nearestNoaaWeatherStation , altitudeMeanSeaLevelMeters)
                 
         ''' 9th September 2023 - add characteristic point '''
         aircraftStateDict[elapsedTimeSeconds] = [characteristicPoint,
@@ -130,6 +155,7 @@ class StateVector(object):
                                                  dragNewtons,
                                                  liftNewtons ,
                                                  self.nearestNoaaWeatherStation,
+                                                 temperatureAtWeatherStationLevelDegreesCelsius,
                                                  endOfSimulation]
         self.aircraftStateHistory.append(aircraftStateDict)
         
@@ -144,7 +170,7 @@ class StateVector(object):
         else:
             return 0.0
 
-    ''' <9th September 2023 - characteristic point 1st in stack '''
+    ''' 9th September 2023 - characteristic point 1st in stack '''
     def getCurrentAltitudeSeaLevelMeters(self):
         if len(self.aircraftStateHistory) > 0:
             ''' values returns a list whose first element is the expected value '''
@@ -218,6 +244,7 @@ class StateVector(object):
                                  
                                  'load-factor-g'                ,
                                  'nearest-Weather-Station'      ,
+                                 'temperature-degrees-celsius'  ,
                                  'end of simulation'
                                  ])
 
@@ -276,6 +303,9 @@ class StateVector(object):
                 ''' 15th September 024 - nearest NOAA Weather Station '''
                 nearestWeatherStation = valueList[10]
                 
+                ''' 28th September 2024 - temperature at weather station level '''
+                temperatureAtWeatherStationDegreesCelsius = valueList[11]
+                
                 ''' 5th September 2021 - write endOfSimulation '''
                 endOfSimulation = valueList[11]
                 ''' 9th September 2023 - add the characteristic point '''
@@ -304,6 +334,7 @@ class StateVector(object):
                                                 
                                                 loadFactor             ,
                                                 nearestWeatherStation  ,
+                                                temperatureAtWeatherStationDegreesCelsius ,
                                                 endOfSimulation)
         xlsxOutput.close()
                     
@@ -336,6 +367,7 @@ class StateVector(object):
                                                  
                                                  loadFactor             ,
                                                  nearestWeatherStation  ,
+                                                 temperatureAtWeatherStationDegreesCelsius ,
                                                  endOfSimulation):
 
         ColumnIndex = 0
@@ -375,6 +407,8 @@ class StateVector(object):
         ColumnIndex += 1
         ws.write(row, ColumnIndex, nearestWeatherStation)  
         ColumnIndex += 1
+        ws.write(row, ColumnIndex, temperatureAtWeatherStationDegreesCelsius)
+        ColumnIndex += 1
         ws.write(row, ColumnIndex, str(endOfSimulation))     
         row += 1    
         return row
@@ -412,6 +446,7 @@ class StateVector(object):
                                  
                                  'load-factor-g'                ,
                                  'nearest-weather-station'      ,
+                                 'temperature-degrees-celsius'  ,
                                  'end of simulation'
                                  ])
 
@@ -469,8 +504,12 @@ class StateVector(object):
                 previousElapsedTimeSeconds = elapsedTimeSeconds
                 ''' 15th September 2024 - nearest weather station '''
                 nearestWeatherStation = valueList[10]
+                
+                ''' 28th September 2024 - interpolated temperature forecasts at weather station '''
+                temperatureDegreesCelsius = valueList[11]
+                
                 ''' 5th September 2021 - write endOfSimulation '''
-                endOfSimulation = valueList[11]
+                endOfSimulation = valueList[12]
                 ''' 9th September 2023 - add characteristic point '''
                 row = self.writeValues(ws, row, elapsedTimeSeconds, 
                                                 characteristic_point,
@@ -494,5 +533,6 @@ class StateVector(object):
                                                 liftNewtons            ,
                                                 loadFactor             ,
                                                 nearestWeatherStation  ,
+                                                temperatureDegreesCelsius ,
                                                 endOfSimulation)
         

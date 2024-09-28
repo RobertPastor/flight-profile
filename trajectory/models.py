@@ -328,7 +328,27 @@ class NoaaWeatherStation(models.Model):
     State = models.CharField(max_length = 150)
     Country = models.CharField(max_length = 150)
     
+    def __str__(self):
+        return "Noaa Weather station - FAA id = {0} - ICAO id = {1}".format(self.FAAid, self.ICAOid)
+    
+    def getWeatherStationForecastsLevels(self):
+        levelsFeetList = []
+        for weatherStationMeasure in NoaaWeatherStationMeasure.objects.filter(NoaaWeatherStationInstance=self):
+            #print ( weatherStationMeasure.getLevelFeet() )
+            levelsFeetList.append(weatherStationMeasure.getLevelFeet())
+        ''' should not need to sort the list '''
+        return levelsFeetList
+    
+    def getWeatherStationForecastsTemperatures(self):
+        temperaturesDegreesCelsiusList = []
+        for weatherStationMeasure in NoaaWeatherStationMeasure.objects.filter(NoaaWeatherStationInstance=self):
+            #print ( weatherStationMeasure.getTemperature() )
+            temperaturesDegreesCelsiusList.append(weatherStationMeasure.getTemperature())
+        ''' warning - do not sort as it could impact interpolation '''
+        return temperaturesDegreesCelsiusList
+    
 ''' 21st September 2024 '''
+''' these are forecasts values '''
 class NoaaWeatherStationMeasure(models.Model):
     ''' for each station, for each level (feet) gives speed , direction and temperature '''
     ''' read FAA Aviation Weather Services - Chapter 13 '''
@@ -339,4 +359,13 @@ class NoaaWeatherStationMeasure(models.Model):
     ''' Wind speed direction from True North '''
     WindDirectionTrueNorthDegrees = models.FloatField(blank = False)
     TemperatureDegreesCelsius = models.FloatField(blank = False)
+    
+    def __str__(self):
+        return str(self.NoaaWeatherStationInstance)
+    
+    def getLevelFeet(self):
+        return self.LevelFeet
+    
+    def getTemperature(self):
+        return self.TemperatureDegreesCelsius
     

@@ -10,7 +10,7 @@ from trajectory.models import NoaaWeatherStation
 from trajectory.Environment.WindTemperature.NoaaStations.NoaaWeatherStationsFile import NoaaWeatherStationsClass
 
 class Command(BaseCommand):
-    help = 'Load the Wind Temperature data'
+    help = 'Load the NOAA weather stations fixed data'
 
     def handle(self, *args, **options):
         

@@ -8,6 +8,8 @@ import json
 import os
 from trajectory.Guidance.ConstraintsFile import Meters2Feet
 from trajectory.Guidance.WayPointFile import WayPoint
+from trajectory.models import NoaaWeatherStationMeasure
+from trajectory.models import NoaaWeatherStation
 
 
 class NoaaWeatherStationClass(object):
@@ -58,6 +60,7 @@ class NoaaWeatherStationClass(object):
 class NoaaWeatherStationsClass(object):
     fileName = ""
     stations = None
+    finalStations = []
     FilesFolder = ""
     FilePath = ""
 
@@ -71,65 +74,87 @@ class NoaaWeatherStationsClass(object):
     def readStations(self):
         with open( self.FilePath ) as json_data:
             self.stations = json.load(json_data)
-            #for station in self.stations:
-            #    if str(station['icaoId']).startswith("K"):
-            #        print ( station['icaoId'] + " - " + station['site'] )
+            #print ( type ( self.stations  ))
+            #print ( len(self.stations) )
+            for station in self.stations:
+                
+                if len(str(station['faaId']))>=3:
+                    FAAstationName = str(station['faaId'])
+                    #print ( "---- {0} ----".format(FAAstationName))
+                    noaaWeatherStation = NoaaWeatherStation.objects.filter(FAAid=FAAstationName).first()
+                    if  (len(str(station['faaId']))>=3) and noaaWeatherStation :
+                        weatherStationMeasure = NoaaWeatherStationMeasure.objects.filter(NoaaWeatherStationInstance=noaaWeatherStation).first()
+                        #print ( station['icaoId'] + " - " + station['site'] )
+                        if ( weatherStationMeasure ):
+                            pass
+                            #print ( "There is a station with measure {0}".format(str(weatherStationMeasure) ) )
+                            self.finalStations.append(station)
+        
+        #print("------- after cleaning ------------")
+        print ( len(self.finalStations) )
+        for station in self.finalStations:
+            FAAstationName = str(station['faaId'])
+            ICAOstationName = str(station['icaoId'])
+            #print ( "---- {0} ---- {1} ".format(FAAstationName,ICAOstationName))
+            
+        #print ( len(self.finalStations) )
                     
     def isStationFAAExisting(self , stationFAAname):
-        for station in self.stations:
+        for station in self.finalStations:
             if str(station['faaId']) == stationFAAname :
                 return True
         return False
     
     def isStationICAOExisting(self , stationICAOname ):
-        for station in self.stations:
+        for station in self.finalStations:
             if str(station['icaoId']) == stationICAOname :
                 return True
         return False
     
     def getStationICAOName(self , stationFAAname ):
-        for station in self.stations:
+        for station in self.finalStations:
             if str(station['faaId']) == stationFAAname :
                 return str(station['icaoId'])
         return None
     
     def getStationLatitudeDegrees(self, stationFAAname):
-        for station in self.stations:
+        for station in self.finalStations:
             if str(station['faaId']) == stationFAAname :
                 return float(station['lat'])
         return None
     
     def getStationLongitudeDegrees(self, stationFAAname):
-        for station in self.stations:
+        for station in self.finalStations:
             if str(station['faaId']) == stationFAAname :
                 return float(station['lon'])
         return None
     
     def getStationElevationMeters(self, stationFAAname):
-        for station in self.stations:
+        for station in self.finalStations:
             if str(station['faaId']) == stationFAAname :
                 return float(station['elev'])
         return None
     
     def getStationElevationFeet(self, stationFAAname):
-        for station in self.stations:
+        for station in self.finalStations:
             if str(station['faaId']) == stationFAAname :
                 return float(station['elev']) * Meters2Feet
         return None
     
     def getNextStation(self):
-        for station in self.stations:
+        for station in self.finalStations:
             if ( len ( str(station['faaId'] ) ) >= 3 ) and ( len ( str(station['icaoId'] ) ) >= 3 ):
                 nooaWeatherStation = NoaaWeatherStationClass(station)
                 yield nooaWeatherStation
                 
+    ''' return only weather station having a forecast weather measure '''
     def getNearestWeatherStationICAOname(self, currentPosition):
         assert( isinstance( currentPosition , WayPoint ))
         First = True
         lowestDistanceMeters = 0.0 
         nearestWeatherStationsICAOname = ""
-        for station in self.stations:
-            if ( len(str(station['icaoId'])) == 4 ) and ( float(station['lat']) > -90.0 ) and str(station['icaoId']).startswith("K") :
+        for station in self.finalStations:
+            if ( len(str(station['icaoId'])) == 4 ) and ( float(station['lat']) > -90.0 )  :
                     
                 #print ( str(station['icaoId']) )
                 #print ( float(station['lat']) )
@@ -151,11 +176,40 @@ class NoaaWeatherStationsClass(object):
                         nearestWeatherStationsICAOname = str(station['icaoId'])
                         lowestDistanceMeters = currentDistanceMeters
         return nearestWeatherStationsICAOname
+    
+    def getNearestWeatherStationFAAname(self, currentPosition):
+        assert( isinstance( currentPosition , WayPoint ))
+        First = True
+        lowestDistanceMeters = 0.0 
+        nearestWeatherStationsFAAname = ""
+        for station in self.finalStations:
+            if ( len(str(station['icaoId'])) == 4 ) and ( float(station['lat']) > -90.0 )  :
+                    
+                #print ( str(station['icaoId']) )
+                #print ( float(station['lat']) )
+                #print ( float(station['lon']) )
+                
+                stationWayPoint = WayPoint(Name = str(station['faaId']),
+                                           LatitudeDegrees = float(station['lat']),
+                                           LongitudeDegrees = float(station['lon']),
+                                           AltitudeMeanSeaLevelMeters = 0.0)
+                
+                currentDistanceMeters = currentPosition.getDistanceMetersTo(stationWayPoint)
+                #print ( currentDistanceMeters )
+                if ( First == True ):
+                    First = False
+                    lowestDistanceMeters = currentDistanceMeters
+                    nearestWeatherStationsFAAname = str(station['faaId'])
+                else:
+                    if ( currentDistanceMeters < lowestDistanceMeters):
+                        nearestWeatherStationsFAAname = str(station['faaId'])
+                        lowestDistanceMeters = currentDistanceMeters
+        return nearestWeatherStationsFAAname
         
 if __name__ == '__main__':
     fileName = "noaa-stations.json"
     
-    noaaStations = NoaaStations( fileName )
+    noaaStations = NoaaWeatherStationsClass( fileName )
     noaaStations.readStations()
     
     print ( "is station FAA name DEN existing = " + str(noaaStations.isStationFAAExisting( "DEN")) )
