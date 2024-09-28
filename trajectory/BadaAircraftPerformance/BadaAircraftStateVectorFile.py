@@ -39,8 +39,13 @@ class StateVector(object):
     className = ''
     aircraftStateHistory = []
     nooaWeatherStations = None
+    
     distanceFlowMeters = 0.0
-    First = True
+    latestLevelFeet = 0.0
+    latestInterpolatedTemperature = 0.0
+    
+    FirstNoaaWeatherStation = True
+    FirstTemperatureInterpolation = True
     nearestNoaaWeatherStation = ""
 
     def __init__(self, aircraftICAOcode, atmosphere):
@@ -57,7 +62,11 @@ class StateVector(object):
         self.nooaWeatherStations.readStations()
         
         self.distanceFlowMeters = 0.0
-        self.First = True
+        self.latestLevelFeet = 0.0
+        
+        self.FirstNoaaWeatherStation = True
+        self.FirstTemperatureInterpolation = True
+        self.latestInterpolatedTemperature = 0.0
         
         self.nearestNoaaWeatherStation = "None"
 
@@ -88,36 +97,66 @@ class StateVector(object):
         
     
     def computeNoaaWeatherStationNearest(self, currentPosition, totalDistanceFlownMeters):
+        ''' 28th September 2024 - search for next weather station if distance flown is more than 50 Kilometers '''
         nearestNoaaWeatherStationFAA = self.nearestNoaaWeatherStation
         if (not currentPosition is None)  and ( isinstance ( currentPosition , WayPoint ) ) :
-            if self.First == True:
-                self.First = False
+            if self.FirstNoaaWeatherStation == True:
+                self.FirstNoaaWeatherStation = False
                 nearestNoaaWeatherStationFAA = self.nooaWeatherStations.getNearestWeatherStationFAAname(currentPosition)
                 self.distanceFlowMeters = totalDistanceFlownMeters
             else:
-                ''' 15th September 2024 - every 50 Kilo mzters - compute nearest weather station '''
+                ''' 15th September 2024 - every 50 Kilo meters - compute nearest weather station '''
                 if totalDistanceFlownMeters > self.distanceFlowMeters + 50000.0:
                     nearestNoaaWeatherStationFAA = self.nooaWeatherStations.getNearestWeatherStationFAAname(currentPosition)
                     self.distanceFlowMeters = totalDistanceFlownMeters
         return nearestNoaaWeatherStationFAA
     
     def computeTemperatureAtStationLevel(self , weatherStationFAAname , altitudeMeanSeaLevelMeters):
-        temperatureDegreesCelsius = 0.0
+        ''' 28th September 2024 - search for next interpolated temperature if level changes more than 300 feet '''
+        temperatureDegreesCelsius = self.latestInterpolatedTemperature
         #print ( weatherStationFAAname )
         altitudeMeanSeaLevelFeet = altitudeMeanSeaLevelMeters * Meter2Feet
+        
+        if self.FirstTemperatureInterpolation == True:
+            #print( str ( self.FirstTemperatureInterpolation ) )
+            
+            self.latestLevelFeet = altitudeMeanSeaLevelFeet
 
-        noaaWeatherStation = NoaaWeatherStation.objects.filter(FAAid=weatherStationFAAname).first()
-        if noaaWeatherStation:
-            levelsFeetList = noaaWeatherStation.getWeatherStationForecastsLevels()
-            temperaturesForecastsList = noaaWeatherStation.getWeatherStationForecastsTemperatures()
-            
-            try:
-                #print ( "interpolate > {0}  ".format( np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList) ) )
-                temperatureDegreesCelsius = np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList)
-            except:
-                pass
-                #print (" feet levels list size = {0} - temperature values list size {1}".format ( len ( levelsFeetList ) , len ( temperaturesForecastsList ) ) )
-            
+            noaaWeatherStation = NoaaWeatherStation.objects.filter(FAAid=weatherStationFAAname).first()
+            if noaaWeatherStation:
+                
+                self.FirstTemperatureInterpolation = False
+                
+                levelsFeetList = noaaWeatherStation.getWeatherStationForecastsLevels()
+                temperaturesForecastsList = noaaWeatherStation.getWeatherStationForecastsTemperatures()
+                
+                try:
+                    #print ( "interpolate > {0}  ".format( np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList) ) )
+                    temperatureDegreesCelsius = np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList)
+                    #print ( "interpolated temperature -> {0} - for level -> {1}".format(temperatureDegreesCelsius,altitudeMeanSeaLevelFeet ))
+                except:
+                    pass
+                    #print (" feet levels list size = {0} - temperature values list size {1}".format ( len ( levelsFeetList ) , len ( temperaturesForecastsList ) ) )
+        else:
+            ''' if more than 300 feet level changes then interpolate again'''
+            if abs( altitudeMeanSeaLevelFeet - self.latestLevelFeet) > 300:
+                
+                self.latestLevelFeet = altitudeMeanSeaLevelFeet
+                
+                noaaWeatherStation = NoaaWeatherStation.objects.filter(FAAid=weatherStationFAAname).first()
+                if noaaWeatherStation:
+                    
+                    levelsFeetList = noaaWeatherStation.getWeatherStationForecastsLevels()
+                    temperaturesForecastsList = noaaWeatherStation.getWeatherStationForecastsTemperatures()
+                    
+                    try:
+                        #print ( "interpolate > {0}  ".format( np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList) ) )
+                        temperatureDegreesCelsius = np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList)
+                        #print ( "interpolated temperature -> {0} - for level -> {1}".format(temperatureDegreesCelsius,altitudeMeanSeaLevelFeet ))
+
+                    except:
+                        pass
+                    
         return temperatureDegreesCelsius
     
     ''' 15th Septembe 2024 - currentPosition used to retrieve the nearest weather station '''
@@ -141,7 +180,7 @@ class StateVector(object):
         ''' 28th September 2024 '''
         self.nearestNoaaWeatherStation = self.computeNoaaWeatherStationNearest(currentPosition, totalDistanceFlownMeters)
         ''' 28th September 2024 '''
-        temperatureAtWeatherStationLevelDegreesCelsius = self.computeTemperatureAtStationLevel(self.nearestNoaaWeatherStation , altitudeMeanSeaLevelMeters)
+        self.latestInterpolatedTemperature = self.computeTemperatureAtStationLevel(self.nearestNoaaWeatherStation , altitudeMeanSeaLevelMeters)
                 
         ''' 9th September 2023 - add characteristic point '''
         aircraftStateDict[elapsedTimeSeconds] = [characteristicPoint,
@@ -155,7 +194,7 @@ class StateVector(object):
                                                  dragNewtons,
                                                  liftNewtons ,
                                                  self.nearestNoaaWeatherStation,
-                                                 temperatureAtWeatherStationLevelDegreesCelsius,
+                                                 self.latestInterpolatedTemperature,
                                                  endOfSimulation]
         self.aircraftStateHistory.append(aircraftStateDict)
         
