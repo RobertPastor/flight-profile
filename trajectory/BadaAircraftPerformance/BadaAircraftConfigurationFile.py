@@ -32,7 +32,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from trajectory.Environment.Constants import  MaxRateOfClimbFeetPerMinutes , MaxRateOfDescentFeetPerMinutes, Knots2MetersPerSecond
-from trajectory.Environment.Constants import  Meter2Feet , Feet2Meter, MeterSecond2Knots, Meter2NauticalMiles, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
+from trajectory.Environment.Constants import  Meter2Feet , Feet2Meter, MeterSecond2Knots, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
 from trajectory.Environment.Constants import MaxSpeedNoiseRestrictionsKnots, MaxSpeedNoiseRestrictionMeanSeaLevelFeet
 
 from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
@@ -45,10 +45,9 @@ from trajectory.BadaAircraftPerformance.BadaFlightEnvelopeFile import FlightEnve
 
 from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.Environment.Earth import Earth
+from trajectory.aerocalc.airspeed import tas2cas, tas2mach
 from trajectory.Environment.Utils import logElapsedRealTime
-
-from trajectory.Environment.Constants import GlideSlopeStart2TouchDownNauticalMiles
-
+from trajectory.Environment.Constants import Meter2NauticalMiles
 
 class EnergyShareFactor(object):
     className = ""
@@ -220,14 +219,10 @@ class AircraftConfiguration(FlightEnvelope):
         altitudeMeanSeaLevelMeters = self.getCurrentAltitudeSeaLevelMeters()
         currentDistanceFlownMeters = self.getCurrentDistanceFlownMeters()
         tas = self.getCurrentTrueAirSpeedMetersSecond()
-        cas = self.atmosphere.tas2cas(tas = tas,
-                                altitude = altitudeMeanSeaLevelMeters,
-                                alt_units='m',
-                                speed_units='m/s',)
-        mach = self.atmosphere.tas2mach(tas = tas,
-                                altitude = altitudeMeanSeaLevelMeters,
-                                alt_units='m',
-                                speed_units='m/s',)
+        #cas = self.atmosphere.tas2cas(tas = tas, altitude = altitudeMeanSeaLevelMeters,alt_units='m', speed_units='m/s',)
+        cas = tas2cas(tas = tas, altitude = altitudeMeanSeaLevelMeters, temp='std', speed_units='m/s', alt_units='m')
+        #mach = self.atmosphere.tas2mach(tas = tas, altitude = altitudeMeanSeaLevelMeters, alt_units='m', speed_units='m/s')
+        mach = tas2mach(tas = tas , temp='std', altitude = altitudeMeanSeaLevelMeters, temp_units= 'C',speed_units='m/s')
         logger.info ( self.className + ' ====================================' )
         logger.info ( self.className + ' entering {0} configuration - flown {1:.2f} meters - distance flown {2:.2f} Nm'.format(newConfiguration, currentDistanceFlownMeters, currentDistanceFlownMeters*Meter2NauticalMiles) )
         logger.info ( self.className + ' alt= {0:.2f} meters alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, (altitudeMeanSeaLevelMeters*Meter2Feet)) ) 
@@ -556,6 +551,7 @@ class AircraftConfiguration(FlightEnvelope):
         return liftCoeff
         
     def computeApproachStallSpeedCasKnots(self):
+        ''' leave Approach as soon as Landing stall speed reached '''
         VstallKcas = self.getVstallKcas('LD')
 
         ''' theoretical air speed corrected by mass differences '''        
@@ -565,6 +561,7 @@ class AircraftConfiguration(FlightEnvelope):
         return Vstall
         
     def computeLandingStallSpeedCasKnots(self):
+        ''' leave Descent as soon as Approach stall speed reached '''
         VstallKcas = self.getVstallKcas('AP')
 
         ''' theoretical air speed corrected by mass differences '''        
@@ -858,10 +855,8 @@ class AircraftConfiguration(FlightEnvelope):
             Rate of climb is null => all energy is used to increase True Air Speed
             leave ground-run as soon as Take-Off stall speed is reached
             ''' 
-            casKnots = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
-                       altitude = altitudeMeanSeaLevelMeters,
-                        temp='std', speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots
-                        
+            #casKnots = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,  altitude = altitudeMeanSeaLevelMeters,  temp='std', speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots
+            casKnots = tas2cas( tas = trueAirSpeedMetersSecond, altitude = altitudeMeanSeaLevelMeters,temp = 'std' , speed_units = 'm/s', alt_units = 'm')* MeterSecond2Knots
             ''' apply rolling friction '''
             aircraftAcceleration = thrustNewtons - dragNewtons - self.rollingFrictionCoefficient * ( aircraftMassKilograms * gravityCenterMetersPerSquaredSeconds - liftNewtons)
             aircraftAcceleration = aircraftAcceleration / aircraftMassKilograms
@@ -869,17 +864,10 @@ class AircraftConfiguration(FlightEnvelope):
             
             VStallSpeedCASKnots = self.computeStallSpeedCasKnots()
             ''' move to Take-Off as soon as 1.2 * Stall CAS reached '''
-            if ( ( self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
-                       altitude = altitudeMeanSeaLevelMeters,
-                        temp='std', 
-                        speed_units = 'm/s', 
-                        alt_units = 'm') * MeterSecond2Knots )  >= (1.2 * VStallSpeedCASKnots)):
-                ''' stall speed reached '''
-                cas = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
-                       altitude = altitudeMeanSeaLevelMeters,
-                        temp='std', 
-                        speed_units = 'm/s', 
-                        alt_units = 'm')
+            if ( ( tas2cas(tas = trueAirSpeedMetersSecond , altitude = altitudeMeanSeaLevelMeters,temp='std', speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots ) >= (1.2 * VStallSpeedCASKnots)):
+                ''' departure ground run stall speed reached '''
+                cas = tas2cas(tas = trueAirSpeedMetersSecond ,  altitude = altitudeMeanSeaLevelMeters,
+                        temp='std',   speed_units = 'm/s',    alt_units = 'm')
                 logger.debug ( self.className + ' TAS= {0:.2f} knots - CAS= {1:.2f} knots > (1.2 * V CAS stall)= {2:.2f} knots'.format(trueAirSpeedMetersSecond*MeterSecond2Knots ,cas*MeterSecond2Knots, (1.2*VStallSpeedCASKnots)) )
                 ''' update aircraft configuration '''
                 self.setTakeOffConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
@@ -910,11 +898,9 @@ class AircraftConfiguration(FlightEnvelope):
 
             ''' is it time to move from TakeOff to Climb configuration '''
             initialClimbStallSpeedCasKnots = self.computeStallSpeedCasKnots()  
-            casKnots = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
-                       altitude = altitudeMeanSeaLevelMeters ,
-                                                  temp='std',
-                                                  speed_units = 'm/s',
-                                                  alt_units = 'm') * MeterSecond2Knots 
+            #casKnots = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,  altitude = altitudeMeanSeaLevelMeters ,  temp='std',    speed_units = 'm/s',  alt_units = 'm') * MeterSecond2Knots 
+            casKnots = tas2cas( tas = trueAirSpeedMetersSecond, altitude = altitudeMeanSeaLevelMeters , temp = 'std' , speed_units = 'm/s', alt_units = 'm')* MeterSecond2Knots
+
             if ((casKnots >= initialClimbStallSpeedCasKnots) 
                 and (altitudeMeanSeaLevelMeters >= (self.departureAirportAltitudeMSLmeters + 50.0))):
                 logger.debug ( self.className + ' CAS= {0:.2f} knots >= Initial Climb Stall Speed= {1:.2f} knots'.format(casKnots, initialClimbStallSpeedCasKnots) )
@@ -947,11 +933,8 @@ class AircraftConfiguration(FlightEnvelope):
             ''' distance flown '''
             deltaDistanceMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees))* deltaTimeSeconds
            
-            casKnots = self.atmosphere.tas2cas(tas      = trueAirSpeedMetersSecond ,
-                                               altitude = altitudeMeanSeaLevelMeters ,
-                                               temp        ='std',
-                                               speed_units = 'm/s',
-                                               alt_units   = 'm') * MeterSecond2Knots 
+            casKnots = tas2cas(tas      = trueAirSpeedMetersSecond , altitude = altitudeMeanSeaLevelMeters ,
+                                               temp ='std', speed_units = 'm/s', alt_units   = 'm') * MeterSecond2Knots 
                                                   
             ''' move from initial climb to climb as soon as speed over 250 knots and altitude above 10.000 feet '''
             # 24th July 2022 - condition upon casKnots never reached or depending upon aircraft performances
@@ -1044,10 +1027,7 @@ class AircraftConfiguration(FlightEnvelope):
         elif self.isCruise():
             ''' cruise altitude is reached '''
             ''' all energy is used to reach or maintain Mach '''
-            mach = self.atmosphere.tas2mach(tas = trueAirSpeedMetersSecond,
-                                  altitude = altitudeMeanSeaLevelMeters,
-                                  alt_units = 'm',
-                                  speed_units = 'm/s')
+            mach = tas2mach(tas = trueAirSpeedMetersSecond, temp = 'std' , altitude = altitudeMeanSeaLevelMeters,  alt_units = 'm',   speed_units = 'm/s')
             
             if mach > ( self.getTargetCruiseMach() - 0.001):
                 self.cruiseSpeedReached = True
@@ -1127,8 +1107,8 @@ class AircraftConfiguration(FlightEnvelope):
             ''' compute stall speed to change configuration to approach '''
             VStallSpeedCASKnots = self.computeStallSpeedCasKnots()
             ''' move to Approach as soon as Approach Stall CAS speed reached '''
-            if  (( self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
-                       altitude = altitudeMeanSeaLevelMeters, speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots ) <= (VStallSpeedCASKnots)):
+            if  (( tas2cas(tas = trueAirSpeedMetersSecond ,  altitude = altitudeMeanSeaLevelMeters, 
+                           temp = 'std' , speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots ) <= (VStallSpeedCASKnots)):
                 ''' as soon as speed decrease to approach configuration => change aircraft configuration '''
                 self.setApproachConfiguration(elapsedTimeSeconds + deltaTimeSeconds )
                 
@@ -1166,8 +1146,7 @@ class AircraftConfiguration(FlightEnvelope):
             ''' compute stall speed to change configuration to landing '''
             VStallSpeedCASKnots = self.computeStallSpeedCasKnots()
             ''' move to Landing as soon as Stall CAS reached '''
-            if ( ( self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
-                       altitude = altitudeMeanSeaLevelMeters,
+            if ( ( tas2cas(tas = trueAirSpeedMetersSecond , altitude = altitudeMeanSeaLevelMeters, temp = 'std',
                      speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots ) <= (VStallSpeedCASKnots)):
                 ''' as soon as speed decrease to approach configuration => change aircraft configuration '''
                 logger.debug ( self.className +' distance to approach fix= {0:.2f} meters - delta altitude to approach fix= {1:.2f} meters'.format(distanceToTargetApproachFixMeters, deltaAltitudeToTargetApproachFixMeters) )
@@ -1211,8 +1190,7 @@ class AircraftConfiguration(FlightEnvelope):
             trueAirSpeedMetersSecond = trueAirSpeedMetersSecond - (( 3.0 * Knots2MetersPerSecond )* deltaTimeSeconds )
             ''' distance flown '''
             deltaDistanceMeters = trueAirSpeedMetersSecond * deltaTimeSeconds
-            if ( ( self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond ,
-                    altitude = altitudeMeanSeaLevelMeters,
+            if ( ( tas2cas(tas = trueAirSpeedMetersSecond , altitude = altitudeMeanSeaLevelMeters, temp = 'std' ,
                      speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots ) <= (ConstantTaxiSpeedCasKnots)):
                 logger.info ( self.className +' - taxi speed reached => end of simulation' )
                 endOfSimulation = True

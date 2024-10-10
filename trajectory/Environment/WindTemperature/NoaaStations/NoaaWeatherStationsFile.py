@@ -68,6 +68,8 @@ class NoaaWeatherStationsClass(object):
         object.__init__(self)
         self.fileName = fileName
         
+        self.className = self.__class__.__name__
+        
         self.FilesFolder = os.path.dirname(__file__)
         self.FilePath = os.path.join(self.FilesFolder , self.fileName)
         
@@ -91,11 +93,11 @@ class NoaaWeatherStationsClass(object):
                             self.finalStations.append(station)
         
         #print("------- after cleaning ------------")
-        print ( len(self.finalStations) )
-        for station in self.finalStations:
-            FAAstationName = str(station['faaId'])
-            ICAOstationName = str(station['icaoId'])
-            #print ( "---- {0} ---- {1} ".format(FAAstationName,ICAOstationName))
+        print ( "{0} - final number of weather stations = {1}".format( self.className , len(self.finalStations) ) )
+        #for station in self.finalStations:
+        #    FAAstationName = str(station['faaId'])
+        #    ICAOstationName = str(station['icaoId'])
+        #    print ( "{0} ---- {1} ---- {2} ".format(self.className , FAAstationName,ICAOstationName))
             
         #print ( len(self.finalStations) )
                     

@@ -1,8 +1,8 @@
 ### 2nd July 2023 - chaining tests
-### these tests can be run while the site is running
+these tests can be run while the site is running
 
 ### open a GitBash
-### locate to /flight-profile/FlightProfile/tests
+locate to /flight-profile/FlightProfile/tests
 
 ### launch
 

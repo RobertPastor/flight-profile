@@ -154,7 +154,8 @@ class XlsxOutput(object):
                             fourthFloatValue, fifthFloatValue, sixthFloatValue, 
                             seventhFloatValue, eighthFloatValue, ninethFloatValue,
                             tenthFloatValue, eleventhFloatValue,
-                            twelvethFloatValue, thirdteenFloatValue, fourteenFloatValue , fifteenFloatValue, sixteenFloatValue, endOfSimulation):
+                            twelvethFloatValue, thirdteenFloatValue, fourteenFloatValue , fifteenFloatValue, sixteenFloatValue, 
+                            seventeenFloatValue, eighteenFloatValue, endOfSimulation):
         
         ColumnIndex = 0
         self.worksheet.write(self.RowIndex, ColumnIndex, elapsedTimeSeconds)
@@ -192,6 +193,13 @@ class XlsxOutput(object):
         self.worksheet.write(self.RowIndex, ColumnIndex, fifteenFloatValue)
         ColumnIndex += 1
         self.worksheet.write(self.RowIndex, ColumnIndex, sixteenFloatValue)   
+        ''' 10th october 2024 '''
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, seventeenFloatValue)   
+ 
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, eighteenFloatValue)   
+ 
         ColumnIndex += 1
         self.worksheet.write(self.RowIndex, ColumnIndex, str(endOfSimulation))     
         self.RowIndex += 1  

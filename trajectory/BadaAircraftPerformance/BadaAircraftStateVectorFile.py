@@ -29,46 +29,37 @@ from trajectory.Environment.Constants import MeterSecond2Knots , Meter2Feet, Met
 
 from trajectory.OutputFiles.XlsxOutputFile import XlsxOutput
 from trajectory.Environment.Atmosphere import Atmosphere
-from trajectory.Environment.WindTemperature.NoaaStations.NoaaWeatherStationsFile import NoaaWeatherStationsClass
-from trajectory.Guidance.WayPointFile import WayPoint
-from trajectory.models import NoaaWeatherStation
-import numpy as np
+
+from trajectory.aerocalc.airspeed import tas2cas
+
 
 class StateVector(object):
     
     className = ''
     aircraftStateHistory = []
-    nooaWeatherStations = None
+    atmosphere = None
+    flightEnvelope = None
     
-    distanceFlowMeters = 0.0
-    latestLevelFeet = 0.0
-    latestInterpolatedTemperature = 0.0
-    
-    FirstNoaaWeatherStation = True
-    FirstTemperatureInterpolation = True
     nearestNoaaWeatherStation = ""
+    latestInterpolatedTemperature = 0.0
+    latestInterpolatedWindDirection = 0.0
+    latestInterpolatedWindSpeed = 0.0
 
-    def __init__(self, aircraftICAOcode, atmosphere):
+    def __init__(self, aircraftICAOcode, atmosphere , flightEnvelope):
         
         self.className = self.__class__.__name__
 
         assert isinstance(atmosphere, Atmosphere)
         self.atmosphere = atmosphere
+        self.flightEnvelope = flightEnvelope
+        
+        self.nearestNoaaWeatherStation = ""
+        self.latestInterpolatedTemperature = 0.0
+        self.latestInterpolatedWindDirection = 0.0
+        self.latestInterpolatedWindSpeed = 0.0
+        
         self.aircraftICAOcode = str(aircraftICAOcode).upper()
         self.aircraftStateHistory = []
-        
-        fileName = "noaa-stations.json"
-        self.nooaWeatherStations = NoaaWeatherStationsClass(fileName)
-        self.nooaWeatherStations.readStations()
-        
-        self.distanceFlowMeters = 0.0
-        self.latestLevelFeet = 0.0
-        
-        self.FirstNoaaWeatherStation = True
-        self.FirstTemperatureInterpolation = True
-        self.latestInterpolatedTemperature = 0.0
-        
-        self.nearestNoaaWeatherStation = "None"
 
     def initStateVector(self,
                         elapsedTimeSeconds, 
@@ -96,70 +87,7 @@ class StateVector(object):
                                     endOfSimulation = False)
         
     
-    def computeNoaaWeatherStationNearest(self, currentPosition, totalDistanceFlownMeters):
-        ''' 28th September 2024 - search for next weather station if distance flown is more than 50 Kilometers '''
-        nearestNoaaWeatherStationFAA = self.nearestNoaaWeatherStation
-        if (not currentPosition is None)  and ( isinstance ( currentPosition , WayPoint ) ) :
-            if self.FirstNoaaWeatherStation == True:
-                self.FirstNoaaWeatherStation = False
-                nearestNoaaWeatherStationFAA = self.nooaWeatherStations.getNearestWeatherStationFAAname(currentPosition)
-                self.distanceFlowMeters = totalDistanceFlownMeters
-            else:
-                ''' 15th September 2024 - every 50 Kilo meters - compute nearest weather station '''
-                if totalDistanceFlownMeters > self.distanceFlowMeters + 50000.0:
-                    nearestNoaaWeatherStationFAA = self.nooaWeatherStations.getNearestWeatherStationFAAname(currentPosition)
-                    self.distanceFlowMeters = totalDistanceFlownMeters
-        return nearestNoaaWeatherStationFAA
-    
-    def computeTemperatureAtStationLevel(self , weatherStationFAAname , altitudeMeanSeaLevelMeters):
-        ''' 28th September 2024 - search for next interpolated temperature if level changes more than 300 feet '''
-        temperatureDegreesCelsius = self.latestInterpolatedTemperature
-        #print ( weatherStationFAAname )
-        altitudeMeanSeaLevelFeet = altitudeMeanSeaLevelMeters * Meter2Feet
-        
-        if self.FirstTemperatureInterpolation == True:
-            #print( str ( self.FirstTemperatureInterpolation ) )
-            
-            self.latestLevelFeet = altitudeMeanSeaLevelFeet
-
-            noaaWeatherStation = NoaaWeatherStation.objects.filter(FAAid=weatherStationFAAname).first()
-            if noaaWeatherStation:
-                
-                self.FirstTemperatureInterpolation = False
-                
-                levelsFeetList = noaaWeatherStation.getWeatherStationForecastsLevels()
-                temperaturesForecastsList = noaaWeatherStation.getWeatherStationForecastsTemperatures()
-                
-                try:
-                    #print ( "interpolate > {0}  ".format( np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList) ) )
-                    temperatureDegreesCelsius = np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList)
-                    #print ( "interpolated temperature -> {0} - for level -> {1}".format(temperatureDegreesCelsius,altitudeMeanSeaLevelFeet ))
-                except:
-                    pass
-                    #print (" feet levels list size = {0} - temperature values list size {1}".format ( len ( levelsFeetList ) , len ( temperaturesForecastsList ) ) )
-        else:
-            ''' if more than 300 feet level changes then interpolate again'''
-            if abs( altitudeMeanSeaLevelFeet - self.latestLevelFeet) > 300:
-                
-                self.latestLevelFeet = altitudeMeanSeaLevelFeet
-                
-                noaaWeatherStation = NoaaWeatherStation.objects.filter(FAAid=weatherStationFAAname).first()
-                if noaaWeatherStation:
-                    
-                    levelsFeetList = noaaWeatherStation.getWeatherStationForecastsLevels()
-                    temperaturesForecastsList = noaaWeatherStation.getWeatherStationForecastsTemperatures()
-                    
-                    try:
-                        #print ( "interpolate > {0}  ".format( np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList) ) )
-                        temperatureDegreesCelsius = np.interp(altitudeMeanSeaLevelFeet , levelsFeetList , temperaturesForecastsList)
-                        #print ( "interpolated temperature -> {0} - for level -> {1}".format(temperatureDegreesCelsius,altitudeMeanSeaLevelFeet ))
-
-                    except:
-                        pass
-                    
-        return temperatureDegreesCelsius
-    
-    ''' 15th Septembe 2024 - currentPosition used to retrieve the nearest weather station '''
+    ''' 15th September 2024 - currentPosition used to retrieve the nearest weather station '''
     def updateAircraftStateVector(self, 
                                     elapsedTimeSeconds, 
                                     characteristicPoint,
@@ -178,9 +106,12 @@ class StateVector(object):
         ''' need to store both TAS and altitude => compute CAS '''
         aircraftStateDict = {}
         ''' 28th September 2024 '''
-        self.nearestNoaaWeatherStation = self.computeNoaaWeatherStationNearest(currentPosition, totalDistanceFlownMeters)
+        self.nearestNoaaWeatherStation = self.flightEnvelope.computeNearestNoaaWeatherStationFAAname(currentPosition, totalDistanceFlownMeters)
         ''' 28th September 2024 '''
-        self.latestInterpolatedTemperature = self.computeTemperatureAtStationLevel(self.nearestNoaaWeatherStation , altitudeMeanSeaLevelMeters)
+        self.latestInterpolatedTemperature = self.flightEnvelope.computeTemperatureDegreesCelsiusAtStationLevel(self.nearestNoaaWeatherStation , altitudeMeanSeaLevelMeters)
+        ''' 10th october 2024 '''
+        self.latestInterpolatedWindDirection = self.flightEnvelope.computeTrueNorthWindDirectionAtStationLevel(self.nearestNoaaWeatherStation , altitudeMeanSeaLevelMeters)
+        self.latestInterpolatedWindSpeed = self.flightEnvelope.computeWindSpeedKnotsAtStationLevel(self.nearestNoaaWeatherStation , altitudeMeanSeaLevelMeters)
                 
         ''' 9th September 2023 - add characteristic point '''
         aircraftStateDict[elapsedTimeSeconds] = [characteristicPoint,
@@ -195,6 +126,8 @@ class StateVector(object):
                                                  liftNewtons ,
                                                  self.nearestNoaaWeatherStation,
                                                  self.latestInterpolatedTemperature,
+                                                 self.latestInterpolatedWindDirection,
+                                                 self.latestInterpolatedWindSpeed,
                                                  endOfSimulation]
         self.aircraftStateHistory.append(aircraftStateDict)
         
@@ -284,6 +217,8 @@ class StateVector(object):
                                  'load-factor-g'                ,
                                  'nearest-Weather-Station'      ,
                                  'temperature-degrees-celsius'  ,
+                                 'wind-direction-true-north-degrees',
+                                 'wind-speed-knots',
                                  'end of simulation'
                                  ])
 
@@ -321,10 +256,8 @@ class StateVector(object):
                 liftNewtons = valueList[9]
                 loadFactor = liftNewtons / aircraftMassKilograms
 
-                calibratedAirSpeedMetersSecond = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond,
-                                                  altitude = altitudeMeanSeaLevelMeters,
-                                                  speed_units = 'm/s',
-                                                  alt_units='m' )
+                calibratedAirSpeedMetersSecond = tas2cas(tas = trueAirSpeedMetersSecond, altitude = altitudeMeanSeaLevelMeters,
+                                                temp = 'std' , speed_units = 'm/s', alt_units='m' )
                 calibratesAirSpeedKnots = calibratedAirSpeedMetersSecond * MeterSecond2Knots
                 mach = self.atmosphere.tas2mach(tas = trueAirSpeedMetersSecond,
                                 altitude = altitudeMeanSeaLevelMeters,
@@ -344,9 +277,11 @@ class StateVector(object):
                 
                 ''' 28th September 2024 - temperature at weather station level '''
                 temperatureAtWeatherStationDegreesCelsius = valueList[11]
+                windDirectionTrueNorthDegrees = valueList[12]
+                windSpeedKnots = valueList[13]
                 
                 ''' 5th September 2021 - write endOfSimulation '''
-                endOfSimulation = valueList[11]
+                endOfSimulation = valueList[14]
                 ''' 9th September 2023 - add the characteristic point '''
                 xlsxOutput.writeFifteenFloatCharPointValues(elapsedTimeSeconds,
                                                             
@@ -374,6 +309,8 @@ class StateVector(object):
                                                 loadFactor             ,
                                                 nearestWeatherStation  ,
                                                 temperatureAtWeatherStationDegreesCelsius ,
+                                                windDirectionTrueNorthDegrees ,
+                                                windSpeedKnots,
                                                 endOfSimulation)
         xlsxOutput.close()
                     
@@ -407,6 +344,8 @@ class StateVector(object):
                                                  loadFactor             ,
                                                  nearestWeatherStation  ,
                                                  temperatureAtWeatherStationDegreesCelsius ,
+                                                 windDirectionTrueNorthDegrees ,
+                                                 windSpeedKnots,
                                                  endOfSimulation):
 
         ColumnIndex = 0
@@ -447,6 +386,11 @@ class StateVector(object):
         ws.write(row, ColumnIndex, nearestWeatherStation)  
         ColumnIndex += 1
         ws.write(row, ColumnIndex, temperatureAtWeatherStationDegreesCelsius)
+        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, windDirectionTrueNorthDegrees)
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, windSpeedKnots)
         ColumnIndex += 1
         ws.write(row, ColumnIndex, str(endOfSimulation))     
         row += 1    
@@ -486,6 +430,8 @@ class StateVector(object):
                                  'load-factor-g'                ,
                                  'nearest-weather-station'      ,
                                  'temperature-degrees-celsius'  ,
+                                 'wind-direction-true-north-degrees',
+                                 'wind-speed-knots',
                                  'end of simulation'
                                  ])
 
@@ -524,10 +470,8 @@ class StateVector(object):
                 liftNewtons = valueList[9]
                 loadFactor = liftNewtons / aircraftMassKilograms
 
-                calibratedAirSpeedMetersSecond = self.atmosphere.tas2cas(tas = trueAirSpeedMetersSecond,
-                                                  altitude = altitudeMeanSeaLevelMeters,
-                                                  speed_units = 'm/s',
-                                                  alt_units='m' )
+                calibratedAirSpeedMetersSecond = tas2cas(tas = trueAirSpeedMetersSecond,  altitude = altitudeMeanSeaLevelMeters,
+                                                  temp = 'std' , speed_units = 'm/s', alt_units='m' )
                 calibratesAirSpeedKnots = calibratedAirSpeedMetersSecond * MeterSecond2Knots
                 mach = self.atmosphere.tas2mach(tas = trueAirSpeedMetersSecond,
                                 altitude = altitudeMeanSeaLevelMeters,
@@ -546,9 +490,11 @@ class StateVector(object):
                 
                 ''' 28th September 2024 - interpolated temperature forecasts at weather station '''
                 temperatureDegreesCelsius = valueList[11]
+                windDirectionTrueNorthDegree = valueList[12]
+                windSpeedKnots = valueList[13]
                 
                 ''' 5th September 2021 - write endOfSimulation '''
-                endOfSimulation = valueList[12]
+                endOfSimulation = valueList[14]
                 ''' 9th September 2023 - add characteristic point '''
                 row = self.writeValues(ws, row, elapsedTimeSeconds, 
                                                 characteristic_point,
@@ -573,5 +519,7 @@ class StateVector(object):
                                                 loadFactor             ,
                                                 nearestWeatherStation  ,
                                                 temperatureDegreesCelsius ,
+                                                windDirectionTrueNorthDegree ,
+                                                windSpeedKnots,
                                                 endOfSimulation)
         

@@ -33,8 +33,9 @@ from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import A
 from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.Environment.Earth import Earth
 
+from trajectory.Environment.WeatherStationsClientFile import WeatherStationsClient
 
-class AeroDynamics(object):
+class AeroDynamics(WeatherStationsClient):
     
     className = ''
     AeroDynamicsLine = 3
@@ -53,6 +54,9 @@ class AeroDynamics(object):
         
         ''' need atmosphere to compute stall speed from air density at airport altitude '''
         self.className = self.__class__.__name__
+        
+        ''' initialize mother class '''
+        WeatherStationsClient.__init__(self)
         
         assert (isinstance(aircraftPerformance, AircraftJsonPerformance))
         self.aircraftPerformance = aircraftPerformance

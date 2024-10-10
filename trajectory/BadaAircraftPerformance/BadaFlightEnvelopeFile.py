@@ -31,6 +31,7 @@ from trajectory.BadaAircraftPerformance.BadaAeroDynamicsFile import AeroDynamics
 from trajectory.BadaAircraftPerformance.BadaAircraftStateVectorFile import StateVector
 
 from trajectory.Environment.Atmosphere import Atmosphere
+from trajectory.aerocalc.airspeed import tas2cas, tas2mach
 
 from trajectory.Environment.Constants import Meter2Feet, Feet2Meter, MeterSecond2Knots
 
@@ -101,7 +102,8 @@ class FlightEnvelope(AeroDynamics):
         self.targetCruiseMachNumber = self.MaxOpMachNumber
         self.arrivalAirportFieldElevationMeters = 0.0
         
-        self.StateVector = StateVector(ICAOcode, atmosphere)
+        ''' 6th October 2024 - add self to access Weather Station Client '''
+        self.StateVector = StateVector(ICAOcode, atmosphere, self)
         self.departureAirportAltitudeMSLmeters = 0.0
         
         self.approachWayPoint = None
@@ -215,12 +217,8 @@ class FlightEnvelope(AeroDynamics):
         ''' 12th September 2021 - Robert - need to know real time spent during flying '''
         self.elapsedTimeSeconds = elapsedTimeSeconds
         
-        calibratedAirSpeedKnots = self.atmosphere.tas2cas(tas = trueAirSpeedMetersPerSecond ,
-                                                  altitude = altitudeMeanSeaLevelMeters,
-                                                  temp='std',
-                                                  speed_units = 'm/s',
-                                                  alt_units='m'
-                                                  ) * MeterSecond2Knots
+        calibratedAirSpeedKnots = tas2cas(tas = trueAirSpeedMetersPerSecond ,  altitude = altitudeMeanSeaLevelMeters,
+                                                  temp='std', speed_units = 'm/s', alt_units='m' ) * MeterSecond2Knots
         if (calibratedAirSpeedKnots > self.MaxOpSpeedCasKnots):
             
             if self.speedErrorRaised == False:

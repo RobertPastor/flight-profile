@@ -14,7 +14,6 @@ from trajectory.Environment.Constants import Meter2NauticalMiles
 from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
 
 from trajectory.models import AirlineStandardDepartureArrivalRoute, AirlineAirport
-from pickle import TRUE
 
 def getAircraftFromRequest(request):
     return request.GET['aircraft']
@@ -38,9 +37,12 @@ def getReducedClimbPowerCoeffFromRequest(request):
     return request.GET['reduc']
 
 def getDirectRouteFromRequest(request):
-    if ( request.GET['direct'] == 'true'):
-        return True
-    else:
+    try:
+        if ( request.GET['direct'] == 'true'):
+            return True
+        else:
+            return False
+    except:
         return False
 
 def convertDegreeMinuteSecondToDecimal(DegreeMinuteSecond='43-40-51.00-N'):

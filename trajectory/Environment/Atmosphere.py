@@ -30,7 +30,6 @@ density at mean sea level = 1.225 kg / cubic meters
 '''
 
 import numpy
-import os
 import math
 
 MeterPerSecond2Knots = 1.94384449 

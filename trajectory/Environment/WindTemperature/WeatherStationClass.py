@@ -86,19 +86,65 @@ class WeatherStation(object):
         except:
             return 0.0
         
+   
+    ''' If the wind speed is forecast to be greater than 99 knots but '''
+    ''' less than 199 knots, the computer adds 50 to the direction '''
+    ''' and subtracts 100 from the speed. To decode this type of data '''
+    ''' group, the reverse must be accomplished. For example, when '''
+    ''' the data appears as “731960,” subtract 50 from the 73 and '''
+    ''' add 100 to the 19, and the wind would be 230° at 119 knots '''
+    ''' with a temperature of –60 °C. '''
     def extractWindSpeed(self, levelDataStr ):
         ''' wind speed in knots '''
         assert( isinstance( levelDataStr , str ))
         try:
-            return float(str(levelDataStr)[2:4])
+            windSpeedFloat = 0.0
+            windSpeedStr = str(levelDataStr)[2:4]
+            if str(windSpeedStr).isdigit():
+                windSpeedFloat = float(windSpeedStr)
+                
+                windDirectionStr = str(levelDataStr)[0:2]
+                ''' When the forecast wind speed is calm, or less than '''
+                ''''5 knots, the data group is coded “9900" '''
+                if windDirectionStr == "99" and windSpeedStr == "00":
+                    windSpeedFloat = 0.0
+                else:
+                    if str(windDirectionStr).isdigit():
+                        windDirectionFloat = float(windDirectionStr)
+                        if ( windDirectionFloat > 36.0 ):
+                            ''' add 100 to wind speed '''
+                            windSpeedFloat = windSpeedFloat + 100.0
+    
+            return windSpeedFloat
         except:
             return 0.0
         
+    ''' If the wind speed is forecast to be greater than 99 knots but '''
+    ''' less than 199 knots, the computer adds 50 to the direction '''
+    ''' and subtracts 100 from the speed. To decode this type of data '''
+    ''' group, the reverse must be accomplished. For example, when '''
+    ''' the data appears as “731960,” subtract 50 from the 73 and '''
+    ''' add 100 to the 19, and the wind would be 230° at 119 knots '''
+    ''' with a temperature of –60 °C. '''
     def extractWindDirection(self, levelDataStr):
         ''' wind direction in degrees '''
         assert( isinstance( levelDataStr , str ))
         try:
-            return float(str(levelDataStr)[0:2] + "0")
+            windDirectionFloat = 0.0
+            windDirectionStr = str(levelDataStr)[0:2]
+            windSpeedStr = str(levelDataStr)[2:4]
+            if str(windDirectionStr).isdigit():
+                windDirectionFloat = float(windDirectionStr)
+                ''' When the forecast wind speed is calm, or less than '''
+                ''' '5 knots, the data group is coded “9900" '''
+                if windDirectionStr == "99" and windSpeedStr == "00":
+                    windDirectionFloat = 0.0
+                else:
+                    if ( windDirectionFloat > 36.0 ):
+                        windDirectionFloat = ( windDirectionFloat - 50.0 )
+                    windDirectionFloat = windDirectionFloat * 10.0
+            
+            return windDirectionFloat
         except:
             return 0.0
     

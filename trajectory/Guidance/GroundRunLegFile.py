@@ -220,9 +220,7 @@ class GroundRunLeg(Graph):
         while ((endOfSimulation == False) and
                ( tas2cas(tas = trueAirSpeedMetersSecond ,
                          altitude = self.airport.getFieldElevationAboveSeaLevelMeters(),
-                         temp='std',
-                         speed_units = 'm/s',
-                         alt_units = 'm') * MeterPerSecond2Knots )  < (1.2 * VStallSpeedCASKnots)):
+                         temp='std', speed_units = 'm/s', alt_units = 'm') * MeterPerSecond2Knots )  < (1.2 * VStallSpeedCASKnots)):
             ''' initial loop index '''
             if index == 1:
                 intermediateWayPoint = runWayEndPoint

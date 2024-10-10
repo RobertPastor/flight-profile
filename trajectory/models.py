@@ -347,6 +347,23 @@ class NoaaWeatherStation(models.Model):
         ''' warning - do not sort as it could impact interpolation '''
         return temperaturesDegreesCelsiusList
     
+    def getWeatherStationForecastsWindDirection(self):
+        windDirectionTrueNorthDegreesList = []
+        for weatherStationMeasure in NoaaWeatherStationMeasure.objects.filter(NoaaWeatherStationInstance=self):
+            #print ( weatherStationMeasure.getTemperature() )
+            windDirectionTrueNorthDegreesList.append(weatherStationMeasure.getWindDirectionTrueNorthDegrees())
+            
+        return windDirectionTrueNorthDegreesList
+    
+    def getWeatherStationForecastsWindSpeed(self):
+        windSpeedKnotsList = []
+        for weatherStationMeasure in NoaaWeatherStationMeasure.objects.filter(NoaaWeatherStationInstance=self):
+            #print ( weatherStationMeasure.getTemperature() )
+            windSpeedKnotsList.append(weatherStationMeasure.getWindSpeedKnots())
+            
+        return windSpeedKnotsList
+        
+    
 ''' 21st September 2024 '''
 ''' these are forecasts values '''
 class NoaaWeatherStationMeasure(models.Model):
@@ -368,4 +385,12 @@ class NoaaWeatherStationMeasure(models.Model):
     
     def getTemperature(self):
         return self.TemperatureDegreesCelsius
+    
+    def getWindDirectionTrueNorthDegrees(self):
+        return self.WindDirectionTrueNorthDegrees
+    
+    def getWindSpeedKnots(self):
+        return self.WindSpeedKnots
+    
+    
     

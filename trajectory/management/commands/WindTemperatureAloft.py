@@ -38,50 +38,53 @@ class Command(BaseCommand):
                 windTemperatureAloft = WindTemperatureAloft ( TextLine = str(weatherDataLine).strip() )
                 windTemperatureAloft.save()
                 
-        ''' ------------ analyse header ------------- '''
-        windTemperatureHead = WindTemperatureHeader()
-        windTemperatureHead.analyseHeader( weatherDataStrList )
-        
-        ''' ----------------------------------------- '''
-                
-        print ( "--- about to delete Noaa Weather Station Measure --- ")
-        NoaaWeatherStationMeasure.objects.all().delete()
-        print ( "--- delete done ---")
-        
-        weatherStationFeet = WeatherStationFeet()
-        feetLevels = weatherStationFeet.readTextLines(weatherDataStrList)
-        numberOfLevels = len (feetLevels)
-        
-        feetLineFound = False
-        for weatherDataLine in weatherDataStrList:
-            #print ( "line number = {0} - weatherDataLine = {1}".format( str(lineNumber) , weatherDataLine ) )
-            if feetLineFound:
-                pass
-                weatherStation = WeatherStation() 
-                weatherStation.ExploitStationData(weatherDataLine, numberOfLevels)
-                
-                FAAstationName = weatherStation.getStationName()
-                print ("------------ " +str(FAAstationName) + " ------------")
-                #print ( "FAA Station Name  = {0}".format(FAAstationName))
-                noaaWeatherStation = NoaaWeatherStation.objects.filter(FAAid=FAAstationName).first()
-                if ( noaaWeatherStation ):
-                    print ( "Correct -> nooaWeatherStation = {0} found".format(FAAstationName) )
-                    for levelIndex in range(numberOfLevels):
-                        
-                        noaaWeatherStationMeasure = NoaaWeatherStationMeasure(
-                            NoaaWeatherStationInstance = noaaWeatherStation,
-                            LevelFeet = weatherStationFeet.getLevelFeet(levelIndex),
-                            WindSpeedKnots = weatherStation.getStationWindSpeedOneLevel(levelIndex),
-                            WindDirectionTrueNorthDegrees = weatherStation.getStationWindDirectionOneLevel(levelIndex),
-                            TemperatureDegreesCelsius = weatherStation.getStationTemperatureOneLevel(levelIndex))
-                        noaaWeatherStationMeasure.save()
-                    
-                else:
-                    print ( "Error -> nooaWeatherStation = {0} not found".format(FAAstationName) )
-
-                
-            if ( str(weatherDataLine).startswith("FT")):
-                feetLineFound = True
-                
+        if len(weatherDataStrList)>0:
             
+            ''' ------------ analyze header ------------- '''
+            windTemperatureHead = WindTemperatureHeader()
+            windTemperatureHead.analyseHeader( weatherDataStrList )
+            
+            ''' ----------------------------------------- '''
+                    
+            print ( "--- about to delete Noaa Weather Station Measure --- ")
+            NoaaWeatherStationMeasure.objects.all().delete()
+            print ( "--- delete done ---")
+            
+            weatherStationFeet = WeatherStationFeet()
+            feetLevels = weatherStationFeet.readTextLines(weatherDataStrList)
+            numberOfLevels = len (feetLevels)
+            
+            feetLineFound = False
+            for weatherDataLine in weatherDataStrList:
+                #print ( "line number = {0} - weatherDataLine = {1}".format( str(lineNumber) , weatherDataLine ) )
+                if feetLineFound:
+                    pass
+                    weatherStation = WeatherStation() 
+                    weatherStation.ExploitStationData(weatherDataLine, numberOfLevels)
+                    
+                    FAAstationName = weatherStation.getStationName()
+                    print ("------------ " +str(FAAstationName) + " ------------")
+                    #print ( "FAA Station Name  = {0}".format(FAAstationName))
+                    noaaWeatherStation = NoaaWeatherStation.objects.filter(FAAid=FAAstationName).first()
+                    if ( noaaWeatherStation ):
+                        print ( "Correct -> nooaWeatherStation = {0} found".format(FAAstationName) )
+                        for levelIndex in range(numberOfLevels):
+                            
+                            noaaWeatherStationMeasure = NoaaWeatherStationMeasure(
+                                NoaaWeatherStationInstance = noaaWeatherStation,
+                                LevelFeet = weatherStationFeet.getLevelFeet(levelIndex),
+                                WindSpeedKnots = weatherStation.getStationWindSpeedOneLevel(levelIndex),
+                                WindDirectionTrueNorthDegrees = weatherStation.getStationWindDirectionOneLevel(levelIndex),
+                                TemperatureDegreesCelsius = weatherStation.getStationTemperatureOneLevel(levelIndex))
+                            noaaWeatherStationMeasure.save()
+                        
+                    else:
+                        print ( "Error -> nooaWeatherStation = {0} not found".format(FAAstationName) )
+    
+                    
+                if ( str(weatherDataLine).startswith("FT")):
+                    feetLineFound = True
+                
+        else:
+            print("Error - weather station measures list is empty")    
         

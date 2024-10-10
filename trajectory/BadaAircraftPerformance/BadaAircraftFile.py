@@ -105,8 +105,9 @@ class BadaAircraft(AircraftConfiguration):
                         airportFieldElevationAboveSeaLevelMeters):
          
         aircraftMassKilograms = self.aircraftMass.getCurrentMassKilograms()
-        self.StateVector.initStateVector(elapsedTimeSeconds, characteristicPoint,
-                                            trueAirSpeedMetersSecond, 
-                                            airportFieldElevationAboveSeaLevelMeters,
-                                            aircraftMassKilograms)
+        self.StateVector.initStateVector(elapsedTimeSeconds, 
+                                         characteristicPoint,
+                                        trueAirSpeedMetersSecond, 
+                                        airportFieldElevationAboveSeaLevelMeters,
+                                        aircraftMassKilograms)
         

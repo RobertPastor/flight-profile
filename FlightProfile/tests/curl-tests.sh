@@ -75,13 +75,13 @@ curl -v "http://localhost:8000/trajectory/launchFlightProfile/EuropeanWings"  -o
 curl -v "http://localhost:8000/trajectory/launchFlightProfile/IndianWings"    -o results/launchFlightProfile-IndianWings-3.json
 curl -v "http://localhost:8000/trajectory/launchFlightProfile/UnknownWings"   -o results/launchFlightProfile-UnknownWings-4.json
 
-curl -v "http://localhost:8000/trajectory/computeFlightProfile/AmericanWings?aircraft=A320&route=KLAX-KATL&AdepRwy=24R&AdesRwy=26L&mass=67000&fl=39000"  -o results/computeFlightProfile-008.json
+curl -v "http://localhost:8000/trajectory/computeFlightProfile/AmericanWings?aircraft=A320&route=KLAX-KATL&adepRwy=24R&adesRwy=26L&mass=67000&fl=39000"  -o results/computeFlightProfile-008.json
 
-curl -v "http://localhost:8000/trajectory/computeFlightProfile/AmericanWings?aircraft=A320&route=MMMX-KSEA&AdepRwy=05L&AdesRwy=16L&mass=67000&fl=39000" -o results/computeFlightProfile-009.json
+curl -v "http://localhost:8000/trajectory/computeFlightProfile/AmericanWings?aircraft=A320&route=MMMX-KSEA&adepRwy=05L&adesRwy=16L&mass=67000&fl=39000" -o results/computeFlightProfile-009.json
 
-curl -v "http://localhost:8000/trajectory/computeCosts/AmericanWings?aircraft=A320&route=KLAX-KATL&AdepRwy=24R&AdesRwy=26L&mass=67000&fl=39000"  -o results/computeCosts-008.json
+curl -v "http://localhost:8000/trajectory/computeCosts/AmericanWings?aircraft=A320&route=KLAX-KATL&adepRwy=24R&adesRwy=26L&mass=67000&fl=39000"  -o results/computeCosts-008.json
 
-curl -v "http://localhost:8000/trajectory/computeCosts/AmericanWings?aircraft=A320&route=MMMX-KSEA&AdepRwy=05L&AdesRwy=16L&mass=67000&fl=39000" -o results/computeCosts-009.json
+curl -v "http://localhost:8000/trajectory/computeCosts/AmericanWings?aircraft=A320&route=MMMX-KSEA&adepRwy=05L&adesRwy=16L&mass=67000&fl=39000" -o results/computeCosts-009.json
 
 curl -v "http://localhost:8000/trajectory/fuelPlanner/AmericanWings" -o results/fuelPlanner-AmericanWings.json
 curl -v "http://localhost:8000/trajectory/fuelPlanner/EuropeanWings" -o results/fuelPlanner-EuropeanWings.json
@@ -92,7 +92,7 @@ curl -v "http://localhost:8000/trajectory/computeRunwayOvershoot/A332/KATL/08L/2
 
 curl -v "http://localhost:8000/trajectory/aircraft?aircraft=A320" -o results/aircraft-A320.json
 
-curl -v "http://localhost:8000/trajectory/metar/AmericanWings" -o results/metar-AmericanWings.json
-curl -v "http://localhost:8000/trajectory/metar/EuropeanWings" -o results/metar-EuropeanWings.json
-curl -v "http://localhost:8000/trajectory/metar/IndianWings" -o results/metar-IndianWings.json
-curl -v "http://localhost:8000/trajectory/metar/UnknownWings" -o results/metar-UnknownWings.json
+#curl -v "http://localhost:8000/trajectory/metar/AmericanWings" -o results/metar-AmericanWings.json
+#curl -v "http://localhost:8000/trajectory/metar/EuropeanWings" -o results/metar-EuropeanWings.json
+#curl -v "http://localhost:8000/trajectory/metar/IndianWings" -o results/metar-IndianWings.json
+#curl -v "http://localhost:8000/trajectory/metar/UnknownWings" -o results/metar-UnknownWings.json

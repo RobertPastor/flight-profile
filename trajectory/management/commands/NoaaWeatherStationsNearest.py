@@ -8,7 +8,6 @@ Created on 27 sept. 2024
 from django.core.management.base import BaseCommand
 from trajectory.Environment.WindTemperature.NoaaStations.NoaaWeatherStationsFile import NoaaWeatherStationsClass
 
-
 from trajectory.Guidance.ConstraintsFile import Meters2Feet
 from trajectory.Guidance.WayPointFile import WayPoint
 from trajectory.models import NoaaWeatherStationMeasure
