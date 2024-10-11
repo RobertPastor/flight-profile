@@ -45,24 +45,24 @@ def fetchWindTemperature(USregion, ForecastHour, Level):
     pass
     weatherDataStrList = []
     if USregion in USregions:
-        print ( USregion + " is in US regions dictionary")
+        #print ( USregion + " is in US regions dictionary")
         url = URL + "?" + "region=" + USregions[USregion]
-        print (url)
+        #print (url)
         if ForecastHour in ForecastHours:
-            print ( ForecastHour + " is in the Forecasts dictionary ")
+            #print ( ForecastHour + " is in the Forecasts dictionary ")
             url = url + "&" + "fcst=" + ForecastHours[ForecastHour]
-            print (url)
+            #print (url)
             if Level in Levels:
-                print ( Level + " is in the Levels dictionary ")
+                #print ( Level + " is in the Levels dictionary ")
                 url = url + "&" + "level=" + Level.lower()
-                print ( url )
+                #print ( url )
                 
                 try:
                     #response = requests.get(url, timeout=16.0, headers={"Accept": "application/geo+json"})
                     response = requests.get(url, timeout=16.0, headers={"Accept": "text/xml"})
                     #response = requests.get(url, timeout=16.0)
                     #rq.raise_for_status()
-                    print ( response.status_code )
+                    #print ( response.status_code )
                     if response.status_code == requests.codes.ok:
                         print ( "answer is OK")
                         #intext = str(response.json())

@@ -162,6 +162,25 @@ class Command(BaseCommand):
         #######################
         
         
+        print("--------- another weather station -----------")
         
+        currentPosition = WayPoint (Name = "Near Ontario", LatitudeDegrees = 34.0531, LongitudeDegrees = -117.577, AltitudeMeanSeaLevelMeters = 279.0)
+        
+        ''' change distance flown to search for another weather station '''
+        totalDistanceFlownMeters = 320000.0
+        weatherStationFAAname = weatherStationsClient.computeNearestNoaaWeatherStationFAAname( currentPosition, totalDistanceFlownMeters)
+        
+        altitudeFeet = 4746.0
+        altitudeMeanSeaLevelMeters = altitudeFeet * Feet2Meter
+
+        print ("Nearest Noaa Weather station FAA name = {0}".format(weatherStationFAAname))
+        temperatureCelsiusDegrees = weatherStationsClient.computeTemperatureDegreesCelsiusAtStationLevel(weatherStationFAAname , altitudeMeanSeaLevelMeters)
+        print (" at {0} -> level feet {1} -> Temperature Celsius = {2}".format(weatherStationFAAname, altitudeFeet, temperatureCelsiusDegrees))
+        
+        windDirectionTrueNorthDegrees = weatherStationsClient.computeTrueNorthWindDirectionAtStationLevel(weatherStationFAAname , altitudeMeanSeaLevelMeters)
+        print (" at {0} -> level feet {1} -> Wind Direction Degrees = {2}".format(weatherStationFAAname , altitudeFeet , windDirectionTrueNorthDegrees ))
+        
+        windSpeedKnots = weatherStationsClient.computeWindSpeedKnotsAtStationLevel( weatherStationFAAname , altitudeMeanSeaLevelMeters )
+        print (" at {0} -> level feet {1} -> Wind Speed Knots  = {2}".format(weatherStationFAAname , altitudeFeet , windSpeedKnots ))
         
         
