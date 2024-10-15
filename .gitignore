@@ -169,3 +169,5 @@ trajectory/Bada381DataFiles/B738__.OPF.txt
 # ANS Performance challenge
 *.parquet
 trajectory/AdsBtrajectories/AnsPerformanceChallenge/*
+trajectory/AdsBtrajectories/Airports/Airports.csv
+trajectory/AdsBtrajectories/OpenDataAirports/airports.csv
