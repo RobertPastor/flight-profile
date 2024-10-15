@@ -60,7 +60,7 @@ import os
 import csv
 import logging
 
-from trajectory.models import AirlineAirport
+from trajectory.Guidance.WayPointFile import Airport
 
 fieldNames = ["Airport ID", "Airport Name" , "City", "Country", "IATA/FAA", "ICAO Code",
                 "LatitudeDegrees", "LongitudeDegrees", "AltitudeFeet", "TimeZone", "DST"]
@@ -87,51 +87,32 @@ class AirportsDatabase(object):
         logging.info ( self.className + ': file folder= {0}'.format(self.airportsFilesFolder) )
         self.FilePath = (self.airportsFilesFolder + os.path.sep + self.FilePath)
         logging.info ( self.className + ': file path= {0}'.format(self.FilePath) )
-        
-        
-    def exists(self):
-        return os.path.exists(self.airportsFilesFolder) and os.path.isfile(self.FilePath)
 
-
-    def read(self, airlineRoutesAirportsList):
-        ''' read and load only airports that are defined in the airline routes '''
+    def read(self):
         try:
-            dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), delimiter = ";", fieldnames=fieldNames)
+            dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), fieldnames=fieldNames , delimiter=";")
             for row in dictReader:
-                print ( row )
-                airportDict = {}
+                #print ( row )
+                airport = {}
                 for field in fieldNames:
-                    #print (field , row[field])
-                    airportDict[field] = row[field]
+                    #print ( field , row[field])
+                    airport[field] = row[field]
                     if 'Country' in field:
                         country = row[field]
                         if not(country in self.countriesDb):
                             self.countriesDb.append(country)
-                self.airportsDb[row["ICAO Code"]] = airportDict
-                #logging.info ( row["ICAO Code"] )
-                try:
-                    ''' read and load only airports that are defined in the airline routes '''
-                    if ( row["ICAO Code"] in airlineRoutesAirportsList ):
-                        ''' record only airports that are in the airline routes '''
-                        airport = AirlineAirport(AirportICAOcode = row["ICAO Code"],
-                                           AirportName = row["Airport Name"],
-                                           Latitude = float(row["LatitudeDegrees"]),
-                                           Longitude = float(row["LongitudeDegrees"]),
-                                           Continent = row["Country"],
-                                           FieldElevationAboveSeaLevelMeters = float(row["AltitudeFeet"])*feetToMeters)
-                        airport.save()
-                except Exception as e:
-                    print ( e )
+                            
+                #print ( row["ICAO Code"] )
+                self.airportsDb[row["ICAO Code"]] = airport
             return True
         except Exception as e:
-            print ( e )
+            logging.info ( e )
             return False
-            
             
     def getAirportsFromCountry(self, Country = ''):
         for row in self.airportsDb.values():
             if row['Country'] == Country and len(row['ICAO Code'])>0 :
-                airport = AirlineAirport(
+                airport = Airport(
                                 Name=row['City']+'-'+row['Airport Name'] ,
                                 LatitudeDegrees = row['LatitudeDegrees'] , 
                                 LongitudeDegrees = row['LongitudeDegrees'] , 
@@ -144,7 +125,7 @@ class AirportsDatabase(object):
     def getAirports(self):
         for row in self.airportsDb.values():
             if len(row['ICAO Code'])>0 and len(row['Country'])>0:
-                airport = AirlineAirport(
+                airport = Airport(
                                     Name = row['City']+'-'+row['Airport Name'] ,
                                     LatitudeDegrees = row['LatitudeDegrees'] , 
                                     LongitudeDegrees = row['LongitudeDegrees'] , 
@@ -157,12 +138,11 @@ class AirportsDatabase(object):
         if self.airportsDb is None: 
             return
         for row in self.airportsDb:
-            logging.info ( self.className + ' - ' + row )
+            logging.info ( "{0} - {1}".format(self.className , row ))
     
     
     def getNumberOfAirports(self):
-        if self.airportsDb is None:
-            return 0
+        if self.airportsDb is None: return 0
         return len(self.airportsDb.keys())
             
             
@@ -170,19 +150,44 @@ class AirportsDatabase(object):
         if self.airportsDb is None: return
         for key , airport in self.airportsDb.items():
             if str(key).startswith('LF') and airport['Country'] == Country :
-                print (  airport )
+                logging.info (  airport )
                
                 
     def getICAOCode(self, airportName = ''):
-        if self.airportsDb is None:
-            return ""
+        if self.airportsDb is None: return ""
         airportsIcaoCodeList = []
         for key, airport in self.airportsDb.items():
             if str(airportName).lower() in str(airport["Airport Name"]).lower():
                 airportsIcaoCodeList.append(key)
         if len(airportsIcaoCodeList)==1: return airportsIcaoCodeList[0]
         return airportsIcaoCodeList
+    
+    def getAirportElevationMeters(self, ICAOcode = ""):
+        if self.airportsDb is None: return 0.0
+        
+        ''' internal airport is a dictionary '''
+        for key, airportInternal in self.airportsDb.items():
+            if key == ICAOcode:
+                return float(airportInternal["AltitudeFeet"])*feetToMeters
+        return 0.0
+    
+    def getAirportLatitudeDegrees(self, ICAOcode = ""):
+        if self.airportsDb is None: return 0.0
+        
+        ''' internal airport is a dictionary '''
+        for key, airportInternal in self.airportsDb.items():
+            if key == ICAOcode:
+                return float(airportInternal["LatitudeDegrees"])
+        return 0.0
                  
+    def getAirportLongitudeDegrees(self, ICAOcode = ""):
+        if self.airportsDb is None: return 0.0
+        
+        ''' internal airport is a dictionary '''
+        for key, airportInternal in self.airportsDb.items():
+            if key == ICAOcode:
+                return float(airportInternal["LongitudeDegrees"])
+        return 0.0
                     
     def getAirportFromICAOCode(self, ICAOcode=""):
         if self.airportsDb is None: return None
@@ -190,7 +195,7 @@ class AirportsDatabase(object):
         ''' internal airport is a dictionary '''
         for key, airportInternal in self.airportsDb.items():
             if key == ICAOcode:
-                airport = AirlineAirport(
+                airport = Airport(
                                 Name = airportInternal['City']+'-'+airportInternal["Airport Name"] ,
                                 LatitudeDegrees = airportInternal["LatitudeDegrees"] , 
                                 LongitudeDegrees = airportInternal["LongitudeDegrees"] , 
@@ -206,4 +211,22 @@ class AirportsDatabase(object):
             yield country
 
         
+if __name__ == '__main__':
+    
+    logging.basicConfig(level=logging.DEBUG)
 
+    airportsDatabase = AirportsDatabase()
+    ret = airportsDatabase.read()
+    print ( ret )
+    #for country in airportsDatabase.getCountries():
+    #    print ( country )
+        
+    ICAOcode = "LFPG"
+    airport = airportsDatabase.getAirportFromICAOCode(ICAOcode)
+    if airport: 
+        print ( "airport = {0} - elevation = {1} meters".format( airport.Name , airport.fieldElevationAboveSeaLevelMeters))
+        
+    ICAOcode = "MMMX"
+    airport = airportsDatabase.getAirportFromICAOCode(ICAOcode)
+    if airport: 
+        print ( "airport = {0} - elevation = {1} meters".format( airport.Name , airport.fieldElevationAboveSeaLevelMeters))

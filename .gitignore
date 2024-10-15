@@ -165,3 +165,7 @@ trajectory/Bada381DataFiles/B738__.OPF.txt
 trajectory/Bada381DataFiles/A320__.OPF.txt
 trajectory/Bada381DataFiles/A332__.OPF.txt
 trajectory/Bada381DataFiles/B738__.OPF.txt
+
+# ANS Performance challenge
+*.parquet
+trajectory/AdsBtrajectories/AnsPerformanceChallenge/*

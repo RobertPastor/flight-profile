@@ -90,7 +90,7 @@ class AirportsDatabase(object):
 
     def read(self):
         try:
-            dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), fieldnames=fieldNames)
+            dictReader = csv.DictReader(open(self.FilePath, encoding='utf-8'), fieldnames=fieldNames, delimiter=";")
             for row in dictReader:
                 airport = {}
                 for field in fieldNames:

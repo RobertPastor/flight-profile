@@ -284,8 +284,7 @@ class Test_dp2cas(unittest.TestCase):
         # 1100 mph in in HG
         # truth value from NASA RP 1046
 
-        Value = A.dp2cas(66.1208, press_units='in HG', speed_units='mph'
-                         )
+        Value = A.dp2cas(66.1208, press_units='in HG', speed_units='mph' )
         Truth = 1100
         self.failUnless(RE(Value, Truth) <= 1e-5)
 
@@ -303,8 +302,7 @@ class Test_dp2cas(unittest.TestCase):
         # 1700 km/h in mm HG
         # truth value from NASA RP 1046
 
-        Value = A.dp2cas(1524.86, press_units='mm HG',
-                         speed_units='km/h')
+        Value = A.dp2cas(1524.86, press_units='mm HG', speed_units='km/h')
         Truth = 1700
         self.failUnless(RE(Value, Truth) <= 1e-5)
 
