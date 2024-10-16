@@ -8,6 +8,9 @@ import os
 from pathlib import Path
 import pandas as pd
 
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import make_column_transformer
+
 from trajectory.AdsBtrajectories.utils import readSubmissionSet
 
 ''' https://ansperformance.eu/study/data-challenge/ '''
@@ -40,5 +43,31 @@ if __name__ == '__main__':
                 print(index , row)
             else:
                 break
+            
+        print (''' encoding aircraft type ''')
+        columnNameList = ['aircraft_type','wtc']
+        oheAircraftType = OneHotEncoder(handle_unknown='ignore')
+    
+        df_encoded_aircraft_type = pd.DataFrame( oheAircraftType.fit_transform( df[['aircraft_type']] ).toarray() )
+        
+        print ( list ( df_encoded_aircraft_type ))
+        print(df_encoded_aircraft_type.head(10))
+        
+        final_df = df.join( df_encoded_aircraft_type )
+        print ( final_df.head ())
+        
+        print ( list ( final_df ))
+        print(final_df.head(10))
+        
+        final_df = final_df.rename(columns=lambda x: str('aircraft_type_') + str(x) if str(x).isdigit() else x)
+                
+        final_df = final_df.drop(columns=['aircraft_type'])
+        print ( list ( final_df ))
+        print(final_df.head(10))
+        
+        
+        print('--- inverse transform ---- ')
+        
+       
             
         print ( "it's finished")

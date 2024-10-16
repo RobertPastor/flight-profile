@@ -9,14 +9,15 @@ from pathlib import Path
 import pandas as pd
 from trajectory.AdsBtrajectories.Airports.AirportDatabaseFile import AirportsDatabase
 from datetime import datetime
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import make_column_transformer
+
 
 DateFormatWithSlashes = '%d/%m/%Y'
 DateFormatWithDashes = "%Y-%m-%d"
 
 def readChallengeSet():
-    
     df = None
-    
     fileName = "challenge_set.csv"
     directoryPath = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\AnsPerformanceChallenge"
     directory = Path(directoryPath)
@@ -30,9 +31,7 @@ def readChallengeSet():
 
 
 def readSubmissionSet():
-    
     df = None
-    
     print("Read submission set file")
     
     fileName = "submission_set.csv"
@@ -49,7 +48,7 @@ def readSubmissionSet():
 
 def extractISOYear(dateStr):
     ''' 01/01/2024 '''
-    if str(dateStr).find("-"):
+    if str(dateStr).find("-")>0:
         date = datetime.strptime(dateStr, DateFormatWithDashes )
     else:
         date = datetime.strptime(dateStr, DateFormatWithSlashes)
@@ -58,7 +57,7 @@ def extractISOYear(dateStr):
 
 def extractISOWeek(dateStr):
     ''' 01/01/2024 '''
-    if str(dateStr).find("-"):
+    if str(dateStr).find("-")>0:
         date = datetime.strptime(dateStr, DateFormatWithDashes )
     else:
         date = datetime.strptime(dateStr, DateFormatWithSlashes)
@@ -67,7 +66,7 @@ def extractISOWeek(dateStr):
     return iso_week
 
 def extractISOWeekDay(dateStr):
-    if str(dateStr).find("-"):
+    if str(dateStr).find("-")>0:
         date = datetime.strptime(dateStr, DateFormatWithDashes )
     else:
         date = datetime.strptime(dateStr, DateFormatWithSlashes )
@@ -76,20 +75,23 @@ def extractISOWeekDay(dateStr):
     return iso_weekday
 
 def extractMonth(dateStr):
-    if str(dateStr).find("-"):
+    if str(dateStr).find("-")>0:
         date = datetime.strptime(dateStr, DateFormatWithDashes )
     else:
         date = datetime.strptime(dateStr, DateFormatWithSlashes )
  
     return date.month
 
-def encodeStringToASCIIdigits(inputStr):
-    outputStr =  ''.join(str(ord(c)) for c in inputStr)
-    if str(outputStr).isdigit():
-        return int(outputStr)
+def oneHotEncoder(columnNameList):
+    assert ( isinstance ( columnNameList , list ))
+    transformer = make_column_transformer( (OneHotEncoder(), columnNameList ), remainder='passthrough')
+    return transformer
+    
 
 def extendDataSetWithDates(df):
+    
     if ( not df is None ) and ( isinstance(df , pd.DataFrame )):
+        print ("--------- extend dataset with dates as integers -----")
         
         df['date_year'] = df.apply ( lambda row : extractISOYear( row['date']), axis=1)
         df['date_month'] = df.apply ( lambda row : extractMonth( row['date']), axis=1)
