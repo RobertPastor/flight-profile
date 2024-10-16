@@ -61,6 +61,8 @@ import csv
 import logging
 
 from trajectory.Guidance.WayPointFile import Airport
+from trajectory.Environment.Constants import Meter2Feet, Meter2NauticalMiles
+from trajectory.Guidance.Haversine import points2distanceMeters
 
 fieldNames = ["Airport ID", "Airport Name" , "City", "Country", "IATA/FAA", "ICAO Code",
                 "LatitudeDegrees", "LongitudeDegrees", "AltitudeFeet", "TimeZone", "DST"]
@@ -119,8 +121,7 @@ class AirportsDatabase(object):
                                 fieldElevationAboveSeaLevelMeters = float(row['AltitudeFeet'])*feetToMeters,
                                 ICAOcode = row['ICAO Code'] ,
                                 Country = row['Country'] )
-                yield airport        
-            
+                yield airport
             
     def getAirports(self):
         for row in self.airportsDb.values():
@@ -209,6 +210,17 @@ class AirportsDatabase(object):
         assert not( self.airportsDb is None)
         for country in self.countriesDb:
             yield country
+            
+    def computeDistanceNm(self, adepICAOcode, adesICAOcode):
+        if self.airportsDb is None: return 0.0
+        
+        adepLatitudeDegrees = self.getAirportLatitudeDegrees(adepICAOcode)
+        adepLongitudeDegrees = self.getAirportLongitudeDegrees(adepICAOcode)
+        
+        adesLatitudeDegrees = self.getAirportLatitudeDegrees(adesICAOcode)
+        adesLongitudeDegrees = self.getAirportLongitudeDegrees(adesICAOcode)
+        
+        return points2distanceMeters( [adepLatitudeDegrees,adepLongitudeDegrees], [adesLatitudeDegrees, adesLongitudeDegrees])*Meter2NauticalMiles
 
         
 if __name__ == '__main__':
