@@ -24,6 +24,7 @@ def convert_airlines_keys(unique_airlines_values , rowValue):
         order = order + 1
     return 0
 
+
 if __name__ == '__main__':
     
     df_challenge = readChallengeSet()

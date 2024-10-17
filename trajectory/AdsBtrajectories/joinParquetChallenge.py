@@ -4,10 +4,9 @@ Created on 14 oct. 2024
 @author: robert
 '''
 
-from trajectory.AdsBtrajectories.readOpenSkyParquet import readParquet
+from trajectory.AdsBtrajectories.extendOpenSkyParquet import readParquet
 from trajectory.AdsBtrajectories.readChallengeSet import readChallengeSet
 
-import pandas as pd
 
 ''' columns to be computed '''
 ''' year of the flight '''
@@ -24,19 +23,21 @@ if __name__ == '__main__':
     
     df_parquet = readParquet()
     print ( "number of parquet rows = {0}".format ( len(df_parquet.index) ) )
+    print ( list ( df_parquet ))
     
     df_challenge = readChallengeSet()
     print ( "number of challenge set rows = {0}".format ( len(df_challenge.index) ) )
+    print ( list ( df_challenge ))
     
     ''' join the datasets using the flight_id '''
-    df_join = pd.merge(df_challenge, df_parquet, how="inner", on=["flight_id", "flight_id"])
+    df_join = df_challenge.merge( df_parquet, how="left", on="flight_id" )
+    print ( list ( df_join ))
 
     print ( "number of joined dataset rows = {0}".format ( len(df_join.index) ) )
     
     unique_flight_ids = df_join['flight_id'].nunique()
     print("number of unique flight ids = {0}".format(unique_flight_ids))
     
-    print ( list(df_join) )
     
     #for headerName in list(df_join.columns.values):
     #    print ( headerName )

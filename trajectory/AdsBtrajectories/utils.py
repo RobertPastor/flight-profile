@@ -16,6 +16,21 @@ from sklearn.compose import make_column_transformer
 DateFormatWithSlashes = '%d/%m/%Y'
 DateFormatWithDashes = "%Y-%m-%d"
 
+def readParquet(fileName):
+    df = None
+    print("Read parquet file")
+    
+    #fileName = "2022-01-01.parquet"
+    directoryPath = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\AnsPerformanceChallenge"
+    directory = Path(directoryPath)
+    if directory.is_dir():
+        print ( "it is a directory - {0}".format(directoryPath))
+        filePath = os.path.join(directory, fileName)
+        print ( filePath )
+        df = pd.read_parquet ( filePath )
+    return df
+
+
 def readChallengeSet():
     df = None
     fileName = "challenge_set.csv"
@@ -26,7 +41,7 @@ def readChallengeSet():
         filePath = os.path.join(directory, fileName)
         print ( filePath )
         
-        df = pd.read_csv ( filePath , sep = ";" )
+        df = pd.read_csv ( filePath , sep = "," )
     return df
 
 
