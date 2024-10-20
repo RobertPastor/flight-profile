@@ -36,6 +36,9 @@ if __name__ == '__main__':
         df['ades_latitude_degrees'] = df.apply(lambda row: airportsDatabase.getAirportLatitudeDegrees(row['ades']), axis=1)
         df['ades_longitude_degrees'] = df.apply(lambda row: airportsDatabase.getAirportLongitudeDegrees(row['ades']), axis=1)
         
+        df['adep_ades_GC_Nm'] = df.apply(lambda row: airportsDatabase.computeDistanceNm( row['adep'] , row['ades']), axis=1)
+
+        
         print ("------- end adding adep ades informations ----------")
         
         for index, row in df.iterrows():

@@ -45,11 +45,11 @@ def readChallengeSet():
     return df
 
 
-def readSubmissionSet():
+def readSubmissionSet(fileName):
     df = None
-    print("Read submission set file")
+    print("Read submission set file-> {0}".format(fileName))
     
-    fileName = "submission_set.csv"
+    #fileName = "final_submission_set.csv"
     directoryPath = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\AnsPerformanceChallenge"
     directory = Path(directoryPath)
     if directory.is_dir():
@@ -138,7 +138,7 @@ def extendDataSetWithAirportData(df):
             df['ades_latitude_degrees'] = df.apply(lambda row: airportsDatabase.getAirportLatitudeDegrees(row['ades']), axis=1)
             df['ades_longitude_degrees'] = df.apply(lambda row: airportsDatabase.getAirportLongitudeDegrees(row['ades']), axis=1)
             
-            #df['adep_ades_Nm'] = df.apply(lambda row: airportsDatabase.computeDistanceNm( row['adep'] , row['ades']), axis=1)
+            df['adep_ades_GC_Nm'] = df.apply(lambda row: airportsDatabase.computeDistanceNm( row['adep'] , row['ades']), axis=1)
             
             print ("------- end adding adep ades informations ----------")
             columnsToDrop = ['ades', 'adep', 'name_adep', 'country_code_adep', 'name_ades' , 'country_code_ades']
