@@ -172,3 +172,6 @@ trajectory/AdsBtrajectories/AnsPerformanceChallenge/*
 trajectory/AdsBtrajectories/Airports/Airports.csv
 trajectory/AdsBtrajectories/OpenDataAirports/airports.csv
 trajectory/AdsBtrajectories/vertical_profile.csv
+trajectory/AdsBtrajectories/Results/mc.exe
+trajectory/AdsBtrajectories/Results/OpenSkyCredentials.json
+trajectory/AdsBtrajectories/Results/team_exuberant_hippo_V1_f8afb85a-8f3f-4270-b0bd-10f9ba83adf4.csv

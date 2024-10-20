@@ -33,8 +33,11 @@ if __name__ == '__main__':
     
     ''' extract flight ids related data to flight ids '''
     ''' ---------------- extract parquet data -----------'''
+    
+    fileName = 'extendedOpenSky.parquet'
     testMode = False
-    if (testMode == False):
+    extendedParquetIsExisting = True
+    if ( extendedParquetIsExisting == False ):
         
         df_parquets = extendUsingParquets(testMode=testMode)
         # Fill NaN values in all columns with their respective means
@@ -43,7 +46,26 @@ if __name__ == '__main__':
         print ( df_parquets.shape )
         print ( list ( df_parquets ))
         print ( df_parquets.head(100))
-        df_parquets.to_parquet('extendedOpenSky.parquet')
+        
+        directoryPath = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\Results"
+        directory = Path(directoryPath)
+        if directory.is_dir():
+            print ( "it is a directory - {0}".format(directoryPath))
+            filePath = os.path.join(directory, fileName)
+            df_parquets.to_parquet(filePath)
+        
+    else:
+        
+        directoryPath = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\Results"
+        directory = Path(directoryPath)
+        if directory.is_dir():
+            print ( "it is a directory - {0}".format(directoryPath))
+            filePath = os.path.join(directory, fileName)
+            print (filePath)
+            
+            df_parquets = pd.read_parquet ( filePath )
+            print ( df_parquets.shape )
+            print ( list ( df_parquets))
 
     
     print(''' ---------- read the challenge train dataset with True TOW values ''')
@@ -73,11 +95,13 @@ if __name__ == '__main__':
     print ( list ( df ))
     print ( "number of rows = {0}".format ( len(df.index) ) )
 
-    print ("---- add airports extension ---")
-    df = extendDataSetWithAirportData(df)
-    print ( df.shape )
-    print ( list ( df ) )
-    print ( "number of rows = {0}".format ( len(df.index) ) )
+    if ( testMode == False ):
+        
+        print ("---- add airports extension ---")
+        df = extendDataSetWithAirportData(df)
+        print ( df.shape )
+        print ( list ( df ) )
+        print ( "number of rows = {0}".format ( len(df.index) ) )
     
     if ( testMode == False):
 
@@ -87,13 +111,15 @@ if __name__ == '__main__':
         print('''--- fill Not a Number ---''')
         #df.fillna(df.mean(), inplace=True)
         columnListWithNan = ['maxAltitudeFeet', 'maxClimbRateFeetMinutes', 'maxDescentRateFeetMinutes', 'avgGroundSpeedKnots']
-        df[columnListWithNan].fillna(value=df.mean(), inplace=True)
+        for columnWithNan in columnListWithNan:
+            print ("fill Nan in column {0}".format(columnWithNan))
+            df[columnWithNan].fillna(value=0.0, inplace=True)
         
         print ( list ( df ))
         print ( df.shape )
         
     print(''' drop unused columns ''')
-    print(''' airline column must be dropped because string cannot be converted to float ''')
+    print(''' column containing a string must be dropped because string cannot be converted to float ''')
     #df = df.drop(columns=['flight_id', 'callsign', 'actual_offblock_time','arrival_time'])
     df = df.drop(columns=[ 'callsign', 'actual_offblock_time','arrival_time'])
     print ( list ( df ))
@@ -124,18 +150,18 @@ if __name__ == '__main__':
     print ( train_df.shape  )
     
     print ("---- get the test dataset  ---")
-    print(''' creating a dataframe with rest 20% of original dataframe ''')
+    print(''' --- creating a dataframe with rest 20% of original dataframe ''')
     test_df = tow_not_null_df.drop(train_df.index)
     print ( test_df.shape )
     
-    print ("--- drop tow row in X train -> tow is prediction ---")
+    print ("--- drop tow column in X train -> tow is the prediction ---")
     X_train_df = train_df.drop(columns=['tow'])
     print ( X_train_df.shape )
 
     print ("--- Y train ---")
     # Keep only 'tow'  column
     Y_train_df = train_df[train_df['tow'].notnull()]
-    print (''' keep only tow column in Y train ''')
+    print ('''--- keep only tow column in Y train ''')
     Y_train_df = Y_train_df[['tow']]
     print ( Y_train_df.shape )
     
@@ -150,7 +176,7 @@ if __name__ == '__main__':
     print ( X_test_df.shape )
 
     print ("--- build Y test to compare with ---")
-    print(''' keep only tow column ''')
+    print('''--- keep only the tow column in the Y test ''')
     Y_test_df = test_df[['tow']]
     print ( Y_test_df.shape )
 
@@ -162,22 +188,40 @@ if __name__ == '__main__':
     rmse = root_mean_squared_error( Y_test_df, Y_predict_df )
     print("The root mean squared error (MSE) on test set: {:.4f}".format(rmse))
 
-    mse = mean_squared_error ( Y_test_df , Y_predict_df )
-    print("The mean squared error (MSE) on test set: {:.4f}".format(mse))
+    #mse = mean_squared_error ( Y_test_df , Y_predict_df )
+    #print("The mean squared error (MSE) on test set: {:.4f}".format(mse))
 
     print ("--- apply prediction on tow null rows ---")
-    print(" select rows where tow column has null values ")
+    print("--- select rows where tow column has null values ")
     X_submission_df = final_df[final_df['tow'].isnull()]
     print ( X_submission_df.shape  )
     print ( list ( X_submission_df ) )
     
-    print ( ''' drop tow column in X Submission ''')
+    print ( '''--- drop tow column in X Submission ''')
     X_submission_df = X_submission_df.drop(columns=['tow'])
+    print ( X_submission_df.shape  )
+    print ( list ( X_submission_df ) )
+    print ( X_submission_df.head())
+    
     print ('--- compute prediction on submission dataset ---')
     Y_submission_df = reg.predict( X_submission_df )
     
     print ( Y_submission_df.shape )
-    print( Y_submission_df[0:5, :] )
+    
+    print ( "--- convert NumPy array to pandas DataFrame")
+    Y_submission_df = pd.DataFrame( data=Y_submission_df )
+    print ( Y_submission_df.shape )
+    
+    Y_submission_df.reset_index(drop=True, inplace=True)
+    
+    print ( list ( Y_submission_df ))
+    print ( Y_submission_df.head(10))
+    
+    print ("--- recover the whole submission dataset ---")
+    #Y_submission_df = pd.merge( X_submission_df, Y_submission_df, left_index=True, right_index=True)
+    #print ( Y_submission_df.shape )
+    #print ( Y_submission_df.head(10))
+    
     
     print ('--- save the results to CSV ---')
     teamId = "f8afb85a-8f3f-4270-b0bd-10f9ba83adf4"
@@ -189,5 +233,6 @@ if __name__ == '__main__':
     if directoryPath.is_dir():
         print ( "it is a directory - {0}".format(directoryPath))
         filePath = os.path.join(directoryPath, outputFileName)
-        np.savetxt(filePath , Y_submission_df , delimiter = ";")
+        
+        Y_submission_df.to_csv(filePath, sep=";")
     

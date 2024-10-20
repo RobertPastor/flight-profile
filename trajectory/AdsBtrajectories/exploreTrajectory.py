@@ -67,7 +67,14 @@ if __name__ == '__main__':
         df['maxAltitudeFeet'] = df.groupby ( ['flight_id'] ) ['altitude']. transform('max')
         print ( list ( df ))
         print ( df.head(10) )
-        df.to_csv("vertical_profile.csv")
+        
+        fileName = "vertical_profile.csv"
+        directoryPath = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\Results"
+        directory = Path(directoryPath)
+        if directory.is_dir():
+            print ( "it is a directory - {0}".format(directoryPath))
+            filePath = os.path.join(directory, fileName)
+            df.to_csv(filePath)
     
         print("--- written to vertical profile ---")
         

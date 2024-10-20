@@ -35,7 +35,8 @@ def extendedOneDayParquet(df):
     
     df_filtered = df.filter( items = ['flight_id'] ).drop_duplicates()
     print ("--- max Altitude feet ---")
-     
+    
+    print(''' compute high an low outliers ''')
     df['altitude_high']  = df.groupby('flight_id' , as_index=False )['altitude'] .transform(q_high)
     df['altitude_low']  = df.groupby('flight_id' , as_index=False )['altitude'] .transform(q_low)
     
@@ -83,6 +84,15 @@ def extendedOneDayParquet(df):
     print ( df_extended.shape )
     print ( list( df_extended ))
     
+    df['maxGroundSpeedKnots'] = df.groupby( ['flight_id'] , as_index=False ) ['groundspeed'].transform('max')
+    df_maxGroundSpeed = df.filter(items=['flight_id','maxGroundSpeedKnots']).drop_duplicates()
+    print ( df_maxGroundSpeed.head( 10 ))
+            
+    df_extended = df_extended.merge( df_maxGroundSpeed , how='left' , on='flight_id')
+    print ( df_extended.shape )
+    print ( list( df_extended ))
+    
+    print(''' --- filter not a number in final dataframe ''')
     df_extended.fillna(df_extended.mean(), inplace=True)
     print ( df_extended.head(10))
         
@@ -120,8 +130,16 @@ def extendUsingParquets(testMode=False):
 
 if __name__ == '__main__':
     
-    testMode = True
+    testMode = False
     df_final = extendUsingParquets(testMode)
+    
+    fileName = 'extendedOpenSky.parquet'
+    directoryPath = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\Results"
+    directory = Path(directoryPath)
+    if directory.is_dir():
+            print ( "it is a directory - {0}".format(directoryPath))
+            filePath = os.path.join(directory, fileName)
+            df_final.to_parquet(filePath)
                                         
     print("--- its all finished ---")
     print ( df_final.shape )
