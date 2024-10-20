@@ -63,6 +63,7 @@ import logging
 from trajectory.Guidance.WayPointFile import Airport
 from trajectory.Environment.Constants import Meter2Feet, Meter2NauticalMiles
 from trajectory.Guidance.Haversine import points2distanceMeters
+from sqlalchemy.sql._elements_constructors import true
 
 fieldNames = ["Airport ID", "Airport Name" , "City", "Country", "IATA/FAA", "ICAO Code",
                 "LatitudeDegrees", "LongitudeDegrees", "AltitudeFeet", "TimeZone", "DST"]
@@ -189,7 +190,14 @@ class AirportsDatabase(object):
             if key == ICAOcode:
                 return float(airportInternal["LongitudeDegrees"])
         return 0.0
-                    
+    
+    def isAirportICAOcodeInDB(self , ICAOcode = ""):
+        if self.airportsDb is None: return None
+        for key, airportInternal in self.airportsDb.items():
+            if key == ICAOcode:
+                return True
+        return False
+               
     def getAirportFromICAOCode(self, ICAOcode=""):
         if self.airportsDb is None: return None
         airport = None

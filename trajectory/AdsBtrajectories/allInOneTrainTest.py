@@ -11,7 +11,7 @@ from trajectory.AdsBtrajectories.utils import extendDataSetWithAirportData
 from trajectory.AdsBtrajectories.utils import extendDataSetWithDates
 
 from pathlib import Path
-
+from datetime import datetime
 
 from sklearn import ensemble
 from sklearn.metrics import mean_squared_error , root_mean_squared_error
@@ -199,6 +199,9 @@ if __name__ == '__main__':
     
     print ( '''--- drop tow column in X Submission ''')
     X_submission_df = X_submission_df.drop(columns=['tow'])
+    
+    X_submission_df.reset_index(drop=True, inplace=True)
+    
     print ( X_submission_df.shape  )
     print ( list ( X_submission_df ) )
     print ( X_submission_df.head())
@@ -228,11 +231,15 @@ if __name__ == '__main__':
     teamName = "team_exuberant_hippo"
     version = "V1"
     outputFileName = teamName + "_" + version + "_" + teamId + ".csv"
+    
+    outputFileName = "final_team_submission"
+    outputFileName = outputFileName + '_{0}.csv'.format(datetime.now().strftime("%d-%b-%Y-%Hh%Mm%S"))
+    
     outputResultsFolder = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\Results"
     directoryPath = Path(outputResultsFolder)
     if directoryPath.is_dir():
         print ( "it is a directory - {0}".format(directoryPath))
         filePath = os.path.join(directoryPath, outputFileName)
         
-        Y_submission_df.to_csv(filePath, sep=";")
+        Y_submission_df.to_csv(filePath, sep="," , index=False)
     

@@ -175,3 +175,6 @@ trajectory/AdsBtrajectories/vertical_profile.csv
 trajectory/AdsBtrajectories/Results/mc.exe
 trajectory/AdsBtrajectories/Results/OpenSkyCredentials.json
 trajectory/AdsBtrajectories/Results/team_exuberant_hippo_V1_f8afb85a-8f3f-4270-b0bd-10f9ba83adf4.csv
+trajectory/AdsBtrajectories/Results/*.csv
+
+trajectory/AdsBtrajectories/Aircrafts/FAA-Aircraft-Char-DB-AC-150-5300-13B-App-2023-09-07.xlsx
