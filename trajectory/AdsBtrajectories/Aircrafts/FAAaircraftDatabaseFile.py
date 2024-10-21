@@ -10,8 +10,6 @@ import pandas as pd
 from pathlib import Path
 
 
-
-
 class FaaAircraftDatabase(object):
     
     inputFileName = "FAA-Aircraft-Char-DB-AC-150-5300-13B-App-2023-09-07.xlsx"
@@ -71,7 +69,39 @@ class FaaAircraftDatabase(object):
                 return mass
         return 0.0 
                
+    def getPhysicalClassEngine(self, ICAOcode = ""):
+        for aircraft_type in self.df_aircrafts['ICAO_Code']:
+            if ( str(aircraft_type) == ICAOcode ):
+                
+                engineClass  = self.df_aircrafts.loc[self.df_aircrafts['ICAO_Code'] == ICAOcode]
+                #print ( df_MALW_lb['MALW_lb'] )
+                physicalEngineClass = engineClass.iloc[0]['Physical_Class_Engine']
+                #print ( mass )
+                return physicalEngineClass
+        return "Jet"
 
-
+    def getNumberOfEngines(self, ICAOcode = ""):
+        for aircraft_type in self.df_aircrafts['ICAO_Code']:
+            if ( str(aircraft_type) == ICAOcode ):
+                
+                numberOfEngines  = self.df_aircrafts.loc[self.df_aircrafts['ICAO_Code'] == ICAOcode]
+                #print ( df_MALW_lb['MALW_lb'] )
+                nbEngines = numberOfEngines.iloc[0]['Num_Engines']
+                #print ( mass )
+                return nbEngines
+        return 2.0
+    
+    def getApproachSpeedKnots(self, ICAOcode = ""):
+        for aircraft_type in self.df_aircrafts['ICAO_Code']:
+            if ( str(aircraft_type) == ICAOcode ):
+                
+                approachSpeedKnots  = self.df_aircrafts.loc[self.df_aircrafts['ICAO_Code'] == ICAOcode]
+                #print ( df_MALW_lb['MALW_lb'] )
+                approachSpeedKnots = approachSpeedKnots.iloc[0]['Approach_Speed_knot']
+                #print ( mass )
+                return approachSpeedKnots
+        return 0.0
+ 
+ 
  
         

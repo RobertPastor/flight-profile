@@ -121,7 +121,6 @@ if __name__ == '__main__':
         print ( list ( df ))
         print ( df.shape )
         
-        
     if ( testMode == False):
         
         df = extendDataSetWithAircraftData(df)
@@ -149,6 +148,7 @@ if __name__ == '__main__':
     oheAirline , df_encoded_airline , final_df = encodeCategoryColumn( df , 'airline' )
     oheAircraftType , df_encoded_aircraft_type, final_df = encodeCategoryColumn( final_df , 'aircraft_type')
     oheWTC , df_encoded_wtc , final_df = encodeCategoryColumn(final_df  , 'wtc')
+    #oheClassEngine , df_encoded_class_engine, final_df = encodeCategoryColumn( final_df , 'physicalClassEngine')
     
     print ( list ( final_df ))
     print(final_df.head(10))
@@ -179,9 +179,11 @@ if __name__ == '__main__':
     print ( Y_train_df.shape )
     
     print ( ''' --- call Gradient Boosting Regressor --- ''')
-    reg = ensemble.GradientBoostingRegressor()
-    #reg = ensemble.HistGradientBoostingRegressor()
-    estimator = reg.fit(X_train_df, Y_train_df)
+    #regOne = ensemble.GradientBoostingRegressor()
+    regTwo = ensemble.HistGradientBoostingRegressor()
+    
+    #regOne.fit(X_train_df, Y_train_df)
+    regTwo.fit(X_train_df, Y_train_df)
     #print ( estimator.score(X_train_df, Y_train_df) )
     
     print ("---- build X_test -> drop tow column ---")
@@ -194,7 +196,8 @@ if __name__ == '__main__':
     print ( Y_test_df.shape )
 
     print ("--- compute Y predictions from X test --- ")
-    Y_predict_df = reg.predict(X_test_df)
+    #Y_predict_df = regOne.predict(X_test_df)
+    Y_predict_df = regTwo.predict(X_test_df)
     print ( Y_predict_df.shape )
     
     print("--- compute RMSE ---")
@@ -220,7 +223,8 @@ if __name__ == '__main__':
     print ( X_submission_df.head())
     
     print ('--- compute prediction on submission dataset ---')
-    Y_submission_df = reg.predict( X_submission_df )
+    #Y_submission_df = regOne.predict( X_submission_df )
+    Y_submission_df = regTwo.predict( X_submission_df )
     
     print ( Y_submission_df.shape )
     

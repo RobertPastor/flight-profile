@@ -26,6 +26,8 @@ if __name__ == '__main__':
     
     inputFileName = "final_team_submission_21-Oct-2024-11h28m52.csv"
     inputFileName = "final_team_submission_21-Oct-2024-17h00m15.csv"
+    inputFileName = "final_team_submission_21-Oct-2024-18h19m57.csv"
+    inputFileName = "final_team_submission_21-Oct-2024-22h33m22.csv"
 
     outputResultsFolder = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\Results"
     directoryPath = Path(outputResultsFolder)
@@ -58,7 +60,7 @@ if __name__ == '__main__':
     
     teamId = "f8afb85a-8f3f-4270-b0bd-10f9ba83adf4"
     teamName = "team_exuberant_hippo"
-    version = "v4"
+    version = "v6"
     outputFileName = teamName + "_" + version + "_" + teamId + ".csv"
     
     outputResultsFolder = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\Results"
@@ -66,7 +68,7 @@ if __name__ == '__main__':
     if directoryPath.is_dir():
         print ( "it is a directory - {0}".format(directoryPath))
         filePath = os.path.join(directoryPath, outputFileName)
-        
+        print ( filePath )
         final_submission_with_TOW_df.to_csv(filePath, sep="," , header=True, index=False)
     
     

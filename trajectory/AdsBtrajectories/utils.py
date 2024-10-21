@@ -127,10 +127,25 @@ def computePotentialEnergy( aircraft_mass_lb , max_altitude_feet , adep_elevatio
     max_altitude_meters = max_altitude_feet * feet2Meters
     return aircraft_mass_kilograms * gravity_meter_square_seconds * ( max_altitude_meters - adep_elevation_meters)
 
+
+def computePotentialPower( aircraft_mass_lb , max_altitude_feet , adep_elevation_meters , flight_duration_minutes ):
+    aircraft_mass_kilograms = lbToKilograms * aircraft_mass_lb
+    max_altitude_meters = max_altitude_feet * feet2Meters
+    potential_energy = aircraft_mass_kilograms * gravity_meter_square_seconds * ( max_altitude_meters - adep_elevation_meters)
+    return ( potential_energy / ( flight_duration_minutes * 60.0 ))
+
+
 def computeKineticEnergy( aircraft_mass_lb , average_ground_speed_knots ):
     aircraft_mass_kilograms = lbToKilograms * aircraft_mass_lb
     average_ground_speed_meters_per_second = average_ground_speed_knots * Knots2MetersSeconds
     return 0.5 * aircraft_mass_kilograms * average_ground_speed_meters_per_second * average_ground_speed_meters_per_second
+
+def computeKineticPower( aircraft_mass_lb , average_ground_speed_knots  ,flight_duration_minutes ):
+    aircraft_mass_kilograms = lbToKilograms * aircraft_mass_lb
+    average_ground_speed_meters_per_second = average_ground_speed_knots * Knots2MetersSeconds
+    kinetic_energy = 0.5 * aircraft_mass_kilograms * average_ground_speed_meters_per_second * average_ground_speed_meters_per_second
+    return ( kinetic_energy / ( flight_duration_minutes * 60.0 ) )
+    
 
 def extendDataSetWithAircraftData(df):
     if ( not df is None ) and ( isinstance(df , pd.DataFrame )):
@@ -147,8 +162,16 @@ def extendDataSetWithAircraftData(df):
             df['aircraft_mlaw_lb'] = df.apply(lambda row: faaAircraftDatabase.getMALW_lb(row['aircraft_type']), axis=1)
             
             df['potential_energy'] = df.apply( lambda row: computePotentialEnergy( faaAircraftDatabase.getMTOW_lb(row['aircraft_type']) , row['maxAltitudeFeet'] , row['adep_elevation_meters'] ) , axis=1)
-            
             df['kinetic_energy'] = df.apply ( lambda row : computeKineticEnergy ( faaAircraftDatabase.getMTOW_lb(row['aircraft_type']) , row['avgGroundSpeedKnots'] ) , axis=1)
+            
+            df['potential_power'] = df.apply ( lambda row : computePotentialPower( faaAircraftDatabase.getMTOW_lb(row['aircraft_type']) , row['maxAltitudeFeet'] , row['adep_elevation_meters'] , row['flight_duration']) , axis=1 )
+            df['kinetic_power'] = df.apply ( lambda row : computeKineticPower( faaAircraftDatabase.getMTOW_lb(row['aircraft_type']) , row['avgGroundSpeedKnots'] , row['flight_duration']) , axis=1 )
+            
+            #df['physicalClassEngine'] = df.apply( lambda row : faaAircraftDatabase.getPhysicalClassEngine(row['aircraft_type']) , axis=1)
+            
+            df['NumEngines'] = df.apply( lambda row : faaAircraftDatabase.getNumberOfEngines(row['aircraft_type']) , axis=1)
+            df['approachSpeedKnots'] = df.apply( lambda row : faaAircraftDatabase.getApproachSpeedKnots(row['aircraft_type']) , axis=1)
+
             print ( list ( df ) )
     return df
                 
