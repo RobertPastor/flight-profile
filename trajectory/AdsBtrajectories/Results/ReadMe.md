@@ -20,3 +20,26 @@ PS C:\Users\rober\git\flight-profile\trajectory\AdsBtrajectories\Results> mc.exe
  
  PS C:\Users\rober\git\flight-profile\trajectory\AdsBtrajectories\Results>
  -02.parquet
+ 
+ ##
+ results v3
+ 
+  {
+        "name": "team_exuberant_hippo",
+        "files": [
+            {
+                "rmse": 4454.58,
+                "processed": true,
+                "file_version": "v4",
+                "num_lines": 158149,
+                "submission_date": "2024-10-21T15:15:53.54Z"
+            },
+            {
+                "rmse": 4466.52,
+                "processed": true,
+                "file_version": "v3",
+                "num_lines": 158149,
+                "submission_date": "2024-10-21T12:15:46.185Z"
+            }
+        ]
+    },

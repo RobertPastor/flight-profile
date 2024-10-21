@@ -12,9 +12,14 @@ from datetime import datetime
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import make_column_transformer
 
+from trajectory.AdsBtrajectories.Aircrafts.FAAaircraftDatabaseFile import FaaAircraftDatabase
+from trajectory.Guidance.ConstraintsFile import feet2Meters 
+from trajectory.Environment.Constants import  gravity_meter_square_seconds , Knots2MetersSeconds
 
 DateFormatWithSlashes = '%d/%m/%Y'
 DateFormatWithDashes = "%Y-%m-%d"
+
+lbToKilograms = 0.45359237
 
 def readParquet(fileName):
     df = None
@@ -116,6 +121,37 @@ def extendDataSetWithDates(df):
         df = df.drop(columns=['date'])
 
     return df
+
+def computePotentialEnergy( aircraft_mass_lb , max_altitude_feet , adep_elevation_meters ):
+    aircraft_mass_kilograms = lbToKilograms * aircraft_mass_lb
+    max_altitude_meters = max_altitude_feet * feet2Meters
+    return aircraft_mass_kilograms * gravity_meter_square_seconds * ( max_altitude_meters - adep_elevation_meters)
+
+def computeKineticEnergy( aircraft_mass_lb , average_ground_speed_knots ):
+    aircraft_mass_kilograms = lbToKilograms * aircraft_mass_lb
+    average_ground_speed_meters_per_second = average_ground_speed_knots * Knots2MetersSeconds
+    return 0.5 * aircraft_mass_kilograms * average_ground_speed_meters_per_second * average_ground_speed_meters_per_second
+
+def extendDataSetWithAircraftData(df):
+    if ( not df is None ) and ( isinstance(df , pd.DataFrame )):
+        
+        print ( "Read aircrafts database ")
+            
+        faaAircraftDatabase = FaaAircraftDatabase()
+        if ( faaAircraftDatabase.read()):
+                
+            print ("--- aircraft database read correcty")
+            print ("--- start adding aircraft informations ----")
+                
+            df['aircraft_mtow_lb'] = df.apply(lambda row: faaAircraftDatabase.getMTOW_lb(row['aircraft_type']), axis=1)
+            df['aircraft_mlaw_lb'] = df.apply(lambda row: faaAircraftDatabase.getMALW_lb(row['aircraft_type']), axis=1)
+            
+            df['potential_energy'] = df.apply( lambda row: computePotentialEnergy( faaAircraftDatabase.getMTOW_lb(row['aircraft_type']) , row['maxAltitudeFeet'] , row['adep_elevation_meters'] ) , axis=1)
+            
+            df['kinetic_energy'] = df.apply ( lambda row : computeKineticEnergy ( faaAircraftDatabase.getMTOW_lb(row['aircraft_type']) , row['avgGroundSpeedKnots'] ) , axis=1)
+            print ( list ( df ) )
+    return df
+                
 
 def extendDataSetWithAirportData(df):
     if ( not df is None ) and ( isinstance(df , pd.DataFrame )):

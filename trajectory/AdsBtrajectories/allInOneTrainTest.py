@@ -10,11 +10,13 @@ from trajectory.AdsBtrajectories.utils import readSubmissionSet
 from trajectory.AdsBtrajectories.utils import extendDataSetWithAirportData
 from trajectory.AdsBtrajectories.utils import extendDataSetWithDates
 
+from trajectory.AdsBtrajectories.utils import extendDataSetWithAircraftData
+
 from pathlib import Path
 from datetime import datetime
 
 from sklearn import ensemble
-from sklearn.metrics import mean_squared_error , root_mean_squared_error
+from sklearn.metrics import  root_mean_squared_error
 from trajectory.AdsBtrajectories.utils import encodeCategoryColumn
 import pandas as pd
 import numpy as np
@@ -102,6 +104,7 @@ if __name__ == '__main__':
         print ( df.shape )
         print ( list ( df ) )
         print ( "number of rows = {0}".format ( len(df.index) ) )
+        
     
     if ( testMode == False):
 
@@ -117,6 +120,16 @@ if __name__ == '__main__':
         
         print ( list ( df ))
         print ( df.shape )
+        
+        
+    if ( testMode == False):
+        
+        df = extendDataSetWithAircraftData(df)
+        
+        print ( df.shape )
+        print ( list ( df ) )
+        print ( "number of rows = {0}".format ( len(df.index) ) )
+
         
     print(''' drop unused columns ''')
     print(''' column containing a string must be dropped because string cannot be converted to float ''')
@@ -225,7 +238,6 @@ if __name__ == '__main__':
     #print ( Y_submission_df.shape )
     #print ( Y_submission_df.head(10))
     
-    
     print ('--- save the results to CSV ---')
     teamId = "f8afb85a-8f3f-4270-b0bd-10f9ba83adf4"
     teamName = "team_exuberant_hippo"
@@ -240,6 +252,7 @@ if __name__ == '__main__':
     if directoryPath.is_dir():
         print ( "it is a directory - {0}".format(directoryPath))
         filePath = os.path.join(directoryPath, outputFileName)
+        print(filePath)
         
         Y_submission_df.to_csv(filePath, sep="," , index=False)
     

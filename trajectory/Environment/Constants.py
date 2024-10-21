@@ -7,6 +7,8 @@ Define constants common to all modules
 
 '''
 
+gravity_meter_square_seconds = 9.80665 
+
 Meter2Feet = 3.2808399 # one meter equals 3.28 feet
 #Meter2Feet = 3.2808399 # one meter approx == 3 feet (3 feet 3⅜ inches)
 
