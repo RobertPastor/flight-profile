@@ -41,6 +41,7 @@ if __name__ == '__main__':
         print ( list ( df ))
         
         flight_id = "258064118"
+        ''' keep data for one flight id '''
         df = df[df['flight_id'] == int ( flight_id ) ]
         print ( df['flight_id'].dtype )
         print ( list ( df ))
@@ -68,6 +69,7 @@ if __name__ == '__main__':
         print ( list ( df ))
         print ( df.head(10) )
         
+        print ("--- write the profile ---")
         fileName = "vertical_profile.csv"
         directoryPath = "C:\\Users\\rober\\git\\flight-profile\\trajectory\\AdsBtrajectories\\Results"
         directory = Path(directoryPath)

@@ -36,7 +36,7 @@ def extendedOneDayParquet(df):
     df_filtered = df.filter( items = ['flight_id'] ).drop_duplicates()
     print ("--- max Altitude feet ---")
     
-    print(''' compute high an low outliers ''')
+    print(''' compute high and low outliers ''')
     df['altitude_high']  = df.groupby('flight_id' , as_index=False )['altitude'] .transform(q_high)
     df['altitude_low']  = df.groupby('flight_id' , as_index=False )['altitude'] .transform(q_low)
     
@@ -48,7 +48,7 @@ def extendedOneDayParquet(df):
     df_maxAltitude = df.filter( items = ['flight_id', 'maxAltitudeFeet'] ).drop_duplicates()
     print ( df_maxAltitude.shape )
     print ( df_maxAltitude.head( 10 ))
-            
+    
     df_extended = df_filtered.merge ( df_maxAltitude  , how="left" , on="flight_id")
     print ( df_extended.shape )
     print ( list( df_extended ))
@@ -65,7 +65,23 @@ def extendedOneDayParquet(df):
     print ( df_extended.shape )
     print ( list( df_extended ))
     print ( df_extended.head(10))
+    
+    print ("--- avg climb rate feet minutes---")
+    
+    df_avgClimbRate = df [ ( df['vertical_rate'] >= 0.0 ) ]
+    print ( list ( df_avgClimbRate))
+    df_avgClimbRate['avgClimbRateFeetMinutes'] = df_avgClimbRate.groupby ( ['flight_id'] , as_index=False ) ['vertical_rate'].transform('mean')
+    df_avgClimbRate = df_avgClimbRate.filter( items = ['flight_id','avgClimbRateFeetMinutes'] ).drop_duplicates()
+    print ( df_avgClimbRate.shape )
+    print ( df_avgClimbRate.head( 10 ) )
+    print ( df_avgClimbRate['flight_id'].nunique())
+    
+    df_extended = df_extended.merge( df_avgClimbRate , how='left' , on='flight_id')
+    print ( df_extended.shape )
+    print ( list( df_extended ))
+    print ( df_extended.head(10))
             
+    print ("--- max descent rate feet minutes ---")
     df['maxDescentRateFeetMinutes'] = df.groupby( ['flight_id'] , as_index=False ) ['vertical_rate'].transform('min')
     df_maxDescentRate = df.filter( items = ['flight_id','maxDescentRateFeetMinutes'] ).drop_duplicates()
     print ( df_maxDescentRate.shape )
@@ -75,7 +91,23 @@ def extendedOneDayParquet(df):
     print ( df_extended.shape )
     print ( list( df_extended ))
     print ( df_extended.head(10))
-            
+    
+    
+    print ("--- avg descent rate feet minutes---")
+    df_avgDescentRate = df [ ( df['vertical_rate'] <= 0.0 ) ]
+    print ( list ( df_avgDescentRate))
+    df_avgDescentRate['avgDescentRateFeetMinutes'] = df_avgDescentRate.groupby ( ['flight_id'] , as_index=False ) ['vertical_rate'].transform('mean')
+    df_avgDescentRate = df_avgDescentRate.filter( items = ['flight_id','avgDescentRateFeetMinutes'] ).drop_duplicates()
+    print ( df_avgDescentRate.shape )
+    print ( df_avgDescentRate.head( 10 ) )
+    print ( df_avgDescentRate['flight_id'].nunique())
+    
+
+    df_extended = df_extended.merge( df_avgDescentRate , how='left' , on='flight_id')
+    print ( df_extended.shape )
+    print ( list( df_extended ))
+    print ( df_extended.head(10))
+
     df['avgGroundSpeedKnots'] = df.groupby( ['flight_id'] , as_index=False ) ['groundspeed'].transform('mean')
     df_avgGroundSpeed = df.filter(items=['flight_id','avgGroundSpeedKnots']).drop_duplicates()
     print ( df_avgGroundSpeed.head( 10 ))
@@ -139,6 +171,7 @@ if __name__ == '__main__':
     if directory.is_dir():
             print ( "it is a directory - {0}".format(directoryPath))
             filePath = os.path.join(directory, fileName)
+            ''' write the parquet file to Results '''
             df_final.to_parquet(filePath)
                                         
     print("--- its all finished ---")

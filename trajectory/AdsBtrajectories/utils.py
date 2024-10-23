@@ -167,7 +167,7 @@ def extendDataSetWithAircraftData(df):
             df['potential_power'] = df.apply ( lambda row : computePotentialPower( faaAircraftDatabase.getMTOW_lb(row['aircraft_type']) , row['maxAltitudeFeet'] , row['adep_elevation_meters'] , row['flight_duration']) , axis=1 )
             df['kinetic_power'] = df.apply ( lambda row : computeKineticPower( faaAircraftDatabase.getMTOW_lb(row['aircraft_type']) , row['avgGroundSpeedKnots'] , row['flight_duration']) , axis=1 )
             
-            #df['physicalClassEngine'] = df.apply( lambda row : faaAircraftDatabase.getPhysicalClassEngine(row['aircraft_type']) , axis=1)
+            df['physicalClassEngine'] = df.apply( lambda row : faaAircraftDatabase.getPhysicalClassEngine(row['aircraft_type']) , axis=1)
             
             df['NumEngines'] = df.apply( lambda row : faaAircraftDatabase.getNumberOfEngines(row['aircraft_type']) , axis=1)
             df['approachSpeedKnots'] = df.apply( lambda row : faaAircraftDatabase.getApproachSpeedKnots(row['aircraft_type']) , axis=1)
@@ -200,7 +200,10 @@ def extendDataSetWithAirportData(df):
             df['adep_ades_GC_Nm'] = df.apply(lambda row: airportsDatabase.computeDistanceNm( row['adep'] , row['ades']), axis=1)
             
             print ("------- end adding adep ades informations ----------")
-            columnsToDrop = ['ades', 'adep', 'name_adep', 'country_code_adep', 'name_ades' , 'country_code_ades']
+            #columnsToDrop = ['ades', 'adep', 'name_adep', 'country_code_adep', 'name_ades' , 'country_code_ades']
+            ''' 23 October 2024 - encode adep an ades hence do not drop them here  '''
+            ''' 23 October 2024 - encode country codes hence do not drop them here '''
+            columnsToDrop = [ 'name_adep', 'name_ades' ]
             df = df.drop(columns=columnsToDrop)
             
             print ( list ( df ) )

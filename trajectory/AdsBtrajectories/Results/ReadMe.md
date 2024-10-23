@@ -27,3 +27,15 @@ team_exuberant_hippo_v6_f8afb85a-8f3f-4270-b0bd-10f9ba83adf4.csv
  
  PS C:\Users\rober\git\flight-profile\trajectory\AdsBtrajectories\Results>
  
+ 
+ ## own results for each version
+ v6 -> 3,634.46
+    -> with extreme boost -> The root mean squared error (MSE) on test set: 3365.5117
+    -> with extreme boost and n_estimators=5000 -> The root mean squared error (MSE) on test set: 3152.6824
+    -> modelXgb = XGBRegressor(n_estimators=15000,max_depth=13,eta=0.1,subsample=0.9)     --> The root mean squared error (MSE) on test set: 3032.6191
+    -> added average climb and descent rate -> The root mean squared error (MSE) on test set: 2968.7519
+ v7 on the rankings page -> 3,036.23
+    -> encode the adep and ades -> The root mean squared error (MSE) on test set: 2952.5519
+    -> encode ades and adep country -> The root mean squared error (MSE) on test set: 2898.6048
+    
+ 

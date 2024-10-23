@@ -20,6 +20,8 @@ from sklearn.metrics import  root_mean_squared_error
 from trajectory.AdsBtrajectories.utils import encodeCategoryColumn
 import pandas as pd
 import numpy as np
+import xgboost as xgb
+from xgboost import XGBRegressor
 from trajectory.AdsBtrajectories.extendOpenSkyParquet import extendUsingParquets
 
 def convert_airlines_keys(unique_airlines_values , rowValue):
@@ -113,7 +115,7 @@ if __name__ == '__main__':
         
         print('''--- fill Not a Number ---''')
         #df.fillna(df.mean(), inplace=True)
-        columnListWithNan = ['maxAltitudeFeet', 'maxClimbRateFeetMinutes', 'maxDescentRateFeetMinutes', 'avgGroundSpeedKnots']
+        columnListWithNan = ['maxAltitudeFeet','maxClimbRateFeetMinutes','avgClimbRateFeetMinutes','maxDescentRateFeetMinutes','avgDescentRateFeetMinutes','avgGroundSpeedKnots','maxGroundSpeedKnots']
         for columnWithNan in columnListWithNan:
             print ("fill Nan in column {0}".format(columnWithNan))
             df[columnWithNan].fillna(value=0.0, inplace=True)
@@ -143,12 +145,18 @@ if __name__ == '__main__':
         
     df['airline'] = df['airline'].apply( lambda x : convert_airlines_keys(unique_airlines_keys, x) )
         
-    print(''' encoding airline, aircraft type and wtc  ''')
+    print(''' encoding airline, aircraft type and wtc , adep and ades and their country codes ''')
     
     oheAirline , df_encoded_airline , final_df = encodeCategoryColumn( df , 'airline' )
     oheAircraftType , df_encoded_aircraft_type, final_df = encodeCategoryColumn( final_df , 'aircraft_type')
     oheWTC , df_encoded_wtc , final_df = encodeCategoryColumn(final_df  , 'wtc')
-    #oheClassEngine , df_encoded_class_engine, final_df = encodeCategoryColumn( final_df , 'physicalClassEngine')
+    oheClassEngine , df_encoded_class_engine, final_df = encodeCategoryColumn( final_df , 'physicalClassEngine')
+    ''' 23 October 2024 encode adep and ades '''
+    oheAdep , df_encoded_adep , final_df = encodeCategoryColumn ( final_df , 'adep')
+    oheAdes , df_encoded_ades , final_df = encodeCategoryColumn ( final_df , 'ades')
+    ''' 23 October 2024 - Encode adep country code and ades country code '''
+    oheAdepCountryCode , df_encoded_adep_country , final_df = encodeCategoryColumn ( final_df , 'country_code_adep')
+    oheAdesCountryCode , df_encoded_ades_country , final_df = encodeCategoryColumn ( final_df , 'country_code_ades')
     
     print ( list ( final_df ))
     print(final_df.head(10))
@@ -180,10 +188,12 @@ if __name__ == '__main__':
     
     print ( ''' --- call Gradient Boosting Regressor --- ''')
     #regOne = ensemble.GradientBoostingRegressor()
-    regTwo = ensemble.HistGradientBoostingRegressor()
+    #regTwo = ensemble.HistGradientBoostingRegressor()
+    modelXgb = XGBRegressor(n_estimators=15000,max_depth=13,eta=0.1,subsample=0.9)
     
     #regOne.fit(X_train_df, Y_train_df)
-    regTwo.fit(X_train_df, Y_train_df)
+    #regTwo.fit(X_train_df, Y_train_df)
+    modelXgb.fit( X_train_df, Y_train_df )
     #print ( estimator.score(X_train_df, Y_train_df) )
     
     print ("---- build X_test -> drop tow column ---")
@@ -197,7 +207,8 @@ if __name__ == '__main__':
 
     print ("--- compute Y predictions from X test --- ")
     #Y_predict_df = regOne.predict(X_test_df)
-    Y_predict_df = regTwo.predict(X_test_df)
+    #Y_predict_df = regTwo.predict(X_test_df)
+    Y_predict_df = modelXgb.predict(X_test_df)
     print ( Y_predict_df.shape )
     
     print("--- compute RMSE ---")
@@ -215,7 +226,6 @@ if __name__ == '__main__':
     
     print ( '''--- drop tow column in X Submission ''')
     X_submission_df = X_submission_df.drop(columns=['tow'])
-    
     X_submission_df.reset_index(drop=True, inplace=True)
     
     print ( X_submission_df.shape  )
@@ -224,7 +234,8 @@ if __name__ == '__main__':
     
     print ('--- compute prediction on submission dataset ---')
     #Y_submission_df = regOne.predict( X_submission_df )
-    Y_submission_df = regTwo.predict( X_submission_df )
+    #Y_submission_df = regTwo.predict( X_submission_df )
+    Y_submission_df = modelXgb.predict( X_submission_df )
     
     print ( Y_submission_df.shape )
     
@@ -243,10 +254,10 @@ if __name__ == '__main__':
     #print ( Y_submission_df.head(10))
     
     print ('--- save the results to CSV ---')
-    teamId = "f8afb85a-8f3f-4270-b0bd-10f9ba83adf4"
-    teamName = "team_exuberant_hippo"
-    version = "V1"
-    outputFileName = teamName + "_" + version + "_" + teamId + ".csv"
+    #teamId = "f8afb85a-8f3f-4270-b0bd-10f9ba83adf4"
+    #teamName = "team_exuberant_hippo"
+    #version = "V1"
+    #outputFileName = teamName + "_" + version + "_" + teamId + ".csv"
     
     outputFileName = "final_team_submission"
     outputFileName = outputFileName + '_{0}.csv'.format(datetime.now().strftime("%d-%b-%Y-%Hh%Mm%S"))
