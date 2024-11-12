@@ -25,3 +25,9 @@ Available subcommands:
     AirlineFleetDatabaseLoad
     AirlineRoutesDatabaseLoad
     
+# after 
+$ python manage.py AirlineRoutesWayPointsDatabaseLoad
+--> check name of the waypoints for the new route
+
+# run WayPointsXlsxFileCreate
+§ python manage.py WayPointsXlsxFileCreate

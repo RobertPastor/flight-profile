@@ -52,9 +52,12 @@ class AirlineRoutesWayPointsDatabaseXlsx(object):
                     
                     airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode = route["Adep"] , ArrivalAirportICAOCode = route["Ades"]).first()
                     if ( airlineRoute ):
+                        
+                        ''' delete old rows for this foreign key '''
+                        AirlineRouteWayPoints.objects.filter(Route = airlineRoute).delete()
                     
                         oneAirlineRoute = AirlineOneRouteReaderXlsx()
-                        df_route = oneAirlineRoute.read(route["Adep"] , route["Ades"] )
+                        df_route = oneAirlineRoute.read( route["Adep"] , route["Ades"] )
                         
                         index = 1
                         for index, row in df_route.iterrows():
@@ -69,6 +72,7 @@ class AirlineRoutesWayPointsDatabaseXlsx(object):
                 
                     else:
                         print ("Airline Route not found - Adep = {0} - Ades = {1}".format(route["Adep"], route["Ades"]))
-                
             else:
                 print ("Error while reading the Airline Routes Database")
+        else:
+            print ("Error while reading Airline Routes Database")

@@ -12,9 +12,6 @@ from trajectory.views.utils import convertDegreeMinuteSecondToDecimal
 
 fieldNames = ['WayPoint', 'Country' , 'Type', 'Latitude', 'Longitude' , 'Name']
 
-
-
-
 class WayPointsDatabaseXlsx(object):
     WayPointsDict = {}
     ColumnNames = []

@@ -90,11 +90,9 @@ def getRouteWayPoints(request, Adep, Ades):
             else:
                 response_data = { "errors" : "runway not found = AdepRwy= {0} - AdesRwy= {1}".format(adepRunWayStr,adesRunWayStr) }
                 return JsonResponse(response_data)
-             
         else:
             response_data = { "errors" : "route not found = Adep= {0} - Ades= {1}".format(Adep,Ades) }
             return JsonResponse(response_data)
-            
     else:
         #raise ValueError("Expecting a GET - received something else")
         response_data = { "errors" : "Expecting a GET - received something else = {0}".format(request.method)}

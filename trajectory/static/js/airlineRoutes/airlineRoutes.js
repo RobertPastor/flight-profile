@@ -152,22 +152,30 @@ class AirlineRoutes {
 											
 						//alert("Data: " + data + "\nStatus: " + status);
 						let dataJson = eval(data);		
-						let airlineRoutesWaypointsArray = dataJson["airlineRouteWayPoints"];
-						let layerName =  LayerNamePrefix + Adep + "-" + Ades;
-						SingletonAirlineRoutes.getInstance().loadRouteWayPoints( airlineRoutesWaypointsArray , layerName );
-								
-						// 3rd April 2023 - add best runways
-						if ( dataJson.hasOwnProperty("bestAdepRunway")) {
+						if ( dataJson.hasOwnProperty("errors") ) {
 							
-							let AdepRunWay = dataJson["bestAdepRunway"];
-							// true means Adep and false means Ades
-							SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , true, AdepRunWay);
-						}
-						if ( dataJson.hasOwnProperty("bestAdesRunway")) {
+							showMessage("Error - Airline Routes", data)
+							
+						} else {
+							
 						
-							let AdesRunWay = dataJson["bestAdesRunway"];
-							// true means Adep and false means Ades
-							SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , false, AdesRunWay);
+							let airlineRoutesWaypointsArray = dataJson["airlineRouteWayPoints"];
+							let layerName =  LayerNamePrefix + Adep + "-" + Ades;
+							SingletonAirlineRoutes.getInstance().loadRouteWayPoints( airlineRoutesWaypointsArray , layerName );
+									
+							// 3rd April 2023 - add best runways
+							if ( dataJson.hasOwnProperty("bestAdepRunway")) {
+								
+								let AdepRunWay = dataJson["bestAdepRunway"];
+								// true means Adep and false means Ades
+								SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , true, AdepRunWay);
+							}
+							if ( dataJson.hasOwnProperty("bestAdesRunway")) {
+							
+								let AdesRunWay = dataJson["bestAdesRunway"];
+								// true means Adep and false means Ades
+								SingletonAirlineRoutes.getInstance().loadBestRunway( Adep , Ades , false, AdesRunWay);
+							}
 						}
 				},
 				error: function(data, status) {
@@ -408,6 +416,11 @@ class AirlineRoutes {
 								
 								let airlineRoutesArray = dataJson["airlineRoutes"];
 								SingletonAirlineRoutes.getInstance().addAirlineRoutes(  airlineRoutesArray );
+							} else {
+								if ( dataJson.hasOwnProperty("errors") ) {
+									
+									showMessage("Error - Airline Routes" , data);
+								}
 							}
 						},
 						error: function(data, status) {

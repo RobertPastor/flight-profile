@@ -166,6 +166,9 @@ trajectory/Bada381DataFiles/A320__.OPF.txt
 trajectory/Bada381DataFiles/A332__.OPF.txt
 trajectory/Bada381DataFiles/B738__.OPF.txt
 
+# whole AdsBtrajectories sub folders
+trajectory/AdsBtrajectories/*
+
 # ANS Performance challenge
 *.parquet
 trajectory/AdsBtrajectories/AnsPerformanceChallenge/*
@@ -178,3 +181,13 @@ trajectory/AdsBtrajectories/Results/team_exuberant_hippo_V1_f8afb85a-8f3f-4270-b
 trajectory/AdsBtrajectories/Results/*.csv
 
 trajectory/AdsBtrajectories/Aircrafts/FAA-Aircraft-Char-DB-AC-150-5300-13B-App-2023-09-07.xlsx
+trajectory/AdsBtrajectories/allInOneTrainTest.py
+trajectory/AdsBtrajectories/allInOneTrainTest.py
+/trajectory/AdsBtrajectories
+/trajectory/AdsBtrajectories
+trajectory/AdsBtrajectories/allInOneTrainTest.py
+trajectory/AdsBtrajectories/allInOneTrainTest.py
+trajectory/AdsBtrajectories/allInOneTrainTest.py
+trajectory/AdsBtrajectories/createSubmissionCsvFile.py
+trajectory/AdsBtrajectories/allInOneTrainTest.py
+trajectory/AdsBtrajectories/createSubmissionCsvFile.py
