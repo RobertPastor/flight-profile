@@ -25,14 +25,18 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         self.className = self.__class__.__name__
         super().__init__(aircraftICAOcode)
                 
-        self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
+        self.aircraftDict = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
         self.drag = Drag(ac=str( aircraftICAOcode ).lower() , eng=None)
+        
+    def getWingAreaSurfaceSquareMeters(self):
+        return self.aircraftDict['wing']['area']
         
         
     def getCleanDragNewtons(self , massKilograms , tasKnots , altitudeMSLfeet , verticalSpeedFeetMinutes ):
         self.currentDragNewtons = self.drag.clean( mass = massKilograms, tas = tasKnots, alt = altitudeMSLfeet, vs = verticalSpeedFeetMinutes )
         logger.info( self.className + " - clean drag = {0} Newtons".format ( self.currentDragNewtons ))
         return self.currentDragNewtons
+    
     
     def getNonCleanDragNewtons(self , massKilograms , tasKnots , altitudeMSLfeet , flap_angle_degrees, landing_gear):
         ''' Wing flaps are a significant part of the takeoff and landing process. When the airplane is taking off, the flaps help to produce more lift. '''

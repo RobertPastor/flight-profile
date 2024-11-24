@@ -27,9 +27,19 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
         
         self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
         self.thrust = Thrust(ac=str( aircraftICAOcode ).lower() , eng=None)
-
         
-    def getTakeOffThrust(self, tasKnots , altitudeFeet ):
-        self.takeOffThrust = self.thrust.takeoff(tas = tasKnots, alt=altitudeFeet)
-        logger.info ( self.className + ': take off thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2} feet'.format(self.takeOffThrust , tasKnots , altitudeFeet) )
-        return self.takeOffThrust
+    def getTakeOffThrustNewtons(self, tasKnots , altitudeMSLfeet ):
+        takeOffThrustNewtons = self.thrust.takeoff(tas = tasKnots, alt = altitudeMSLfeet)
+        logger.info ( self.className + ': take off thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2} feet'.format(takeOffThrustNewtons , tasKnots , altitudeMSLfeet) )
+        return takeOffThrustNewtons
+    
+    def getClimbThrustNewtons(self , tasKnots, altitudeMSLfeet , rateOfClimbFeetMinutes ):
+        climbThrustNewtons = self.thrust.climb( tas = tasKnots, alt = altitudeMSLfeet , roc = rateOfClimbFeetMinutes )
+        logger.info ( self.className + ': climb thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(climbThrustNewtons , tasKnots , altitudeMSLfeet) )
+        return climbThrustNewtons
+    
+    def getCruiseThrustNewtons(self , tasKnots , altitudeMSLfeet):
+        cruiseThrustNewtons = self.thrust.cruise ( tas = tasKnots , alt = altitudeMSLfeet)
+        logger.info ( self.className + ': climb thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(cruiseThrustNewtons , tasKnots , altitudeMSLfeet) )
+        return cruiseThrustNewtons
+

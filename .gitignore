@@ -191,3 +191,4 @@ trajectory/AdsBtrajectories/allInOneTrainTest.py
 trajectory/AdsBtrajectories/createSubmissionCsvFile.py
 trajectory/AdsBtrajectories/allInOneTrainTest.py
 trajectory/AdsBtrajectories/createSubmissionCsvFile.py
+*.prefs

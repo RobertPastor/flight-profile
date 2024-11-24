@@ -31,7 +31,7 @@ class Test_Main(unittest.TestCase):
             writer.writerow( ("latitude in degrees", "latitude radians", "radius in meters", "gc" , "gnorth"))
             earth = Earth()
             
-            for latitudeDegrees in range(0, 180):
+            for latitudeDegrees in range(-90, 90):
                 print ('latitude in degrees: ', latitudeDegrees, " degrees")
                 gc , gnorth = earth.gravity(earthRadiusMeters, latitudeDegrees*dtr)
                 print (gc , gnorth)
@@ -49,6 +49,17 @@ class Test_Main(unittest.TestCase):
         
         print ("=========== earth =========== " + time.strftime("%c"))
         print (str(earth))
+        
+    def test_main_three(self):
+            
+        print ("=========== earth =========== " + time.strftime("%c"))
+        
+        earth = Earth()
+
+        heightMSLmeters = 0.0
+        for latitudeDegrees in range(-90, 90):
+            print ('latitude in degrees: ', latitudeDegrees, " degrees")
+            print ( earth.gravityWelmec( heightMSLmeters, latitudeDegrees) )
         
 if __name__ == '__main__':
     unittest.main()

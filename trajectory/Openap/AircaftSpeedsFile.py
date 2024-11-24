@@ -45,6 +45,27 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         self.initialTASknots = 0.0
         self.currentTASknots = self.initialTASknots
         
+        wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
+        self.takeOffCASspeedsKnotsDict = wrap.takeoff_speed()
+        logger.info( self.className + " - Take Off CAS speeds = (knots)" + json.dumps ( self.takeOffCASspeedsKnotsDict ) )
+        
+        self.takeOffMeanAccelerationMetersSecondsSquareDict = wrap.takeoff_acceleration()
+        logger.info( self.className + " - Take Off mean acceleration = {0}".format( json.dumps ( self.takeOffMeanAccelerationMetersSecondsSquareDict ) ) )
+
+        
+    def getDefaultTakeOffCASknots(self):
+        ''' @TODO correct for difference to reference mass '''
+        return self.takeOffCASspeedsKnotsDict['default']
+    
+    def getDefaultTakeOffAccelerationMetersSecondsSquare(self):
+        ''' @TODO correct for difference to reference mass '''
+        return self.takeOffMeanAccelerationMetersSecondsSquareDict['default']
+    
+    def getMinimumTakeOffAccelerationMetersSecondsSquare(self):
+        return self.takeOffMeanAccelerationMetersSecondsSquareDict['minimum']
+        
+    def getCurrentTrueAirSpeedMetersSecond(self):
+        return self.currentTASknots * Knots2MetersSeconds
         
     def getCurrentTASspeedKnots(self):
         logger.info ( self.className + " --- current TAS = {0:.2f} knots".format( self.currentTASknots ))

@@ -49,6 +49,14 @@ class Earth():
         
     def getRadiusMeters(self):
         return self.radiusMeters
+    
+    def gravityWelmec(self, heightMSLmeters, latitudeDegrees):
+        latitudeRadians = math.radians(latitudeDegrees)
+        gravity = 1 + ( 0.0053024 * math.sin(latitudeRadians) * math.sin(latitudeRadians) )
+        gravity = gravity - ( 0.0000058 * math.sin( 2 * latitudeRadians) * math.sin(2 * latitudeRadians) )
+        gravity = gravity * 9.780318
+        gravity = gravity - ( 0.000003085 * heightMSLmeters )
+        return gravity
         
     def gravity(self, radius, latitudeRadians):
         # returns gc gnorth

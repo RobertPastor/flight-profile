@@ -67,3 +67,5 @@ EarthMeanRadiusMeters = 6378135.0 # earth’s radius in meters
 
 MaxSpeedNoiseRestrictionsKnots = 250.0
 MaxSpeedNoiseRestrictionMeanSeaLevelFeet = 10000.0
+
+FeetMinutes2MetersSeconds = 0.00508

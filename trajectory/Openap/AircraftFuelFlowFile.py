@@ -24,8 +24,12 @@ class OpenapAircraftFuelFlow(object):
         
         self.fuelFlow = FuelFlow(ac=aircraftICAOcode)
         
-    def getFuelFlowAtTakeOffKgSeconds(self, TASknots , altitudeMSLfeet ):
-        fuelFlowKgSeconds = self.fuelFlow.takeoff(tas = TASknots, alt = altitudeMSLfeet, throttle=1)
-        logger.info(self.className + " - fuel flow takeOff {0:.2f} kilograms per seconds".format( fuelFlowKgSeconds ))
+    def getFuelFlowAtTakeOffKgSeconds(self, TASknots , aircraftAltitudeMSLfeet ):
+        fuelFlowKgSeconds = self.fuelFlow.takeoff(tas = TASknots, alt = aircraftAltitudeMSLfeet, throttle=1)
+        logger.info(self.className + " - fuel flow takeOff {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
-        
+    
+    def getFuelFlowClimbKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , rateOfClimbFeetMinutes , acceleationMetersSecondsSquare ):
+        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=rateOfClimbFeetMinutes, acc=acceleationMetersSecondsSquare, limit=True)
+        logger.info(self.className + " - fuel flow climb {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
+        return fuelFlowKgSeconds
