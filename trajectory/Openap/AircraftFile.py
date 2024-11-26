@@ -44,7 +44,6 @@ class OpenapAircraft(OpenapAircraftConfiguration):
     def getAircraftName(self):
         return self.openapAircraft['aircraft']
     
-    
     def __str__(self):
         return json.dumps( self.openapAircraft )
     
@@ -73,7 +72,7 @@ if __name__ == '__main__':
     altitudeMSLmeters = 300.0
     ac.setDepartureRunwayMSLmeters(300.0)
     
-    while ( elapsedTimeSeconds < 120.0 ):
+    while ( elapsedTimeSeconds < 1220.0 ):
         totalDistanceFlownMeters , altitudeMSLmeters = ac.fly(elapsedTimeSeconds = elapsedTimeSeconds , 
                deltaTimeSeconds = deltaTimeSeconds ,
                totalDistanceFlownMeters = totalDistanceFlownMeters , altitudeMSLmeters =  altitudeMSLmeters)

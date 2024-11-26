@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 class OpenapAircraftDrag(OpenapAircraftMass):
     
-    
     def __init__(self , aircraftICAOcode ):
         pass
         self.className = self.__class__.__name__
@@ -27,6 +26,7 @@ class OpenapAircraftDrag(OpenapAircraftMass):
                 
         self.aircraftDict = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
         self.drag = Drag(ac=str( aircraftICAOcode ).lower() , eng=None)
+        
         
     def getWingAreaSurfaceSquareMeters(self):
         return self.aircraftDict['wing']['area']
@@ -47,5 +47,42 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         return self.currentDragNewtons
         
         
+    def computeCurrentDragNewtons(self , massKilograms , tasKnots , altitudeMSLfeet , verticalSpeedFeetMinutes = 0.0):
+        dragNewtons = 0.0
+        if self.isDepartureGroundRun():
+            flap_angle_degrees = 5.0
+            ''' landing gear is extended '''
+            landing_gear = True
+            #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
+            dragNewtons = self.getNonCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , flap_angle_degrees, landing_gear)
+            
+        elif self.isTakeOff():
+            flap_angle_degrees = 20.0
+            ''' landing gear is extended '''
+            landing_gear = True
+            #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
+            dragNewtons = self.getNonCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , flap_angle_degrees, landing_gear)
+            
+        elif self.isInitialClimb():
+            flap_angle_degrees = 15.0
+            ''' landing gear is retracted '''
+            landing_gear = False
+            #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
+            dragNewtons = self.getNonCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , flap_angle_degrees, landing_gear)
+            
+        elif self.isClimb():
+            flap_angle_degrees = 5.0
+            ''' landing gear is retracted '''
+            landing_gear = False
+            #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
+            dragNewtons = self.getNonCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , flap_angle_degrees, landing_gear)
+            
+        elif self.isCruise():
+            dragNewtons = self.getCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , verticalSpeedFeetMinutes )
+            
+        else:
+            raise ValueError("not yet implemented")
         
+        logger.info ( self.className + ' - drag = {0:.2f} Newtons'.format( dragNewtons ) )
+        return dragNewtons
         

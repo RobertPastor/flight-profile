@@ -50,7 +50,7 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         logger.info( self.className + " - Take Off CAS speeds = (knots)" + json.dumps ( self.takeOffCASspeedsKnotsDict ) )
         
         self.takeOffMeanAccelerationMetersSecondsSquareDict = wrap.takeoff_acceleration()
-        logger.info( self.className + " - Take Off mean acceleration = {0}".format( json.dumps ( self.takeOffMeanAccelerationMetersSecondsSquareDict ) ) )
+        logger.info( self.className + " - Take Off mean acceleration = {0} meters per seconds square".format( json.dumps ( self.takeOffMeanAccelerationMetersSecondsSquareDict ) ) )
 
         
     def getDefaultTakeOffCASknots(self):

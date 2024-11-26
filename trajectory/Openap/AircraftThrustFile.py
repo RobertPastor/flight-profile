@@ -40,6 +40,27 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
     
     def getCruiseThrustNewtons(self , tasKnots , altitudeMSLfeet):
         cruiseThrustNewtons = self.thrust.cruise ( tas = tasKnots , alt = altitudeMSLfeet)
-        logger.info ( self.className + ': climb thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(cruiseThrustNewtons , tasKnots , altitudeMSLfeet) )
+        logger.info ( self.className + ': cruise thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(cruiseThrustNewtons , tasKnots , altitudeMSLfeet) )
         return cruiseThrustNewtons
+    
+    def getDescentIdleThrustNewtons(self , tasKnots , altitudeMSLfeet):
+        descentIdleThrustNewtons = self.thrust.descent_idle ( tas = tasKnots , alt = altitudeMSLfeet)
+        logger.info ( self.className + ': descent idle thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(descentIdleThrustNewtons , tasKnots , altitudeMSLfeet) )
+        return descentIdleThrustNewtons
 
+    def computeCurrentThrustNewtons(self , tasKnots, altitudeMSLfeet , rateOfClimbFeetMinutes = 0.0):
+        thrustNewtons = None
+        if self.isDepartureGroundRun():
+            thrustNewtons = self.getTakeOffThrustNewtons( tasKnots = tasKnots, altitudeMSLfeet = altitudeMSLfeet)
+        elif self.isTakeOff():
+            thrustNewtons = self.getClimbThrustNewtons( tasKnots = tasKnots ,  altitudeMSLfeet = altitudeMSLfeet , rateOfClimbFeetMinutes = rateOfClimbFeetMinutes)
+        elif self.isInitialClimb():
+            thrustNewtons = self.getClimbThrustNewtons( tasKnots = tasKnots ,  altitudeMSLfeet = altitudeMSLfeet , rateOfClimbFeetMinutes = rateOfClimbFeetMinutes)
+        elif self.isClimb():
+            thrustNewtons = self.getClimbThrustNewtons( tasKnots = tasKnots ,  altitudeMSLfeet = altitudeMSLfeet , rateOfClimbFeetMinutes = rateOfClimbFeetMinutes)
+        elif self.isCruise():
+            thrustNewtons = self.getCruiseThrustNewtons ( tasKnots = tasKnots ,  altitudeMSLfeet = altitudeMSLfeet )
+        else:
+            raise ValueError("not yet implemented")
+
+        return thrustNewtons
