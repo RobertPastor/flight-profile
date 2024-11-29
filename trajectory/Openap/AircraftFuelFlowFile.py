@@ -11,7 +11,7 @@ sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 from openap import FuelFlow
 import logging 
 logger = logging.getLogger(__name__)
-from trajectory.Openap.AircraftStateVectorFile import AircraftStateVector
+from trajectory.Openap.AircraftStateVectorFile import OpenapAircraftStateVector
 from trajectory.Openap.AircraftFlightPhasesFile import OpenapAircraftFlightPhases
 
 class OpenapAircraftFuelFlow(OpenapAircraftFlightPhases):

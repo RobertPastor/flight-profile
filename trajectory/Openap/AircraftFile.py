@@ -47,6 +47,10 @@ class OpenapAircraft(OpenapAircraftConfiguration):
     def __str__(self):
         return json.dumps( self.openapAircraft )
     
+    def generateStateVectorHistoryFile( self ):
+        filePrefix = "Vertical-Profile"
+        self.createStateVectorHistoryFile(filePrefix)
+    
     
     
 if __name__ == '__main__':
@@ -72,7 +76,7 @@ if __name__ == '__main__':
     altitudeMSLmeters = 300.0
     ac.setDepartureRunwayMSLmeters(300.0)
     
-    while ( elapsedTimeSeconds < 1220.0 ):
+    while ( elapsedTimeSeconds < 940.0 ):
         totalDistanceFlownMeters , altitudeMSLmeters = ac.fly(elapsedTimeSeconds = elapsedTimeSeconds , 
                deltaTimeSeconds = deltaTimeSeconds ,
                totalDistanceFlownMeters = totalDistanceFlownMeters , altitudeMSLmeters =  altitudeMSLmeters)
@@ -81,4 +85,6 @@ if __name__ == '__main__':
         
         logger.info( " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
         
-    print ( "duration {0} seconds".format( time.time() - start ) )
+    print ( "duration {0:.2f} seconds".format( time.time() - start ) )
+    
+    ac.generateStateVectorHistoryFile()

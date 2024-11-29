@@ -151,6 +151,8 @@ airline/management/commands/AirlineRoutesWayPoints/*.xls
 
 #pulp results
 pulp_problem.lp
+
+trajectory/ResultsFiles/*.xlsx
 trajectory/ResultsFiles/A320-KLAX-KATL-24R-Los-Angeles-Intl-27R-Atlanta-Hartsfield-Jackson-Atlanta-Intl-04-Jun-2023-17h50m51.xlsx
 trajectory/ResultsFiles/A320-KLAX-KATL-Altitude-MSL-Speed-History-04-Jun-2023-17h50m53.xlsx
 

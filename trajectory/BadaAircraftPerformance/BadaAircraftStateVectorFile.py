@@ -189,7 +189,7 @@ class StateVector(object):
             fileName = self.aircraftICAOcode + '-Altitude-MSL-Speed-History'
 
         xlsxOutput = XlsxOutput(fileName)
-        ''' 9th September 2023 - add caracteristic point '''
+        ''' 9th September 2023 - add characteristic point '''
         xlsxOutput.writeHeaders(['elapsed-time-seconds', 
                                  
                                  'characteristic-point',

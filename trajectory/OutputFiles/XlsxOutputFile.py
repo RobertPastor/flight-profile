@@ -48,12 +48,12 @@ class XlsxOutput(object):
         self.className = self.__class__.__name__
         self.RowIndex = 0
         
-        self.filePath = fileName
+        self.fileName = fileName
         
         self.FilesFolder = os.path.dirname(__file__)
         
         logging.info ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
-        self.filePath = os.path.abspath(self.FilesFolder + os.path.sep + ".." + os.path.sep + "ResultsFiles" + os.path.sep + self.filePath)
+        self.filePath = os.path.abspath( os.path.join ( self.FilesFolder , ".." , "ResultsFiles" , self.fileName ) )
         logging.info ( self.className + ': file path= {0}'.format(self.filePath) )
 
         self.filePath = self.filePath + '-{0}.xlsx'.format(datetime.now().strftime("%d-%b-%Y-%Hh%Mm%S"))
@@ -154,8 +154,8 @@ class XlsxOutput(object):
                             fourthFloatValue, fifthFloatValue, sixthFloatValue, 
                             seventhFloatValue, eighthFloatValue, ninethFloatValue,
                             tenthFloatValue, eleventhFloatValue,
-                            twelvethFloatValue, thirdteenFloatValue, fourteenFloatValue , fifteenFloatValue, sixteenFloatValue, 
-                            seventeenFloatValue, eighteenFloatValue, endOfSimulation):
+                            twelvethFloatValue, thirdteenFloatValue, fourteenFloatValue , fifteenFloatValue , WeatherStation ,
+                            sixteenFloatValue, seventeenFloatValue, eighteenFloatValue, endOfSimulation):
         
         ColumnIndex = 0
         self.worksheet.write(self.RowIndex, ColumnIndex, elapsedTimeSeconds)
@@ -189,8 +189,13 @@ class XlsxOutput(object):
         self.worksheet.write(self.RowIndex, ColumnIndex, thirdteenFloatValue)        
         ColumnIndex += 1
         self.worksheet.write(self.RowIndex, ColumnIndex, fourteenFloatValue)
+        
         ColumnIndex += 1
         self.worksheet.write(self.RowIndex, ColumnIndex, fifteenFloatValue)
+        
+        ColumnIndex += 1
+        self.worksheet.write(self.RowIndex, ColumnIndex, WeatherStation)
+        
         ColumnIndex += 1
         self.worksheet.write(self.RowIndex, ColumnIndex, sixteenFloatValue)   
         ''' 10th october 2024 '''

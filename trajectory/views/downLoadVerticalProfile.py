@@ -133,7 +133,7 @@ def createExcelVerticalProfile(request, airlineName):
                 except:
                     reducedClimbPowerCoeff = 0.0
                     
-                ''' 1st April 2024 - checkbox to fly direct route '''
+                ''' 1st April 2024 - check box to fly direct route '''
                 direct = getDirectRouteFromRequest(request)
                 
                 airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()

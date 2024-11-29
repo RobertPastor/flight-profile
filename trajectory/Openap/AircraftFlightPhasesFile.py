@@ -12,10 +12,10 @@ from trajectory.aerocalc.airspeed import tas2cas, tas2mach
 
 from trajectory.Environment.Constants import  Meter2Feet , Feet2Meter, MeterSecond2Knots, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
 from trajectory.Environment.Constants import     Meter2NauticalMiles, MaxRateOfClimbFeetPerMinutes , FeetMinutes2MetersSeconds
+from trajectory.Openap.AircraftStateVectorFile import OpenapAircraftStateVector
 
 
-
-class OpenapAircraftFlightPhases(object):
+class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
     
     aircraftConfigurationList = ['departure-ground-run',
                                  'take-off', 
@@ -33,7 +33,8 @@ class OpenapAircraftFlightPhases(object):
         
         self.className = self.__class__.__name__
         self.aircraftICAOcode = aircraftICAOcode
-        
+        super().__init__(aircraftICAOcode)
+
         self.aircraftCurrentConfiguration = 'departure-ground-run'
         
         logger.info ( self.className  + ' ===================================================' )
@@ -41,6 +42,9 @@ class OpenapAircraftFlightPhases(object):
         self.flightPathAngleDegrees = 0.0
         logger.info ( self.className + ' default configuration= ' + self.aircraftCurrentConfiguration )
         logger.info ( self.className + ' ===================================================' )
+        
+    def getCurrentConfiguration(self):
+        return self.aircraftCurrentConfiguration
 
     def setTakeOffConfiguration(self, elapsedTimeSeconds):
         ''' take off starts at the end of the ground-run when speed > 1.2 * Take-off stall speed '''
@@ -64,7 +68,6 @@ class OpenapAircraftFlightPhases(object):
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
  
-            
     def isDepartureGroundRun(self):
         return (self.aircraftCurrentConfiguration=='departure-ground-run')
     

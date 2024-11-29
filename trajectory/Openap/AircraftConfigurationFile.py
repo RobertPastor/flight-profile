@@ -77,6 +77,8 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         if ( self.aircraftCurrentConfiguration == 'departure-ground-run' ):
             return 0.0
         else:
+            if trueAirspeedMetersPerSeconds < 3e-7:
+                return 0.0
             flightPathAngleDegrees = math.degrees(math.asin( rateOfClimbMetersPerSeconds / trueAirspeedMetersPerSeconds))
             logger.info ( self.className + ' - flight path angle = {0:.2f} degrees'.format( flightPathAngleDegrees) )
             return flightPathAngleDegrees
@@ -129,6 +131,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             logger.info( self.className + " -----------------------------")
             logger.info( self.className + " ----- start flying ----------")
             logger.info( self.className + " -----------------------------")
+            self.initStateVector(elapsedTimeSeconds , self.getCurrentConfiguration() )
         else:
             logger.info( self.className + " ---------------------------------------------------")
             logger.info( self.className + " ----- {0} - elapsed time {1} seconds----".format ( self.aircraftCurrentConfiguration , elapsedTimeSeconds ) )
@@ -140,6 +143,8 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         if self.isDepartureGroundRun():
             
             rateOfClimbFeetMinutes = 0.0
+            rateOfClimbMetersSeconds = rateOfClimbFeetMinutes * FeetMinutes2MetersSeconds
+
             ''' as openap wrap has not a correct drag computation during ground run '''
             ''' use the mean acceleration '''
             
@@ -153,7 +158,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             self.setCurrentTASmetersSeconds(trueAirSpeedMetersSecond)
             
             ''' distance flown '''
-            flightPathAngleDegrees = self.computeFlightPathAngleDegrees()
+            flightPathAngleDegrees = self.computeFlightPathAngleDegrees( rateOfClimbMetersSeconds , trueAirSpeedMetersSecond )
             deltaDistanceFlownMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees)) * deltaTimeSeconds
             totalDistanceFlownMeters = totalDistanceFlownMeters + deltaDistanceFlownMeters
             logger.info( self.className + " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
@@ -296,6 +301,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
             if ( altitudeMSLmeters > ( self.ceilingMeters - 300.0 )) and ( altitudeMSLmeters < ( self.ceilingMeters - 300.0   ) ):
                 self.setCruiseConfiguration( elapsedTimeSeconds + deltaTimeSeconds )
+            
 
 
         elif self.isCruise():
@@ -303,6 +309,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             
             rateOfClimbFeetMinutes = 0.0
             rateOfClimbMetersSeconds = 0.0
+            raise ValueError("Not yet implemented")
 
             
         
@@ -313,6 +320,6 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             raise ValueError("not yet implemented")
     
   
-
+        self.updateAircraftStateVector( elapsedTimeSeconds , self.getCurrentConfiguration() , flightPathAngleDegrees , trueAirSpeedMetersSecond)
         return totalDistanceFlownMeters , altitudeMSLmeters
         
