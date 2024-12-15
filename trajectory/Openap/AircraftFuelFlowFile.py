@@ -32,27 +32,30 @@ class OpenapAircraftFuelFlow(OpenapAircraftFlightPhases):
         logger.info(self.className + " - fuel flow takeOff {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
     
-    def getFuelFlowClimbKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , rateOfClimbFeetMinutes , acceleationMetersSecondsSquare ):
-        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=rateOfClimbFeetMinutes, acc=acceleationMetersSecondsSquare, limit=True)
+    def getFuelFlowClimbKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , rateOfClimbFeetMinutes , accelerationMetersSecondsSquare ):
+        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=rateOfClimbFeetMinutes, acc=accelerationMetersSecondsSquare, limit=True)
         logger.info(self.className + " - fuel flow climb {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
 
-    def computeFuelFlowKilograms(self , TASknots , aircraftAltitudeMSLfeet , aircraftMassKilograms=0.0, rateOfClimbFeetMinutes=0.0, acceleationMetersSecondsSquare=0.0):
-        fuelFlowKilogramseconds = None
+    def computeFuelFlowKilogramsSeconds(self , TASknots , aircraftAltitudeMSLfeet , aircraftMassKilograms=0.0, rateOfClimbFeetMinutes=0.0, accelerationMetersSecondsSquare=0.0):
+        fuelFlowKilogramSeconds = None
         
         if self.isDepartureGroundRun():
-            fuelFlowKilogramseconds = self.getFuelFlowAtTakeOffKgSeconds( TASknots=TASknots, aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet )
+            fuelFlowKilogramSeconds = self.getFuelFlowAtTakeOffKgSeconds( TASknots=TASknots, aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet )
             
         elif self.isTakeOff():
-            fuelFlowKilogramseconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, acceleationMetersSecondsSquare=acceleationMetersSecondsSquare)
+            fuelFlowKilogramSeconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , 
+                                                                      rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, accelerationMetersSecondsSquare=accelerationMetersSecondsSquare)
 
         elif self.isInitialClimb():
-            fuelFlowKilogramseconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, acceleationMetersSecondsSquare=acceleationMetersSecondsSquare)
+            fuelFlowKilogramSeconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , 
+                                                                      rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, accelerationMetersSecondsSquare=accelerationMetersSecondsSquare)
 
         elif self.isClimb():
-            fuelFlowKilogramseconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, acceleationMetersSecondsSquare=acceleationMetersSecondsSquare)
+            fuelFlowKilogramSeconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , 
+                                                                      rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, accelerationMetersSecondsSquare=accelerationMetersSecondsSquare)
 
         else:
-            fuelFlowKilogramseconds = None
+            fuelFlowKilogramSeconds = None
 
-        return fuelFlowKilogramseconds
+        return fuelFlowKilogramSeconds

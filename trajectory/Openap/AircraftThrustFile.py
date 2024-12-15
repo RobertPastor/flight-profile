@@ -48,7 +48,7 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
         logger.info ( self.className + ': descent idle thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(descentIdleThrustNewtons , tasKnots , altitudeMSLfeet) )
         return descentIdleThrustNewtons
 
-    def computeCurrentThrustNewtons(self , tasKnots, altitudeMSLfeet , rateOfClimbFeetMinutes = 0.0):
+    def computeThrustNewtons(self , tasKnots, altitudeMSLfeet , rateOfClimbFeetMinutes = 0.0):
         thrustNewtons = None
         if self.isDepartureGroundRun():
             thrustNewtons = self.getTakeOffThrustNewtons( tasKnots = tasKnots, altitudeMSLfeet = altitudeMSLfeet)
@@ -59,7 +59,7 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
         elif self.isClimb():
             thrustNewtons = self.getClimbThrustNewtons( tasKnots = tasKnots ,  altitudeMSLfeet = altitudeMSLfeet , rateOfClimbFeetMinutes = rateOfClimbFeetMinutes)
         elif self.isCruise():
-            thrustNewtons = self.getCruiseThrustNewtons ( tasKnots = tasKnots ,  altitudeMSLfeet = altitudeMSLfeet )
+            thrustNewtons = self.getCruiseThrustNewtons( tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet )
         else:
             raise ValueError("not yet implemented")
 

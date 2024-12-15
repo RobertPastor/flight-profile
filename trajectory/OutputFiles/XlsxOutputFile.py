@@ -192,7 +192,7 @@ class XlsxOutput(object):
         
         ColumnIndex += 1
         self.worksheet.write(self.RowIndex, ColumnIndex, fifteenFloatValue)
-        
+        ''' weather station '''
         ColumnIndex += 1
         self.worksheet.write(self.RowIndex, ColumnIndex, WeatherStation)
         

@@ -27,7 +27,7 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
                                  'landing',
                                  'arrival-ground-run']
     aircraftCurrentConfiguration = ''
- 
+    totalDistanceFlownMeters = 0.0
  
     def __init__(self , aircraftICAOcode ):
         
@@ -42,6 +42,14 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
         self.flightPathAngleDegrees = 0.0
         logger.info ( self.className + ' default configuration= ' + self.aircraftCurrentConfiguration )
         logger.info ( self.className + ' ===================================================' )
+        
+        self.totalDistanceFlownMeters = 0.0
+        
+    def setTotalDistanceFlownMeters(self, totalDistanceFlownMeters):
+        self.totalDistanceFlownMeters = totalDistanceFlownMeters
+        
+    def getTotalDistanceFlownMeters(self):
+        return self.totalDistanceFlownMeters 
         
     def getCurrentConfiguration(self):
         return self.aircraftCurrentConfiguration
@@ -98,7 +106,7 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
     def showConfigurationChange(self, newConfiguration, elapsedTimeSeconds):
         assert isinstance(newConfiguration, str)
         altitudeMeanSeaLevelMeters = self.getAltitudeMSLmeters()
-        currentDistanceFlownMeters = self.getDistanceFlownMeters()
+        currentDistanceFlownMeters = self.getTotalDistanceFlownMeters()
         tas = self.getCurrentTrueAirSpeedMetersSecond()
         #cas = self.atmosphere.tas2cas(tas = tas, altitude = altitudeMeanSeaLevelMeters,alt_units='m', speed_units='m/s',)
         cas = tas2cas(tas = tas, altitude = altitudeMeanSeaLevelMeters, temp='std', speed_units='m/s', alt_units='m')
@@ -106,7 +114,7 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
         mach = tas2mach(tas = tas , temp='std', altitude = altitudeMeanSeaLevelMeters, temp_units= 'C', speed_units='m/s')
         logger.info ( self.className + ' ====================================' )
         logger.info ( self.className + ' entering {0} configuration - distance flown {1:.2f} meters - distance flown {2:.2f} Nm'.format(newConfiguration, currentDistanceFlownMeters, currentDistanceFlownMeters*Meter2NauticalMiles) )
-        logger.info ( self.className + ' alt= {0:.2f} meters alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, altitudeMeanSeaLevelMeters * Meter2Feet ) ) 
+        logger.info ( self.className + ' alt= {0:.2f} meters - alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, altitudeMeanSeaLevelMeters * Meter2Feet ) ) 
         logger.info ( self.className + ' TAS= {0:.2f} m/s - TAS= {1:.2f} knots - CAS= {2:.2f} m/s - CAS= {3:.2f} knots - Mach= {4:.2f}'.format(tas, (tas*MeterSecond2Knots), cas, (cas*MeterSecond2Knots), mach) )
         logger.info ( self.className + ' ====================================' )
 

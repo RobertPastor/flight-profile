@@ -15,7 +15,7 @@ import time
 
 from trajectory.Environment.Earth import Earth
 from trajectory.Environment.Atmosphere import Atmosphere
-from trajectory.Environment.Constants import Meter2NauticalMiles
+from trajectory.Environment.Constants import Meter2NauticalMiles, Meter2Feet
 
 import logging
 # create logger
@@ -74,17 +74,22 @@ if __name__ == '__main__':
     totalDistanceFlownMeters = 0.0
     
     altitudeMSLmeters = 300.0
-    ac.setDepartureRunwayMSLmeters(300.0)
+    ac.setDepartureRunwayMSLmeters(altitudeMSLmeters)
     
-    while ( elapsedTimeSeconds < 940.0 ):
-        totalDistanceFlownMeters , altitudeMSLmeters = ac.fly(elapsedTimeSeconds = elapsedTimeSeconds , 
-               deltaTimeSeconds = deltaTimeSeconds ,
-               totalDistanceFlownMeters = totalDistanceFlownMeters , altitudeMSLmeters =  altitudeMSLmeters)
-        
-        elapsedTimeSeconds = elapsedTimeSeconds + deltaTimeSeconds 
-        
-        logger.info( " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
-        
+    ac.setCruiseLevelFeet(11000.0 * Meter2Feet)
+    
+    try:
+        while ( ac.isCruise() == False ):
+            totalDistanceFlownMeters , altitudeMSLmeters = ac.fly(elapsedTimeSeconds = elapsedTimeSeconds , 
+                                                                  deltaTimeSeconds = deltaTimeSeconds ,
+                                                                  totalDistanceFlownMeters = totalDistanceFlownMeters , 
+                                                                  altitudeMSLmeters =  altitudeMSLmeters)
+            
+            elapsedTimeSeconds = elapsedTimeSeconds + deltaTimeSeconds 
+            
+            logger.info( " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
+    except Exception as e:
+        print ( e )
     print ( "duration {0:.2f} seconds".format( time.time() - start ) )
     
     ac.generateStateVectorHistoryFile()

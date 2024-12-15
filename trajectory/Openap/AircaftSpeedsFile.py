@@ -75,7 +75,13 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         return self.currentTASknots * Knots2MetersSeconds
     
     def setCurrentTASmetersSeconds(self, TASmetersSeconds ):
-        self.currentTASknots = TASmetersSeconds * MeterSecond2Knots
+        if TASmetersSeconds < 0.0:
+            logger.info ( self.className + " - Error - TAS is negative " )
+            raise ValueError( self.className + " - Error - TAS is negative ")
+        if (TASmetersSeconds * MeterSecond2Knots) > self.maximumSpeedVmoKnots:
+            self.currentTASknots = self.maximumSpeedVmoKnots
+        else:
+            self.currentTASknots = TASmetersSeconds * MeterSecond2Knots
         
         
         
