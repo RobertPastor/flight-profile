@@ -79,7 +79,7 @@ if __name__ == '__main__':
     ac.setCruiseLevelFeet(11000.0 * Meter2Feet)
     
     try:
-        while ( ac.isCruise() == False ):
+        while ( ac.isDescent() == False ):
             totalDistanceFlownMeters , altitudeMSLmeters = ac.fly(elapsedTimeSeconds = elapsedTimeSeconds , 
                                                                   deltaTimeSeconds = deltaTimeSeconds ,
                                                                   totalDistanceFlownMeters = totalDistanceFlownMeters , 

@@ -35,8 +35,9 @@ class OpenapAircraftMass(OpenapAircraftFuelFlow):
         
         self.openapAircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True) 
         
-        self.maximumTakeOffMassKilograms = self.openapAircraft['mtow']
-        self.maxLandingMassKilograms = self.openapAircraft['mlw']
+        self.maximumTakeOffMassKilograms   = self.openapAircraft['mtow']
+        self.maxLandingMassKilograms       = self.openapAircraft['mlw']
+        self.operatingEmptyWeightKilograms = self.openapAircraft['oew']
         
         logger.info ( self.className + " max TakeOff mass = {0} kilograms ".format(self.maximumTakeOffMassKilograms))
         logger.info ( self.className + " max Landing mass = {0} kilograms".format(self.maxLandingMassKilograms))
@@ -55,6 +56,8 @@ class OpenapAircraftMass(OpenapAircraftFuelFlow):
     
     def setAircraftMassKilograms(self, aircraftMassKilograms ):
         ''' @TODO add check that current mass not lower to minimum mass '''
+        if ( aircraftMassKilograms < self.operatingEmptyWeightKilograms ):
+            raise ValueError("Error - aircraft mass lower than Operating Empty weight = {0} kilograms".format( self.operatingEmptyWeightKilograms ))
         self.currentMassKilograms = aircraftMassKilograms
     
     def getTakeOffMassKilograms(self):

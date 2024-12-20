@@ -75,6 +75,13 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
         if self.aircraftCurrentConfiguration != newConfiguration:
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
+            
+    def setCruiseConfiguration(self, elapsedTimeSeconds):
+        newConfiguration = 'cruise'
+        if self.aircraftCurrentConfiguration != newConfiguration:
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.aircraftCurrentConfiguration = newConfiguration
+ 
  
     def isDepartureGroundRun(self):
         return (self.aircraftCurrentConfiguration=='departure-ground-run')

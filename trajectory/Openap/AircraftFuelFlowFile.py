@@ -36,6 +36,11 @@ class OpenapAircraftFuelFlow(OpenapAircraftFlightPhases):
         fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=rateOfClimbFeetMinutes, acc=accelerationMetersSecondsSquare, limit=True)
         logger.info(self.className + " - fuel flow climb {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
+    
+    def getFuelFlowCruiseKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , rateOfClimbFeetMinutes , accelerationMetersSecondsSquare ):
+        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=rateOfClimbFeetMinutes, acc=accelerationMetersSecondsSquare, limit=True)
+        logger.info(self.className + " - fuel flow cruise {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
+        return fuelFlowKgSeconds
 
     def computeFuelFlowKilogramsSeconds(self , TASknots , aircraftAltitudeMSLfeet , aircraftMassKilograms=0.0, rateOfClimbFeetMinutes=0.0, accelerationMetersSecondsSquare=0.0):
         fuelFlowKilogramSeconds = None
@@ -54,7 +59,10 @@ class OpenapAircraftFuelFlow(OpenapAircraftFlightPhases):
         elif self.isClimb():
             fuelFlowKilogramSeconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , 
                                                                       rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, accelerationMetersSecondsSquare=accelerationMetersSecondsSquare)
-
+        elif self.isCruise():
+            fuelFlowKilogramSeconds = self.getFuelFlowCruiseKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , 
+                                                                      rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, accelerationMetersSecondsSquare=accelerationMetersSecondsSquare)
+            
         else:
             fuelFlowKilogramSeconds = None
 

@@ -339,7 +339,39 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             
             rateOfClimbFeetMinutes = 0.0
             rateOfClimbMetersSeconds = 0.0
-            raise ValueError("Not yet implemented")
+            
+            thrustNewtons = self.computeThrustNewtons( tasKnots , altitudeMSLfeet , rateOfClimbFeetMinutes)
+            dragNewtons = self.computeDragNewtons ( aircraftMassKilograms , tasKnots , altitudeMSLfeet , rateOfClimbFeetMinutes )
+            
+            trueAirSpeedMetersSecond = self.getCurrentTASmetersSeconds()
+            liftNewtons = self.computeLiftNewtons( aircraftMassKilograms = aircraftMassKilograms, altitudeMeanSeaLevelMeters =  altitudeMSLmeters, trueAirSpeedMetersSecond = trueAirSpeedMetersSecond , latitudeDegrees=latitudeDegrees)
+            
+            ''' compute new True Air Speed '''
+            ''' dVTAS/dt = ( T - D ) / m - ( ( g0 * dh /dt ) / VTas ) '''
+            aircraftAccelerationMetersSecondSquare = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * rateOfClimbMetersSeconds )/ trueAirSpeedMetersSecond ) 
+            trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + aircraftAccelerationMetersSecondSquare * deltaTimeSeconds
+            
+            logger.info( self.className + " - TAS = {0:.2f} meters per second - TAS = {1:.2f} knots ".format( trueAirSpeedMetersSecond , trueAirSpeedMetersSecond * MeterSecond2Knots))
+            self.setCurrentTASmetersSeconds(trueAirSpeedMetersSecond)
+             
+            ''' distance flown '''
+            flightPathAngleDegrees = self.computeFlightPathAngleDegrees( rateOfClimbMetersSeconds , trueAirSpeedMetersSecond )
+            deltaDistanceFlownMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees)) * deltaTimeSeconds
+            totalDistanceFlownMeters = totalDistanceFlownMeters + deltaDistanceFlownMeters
+            self.setTotalDistanceFlownMeters(totalDistanceFlownMeters)
+            logger.info( self.className + " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
+
+            ''' mass loss due to fuel flow '''
+            fuelFlowKilogramsSeconds = self.computeFuelFlowKilogramsSeconds(TASknots         =trueAirSpeedMetersSecond * MeterSecond2Knots , 
+                                                                     aircraftAltitudeMSLfeet =altitudeMSLfeet , 
+                                                                     aircraftMassKilograms   =aircraftMassKilograms , 
+                                                                     rateOfClimbFeetMinutes  =rateOfClimbFeetMinutes,
+                                                                     accelerationMetersSecondsSquare=aircraftAccelerationMetersSecondSquare)
+            aircraftMassKilograms = aircraftMassKilograms - ( fuelFlowKilogramsSeconds * deltaTimeSeconds )
+            self.setAircraftMassKilograms(aircraftMassKilograms)
+
+  
+            
 
             
         
