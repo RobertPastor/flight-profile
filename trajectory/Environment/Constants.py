@@ -26,6 +26,8 @@ Knot2MetersPerSecond  = 0.514444444 # meters per second
 MeterPerSecond2Knots = 1.9438444924406
 MeterSecond2Knots    = 1.9438444924406
 
+MeterSeconds2FeetMinutes = 196.85039370078738
+
 # mass
 
 Kilogram2Pounds = 2.20462262

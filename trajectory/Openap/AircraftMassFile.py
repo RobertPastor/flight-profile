@@ -38,14 +38,17 @@ class OpenapAircraftMass(OpenapAircraftFuelFlow):
         self.maximumTakeOffMassKilograms   = self.openapAircraft['mtow']
         self.maxLandingMassKilograms       = self.openapAircraft['mlw']
         self.operatingEmptyWeightKilograms = self.openapAircraft['oew']
+        self.referenceMassKilograms        = self.maximumTakeOffMassKilograms * 0.85
         
         logger.info ( self.className + " max TakeOff mass = {0} kilograms ".format(self.maximumTakeOffMassKilograms))
         logger.info ( self.className + " max Landing mass = {0} kilograms".format(self.maxLandingMassKilograms))
         
+    def getReferenceMassKilograms (self):
+        return self.referenceMassKilograms
         
     def setInitialMassKilograms(self, initialMassKilograms):
         logger.info ( self.className + " --- set initial mass = {0} kilograms".format(initialMassKilograms))
-        self.takeOfMassKilograms = initialMassKilograms
+        self.takeOfMassKilograms  = initialMassKilograms
         self.initialMassKilograms = initialMassKilograms
         self.currentMassKilograms = initialMassKilograms
         
@@ -72,5 +75,3 @@ class OpenapAircraftMass(OpenapAircraftFuelFlow):
     def getMaximumMassKilograms(self):
         return self.maximumMassKilograms
     
-    def getReferenceMassKilograms(self):
-        return self.referenceMassKilograms

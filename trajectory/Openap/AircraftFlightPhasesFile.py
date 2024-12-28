@@ -16,16 +16,14 @@ from trajectory.Openap.AircraftStateVectorFile import OpenapAircraftStateVector
 
 
 class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
-    
-    aircraftConfigurationList = ['departure-ground-run',
-                                 'take-off', 
+    ''' openap wrap flight phases '''
+    aircraftConfigurationList = ['take-off', 
                                  'initial-climb', 
                                  'climb',    
                                  'cruise', 
                                  'descent',
                                  'approach', 
-                                 'landing',
-                                 'arrival-ground-run']
+                                 'landing']
     aircraftCurrentConfiguration = ''
     totalDistanceFlownMeters = 0.0
  
@@ -35,10 +33,9 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
         self.aircraftICAOcode = aircraftICAOcode
         super().__init__(aircraftICAOcode)
 
-        self.aircraftCurrentConfiguration = 'departure-ground-run'
+        self.aircraftCurrentConfiguration = self.aircraftConfigurationList[0]
         
         logger.info ( self.className  + ' ===================================================' )
-        self.aircraftCurrentConfiguration = 'departure-ground-run'
         self.flightPathAngleDegrees = 0.0
         logger.info ( self.className + ' default configuration= ' + self.aircraftCurrentConfiguration )
         logger.info ( self.className + ' ===================================================' )
@@ -70,7 +67,7 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
             self.aircraftCurrentConfiguration = newConfiguration
             
     def setClimbConfiguration(self , elapsedTimeSeconds):
-        ''' almost clean configuration  '''
+        ''' almost clean configuration - gear is retracted '''
         newConfiguration = 'climb'
         if self.aircraftCurrentConfiguration != newConfiguration:
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
@@ -82,9 +79,7 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
  
- 
-    def isDepartureGroundRun(self):
-        return (self.aircraftCurrentConfiguration=='departure-ground-run')
+
     
     def isTakeOff(self):
         return (self.aircraftCurrentConfiguration=='take-off')
@@ -107,8 +102,6 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
     def isLanding(self):
         return (self.aircraftCurrentConfiguration=='landing')
     
-    def isArrivalGroundRun(self):
-        return (self.aircraftCurrentConfiguration=='arrival-ground-run')
             
     def showConfigurationChange(self, newConfiguration, elapsedTimeSeconds):
         assert isinstance(newConfiguration, str)

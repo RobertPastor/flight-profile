@@ -11,10 +11,11 @@ sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 from openap import FuelFlow
 import logging 
 logger = logging.getLogger(__name__)
-from trajectory.Openap.AircraftStateVectorFile import OpenapAircraftStateVector
-from trajectory.Openap.AircraftFlightPhasesFile import OpenapAircraftFlightPhases
 
-class OpenapAircraftFuelFlow(OpenapAircraftFlightPhases):
+from trajectory.Openap.AircraftFlightPhasesFile import OpenapAircraftFlightPhases
+from trajectory.Openap.AircraftVerticalRate import OpenapAircraftVerticalRate
+
+class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
     
     aircraftICAOcode = ""
 
@@ -45,13 +46,9 @@ class OpenapAircraftFuelFlow(OpenapAircraftFlightPhases):
     def computeFuelFlowKilogramsSeconds(self , TASknots , aircraftAltitudeMSLfeet , aircraftMassKilograms=0.0, rateOfClimbFeetMinutes=0.0, accelerationMetersSecondsSquare=0.0):
         fuelFlowKilogramSeconds = None
         
-        if self.isDepartureGroundRun():
+        if self.isTakeOff():
             fuelFlowKilogramSeconds = self.getFuelFlowAtTakeOffKgSeconds( TASknots=TASknots, aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet )
             
-        elif self.isTakeOff():
-            fuelFlowKilogramSeconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , 
-                                                                      rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, accelerationMetersSecondsSquare=accelerationMetersSecondsSquare)
-
         elif self.isInitialClimb():
             fuelFlowKilogramSeconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , 
                                                                       rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, accelerationMetersSecondsSquare=accelerationMetersSecondsSquare)

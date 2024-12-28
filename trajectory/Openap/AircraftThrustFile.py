@@ -50,10 +50,8 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
 
     def computeThrustNewtons(self , tasKnots, altitudeMSLfeet , rateOfClimbFeetMinutes = 0.0):
         thrustNewtons = None
-        if self.isDepartureGroundRun():
+        if self.isTakeOff():
             thrustNewtons = self.getTakeOffThrustNewtons( tasKnots = tasKnots, altitudeMSLfeet = altitudeMSLfeet)
-        elif self.isTakeOff():
-            thrustNewtons = self.getClimbThrustNewtons( tasKnots = tasKnots ,  altitudeMSLfeet = altitudeMSLfeet , rateOfClimbFeetMinutes = rateOfClimbFeetMinutes)
         elif self.isInitialClimb():
             thrustNewtons = self.getClimbThrustNewtons( tasKnots = tasKnots ,  altitudeMSLfeet = altitudeMSLfeet , rateOfClimbFeetMinutes = rateOfClimbFeetMinutes)
         elif self.isClimb():

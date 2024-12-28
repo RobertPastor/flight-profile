@@ -4,13 +4,11 @@ Created on 15 nov. 2024
 @author: robert
 '''
 
-from trajectory.Openap.AircraftMassFile import OpenapAircraftMass
 
 import sys
 sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, Thrust, Drag
-import json
 
 from trajectory.Openap.AircraftMassFile import OpenapAircraftMass
 
@@ -25,7 +23,7 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         super().__init__(aircraftICAOcode)
                 
         self.aircraftDict = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
-        self.drag = Drag(ac=str( aircraftICAOcode ).lower() , wave_drag=True)
+        self.drag         = Drag(ac=str( aircraftICAOcode ).lower() , wave_drag=False)
         
         
     def getWingAreaSurfaceSquareMeters(self):
@@ -33,7 +31,7 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         
         
     def getCleanDragNewtons(self , massKilograms , tasKnots , altitudeMSLfeet , verticalSpeedFeetMinutes ):
-        self.currentDragNewtons = self.drag.clean( mass = massKilograms, tas = tasKnots, alt = altitudeMSLfeet, vs = verticalSpeedFeetMinutes )
+        self.currentDragNewtons = self.drag.clean( mass = massKilograms, tas = tasKnots, alt = altitudeMSLfeet, vs = verticalSpeedFeetMinutes * 0.80 )
         logger.info( self.className + " - clean drag = {0:.2f} Newtons".format ( self.currentDragNewtons ))
         return self.currentDragNewtons
     
@@ -49,15 +47,9 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         
     def computeDragNewtons(self , massKilograms , tasKnots , altitudeMSLfeet , verticalSpeedFeetMinutes = 0.0):
         dragNewtons = 0.0
-        if self.isDepartureGroundRun():
-            flap_angle_degrees = 5.0
-            ''' landing gear is extended '''
-            landing_gear = True
-            #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
-            dragNewtons = self.getNonCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , flap_angle_degrees, landing_gear)
-            
-        elif self.isTakeOff():
-            flap_angle_degrees = 20.0
+        
+        if self.isTakeOff():
+            flap_angle_degrees = 10.0
             ''' landing gear is extended '''
             landing_gear = True
             #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)

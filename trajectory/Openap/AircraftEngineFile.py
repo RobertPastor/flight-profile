@@ -18,14 +18,15 @@ class OpenapAircraftEngine(OpenapAircraftThrust):
     pass
 
     def __init__(self, aircraftICAOcode ):
+        
         logger.setLevel(logging.INFO)
         self.className = self.__class__.__name__
         super().__init__(aircraftICAOcode)
         
         self.engineOptions = prop.aircraft_engine_options(aircraftICAOcode)
         
-        self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
-        self.defaultEngine = self.aircraft['engine']['default']
+        self.aircraft        = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
+        self.defaultEngine   = self.aircraft['engine']['default']
         self.numberOfEngines = self.aircraft['engine']['number']
         
         logger.info("default engine = {}".format(self.defaultEngine))
@@ -36,10 +37,8 @@ class OpenapAircraftEngine(OpenapAircraftThrust):
     def getNumberOfEngines(self):
         return self.numberOfEngines
 
-
     def getDefaultEngine(self):
         return self.defaultEngine
-    
     
     def getEngineOptions(self):
         return self.engineOptions

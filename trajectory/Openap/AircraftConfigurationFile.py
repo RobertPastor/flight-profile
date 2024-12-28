@@ -6,19 +6,21 @@ Created on 14 nov. 2024
 
 import sys
 import math
+import json
 sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, FuelFlow, Emission, WRAP
 
 from trajectory.Environment.Constants import  Meter2Feet , Feet2Meter, MeterSecond2Knots, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
-from trajectory.Environment.Constants import     Meter2NauticalMiles, MaxRateOfClimbFeetPerMinutes , FeetMinutes2MetersSeconds
+from trajectory.Environment.Constants import Meter2NauticalMiles, MaxRateOfClimbFeetPerMinutes , FeetMinutes2MetersSeconds
+from trajectory.Environment.Constants import MeterSeconds2FeetMinutes 
+
 import logging 
 import math
 from trajectory.Guidance.ConstraintsFile import feet2Meters
 
 
 logger = logging.getLogger(__name__)
-from trajectory.Openap.AircraftEngineFile import OpenapAircraftEngine
 from trajectory.Openap.AircaftSpeedsFile import OpenapAircraftSpeeds
 from trajectory.aerocalc.airspeed import tas2cas, tas2mach
 
@@ -40,6 +42,8 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         self.distanceFlownMeters = 0.0
         
         self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
+        
+        self.wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
         #self.ceilingMeters = self.aircraft['ceiling']
 
         
@@ -47,7 +51,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         '''
         lift coeff = ( 2 * aircraft-mass * gravity ) / ( rho * TAS * TAS * WingSurface ) 
         '''
-        if self.isDepartureGroundRun():
+        if self.isTakeOff():
             liftCoeff = 0.1
         else:
             gravityCenterMetersPerSquaredSeconds = self.earth.gravityWelmec( heightMSLmeters = altitudeMSLmeters , latitudeDegrees = latitudeDegrees)
@@ -97,8 +101,9 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
     def getDepartureRunwayMSLmeters(self):
         return self.departureRunwayMSLmeters
     
-    def setCruiseLevelFeet(self , cruiseLevelFeet):
-        self.cruiseLevelFeet = cruiseLevelFeet
+    def setCruiseLevelFeet(self ):
+        print ( json.dumps ( self.wrap.cruise_alt() ) )
+        self.cruiseLevelFeet = self.wrap.cruise_alt()['default'] * 1000.0 * Meter2Feet
         
     def getCruiseLevelFeet(self):
         return self.cruiseLevelFeet
@@ -153,7 +158,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             logger.info( self.className + " ---------------------------------------------------")
             
         
-        if self.isDepartureGroundRun():
+        if self.isTakeOff():
             
             rateOfClimbFeetMinutes = 0.0
             rateOfClimbMetersSeconds = rateOfClimbFeetMinutes * FeetMinutes2MetersSeconds
@@ -161,10 +166,10 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             thrustNewtons = self.computeThrustNewtons( tasKnots , altitudeMSLfeet , rateOfClimbFeetMinutes)
             dragNewtons = self.computeDragNewtons ( aircraftMassKilograms , tasKnots , altitudeMSLfeet  )
 
-            ''' as openap wrap has not a correct drag computation during ground run '''
+            ''' as openap wrap has not a correct drag computation during ground run / takeoff '''
             ''' use the mean acceleration '''
             
-            aircraftAccelerationMetersSecondSquare = self.getMinimumTakeOffAccelerationMetersSecondsSquare()
+            aircraftAccelerationMetersSecondSquare = self.getDefaultTakeOffAccelerationMetersSecondsSquare()
             logger.info( self.className + " - aircraft acceleration = {0:.2f} meters per seconds square".format( aircraftAccelerationMetersSecondSquare ))
 
             trueAirSpeedMetersSecond = self.getCurrentTASmetersSeconds()
@@ -188,66 +193,16 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             casKnots = tas2cas( tas = trueAirSpeedMetersSecond, altitude = altitudeMSLfeet , temp = 'std' , speed_units = 'm/s', alt_units = 'ft') * MeterSecond2Knots
             logger.info( self.className + " - CAS = {0:.2f} meters per second - CAS = {1:.2f} knots ".format( casKnots * Knots2MetersSeconds , casKnots ) )
     
-            if ( self.aircraftCurrentConfiguration == 'departure-ground-run' ):
-                if ( casKnots >= ( 1.2 * self.getDefaultTakeOffCASknots() ) ):
-                    logger.debug ( self.className + ' CAS= {0:.2f} knots >= takeoff Stall Speed= {1:.2f} knots'.format(casKnots, self.getDefaultTakeOffCASknots()) )
-                    self.setTakeOffConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
-            
-            
-        elif self.isTakeOff():
-                        
-            ''' no more rolling friction and usage of flaps and flight angle = 8 degrees '''
-            ''' gear is still extended '''
-            rateOfClimbFeetMinutes = 1000.0
-            rateOfClimbMetersSeconds = rateOfClimbFeetMinutes * FeetMinutes2MetersSeconds
-            
-            #rateOfClimbMetersSeconds = self.computeROCD(deltaTimeSeconds, thrustNewtons, dragNewtons, trueAirSpeedMetersSecond, aircraftMassKilograms, gravityCenterMetersPerSquaredSeconds)
-            #rateOfClimbFeetMinutes = rateOfClimbMetersSeconds * meterSeconds2FeetMinutes
-            
-            thrustNewtons = self.computeThrustNewtons( tasKnots , altitudeMSLfeet , rateOfClimbFeetMinutes)
-            dragNewtons = self.computeDragNewtons ( aircraftMassKilograms , tasKnots , altitudeMSLfeet  )
-            
-            trueAirSpeedMetersSecond = self.getCurrentTASmetersSeconds()
-            liftNewtons = self.computeLiftNewtons( aircraftMassKilograms = aircraftMassKilograms, altitudeMeanSeaLevelMeters =  altitudeMSLmeters, trueAirSpeedMetersSecond = trueAirSpeedMetersSecond , latitudeDegrees=latitudeDegrees)
-
-            ''' compute new True Air Speed '''
-            aircraftAccelerationMetersSecondSquare = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * rateOfClimbMetersSeconds )/ trueAirSpeedMetersSecond ) 
-            trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + aircraftAccelerationMetersSecondSquare * deltaTimeSeconds
-            
-            logger.info( self.className + " - TAS = {0:.2f} meters per second - TAS = {1:.2f} knots ".format( trueAirSpeedMetersSecond , trueAirSpeedMetersSecond * MeterSecond2Knots))
-            self.setCurrentTASmetersSeconds(trueAirSpeedMetersSecond)
-             
-            ''' distance flown '''
-            flightPathAngleDegrees = self.computeFlightPathAngleDegrees( rateOfClimbMetersSeconds , trueAirSpeedMetersSecond )
-            deltaDistanceFlownMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees)) * deltaTimeSeconds
-            totalDistanceFlownMeters = totalDistanceFlownMeters + deltaDistanceFlownMeters
-            self.setTotalDistanceFlownMeters(totalDistanceFlownMeters)
-            logger.info( self.className + " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
-
-            ''' mass loss due to fuel flow '''
-            fuelFlowKilogramsSeconds = self.computeFuelFlowKilogramsSeconds(TASknots=trueAirSpeedMetersSecond * MeterSecond2Knots , 
-                                                                     aircraftAltitudeMSLfeet=altitudeMSLfeet , 
-                                                                     aircraftMassKilograms=aircraftMassKilograms, 
-                                                                     rateOfClimbFeetMinutes=rateOfClimbFeetMinutes)
-            aircraftMassKilograms = aircraftMassKilograms - ( fuelFlowKilogramsSeconds * deltaTimeSeconds )
-            self.setAircraftMassKilograms(aircraftMassKilograms)
-
-            ''' transition to initial climb as soon as height above ground is 1000 feet / 300 meters '''
-            deltaAltitudeMeters = rateOfClimbMetersSeconds * deltaTimeSeconds
-            altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
-            logger.info( self.className + " - departure runway MSL altitude = {0:.2f} meters - aircraft altitude MSL = {1:.2f} meters ".format( self.getDepartureRunwayMSLmeters() , altitudeMSLmeters ))
-            
-            AboveGroundMeters = 35.0 * feet2Meters
-            ''' From the application of takeoff power, through rotation and to an altitude of 35 feet above runway elevation.  '''
-            if ( altitudeMSLmeters > self.getDepartureRunwayMSLmeters() + AboveGroundMeters):
+            if ( casKnots >= ( 1.2 * self.getDefaultTakeOffCASknots() ) ):
+                logger.debug ( self.className + ' CAS= {0:.2f} knots >= takeoff Stall Speed= {1:.2f} knots'.format(casKnots, self.getDefaultTakeOffCASknots()) )
                 self.setInitialClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
-                
+            
         
         elif self.isInitialClimb():
             ''' aircraft is airborne and landing gear is retracted '''
             
-            rateOfClimbFeetMinutes = 1500.0
-            rateOfClimbMetersSeconds = rateOfClimbFeetMinutes * FeetMinutes2MetersSeconds
+            rateOfClimbMetersSeconds = self.getInitialClimbVerticalRateMeterSeconds()
+            rateOfClimbFeetMinutes = rateOfClimbMetersSeconds * MeterSeconds2FeetMinutes
             
             thrustNewtons = self.computeThrustNewtons( tasKnots , altitudeMSLfeet , rateOfClimbFeetMinutes)
             dragNewtons = self.computeDragNewtons ( aircraftMassKilograms , tasKnots , altitudeMSLfeet  )
@@ -277,20 +232,27 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
                                                                      accelerationMetersSecondsSquare = aircraftAccelerationMetersSecondSquare)
             aircraftMassKilograms = aircraftMassKilograms - ( fuelFlowKilogramsSeconds * deltaTimeSeconds )
             self.setAircraftMassKilograms(aircraftMassKilograms)
-
-            ''' transition to initial climb as soon as height above ground is 1500 feet above ground '''
+                
+            ''' transition to  climb as soon as height above ground is 35 feet above ground '''
             deltaAltitudeMeters = rateOfClimbMetersSeconds * deltaTimeSeconds
             altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
-            if ( ( altitudeMSLmeters * Meter2Feet ) > 1500.0):
+            logger.info( self.className + " - departure runway MSL altitude = {0:.2f} meters - aircraft altitude MSL = {1:.2f} meters ".format( self.getDepartureRunwayMSLmeters() , altitudeMSLmeters ))
+            
+            AboveGroundMeters = 35.0 * feet2Meters
+            ''' From the application of takeoff power, through rotation and to an altitude of 35 feet above runway elevation.  '''
+            if ( altitudeMSLmeters > self.getDepartureRunwayMSLmeters() + AboveGroundMeters):
                 self.setClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
+
                 
 
         elif self.isClimb():
             ''' We consider the climbing section up to 1500 ft to be the initial climb. '''
             ''' The climb segment starts when the aircraft reaches clean configuration ''' 
             ''' and lasts until the moment when it reaches cruise altitude '''
+            
+            rateOfClimbMetersSeconds = self.getClimbVerticalRateMeterSeconds( altitudeMSLfeet )
+            rateOfClimbFeetMinutes = rateOfClimbMetersSeconds * MeterSeconds2FeetMinutes
 
-            rateOfClimbFeetMinutes = 1250.0
             rateOfClimbFeetMinutes = self.computeRateOfClimbFeetMinutes ( rateOfClimbFeetMinutes , altitudeMSLfeet )
             rateOfClimbMetersSeconds = rateOfClimbFeetMinutes * FeetMinutes2MetersSeconds
             
@@ -329,8 +291,9 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             ''' transition to initial climb as soon as height above ground is 1000 feet / 300 meters '''
             deltaAltitudeMeters = rateOfClimbMetersSeconds * deltaTimeSeconds
             altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
-            if ( ( altitudeMSLmeters * Meter2Feet ) > ( self.getCruiseLevelFeet() - 300.0 ) ) and  \
-                     ( ( altitudeMSLmeters * Meter2Feet )  < ( self.getCruiseLevelFeet() + 300.0 ) ):
+            logger.info( self.className + " - cruise level feet = {0:.2f} feet ".format ( self.getCruiseLevelFeet() ) )
+            if ( ( altitudeMSLmeters * Meter2Feet ) > ( self.getCruiseLevelFeet() - 1000.0 ) ) and  \
+                     ( ( altitudeMSLmeters * Meter2Feet )  < ( self.getCruiseLevelFeet() + 1000.0 ) ):
                 self.setCruiseConfiguration( elapsedTimeSeconds + deltaTimeSeconds )
 
 

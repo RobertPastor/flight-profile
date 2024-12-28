@@ -5,6 +5,7 @@ Created on 12 nov. 2024
 '''
 
 import sys
+from _ast import Or
 sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, FuelFlow, Emission, WRAP
@@ -27,7 +28,7 @@ class OpenapAircraft(OpenapAircraftConfiguration):
     aircraftICAOcode = ""
     openapAircraft = None
 
-    def __init__( self, aircraftICAOcode , initialMassKilograms , earth , atmosphere ):
+    def __init__( self, aircraftICAOcode , earth , atmosphere , initialMassKilograms ):
         
         logger.setLevel(logging.INFO)
         self.className = self.__class__.__name__
@@ -36,7 +37,11 @@ class OpenapAircraft(OpenapAircraftConfiguration):
         self.aircraftICAOcode = aircraftICAOcode
         self.openapAircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True) 
         
-        self.setInitialMassKilograms(initialMassKilograms)
+        if (initialMassKilograms is None):
+            self.setInitialMassKilograms( self.getReferenceMassKilograms() )
+        else:
+            self.setInitialMassKilograms(initialMassKilograms)
+
         
         logger.info ( self.className  + " --- " + self.getAircraftName() )
         
@@ -48,7 +53,7 @@ class OpenapAircraft(OpenapAircraftConfiguration):
         return json.dumps( self.openapAircraft )
     
     def generateStateVectorHistoryFile( self ):
-        filePrefix = "Vertical-Profile"
+        filePrefix = "Vertical-Profile-" + str(self.aircraftICAOcode).upper()
         self.createStateVectorHistoryFile(filePrefix)
     
     
@@ -64,32 +69,50 @@ if __name__ == '__main__':
     logger.setLevel(logging.INFO)
     print("-"*80)
     
-    initialMassKilograms = 68715.00
-    ac = OpenapAircraft("A320" , initialMassKilograms , earth , atmosphere)
+    departureRunwayAltitudeMSLmeters = 300.0
     
-    logger.info( ac )
+    available_acs = prop.available_aircraft(use_synonym=True)
+
+    for actype in available_acs:
+        #print(actype)
         
-    elapsedTimeSeconds = 0.0
-    deltaTimeSeconds = 1.0
-    totalDistanceFlownMeters = 0.0
-    
-    altitudeMSLmeters = 300.0
-    ac.setDepartureRunwayMSLmeters(altitudeMSLmeters)
-    
-    ac.setCruiseLevelFeet(11000.0 * Meter2Feet)
-    
-    try:
-        while ( ac.isDescent() == False ):
-            totalDistanceFlownMeters , altitudeMSLmeters = ac.fly(elapsedTimeSeconds = elapsedTimeSeconds , 
-                                                                  deltaTimeSeconds = deltaTimeSeconds ,
-                                                                  totalDistanceFlownMeters = totalDistanceFlownMeters , 
-                                                                  altitudeMSLmeters =  altitudeMSLmeters)
+        if ( str( actype ).lower() not in ['b772'] ):
+            continue
+        
+        if ( str( actype ).lower() in ['a359','a388','b38m','b744','b748','b752','b763','b773','b77w','b788','b789','c550'] \
+             or str( actype ).lower() in ['e145','glf6','a124','a306','a310','at72','at75','at76','b733','b735','b762','b77l'] \
+             or str ( actype ).lower() in ['c25a','c525','c56x','crj2','crj9'] ):
             
-            elapsedTimeSeconds = elapsedTimeSeconds + deltaTimeSeconds 
-            
-            logger.info( " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
-    except Exception as e:
-        print ( e )
-    print ( "duration {0:.2f} seconds".format( time.time() - start ) )
+            continue
+        
+        elapsedTimeSeconds = 0.0
+        deltaTimeSeconds = 1.0
+        totalDistanceFlownMeters = 0.0
+        
+        aircraft = prop.aircraft(ac=actype, use_synonym=True)
+        
+        ac = OpenapAircraft( actype , earth , atmosphere , initialMassKilograms = None)
+        ac.setDepartureRunwayMSLmeters(departureRunwayAltitudeMSLmeters)
     
-    ac.generateStateVectorHistoryFile()
+        initialMassKilograms = ac.getReferenceMassKilograms()
+        print("reference mass = {0} kilograms".format( initialMassKilograms ))
+        logger.info( ac )
+    
+        ac.setCruiseLevelFeet()
+        altitudeMSLmeters = departureRunwayAltitudeMSLmeters
+        
+        try:
+            while ( ac.isDescent() == False ):
+                totalDistanceFlownMeters , altitudeMSLmeters = ac.fly(elapsedTimeSeconds       = elapsedTimeSeconds , 
+                                                                      deltaTimeSeconds         = deltaTimeSeconds ,
+                                                                      totalDistanceFlownMeters = totalDistanceFlownMeters , 
+                                                                      altitudeMSLmeters        = altitudeMSLmeters )
+                
+                elapsedTimeSeconds = elapsedTimeSeconds + deltaTimeSeconds 
+                
+                logger.info( " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
+        except Exception as e:
+            print ( e )
+        print ( "duration {0:.2f} seconds".format( time.time() - start ) )
+        
+        ac.generateStateVectorHistoryFile()

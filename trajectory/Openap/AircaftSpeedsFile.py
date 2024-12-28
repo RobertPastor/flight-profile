@@ -5,11 +5,9 @@ Created on 15 nov. 2024
 
 '''
 
-from trajectory.Openap.AircraftEngineFile import OpenapAircraftEngine
 
 import sys
-from trajectory.Environment.Constants import Knots2MetersSeconds,\
-    MeterSecond2Knots
+from trajectory.Environment.Constants import Knots2MetersSeconds,  MeterSecond2Knots
 sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, FuelFlow, Emission, WRAP
@@ -46,8 +44,8 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         self.currentTASknots = self.initialTASknots
         
         wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
-        self.takeOffCASspeedsKnotsDict = wrap.takeoff_speed()
-        logger.info( self.className + " - Take Off CAS speeds = (knots)" + json.dumps ( self.takeOffCASspeedsKnotsDict ) )
+        self.takeOffCASspeedsMeterSecondsDict = wrap.takeoff_speed() 
+        logger.info( self.className + " - Take Off CAS speeds = (m/s)" + json.dumps ( self.takeOffCASspeedsMeterSecondsDict ) )
         
         self.takeOffMeanAccelerationMetersSecondsSquareDict = wrap.takeoff_acceleration()
         logger.info( self.className + " - Take Off mean acceleration = {0} meters per seconds square".format( json.dumps ( self.takeOffMeanAccelerationMetersSecondsSquareDict ) ) )
@@ -55,7 +53,7 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         
     def getDefaultTakeOffCASknots(self):
         ''' @TODO correct for difference to reference mass '''
-        return self.takeOffCASspeedsKnotsDict['default']
+        return self.takeOffCASspeedsMeterSecondsDict['default'] * MeterSecond2Knots
     
     def getDefaultTakeOffAccelerationMetersSecondsSquare(self):
         ''' @TODO correct for difference to reference mass '''
