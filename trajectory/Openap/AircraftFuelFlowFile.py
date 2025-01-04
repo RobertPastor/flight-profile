@@ -33,32 +33,57 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
         logger.info(self.className + " - fuel flow takeOff {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
     
-    def getFuelFlowClimbKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , rateOfClimbFeetMinutes , accelerationMetersSecondsSquare ):
-        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=rateOfClimbFeetMinutes, acc=accelerationMetersSecondsSquare, limit=True)
+    def getFuelFlowClimbKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , verticalRateFeetMinutes , accelerationMetersSecondsSquare ):
+        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=verticalRateFeetMinutes, acc=accelerationMetersSecondsSquare, limit=True)
         logger.info(self.className + " - fuel flow climb {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
     
-    def getFuelFlowCruiseKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , rateOfClimbFeetMinutes , accelerationMetersSecondsSquare ):
-        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=rateOfClimbFeetMinutes, acc=accelerationMetersSecondsSquare, limit=True)
+    def getFuelFlowCruiseKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , verticalRateFeetMinutes , accelerationMetersSecondsSquare ):
+        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=verticalRateFeetMinutes, acc=accelerationMetersSecondsSquare, limit=True)
         logger.info(self.className + " - fuel flow cruise {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
+    
+    def getFuelFlowDescentKgSeconds(self ,  aircraftAltitudeMSLfeet , thrustNewtons ):
+        fuelFlowKgSeconds = self.fuelFlow.at_thrust( acthr = thrustNewtons , alt=aircraftAltitudeMSLfeet, limit=True)
+        logger.info(self.className + " - fuel flow descent {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
+        return fuelFlowKgSeconds
 
-    def computeFuelFlowKilogramsSeconds(self , TASknots , aircraftAltitudeMSLfeet , aircraftMassKilograms=0.0, rateOfClimbFeetMinutes=0.0, accelerationMetersSecondsSquare=0.0):
+
+    def computeFuelFlowKilogramsSeconds(self , TASknots , aircraftAltitudeMSLfeet , 
+                                        aircraftMassKilograms           = 0.0, 
+                                        verticalRateFeetMinutes         = 0.0, 
+                                        accelerationMetersSecondsSquare = 0.0,
+                                        thrustNewtons                   = 0.0):
         fuelFlowKilogramSeconds = None
         
         if self.isTakeOff():
-            fuelFlowKilogramSeconds = self.getFuelFlowAtTakeOffKgSeconds( TASknots=TASknots, aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet )
+            fuelFlowKilogramSeconds = self.getFuelFlowAtTakeOffKgSeconds( TASknots                = TASknots, 
+                                                                          aircraftAltitudeMSLfeet = aircraftAltitudeMSLfeet )
             
         elif self.isInitialClimb():
-            fuelFlowKilogramSeconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , 
-                                                                      rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, accelerationMetersSecondsSquare=accelerationMetersSecondsSquare)
+            fuelFlowKilogramSeconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms           =aircraftMassKilograms , 
+                                                                      TASknots                        =TASknots , 
+                                                                      aircraftAltitudeMSLfeet         =aircraftAltitudeMSLfeet , 
+                                                                      verticalRateFeetMinutes         =verticalRateFeetMinutes, 
+                                                                      accelerationMetersSecondsSquare =accelerationMetersSecondsSquare)
 
         elif self.isClimb():
-            fuelFlowKilogramSeconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , 
-                                                                      rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, accelerationMetersSecondsSquare=accelerationMetersSecondsSquare)
+            fuelFlowKilogramSeconds = self.getFuelFlowClimbKgSeconds( aircraftMassKilograms           =aircraftMassKilograms , 
+                                                                      TASknots                        =TASknots , 
+                                                                      aircraftAltitudeMSLfeet         =aircraftAltitudeMSLfeet , 
+                                                                      verticalRateFeetMinutes         =verticalRateFeetMinutes, 
+                                                                      accelerationMetersSecondsSquare =accelerationMetersSecondsSquare)
         elif self.isCruise():
-            fuelFlowKilogramSeconds = self.getFuelFlowCruiseKgSeconds( aircraftMassKilograms=aircraftMassKilograms , TASknots=TASknots , aircraftAltitudeMSLfeet=aircraftAltitudeMSLfeet , 
-                                                                      rateOfClimbFeetMinutes=rateOfClimbFeetMinutes, accelerationMetersSecondsSquare=accelerationMetersSecondsSquare)
+            fuelFlowKilogramSeconds = self.getFuelFlowCruiseKgSeconds( aircraftMassKilograms            =aircraftMassKilograms ,  
+                                                                       TASknots                         =TASknots , 
+                                                                       aircraftAltitudeMSLfeet          =aircraftAltitudeMSLfeet , 
+                                                                       verticalRateFeetMinutes          =verticalRateFeetMinutes, 
+                                                                       accelerationMetersSecondsSquare  =accelerationMetersSecondsSquare)
+            
+        elif self.isDescent():
+            fuelFlowKilogramSeconds = self.getFuelFlowDescentKgSeconds( 
+                                                                        aircraftAltitudeMSLfeet          = aircraftAltitudeMSLfeet , 
+                                                                        thrustNewtons                    = thrustNewtons )
             
         else:
             fuelFlowKilogramSeconds = None

@@ -54,23 +54,23 @@ class OpenapAircraftStateVector(object):
                                     elapsedTimeSeconds, 
                                     flightPhase,
                                     flightPathAngleDegrees,
-                                    trueAirSpeedMetersPerSecond,
-                                    altitudeMeanSeaLevelMeters=0.0,
-                                    totalDistanceFlownMeters=0.0,
-                                    distanceStillToFlyMeters=0.0,
-                                    aircraftMassKilograms=0.0,
-                                    thrustNewtons=0.0,
-                                    dragNewtons=0.0,
-                                    liftNewtons=0.0,
-                                    currentPosition = "None",
-                                    endOfSimulation = False):
+                                    trueAirSpeedMeterSecond,
+                                    altitudeMSLmeters          =0.0,
+                                    totalDistanceFlownMeters   =0.0,
+                                    distanceStillToFlyMeters   =0.0,
+                                    aircraftMassKilograms      =0.0,
+                                    thrustNewtons              =0.0,
+                                    dragNewtons                =0.0,
+                                    liftNewtons                =0.0,
+                                    currentPosition            = "None",
+                                    endOfSimulation            = False):
             
         ''' need to store both TAS and altitude => compute CAS '''
         aircraftStateDict = {}
         ''' 9th September 2023 - add flight phase point '''
         aircraftStateDict[elapsedTimeSeconds] = [flightPhase,
-                                                 altitudeMeanSeaLevelMeters, 
-                                                 trueAirSpeedMetersPerSecond, 
+                                                 altitudeMSLmeters, 
+                                                 trueAirSpeedMeterSecond, 
                                                  totalDistanceFlownMeters,
                                                  distanceStillToFlyMeters,
                                                  aircraftMassKilograms,
@@ -163,9 +163,9 @@ class OpenapAircraftStateVector(object):
                                                 temp = 'std' , speed_units = 'm/s', alt_units='m' )
                 calibratesAirSpeedKnots = calibratedAirSpeedMetersSecond * MeterSecond2Knots
                 mach = self.atmosphere.tas2mach(tas = trueAirSpeedMetersSecond,
-                                altitude = altitudeMeanSeaLevelMeters,
-                                speed_units='m/s', 
-                                alt_units='m')
+                                altitude            = altitudeMeanSeaLevelMeters,
+                                speed_units         ='m/s', 
+                                alt_units           ='m')
 
                 if (elapsedTimeSeconds-previousElapsedTimeSeconds)>0.0:
                     rateOfClimbDescentFeetMinute = (altitudeMeanSeaLevelFeet-previousAltitudeMeanSeaLevelFeet)/ ((elapsedTimeSeconds-previousElapsedTimeSeconds)/60.)

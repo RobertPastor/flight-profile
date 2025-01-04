@@ -31,7 +31,10 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         
         
     def getCleanDragNewtons(self , massKilograms , tasKnots , altitudeMSLfeet , verticalSpeedFeetMinutes ):
-        self.currentDragNewtons = self.drag.clean( mass = massKilograms, tas = tasKnots, alt = altitudeMSLfeet, vs = verticalSpeedFeetMinutes * 0.80 )
+        self.currentDragNewtons = self.drag.clean( mass = massKilograms, 
+                                                   tas = tasKnots, 
+                                                   alt = altitudeMSLfeet, 
+                                                   vs = verticalSpeedFeetMinutes * 0.80 )
         logger.info( self.className + " - clean drag = {0:.2f} Newtons".format ( self.currentDragNewtons ))
         return self.currentDragNewtons
     
@@ -40,7 +43,11 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         ''' Wing flaps are a significant part of the takeoff and landing process. When the airplane is taking off, the flaps help to produce more lift. '''
         ''' Conversely, flaps allow for a steep but controllable angle during landing. '''
         ''' During both, efficient use of flaps help to shorten the amount of runway length needed for takeoff and landing '''
-        self.currentDragNewtons = self.drag.nonclean( mass = massKilograms, tas = tasKnots, alt = altitudeMSLfeet, flap_angle = flap_angle_degrees, landing_gear = landing_gear )
+        self.currentDragNewtons = self.drag.nonclean( mass = massKilograms, 
+                                                      tas  = tasKnots, 
+                                                      alt = altitudeMSLfeet, 
+                                                      flap_angle = flap_angle_degrees, 
+                                                      landing_gear = landing_gear )
         logger.info( self.className + " - non clean drag = {0:.2f} Newtons".format ( self.currentDragNewtons ))
         return self.currentDragNewtons
         
@@ -49,7 +56,7 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         dragNewtons = 0.0
         
         if self.isTakeOff():
-            flap_angle_degrees = 10.0
+            flap_angle_degrees = 5.0
             ''' landing gear is extended '''
             landing_gear = True
             #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
@@ -70,9 +77,14 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         elif self.isCruise():
             dragNewtons = self.getCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , verticalSpeedFeetMinutes )
             
+        elif self.isDescent():
+            #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
+            dragNewtons = self.getCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , verticalSpeedFeetMinutes )
+
+            
         else:
             raise ValueError("not yet implemented")
         
-        #logger.info ( self.className + ' - drag = {0:.2f} Newtons'.format( dragNewtons ) )
+        logger.info ( self.className + ' - drag = {0:.2f} Newtons'.format( dragNewtons ) )
         return dragNewtons
         

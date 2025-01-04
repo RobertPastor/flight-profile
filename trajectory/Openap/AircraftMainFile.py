@@ -60,8 +60,6 @@ class OpenapAircraft(OpenapAircraftConfiguration):
     
 if __name__ == '__main__':
     
-    start = time.time()
-    
     earth = Earth()
     atmosphere = Atmosphere()
     
@@ -74,14 +72,16 @@ if __name__ == '__main__':
     available_acs = prop.available_aircraft(use_synonym=True)
 
     for actype in available_acs:
+        start = time.time()
         #print(actype)
         
-        if ( str( actype ).lower() not in ['b772'] ):
+        if ( str( actype ).lower() not in ['a320'] ):
+            ''' math error '''
             continue
         
         if ( str( actype ).lower() in ['a359','a388','b38m','b744','b748','b752','b763','b773','b77w','b788','b789','c550'] \
              or str( actype ).lower() in ['e145','glf6','a124','a306','a310','at72','at75','at76','b733','b735','b762','b77l'] \
-             or str ( actype ).lower() in ['c25a','c525','c56x','crj2','crj9'] ):
+             or str ( actype ).lower() in ['c25a','c525','c56x','crj2','crj9','e290','glf5','gl5t','gl6t','tj45','md11','pc24','su95','lj45','bx3m'] ):
             
             continue
         
@@ -92,7 +92,8 @@ if __name__ == '__main__':
         aircraft = prop.aircraft(ac=actype, use_synonym=True)
         
         ac = OpenapAircraft( actype , earth , atmosphere , initialMassKilograms = None)
-        ac.setDepartureRunwayMSLmeters(departureRunwayAltitudeMSLmeters)
+        ac.setDepartureRunwayMSLmeters( departureRunwayAltitudeMSLmeters )
+        ac.setArrivalRunwayMSLmeters( departureRunwayAltitudeMSLmeters )
     
         initialMassKilograms = ac.getReferenceMassKilograms()
         print("reference mass = {0} kilograms".format( initialMassKilograms ))
@@ -102,7 +103,7 @@ if __name__ == '__main__':
         altitudeMSLmeters = departureRunwayAltitudeMSLmeters
         
         try:
-            while ( ac.isDescent() == False ):
+            while ( ac.isApproach() == False ):
                 totalDistanceFlownMeters , altitudeMSLmeters = ac.fly(elapsedTimeSeconds       = elapsedTimeSeconds , 
                                                                       deltaTimeSeconds         = deltaTimeSeconds ,
                                                                       totalDistanceFlownMeters = totalDistanceFlownMeters , 
@@ -112,7 +113,8 @@ if __name__ == '__main__':
                 
                 logger.info( " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
         except Exception as e:
-            print ( e )
+            print ( "main - exception = {0}".format( e ) )
+            
         print ( "duration {0:.2f} seconds".format( time.time() - start ) )
         
         ac.generateStateVectorHistoryFile()

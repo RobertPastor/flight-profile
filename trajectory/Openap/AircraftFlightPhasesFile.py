@@ -79,6 +79,11 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
  
+    def setDescentConfiguration(self , elapsedTimeSeconds):
+        newConfiguration = 'descent'
+        if self.aircraftCurrentConfiguration != newConfiguration:
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.aircraftCurrentConfiguration = newConfiguration
 
     
     def isTakeOff(self):
