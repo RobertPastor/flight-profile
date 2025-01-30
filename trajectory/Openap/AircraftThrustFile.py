@@ -51,15 +51,22 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
     def computeThrustNewtons(self , tasKnots, altitudeMSLfeet , rateOfClimbFeetMinutes = 0.0):
         thrustNewtons = None
         if self.isTakeOff():
-            thrustNewtons = self.getTakeOffThrustNewtons( tasKnots = tasKnots, altitudeMSLfeet = altitudeMSLfeet)
+            thrustNewtons = self.getTakeOffThrustNewtons( tasKnots = tasKnots, 
+                                                          altitudeMSLfeet = altitudeMSLfeet)
         elif self.isInitialClimb():
-            thrustNewtons = self.getClimbThrustNewtons( tasKnots = tasKnots ,  altitudeMSLfeet = altitudeMSLfeet , rateOfClimbFeetMinutes = rateOfClimbFeetMinutes)
+            thrustNewtons = self.getClimbThrustNewtons( tasKnots               = tasKnots ,  
+                                                        altitudeMSLfeet        = altitudeMSLfeet , 
+                                                        rateOfClimbFeetMinutes = rateOfClimbFeetMinutes)
         elif self.isClimb():
-            thrustNewtons = self.getClimbThrustNewtons( tasKnots = tasKnots ,  altitudeMSLfeet = altitudeMSLfeet , rateOfClimbFeetMinutes = rateOfClimbFeetMinutes)
+            thrustNewtons = self.getClimbThrustNewtons( tasKnots               = tasKnots ,  
+                                                        altitudeMSLfeet        = altitudeMSLfeet , 
+                                                        rateOfClimbFeetMinutes = rateOfClimbFeetMinutes)
         elif self.isCruise():
-            thrustNewtons = self.getCruiseThrustNewtons( tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet )
+            thrustNewtons = self.getCruiseThrustNewtons( tasKnots        = tasKnots , 
+                                                         altitudeMSLfeet = altitudeMSLfeet )
         elif self.isDescent():
-            thrustNewtons = self.getDescentIdleThrustNewtons( tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet )
+            thrustNewtons = self.getDescentIdleThrustNewtons( tasKnots        = tasKnots , 
+                                                              altitudeMSLfeet = altitudeMSLfeet )
         else:
             raise ValueError("not yet implemented")
 

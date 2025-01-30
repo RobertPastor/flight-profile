@@ -75,9 +75,8 @@ if __name__ == '__main__':
         start = time.time()
         #print(actype)
         
-        if ( str( actype ).lower() not in ['a320'] ):
-            ''' math error '''
-            continue
+        #if ( str( actype ).lower() not in ['a320'] ):
+        #    continue
         
         if ( str( actype ).lower() in ['a359','a388','b38m','b744','b748','b752','b763','b773','b77w','b788','b789','c550'] \
              or str( actype ).lower() in ['e145','glf6','a124','a306','a310','at72','at75','at76','b733','b735','b762','b77l'] \

@@ -54,8 +54,8 @@ class OpenapAircraftVerticalRate(OpenapAircraftFlightPhases):
         return self.climbVerticalRateMeterSeconds
 
     def getDescentVerticalRateMeterSeconds(self , altitudeMSLfeet ):
-        print ( json.dumps ( self.wrap.descent_cross_alt_conmach() ) )
-        print ( json.dumps ( self.wrap.descent_cross_alt_concas() ) )
+        #print ( json.dumps ( self.wrap.descent_cross_alt_conmach() ) )
+        #print ( json.dumps ( self.wrap.descent_cross_alt_concas() ) )
         
         if ( altitudeMSLfeet > self.wrap.descent_cross_alt_conmach() ['default'] * 1000.0 * Meter2Feet ):
             self.descentVerticalRateMeterSeconds = self.wrap.descent_vs_conmach()['default']

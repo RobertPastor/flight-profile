@@ -52,7 +52,6 @@ class OpenapAircraftMass(OpenapAircraftFuelFlow):
         self.initialMassKilograms = initialMassKilograms
         self.currentMassKilograms = initialMassKilograms
         
-        
     def getCurrentMassKilograms(self):
         logger.info ( self.className + " --- current mass = {0:.2f} kilograms".format(self.currentMassKilograms))
         return self.currentMassKilograms

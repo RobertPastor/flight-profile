@@ -23,7 +23,7 @@ from trajectory.Guidance.ConstraintsFile import feet2Meters
 
 logger = logging.getLogger(__name__)
 from trajectory.Openap.AircaftSpeedsFile import OpenapAircraftSpeeds
-from trajectory.aerocalc.airspeed import tas2cas, tas2mach
+from trajectory.aerocalc.airspeed import tas2cas, tas2mach, cas2tas
 
 
 class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
@@ -203,7 +203,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             casKnots = tas2cas( tas = trueAirSpeedMetersSecond, altitude = altitudeMSLfeet , temp = 'std' , speed_units = 'm/s', alt_units = 'ft') * MeterSecond2Knots
             logger.info( self.className + " - CAS = {0:.2f} meters per second - CAS = {1:.2f} knots ".format( casKnots * Knots2MetersSeconds , casKnots ) )
     
-            if ( casKnots >= ( 1.2 * self.getDefaultTakeOffCASknots() ) ):
+            if ( casKnots >= self.getDefaultTakeOffCASknots() ):
                 logger.debug ( self.className + ' CAS= {0:.2f} knots >= takeoff Stall Speed= {1:.2f} knots'.format(casKnots, self.getDefaultTakeOffCASknots()) )
                 self.setInitialClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
             
@@ -276,10 +276,30 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             ''' compute new True Air Speed '''
             ''' dVTAS/dt = ( T - D ) / m - ( ( g0 * dh /dt ) / VTas ) '''
             aircraftAccelerationMetersSecondSquare = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * rateOfClimbMetersSeconds )/ trueAirSpeedMetersSecond ) 
-            trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + aircraftAccelerationMetersSecondSquare * deltaTimeSeconds
+            #trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + aircraftAccelerationMetersSecondSquare * deltaTimeSeconds
             
+            climbCASknots = self.computeClimbCASknots( altitudeMSLfeet = altitudeMSLfeet ,
+                                                       CASknots        = tas2cas ( 
+                                                                            tas         = self.getCurrentTASspeedKnots() ,
+                                                                            altitude    = altitudeMSLfeet ,
+                                                                            temp        = 'std' ,
+                                                                            speed_units = 'kt' , 
+                                                                            alt_units   = 'ft' , 
+                                                                            temp_units  = 'C' ) )
+            
+            trueAirSpeedKnots = cas2tas( cas         = climbCASknots ,
+                                         altitude    = altitudeMSLfeet ,
+                                         temp        = 'std' ,
+                                         speed_units = 'kt' ,
+                                         alt_units   = 'ft' ,
+                                         temp_units  = 'C' )
+            
+            trueAirSpeedMetersSecond = trueAirSpeedKnots * Knots2MetersSeconds
             logger.info( self.className + " - TAS = {0:.2f} meters per second - TAS = {1:.2f} knots ".format( trueAirSpeedMetersSecond , trueAirSpeedMetersSecond * MeterSecond2Knots))
             self.setCurrentTASmetersSeconds(trueAirSpeedMetersSecond)
+            ''' verify that speeds limits have been met '''
+            trueAirSpeedMetersSecond = self.getCurrentTASmetersSeconds()
+
              
             ''' distance flown '''
             flightPathAngleDegrees = self.computeFlightPathAngleDegrees( rateOfClimbMetersSeconds , trueAirSpeedMetersSecond )
@@ -322,7 +342,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             ''' compute new True Air Speed '''
             ''' dVTAS/dt = ( T - D ) / m - ( ( g0 * dh /dt ) / VTas ) '''
             aircraftAccelerationMetersSecondSquare = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * rateOfClimbMetersSeconds )/ trueAirSpeedMetersSecond ) 
-            trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + aircraftAccelerationMetersSecondSquare * deltaTimeSeconds
+            #trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + aircraftAccelerationMetersSecondSquare * deltaTimeSeconds
             
             logger.info( self.className + " - TAS = {0:.2f} meters per second - TAS = {1:.2f} knots ".format( trueAirSpeedMetersSecond , trueAirSpeedMetersSecond * MeterSecond2Knots))
             self.setCurrentTASmetersSeconds(trueAirSpeedMetersSecond)
@@ -352,7 +372,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         elif self.isDescent():
             
             rateOfDescentMetersSeconds = self.getDescentVerticalRateMeterSeconds( altitudeMSLfeet )
-            rateOfDescentFeetMinutes = rateOfDescentMetersSeconds * MeterSeconds2FeetMinutes
+            rateOfDescentFeetMinutes   = rateOfDescentMetersSeconds * MeterSeconds2FeetMinutes
 
             thrustNewtons = self.computeThrustNewtons( tasKnots , altitudeMSLfeet , rateOfDescentFeetMinutes)
             dragNewtons = self.computeDragNewtons ( aircraftMassKilograms , tasKnots , altitudeMSLfeet , rateOfDescentFeetMinutes )
@@ -366,8 +386,24 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             ''' compute new True Air Speed '''
             ''' dVTAS/dt = ( T - D ) / m - ( ( g0 * dh /dt ) / VTas ) '''
             aircraftAccelerationMetersSecondSquare = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * rateOfDescentMetersSeconds )/ trueAirSpeedMetersSecond ) 
-            trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + aircraftAccelerationMetersSecondSquare * deltaTimeSeconds
+            #trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + aircraftAccelerationMetersSecondSquare * deltaTimeSeconds
             
+            descentCASknots = self.computeDescentCASknots( altitudeMSLfeet = altitudeMSLfeet ,
+                                                       CASknots        = tas2cas ( 
+                                                                            tas         = self.getCurrentTASspeedKnots() ,
+                                                                            altitude    = altitudeMSLfeet ,
+                                                                            temp        = 'std' ,
+                                                                            speed_units = 'kt' , 
+                                                                            alt_units   = 'ft' , 
+                                                                            temp_units  = 'C' ) )
+            trueAirSpeedKnots = cas2tas( cas         = descentCASknots ,
+                                         altitude    = altitudeMSLfeet ,
+                                         temp        = 'std' ,
+                                         speed_units = 'kt' ,
+                                         alt_units   = 'ft' ,
+                                         temp_units  = 'C' )
+            
+            trueAirSpeedMetersSecond = trueAirSpeedKnots * Knots2MetersSeconds
             logger.info( self.className + " - TAS = {0:.2f} meters per second - TAS = {1:.2f} knots ".format( trueAirSpeedMetersSecond , trueAirSpeedMetersSecond * MeterSecond2Knots))
             self.setCurrentTASmetersSeconds(trueAirSpeedMetersSecond)
              
@@ -381,11 +417,11 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             logger.info( self.className + " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
 
             ''' mass loss due to fuel flow '''
-            fuelFlowKilogramsSeconds = self.computeFuelFlowKilogramsSeconds(TASknots          =trueAirSpeedMetersSecond * MeterSecond2Knots , 
-                                                                     aircraftAltitudeMSLfeet  =altitudeMSLfeet , 
-                                                                     aircraftMassKilograms    =aircraftMassKilograms , 
-                                                                     verticalRateFeetMinutes  =rateOfDescentMetersSeconds,
-                                                                     accelerationMetersSecondsSquare=aircraftAccelerationMetersSecondSquare)
+            fuelFlowKilogramsSeconds = self.computeFuelFlowKilogramsSeconds(TASknots          = trueAirSpeedMetersSecond * MeterSecond2Knots , 
+                                                                     aircraftAltitudeMSLfeet  = altitudeMSLfeet , 
+                                                                     aircraftMassKilograms    = aircraftMassKilograms , 
+                                                                     verticalRateFeetMinutes  = rateOfDescentMetersSeconds,
+                                                                     accelerationMetersSecondsSquare = aircraftAccelerationMetersSecondSquare)
             aircraftMassKilograms = aircraftMassKilograms - ( fuelFlowKilogramsSeconds * deltaTimeSeconds )
             self.setAircraftMassKilograms(aircraftMassKilograms)
             
@@ -393,8 +429,11 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             deltaAltitudeMeters = rateOfDescentMetersSeconds * deltaTimeSeconds
             altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
             
+            if ( descentCASknots < self.getFinalApproachCASknots() ):
+                raise ValueError( " should transition to final approach - speed ")
+            
             if ( altitudeMSLmeters < self.getArrivalRunwayMSLmeters()):
-                raise ValueError(" should transition to landing ")
+                raise ValueError(" should transition to final approach - altitude ")
         
         
         else:
@@ -405,7 +444,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         self.updateAircraftStateVector( elapsedTimeSeconds       = elapsedTimeSeconds , 
                                         flightPhase              = self.getCurrentConfiguration() , 
                                         flightPathAngleDegrees   = flightPathAngleDegrees , 
-                                        trueAirSpeedMeterSecond = trueAirSpeedMetersSecond , 
+                                        trueAirSpeedMeterSecond  = trueAirSpeedMetersSecond , 
                                         altitudeMSLmeters        = altitudeMSLmeters ,
                                         totalDistanceFlownMeters = totalDistanceFlownMeters , 
                                         distanceStillToFlyMeters = 0.0 , 
