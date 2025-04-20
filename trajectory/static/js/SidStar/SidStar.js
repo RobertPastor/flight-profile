@@ -1,5 +1,7 @@
 
-const SingletonSidStar = (function () {
+import { initProgressBar , initWorker } from "../main/main.js";
+
+export const SingletonSidStar = (function () {
 	
 	let instance;
     function createInstance() {

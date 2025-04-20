@@ -1,7 +1,8 @@
 
+import { initProgressBar , initWorker } from "../main/main.js";
 
 
-function initDownloadVerticalProfile(flightProfileControl) {
+export function initDownloadVerticalProfile(flightProfileControl) {
 	
 	document.getElementById("btnDownLoadVerticalProfileId").onclick = function () {
 

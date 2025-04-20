@@ -5,7 +5,7 @@ Created on 12 nov. 2024
 '''
 from trajectory.Openap.AircraftFuelFlowFile import OpenapAircraftFuelFlow
 import sys
-sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
+#sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, FuelFlow, Emission, WRAP
 
@@ -71,6 +71,6 @@ class OpenapAircraftMass(OpenapAircraftFuelFlow):
     def getMinimumMassKilograms(self):
         return self.minimumMassKilograms
     
-    def getMaximumMassKilograms(self):
-        return self.maximumMassKilograms
+    def getMaximumTakeOffMassKilograms(self):
+        return self.maximumTakeOffMassKilograms
     

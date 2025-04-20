@@ -1,4 +1,6 @@
 
+import { stopBusyAnimation } from "./main.js";
+
 window.addEventListener('load', (event) => { 
        
 	//console.log("Download Pdf Presentation is loaded");

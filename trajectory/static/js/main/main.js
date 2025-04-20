@@ -1,4 +1,57 @@
 
+import {
+        Globe,
+        GlobusRgbTerrain,
+        control,
+        XYZ,
+        LonLat,
+        Extent,
+        utils,
+        OpenStreetMap,
+        Bing
+    } from "../og/og.es.js";
+    
+import { MainControl } from "./mainControl.js";
+import { AirlineRoutesAirwaysSubMenu } from "./subMenuAirwaysControl.js";
+import { AirlineOptimizationsSubMenu } from "./subMenuOptimizations.js";
+import { FuelSubMenu } from "./subMenuFuelControl.js";
+import { MeteoSubMenu } from "./subMenuMeteo.js";
+import { HelpControl } from "../help/helpControl.js";
+import { D3Control } from "../d3/d3Control.js";
+import { DialogControl } from "./dialogControl.js";
+import { AirlineFleetControl } from "../airlineFleet/airlineFleetControl.js";
+import { AirlineAirportsRoutesControl } from "../airlineAirports/airlineAirportsRoutesControl.js"; 
+import { AirlineRoutesControl} from "../airlineRoutes/airlineRoutesControl.js";
+import { FlightProfileControl } from "../flightProfile/flightProfileControl.js";
+import { AirlineFlightLegCostsResultsControl } from "../airlineFlightLegCosts/airlineFlightLegCostsResultsControl.js";
+import { AirlineCostsControl } from "../airlineCosts/airlineCostsControl.js";
+import { AirlineCostsOptimizationControl } from "../airlineCostsOptimization/airlineCostsOptimizationControl.js";
+import { AirlineCasmControl } from "../airlineCASM/airlineCasmControl.js";
+import { AirlineCasmOptimizationControl } from "../airlineCasmOptimization/airlineCasmOptimizationControl.js";
+import { FuelPlannerControl } from "../fuelPlanner/fuelPlannerControl.js";
+import { OgLayerCleanerControl } from "../ogLayerCleaner/ogLayerCleanerControl.js";
+import { MetarsOgControl } from "../metars/metarsOgControl.js";
+
+import { SingletonAirlineFleet } from "../airlineFleet/airlineFleet.js";
+import { SingletonAirlineAirports } from "../airlineAirports/airlineAirports.js";
+import { SingletonAirlineRoutes } from "../airlineRoutes/airlineRoutes.js";
+import { SingletonAirlineCosts } from "../airlineCosts/airlineCosts.js";
+import { SingletonProfileCosts } from "../flightProfile/computeFlightProfile.js";
+import { SingletonAirlineFlightLegCosts } from "../airlineFlightLegCosts/airlineFlightLegCosts.js";
+import { SingletonAirlineCostsOptimization } from "../airlineCostsOptimization/airlineCostsOptimization.js";
+import { SingletonAirlineCASM } from "../airlineCASM/airlineCASM.js";
+import { SingletonAirlineCasmOptimization } from "../airlineCasmOptimization/airlineCasmOptimization.js";
+import { SingletonFuelPlanner } from "../fuelPlanner/fuelPlanner.js";
+import { SingletonMetars } from "../metars/metars.js";
+import { SingletonAirlineSeatMiles } from "../airlineSeatMilesMaximization/airlineSeatMilesMaximization.js";
+import { SingletonSidStar } from "../SidStar/SidStar.js";
+import { SingletonWindTemperature } from "../windTemperature/windTemperature.js";
+import { SingletonMainClass } from "./mainSingletonClass.js";
+
+
+import { initDownloadVerticalProfile } from "../flightProfile/dowloadVerticalProfile.js";
+import { initDownloadKMLfile } from "../flightProfile/downloadKMLfile.js";
+    
 var worker = undefined;
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -15,7 +68,7 @@ function removeAllChilds (parent) {
     }
 }
 
-function showMessage ( title, message ) {
+export function showMessage ( title, message ) {
 	
 	const dialog = document.getElementById("dialogId");
 	if (dialog) {
@@ -44,7 +97,7 @@ function showMessage ( title, message ) {
  * this recommandation has been received directly from open globus
  */
 //function removeLayer( globus , layerName ) : Promise<boolean> {
-function removeLayer( globus , layerName )  {
+export function removeLayer( globus , layerName )  {
 	
 	return new Promise ( (resolve, reject) => {
 		try {
@@ -76,13 +129,13 @@ function removeLayer( globus , layerName )  {
 	})
 }
 
-function stopBusyAnimation(){
+export function stopBusyAnimation(){
 	//console.log("stop busy anymation");
 	stopWorker();
 	initProgressBar();
 }
 
-function initProgressBar() {
+export function initProgressBar() {
     // Gets the number of image elements
     //let numberOfSteps = 100;
     let progressBar = document.getElementById('workerId');
@@ -91,14 +144,14 @@ function initProgressBar() {
     }
 }
 
-function stopWorker() {
+export function stopWorker() {
 	if (worker) {
 		worker.terminate();
 	}
     worker = undefined;
 }
 
-function initWorker() {
+export function initWorker() {
 	
 	if (typeof (Worker) !== "undefined") {
         //console.log("Yes! Web worker is supported !");
@@ -120,7 +173,7 @@ function initWorker() {
  * function used to hide any contextual table
  * using the hide button placed upper right in the table div menu bar
  */
-function clickToHide() {
+export function clickToHide() {
 	// span in div and div in div -> hence twice parentNode
 	let elem = this.parentNode.parentNode;
 	elem.style = "display: none;";
@@ -130,7 +183,7 @@ function clickToHide() {
 /**
  * hide all DIVs - use it when an airline is changed
  */
-function hideAllDiv(globus) {
+export function hideAllDiv(globus) {
 	
 	let airlineFleet = SingletonAirlineFleet.getInstance()
 	airlineFleet.hideAirlineFleetDiv();
@@ -195,9 +248,9 @@ function switchAirlines(globus) {
 					let MaxLongitude = airline["MaxLongitudeDegrees"];
 					let MaxLatitude  = airline["MaxLatitudeDegrees"];
 
-					let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
-					let NorthEast = new og.LonLat( parseFloat(MaxLongitude) , parseFloat(MaxLatitude) , parseFloat("0.0") );
-					let viewExtent = new og.Extent( SouthWest , NorthEast );
+					let SouthWest = new LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
+					let NorthEast = new LonLat( parseFloat(MaxLongitude) , parseFloat(MaxLatitude) , parseFloat("0.0") );
+					let viewExtent = new Extent( SouthWest , NorthEast );
 
 					globus.planet.viewExtent(viewExtent);
 				}
@@ -232,6 +285,7 @@ function initTools(globus, viewExtent) {
 	if	(globus){
 		
 		globus.planet.addControl(new MainControl());
+		
 		globus.planet.addControl(new AirlineRoutesAirwaysSubMenu());
 		globus.planet.addControl(new AirlineOptimizationsSubMenu());
 		globus.planet.addControl(new FuelSubMenu());
@@ -396,35 +450,41 @@ function initTools(globus, viewExtent) {
 		
 		let airlineAirportsRoutesTable = document.getElementById(airlineAirportsRoutesControl.getMainTableId());
 		airlineAirportsRoutesTable.classList.add('sortable');
+		
 	}
 }
 
 
 function initMain(viewExtent) {
 	// 10th September 2023 - use .de OSM instance
+	let osm = new OpenStreetMap();
+	
+	/*
 	var osm = new og.layer.XYZ("OpenStreetMap", {
             isBaseLayer: true,
             url: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
             visibility: true,
             attribution: 'Data @ OpenStreetMap contributors, ODbL'
     });
-	
+	*/
     // a HTMLDivElement whose id is `globus`
-    var globus = new og.Globe({
+    
+	var globus = new Globe({
             "target": "globusDivId", 
             "name": "Earth",
-            "terrain": new og.terrain.GlobusTerrain(),
+            "terrain": new GlobusRgbTerrain(),
             "layers": [osm],
             "autoActivated": true,
 			"viewExtent" : viewExtent,
 			"controls": [
-				new og.control.MouseNavigation({ autoActivate: true }),
-                new og.control.KeyboardNavigation({ autoActivate: true }),
-                new og.control.EarthCoordinates({ autoActivate: true, center: false , type: 1}),
-                new og.control.ZoomControl({ autoActivate: true }),
-                new og.control.CompassButton()                
+				new control.MouseNavigation({ autoActivate: true }),
+                new control.KeyboardNavigation({ autoActivate: true }),
+                new control.EarthCoordinates({ autoActivate: true, center: false , type: 1}),
+                new control.ZoomControl({ autoActivate: true }),
+                new control.CompassButton()                
                 ]
 	});
+	
 	initTools (globus, viewExtent);
 }
 
@@ -443,14 +503,14 @@ function init() {
 		let MinLatitude = airline["MinLatitudeDegrees"];
 		let MaxLatitude = airline["MaxLatitudeDegrees"];
 		
-		let SouthWest  = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
-		let NorthEast  = new og.LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
-		let viewExtent = new og.Extent( SouthWest , NorthEast );
+		let SouthWest  = new LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
+		let NorthEast  = new LonLat( parseFloat(MaxLongitude), parseFloat(MaxLatitude) , parseFloat("0.0") );
+		let viewExtent = new Extent( SouthWest , NorthEast );
 	
 		setTimeout( function() {
 			initMain(viewExtent);
 		} , 500 );
 	}
 }
-	
+
 

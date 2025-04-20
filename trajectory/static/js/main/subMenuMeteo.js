@@ -1,6 +1,10 @@
 
-
-class MeteoSubMenu extends og.Control {
+import {
+        Control
+    } from "../og/og.es.js";
+    
+    
+export class MeteoSubMenu extends Control {
 
 	constructor(options) {
 		super(options);

@@ -5,87 +5,107 @@
 
 ## install git / git Bash
 
+## move to the target folder -> 
+
+$ pwd
+/c/Users/rober
+
+rober@RobertPastor MINGW64 ~
+$ cd node.js/
+
+rober@RobertPastor MINGW64 ~/node.js
+$ ls
+openglobus.0.17.0/
+
+rober@RobertPastor MINGW64 ~/node.js
+$
+
+## in the target folder 
+
 in gitBash launch 
 $ git clone https://github.com/openglobus/openglobus.git
+
+rober@RobertPastor MINGW64 ~/node.js
+$ git clone https://github.com/openglobus/openglobus.git
+Cloning into 'openglobus'...
+remote: Enumerating objects: 43336, done.
+remote: Counting objects: 100% (193/193), done.
+remote: Compressing objects: 100% (163/163), done.
+remote: Total 43336 (delta 54), reused 64 (delta 28), pack-reused 43143 (from 2)
+Receiving objects: 100% (43336/43336), 162.31 MiB | 20.38 MiB/s, done.
+Resolving deltas: 100% (29547/29547), done.
+
+rober@RobertPastor MINGW64 ~/node.js
+
+## ===== the openglobus version is contained in the package.json filet
+
+$ cat package.json
+{
+  "name" : "@openglobus/og",
+  "version" : "0.25.5",
 
 
 ## ============= npm install ===============
 
-go to the repo and launch PowerShell
+go to the repo and launch PowerShelll
 
 PS D:\Node.js\openglobus.0.13.7> npm install
 
+this command should create a node_modules folder
+
+
+## ============== if needed upgrade the node.js version
+l$ node -v
+v22.14.0
+
+rober@RobertPastor MINGW64 ~/node.js/openglobus (master)
+
+
 ## =================== npm run build ==============================
 
-PS D:\Node.js\openglobus.0.13.7> npm run build
+PS D:\Node.js\openglobus.0.13.7> npm run buildd
 
-> @openglobus/og@0.13.7 build D:\Node.js\openglobus.0.13.7
-> rollup -c
+$ npm run build
 
+> @openglobus/og@0.25.5 build
+> vite build --mode production && npm run dts
 
-src/og/index.js → dist/@openglobus/og.umd.js...
-(!) Circular dependencies
-src\og\Extent.js -> src\og\mercator.js -> src\og\Extent.js
-src\og\mercator.js -> src\og\LonLat.js -> src\og\mercator.js
-src\og\math\Vec3.js -> src\og\math\Vec4.js -> src\og\math\Vec3.js
-...and 8 more
-created dist/@openglobus/og.umd.js in 6.5s
+vite v6.2.6 building for production...
+transforming...
+✓ 276 modules transformed.
+rendering chunks...
+computing gzip size...
+[vite-plugin-static-copy] Copied 1 items.
+lib/og.css       19.84 kB │ gzip:   4.97 kB
+lib/og.es.js  1,093.96 kB │ gzip: 231.52 kB
+✓ built in 4.60s
+✔ ./lib/og.es.js minified with terser
 
-src/og/index.js → dist/@openglobus/og.esm.js...
-(!) Circular dependencies
-src\og\Extent.js -> src\og\mercator.js -> src\og\Extent.js
-src\og\mercator.js -> src\og\LonLat.js -> src\og\mercator.js
-src\og\math\Vec3.js -> src\og\math\Vec4.js -> src\og\math\Vec3.js
-...and 8 more
-created dist/@openglobus/og.esm.js in 5.6s
-
-css/og.css → dist/@openglobus/og.css...
-Browserslist: caniuse-lite is outdated. Please run:
-  npx browserslist@latest --update-db
-  Why you should do it regularly: https://github.com/browserslist/browserslist#browsers-data-updating
-(!) The emitted file "og.css" overwrites a previously emitted file of the same name.
-created dist/@openglobus/og.css in 686ms
-PS D:\Node.js\openglobus.0.13.7>
-
-#================== build ===============================
-
-PS D:\Node.js\openglobus> npm run build
-
-> @openglobus/og@0.12.4 build D:\Node.js\openglobus
-> rollup -c
+> @openglobus/og@0.25.5 dts
+> tsc --build tsconfig.json
 
 
-src/og/index.js → dist/@openglobus/og.umd.js...
-(!) Circular dependencies
-src\og\Extent.js -> src\og\mercator.js -> src\og\Extent.js
-src\og\mercator.js -> src\og\LonLat.js -> src\og\mercator.js
-src\og\math\Vec3.js -> src\og\math\Vec4.js -> src\og\math\Vec3.js
-...and 8 more
-created dist/@openglobus/og.umd.js in 6.3s
+rober@RobertPastor MINGW64 ~/node.js/openglobus (master)
 
-src/og/index.js → dist/@openglobus/og.esm.js...
-(!) Circular dependencies
-src\og\Extent.js -> src\og\mercator.js -> src\og\Extent.js
-src\og\mercator.js -> src\og\LonLat.js -> src\og\mercator.js
-src\og\math\Vec3.js -> src\og\math\Vec4.js -> src\og\math\Vec3.js
-...and 8 more
-created dist/@openglobus/og.esm.js in 5.3s
 
-css/og.css → dist/@openglobus/og.css...
-Browserslist: caniuse-lite is outdated. Please run:
-  npx browserslist@latest --update-db
-  Why you should do it regularly: https://github.com/browserslist/browserslist#browsers-data-updating
-(!) The emitted file "og.css" overwrites a previously emitted file of the same name.
-created dist/@openglobus/og.css in 665ms
-PS D:\Node.js\openglobus>
+#================== npm run build mode = development ===============================
 
+modify the package.json to run build in development mode
+
+"scripts" : {
+    "docs" : "jsdoc -r ./src/ -c ./jsdoc.conf.json -d ./docs",
+    "serve_docs" : "cd docs; ws -p 8088",
+    "serve" : "ws -p 3000",
+    "build" : "vite build --mode development && npm run dts",
+
+PS D:\Node.js\openglobus> npm run buildd
 
 
 #=========== avoid minifying ======================
 
 to avoid compressing minifying 
 
-in file rollup.config.js suppress terser in the 1st plugin before the json() plugin
+in file rollup.config.js suppress terser in the 1st plugin before the json() pluginn
 
 export default [
     {
@@ -107,7 +127,7 @@ minimize: false
 
 ##================== build again ===============================
 
-npm run build
+npm run buildd
 
 #=================== copy files to the flight profile folder ==============
 

@@ -1,5 +1,6 @@
+import { initProgressBar , initWorker } from "../main/main.js";
 
-const SingletonAirlineFlightLegCosts = (function () {
+export const SingletonAirlineFlightLegCosts = (function () {
 	
 	let instance;
 

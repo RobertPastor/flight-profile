@@ -1,5 +1,11 @@
-
-const SingletonMainClass = (function () {
+import {
+        Control,
+        LonLat,
+        Extent
+    } from "../og/og.es.js";
+ 
+    
+export const SingletonMainClass = (function () {
 	
 	let instance;
     function createInstance() {
@@ -61,9 +67,9 @@ class MainClass {
 		let MaxLatitude = Math.max.apply(Math, latitudeArr);
 		MaxLatitude = Math.max(MaxLatitude + 2, MaxLatitude);
 		
-		let SouthWest = new og.LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
-		let NorthEast = new og.LonLat( parseFloat(MaxLongitude) , parseFloat(MaxLatitude) , parseFloat("0.0") );
-		let viewExtent = new og.Extent( SouthWest , NorthEast );
+		let SouthWest = new LonLat( parseFloat(MinLongitude) , parseFloat(MinLatitude) , parseFloat("0.0") );
+		let NorthEast = new LonLat( parseFloat(MaxLongitude) , parseFloat(MaxLatitude) , parseFloat("0.0") );
+		let viewExtent = new Extent( SouthWest , NorthEast );
 		this.globus.planet.viewExtent(viewExtent);
 		
 	}

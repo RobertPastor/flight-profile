@@ -5,8 +5,7 @@ Created on 12 nov. 2024
 '''
 
 import sys
-from _ast import Or
-sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
+#sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, FuelFlow, Emission, WRAP
 import json
@@ -16,7 +15,7 @@ import time
 
 from trajectory.Environment.Earth import Earth
 from trajectory.Environment.Atmosphere import Atmosphere
-from trajectory.Environment.Constants import Meter2NauticalMiles, Meter2Feet
+from trajectory.Environment.Constants import Meter2NauticalMiles
 
 import logging
 # create logger
@@ -48,6 +47,9 @@ class OpenapAircraft(OpenapAircraftConfiguration):
         
     def getAircraftName(self):
         return self.openapAircraft['aircraft']
+    
+    def getAircraft(self):
+        return self.openapAircraft
     
     def __str__(self):
         return json.dumps( self.openapAircraft )

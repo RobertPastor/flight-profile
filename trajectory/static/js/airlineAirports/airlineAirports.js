@@ -1,6 +1,9 @@
 
+import { initProgressBar , initWorker , stopBusyAnimation } from "../main/main.js";
+import { SingletonMainClass } from "../main/mainSingletonClass.js";
+import { Vector , Entity } from "../og/og.es.js";
 
-const SingletonAirlineAirports = (function () {
+export const SingletonAirlineAirports = (function () {
 	
 	let instance;
     function createInstance() {
@@ -18,7 +21,7 @@ const SingletonAirlineAirports = (function () {
 })();
 
 
-function showRoute( elem ) {
+export function showRoute( elem ) {
 	
 	let globus = SingletonAirlineAirports.getInstance().getGlobus();
 	
@@ -92,7 +95,7 @@ class AirlineAirports {
 			name = waypoint.name;
 		}
 		
-		layerRouteWayPoints.add(new og.Entity({
+		layerRouteWayPoints.add(new Entity({
 				lonlat: [longitude, latitude],
 				label: {
 						text: name,
@@ -116,7 +119,7 @@ class AirlineAirports {
 		let globus = this.globus;
 	
 		//console.log("start loading route WayPoints");
-		let layerRouteWayPoints = new og.layer.Vector( layerName , {
+		let layerRouteWayPoints = new Vector( layerName , {
 				billboard: { 
 					src: '/static/trajectory/images/marker.png', 
 					color: '#6689db' ,
@@ -280,14 +283,14 @@ class AirlineAirports {
 		if (! layer) {
 			// layer is not existing
 			
-			let layerAirport = new og.layer.Vector(layerName , { clampToGround: true, 	});
+			let layerAirport = new Vector(layerName , { clampToGround: true, 	});
 			layerAirport.addTo(globus.planet);
 			
 			let longitude = parseFloat(airport.Longitude);
 			let latitude = parseFloat(airport.Latitude);
 			let name = airport.AirportName;
 			
-			layerAirport.add(new og.Entity({
+			layerAirport.add(new Entity({
 					lonlat : [longitude, latitude],
 					label : SingletonMainClass.getInstance().getStandardOgLabel(name),
 					billboard : {

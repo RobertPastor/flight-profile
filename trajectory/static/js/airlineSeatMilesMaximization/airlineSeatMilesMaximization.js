@@ -1,4 +1,6 @@
-const SingletonAirlineSeatMiles = (function () {
+import { initProgressBar , initWorker } from "../main/main.js";
+
+export const SingletonAirlineSeatMiles = (function () {
 	
 	let instance;
 
@@ -16,6 +18,7 @@ const SingletonAirlineSeatMiles = (function () {
         }
     };
 })();
+
 
 class AirlineSeatsMilesMaximization {
 

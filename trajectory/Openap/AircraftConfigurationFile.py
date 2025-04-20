@@ -4,14 +4,12 @@ Created on 14 nov. 2024
 @author: robert
 '''
 
-import sys
-import math
 import json
-sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
+#sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, FuelFlow, Emission, WRAP
 
-from trajectory.Environment.Constants import  Meter2Feet , Feet2Meter, MeterSecond2Knots, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
+from trajectory.Environment.Constants import  Meter2Feet , MeterSecond2Knots, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
 from trajectory.Environment.Constants import Meter2NauticalMiles, MaxRateOfClimbFeetPerMinutes , FeetMinutes2MetersSeconds
 from trajectory.Environment.Constants import MeterSeconds2FeetMinutes 
 from trajectory.Environment.Constants import MeterSecond2Knots, Knots2MetersSeconds
@@ -326,7 +324,6 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
                      ( ( altitudeMSLmeters * Meter2Feet )  < ( self.getCruiseLevelFeet() + 1000.0 ) ):
                 self.setCruiseConfiguration( elapsedTimeSeconds + deltaTimeSeconds )
 
-
         elif self.isCruise():
             '''The final approach starts from 1000 ft toward the end of the descent '''
             
@@ -389,13 +386,13 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             #trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + aircraftAccelerationMetersSecondSquare * deltaTimeSeconds
             
             descentCASknots = self.computeDescentCASknots( altitudeMSLfeet = altitudeMSLfeet ,
-                                                       CASknots        = tas2cas ( 
-                                                                            tas         = self.getCurrentTASspeedKnots() ,
-                                                                            altitude    = altitudeMSLfeet ,
-                                                                            temp        = 'std' ,
-                                                                            speed_units = 'kt' , 
-                                                                            alt_units   = 'ft' , 
-                                                                            temp_units  = 'C' ) )
+                                                           CASknots        = tas2cas ( 
+                                                            tas         = self.getCurrentTASspeedKnots() ,
+                                                            altitude    = altitudeMSLfeet ,
+                                                            temp        = 'std' ,
+                                                            speed_units = 'kt' , 
+                                                            alt_units   = 'ft' , 
+                                                            temp_units  = 'C' ) )
             trueAirSpeedKnots = cas2tas( cas         = descentCASknots ,
                                          altitude    = altitudeMSLfeet ,
                                          temp        = 'std' ,
@@ -430,12 +427,28 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
             
             if ( descentCASknots < self.getFinalApproachCASknots() ):
-                raise ValueError( " should transition to final approach - speed ")
+                self.setFinalApproachConfiguration( elapsedTimeSeconds )
             
             if ( altitudeMSLmeters < self.getArrivalRunwayMSLmeters()):
-                raise ValueError(" should transition to final approach - altitude ")
+                self.setFinalApproachConfiguration( elapsedTimeSeconds )
         
-        
+        elif self.isApproach(): 
+            
+            rateOfDescentMetersSeconds = self.getFinalApproachVerticalRateMeterSeconds( altitudeMSLfeet )
+            rateOfDescentFeetMinutes   = rateOfDescentMetersSeconds * MeterSeconds2FeetMinutes
+            
+            thrustNewtons = self.computeThrustNewtons( tasKnots , altitudeMSLfeet , rateOfDescentFeetMinutes)
+            dragNewtons = self.computeDragNewtons ( aircraftMassKilograms , tasKnots , altitudeMSLfeet , rateOfDescentFeetMinutes )
+
+            trueAirSpeedMetersSecond = self.getCurrentTASmetersSeconds()
+            liftNewtons = self.computeLiftNewtons( aircraftMassKilograms      = aircraftMassKilograms, 
+                                                   altitudeMeanSeaLevelMeters = altitudeMSLmeters, 
+                                                   trueAirSpeedMetersSecond   = trueAirSpeedMetersSecond , 
+                                                   latitudeDegrees            = latitudeDegrees)
+            
+            approachCASknots = self.computeApproachCASknots()
+            
+            
         else:
             
             raise ValueError("not yet implemented")

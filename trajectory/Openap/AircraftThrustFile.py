@@ -7,12 +7,10 @@ Created on 12 nov. 2024
 ''' Thrust expressed in Newtons '''
 
 import sys
-sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
+#sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, Thrust
-import json
 
-from trajectory.Openap.AircraftMassFile import OpenapAircraftMass
 from trajectory.Openap.AircraftDragFile import OpenapAircraftDrag
 
 import logging 
@@ -64,7 +62,7 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
         elif self.isCruise():
             thrustNewtons = self.getCruiseThrustNewtons( tasKnots        = tasKnots , 
                                                          altitudeMSLfeet = altitudeMSLfeet )
-        elif self.isDescent():
+        elif self.isDescent() or self.isApproach():
             thrustNewtons = self.getDescentIdleThrustNewtons( tasKnots        = tasKnots , 
                                                               altitudeMSLfeet = altitudeMSLfeet )
         else:

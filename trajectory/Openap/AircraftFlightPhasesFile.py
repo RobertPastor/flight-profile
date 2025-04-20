@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 from trajectory.aerocalc.airspeed import tas2cas, tas2mach
 
 from trajectory.Environment.Constants import  Meter2Feet , Feet2Meter, MeterSecond2Knots, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
-from trajectory.Environment.Constants import     Meter2NauticalMiles, MaxRateOfClimbFeetPerMinutes , FeetMinutes2MetersSeconds
+from trajectory.Environment.Constants import  Meter2NauticalMiles, MaxRateOfClimbFeetPerMinutes , FeetMinutes2MetersSeconds
 from trajectory.Openap.AircraftStateVectorFile import OpenapAircraftStateVector
 
 
@@ -84,6 +84,12 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
         if self.aircraftCurrentConfiguration != newConfiguration:
             self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
             self.aircraftCurrentConfiguration = newConfiguration
+            
+    def setFinalApproachConfiguration(self, elapsedTimeSeconds):
+        newConfiguration = 'approach'
+        if self.aircraftCurrentConfiguration != newConfiguration:
+            self.showConfigurationChange(newConfiguration, elapsedTimeSeconds)
+            self.aircraftCurrentConfiguration = newConfiguration
 
     
     def isTakeOff(self):
@@ -123,5 +129,4 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
         logger.info ( self.className + ' TAS= {0:.2f} m/s - TAS= {1:.2f} knots - CAS= {2:.2f} m/s - CAS= {3:.2f} knots - Mach= {4:.2f}'.format(tas, (tas*MeterSecond2Knots), cas, (cas*MeterSecond2Knots), mach) )
         logger.info ( self.className + ' ====================================' )
 
-        
-        
+

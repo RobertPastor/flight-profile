@@ -14,7 +14,7 @@ from trajectory.aerocalc.airspeed import mach_alt2cas
 from trajectory.Environment.Constants import NauticalMiles2Meter
 from sqlalchemy.sql._elements_constructors import false
 
-sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
+#sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, FuelFlow, Emission, WRAP
 import json
@@ -62,6 +62,9 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         self.initialClimbCASset = False
         self.initialClimbCASknots = 0.0
         self.initialClimbAltitudeFeet = 0.0
+        
+    def getMaximumSpeedMmoMach(self):
+        return self.maximumSpeedMmoMach
         
     def getDefaultTakeOffCASknots(self):
         ''' @TODO correct for difference to reference mass '''

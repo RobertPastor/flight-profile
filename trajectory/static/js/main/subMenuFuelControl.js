@@ -1,7 +1,9 @@
 
+import {
+        Control
+    } from "../og/og.es.js";
 
-
-class FuelSubMenu extends og.Control {
+export class FuelSubMenu extends Control {
 	
 	constructor(options) {
 		super(options);

@@ -5,7 +5,7 @@ Created on 12 nov. 2024
 '''
 
 import sys
-sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
+#sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop
 import json
@@ -29,9 +29,9 @@ class OpenapAircraftEngine(OpenapAircraftThrust):
         self.defaultEngine   = self.aircraft['engine']['default']
         self.numberOfEngines = self.aircraft['engine']['number']
         
-        logger.info("default engine = {}".format(self.defaultEngine))
-        logger.info("number of engines = {}".format(self.numberOfEngines))
-        logger.info("engines options = {}".format(self.engineOptions))
+        logger.info(self.className + " : default engine = {}".format(self.defaultEngine))
+        logger.info(self.className + " : number of engines = {}".format(self.numberOfEngines))
+        logger.info(self.className + " : engines options = {}".format(self.engineOptions))
         
 
     def getNumberOfEngines(self):

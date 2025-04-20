@@ -1,6 +1,6 @@
 
 
-const SingletonAirlineRoutes = (function () {
+export const SingletonAirlineRoutes = (function () {
 	
 	let instance;
     function createInstance() {

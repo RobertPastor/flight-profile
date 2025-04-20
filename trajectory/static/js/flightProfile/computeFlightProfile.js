@@ -1,4 +1,6 @@
 
+import { initProgressBar , initWorker } from "../main/main.js";
+
 document.addEventListener('DOMContentLoaded', () => { 
        	 
 	$("#trComputeFlightProfileId").hide();
@@ -8,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 }); 
 
-const SingletonProfileCosts = (function () {
+export const SingletonProfileCosts = (function () {
 	
 	let instance;
     function createInstance() {

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	
 }); 
 
-const SingletonAirlineFleet = (function () {
+export const SingletonAirlineFleet = (function () {
 	
 	let instance;
 

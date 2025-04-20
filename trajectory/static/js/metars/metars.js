@@ -1,4 +1,8 @@
-const SingletonMetars = (function () {
+
+import { initProgressBar , initWorker } from "../main/main.js";
+
+
+export const SingletonMetars = (function () {
 	
 	let instance;
     function createInstance() {

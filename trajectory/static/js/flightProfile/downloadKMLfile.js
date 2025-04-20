@@ -1,7 +1,7 @@
 
+import { initProgressBar , initWorker } from "../main/main.js";
 
-
-function initDownloadKMLfile(flightProfileControl) {
+export function initDownloadKMLfile(flightProfileControl) {
 	
 	let buttonId = "btnDownLoadKMLfileId";
 	// temporary issue between kml versions local and python anywhere

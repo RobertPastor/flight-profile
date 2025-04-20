@@ -6,7 +6,7 @@ Created on 15 nov. 2024
 
 
 import sys
-sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
+#sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, Thrust, Drag
 

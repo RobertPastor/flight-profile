@@ -1,6 +1,8 @@
+import {
+        Control
+    } from "../og/og.es.js";
 
-
-class AirlineRoutesAirwaysSubMenu extends og.Control {
+export class AirlineRoutesAirwaysSubMenu extends Control {
 	
 	constructor(options) {
 		super(options);

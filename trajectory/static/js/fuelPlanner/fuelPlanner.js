@@ -1,6 +1,6 @@
 
 
-const SingletonFuelPlanner = (function () {
+export const SingletonFuelPlanner = (function () {
 	
 	let instance;
 

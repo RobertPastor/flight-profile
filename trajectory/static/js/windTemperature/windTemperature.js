@@ -1,5 +1,7 @@
 
-const SingletonWindTemperature = (function () {
+import { initProgressBar , initWorker } from "../main/main.js";
+
+export const SingletonWindTemperature = (function () {
 	
 	let instance;
 

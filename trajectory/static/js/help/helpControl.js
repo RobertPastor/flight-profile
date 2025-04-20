@@ -1,7 +1,9 @@
-
+import {
+        Control
+    } from "../og/og.es.js";
 
 //Define custom control class
-class HelpControl extends og.Control {
+export class HelpControl extends Control {
 	
 	constructor(options) {
 		super(options);

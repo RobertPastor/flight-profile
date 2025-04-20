@@ -1,7 +1,13 @@
+import {
+        Control
+    } from "../og/og.es.js";
+    
+import { clickToHide } from "../main/main.js";
+
 
 // Define custom control class
 // display a floating table related to the right click on an airport 
-class MetarsOgControl extends og.Control {
+export class MetarsOgControl extends Control {
 	constructor(options) {
 		super(options);
 	}

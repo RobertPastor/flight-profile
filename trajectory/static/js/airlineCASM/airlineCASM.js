@@ -1,5 +1,7 @@
 
-const SingletonAirlineCASM = (function () {
+import { initProgressBar , initWorker } from "../main/main.js";
+
+export const SingletonAirlineCASM = (function () {
 	
 	let instance;
 

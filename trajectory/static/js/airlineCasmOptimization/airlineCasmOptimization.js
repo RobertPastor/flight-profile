@@ -1,5 +1,8 @@
 
-const SingletonAirlineCasmOptimization = (function () {
+import { initProgressBar , initWorker } from "../main/main.js";
+
+
+export const SingletonAirlineCasmOptimization = (function () {
 	
 	let instance;
 

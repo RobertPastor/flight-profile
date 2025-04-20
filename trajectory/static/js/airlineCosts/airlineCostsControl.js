@@ -1,3 +1,10 @@
+import {
+        Control
+    } from "../og/og.es.js";
+
+import { clickToHide } from "../main/main.js";
+
+
 $(document).ready( function () {
 	setTimeout(function () {
 		if ( document.getElementById("airlineCostsTableId") ) {
@@ -8,7 +15,7 @@ $(document).ready( function () {
 
 
 //Define custom control class
-class AirlineCostsControl extends og.Control {
+export class AirlineCostsControl extends Control {
 	constructor(options) {
 		super(options);
 	}

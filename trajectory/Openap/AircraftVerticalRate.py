@@ -3,14 +3,13 @@ Created on 25 déc. 2024
 
 @author: robert
 '''
-
+import sys
 import json
 import logging 
 from trajectory.Environment.Constants import Meter2Feet
 logger = logging.getLogger(__name__)
 
-import sys
-sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
+#sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop, FuelFlow, Emission, WRAP
 
@@ -68,3 +67,10 @@ class OpenapAircraftVerticalRate(OpenapAircraftFlightPhases):
             
         logger.info( self.className + " - descent vertical rate = {0} m/s".format (  self.descentVerticalRateMeterSeconds ) )
         return self.descentVerticalRateMeterSeconds
+    
+    def getApproachVerticalRateMeterSeconds(self , altitudeMSLfeet):
+        
+        self.finalApproachVerticalRateMeterSeconds =  self.wrap.finalapp_vs()['default']
+        logger.info( self.className + " - final approach vertical rate = {0} m/s".format (  self.descentVerticalRateMeterSeconds ) )
+        return self.finalApproachVerticalRateMeterSeconds
+        

@@ -1,7 +1,11 @@
 
-
+import {
+        Control
+    } from "../og/og.es.js";
+    
+    
 //Define custom control class
-class OgLayerCleanerControl extends og.Control {
+export class OgLayerCleanerControl extends Control {
 	
 	constructor(options) {
 		super(options);

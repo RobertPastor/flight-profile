@@ -1,6 +1,11 @@
+import {
+        Control
+    } from "../og/og.es.js";
+    
+import { clickToHide } from "../main/main.js";
 
 //Define custom control class
-class AirlineRoutesControl extends og.Control {
+export class AirlineRoutesControl extends Control {
 	constructor(options) {
 		super(options);
 	}

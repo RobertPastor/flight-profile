@@ -95,6 +95,7 @@ class FlightPath(FlightPlan):
         
         assert isinstance(self.aircraft, BadaAircraft) and not(self.aircraft is None)
         self.aircraft.setAircraftMassKilograms(takeOffMassKilograms)
+        
         ''' sanity checks '''
         assert RequestedFlightLevel >= MinFlightLevel and RequestedFlightLevel <= MaxFlightLevel
         self.aircraft.setTargetCruiseFlightLevel(RequestedFlightLevel = RequestedFlightLevel, 

@@ -1,7 +1,12 @@
+import {
+        Control
+    } from "../og/og.es.js";
+
+import { clickToHide } from "../main/main.js";
 
 
 //Define custom control class
-class FuelPlannerControl extends og.Control {
+export class FuelPlannerControl extends Control {
 	
 	constructor(options) {
 		super(options);

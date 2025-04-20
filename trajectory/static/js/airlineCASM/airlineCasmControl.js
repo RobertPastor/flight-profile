@@ -1,6 +1,11 @@
+import {
+        Control
+    } from "../og/og.es.js";
+    
+import { clickToHide } from "../main/main.js";
 
 
-class AirlineCasmControl extends og.Control {
+export class AirlineCasmControl extends Control {
 	
     constructor(options) {
 		super(options);

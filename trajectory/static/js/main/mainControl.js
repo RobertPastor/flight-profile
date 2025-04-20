@@ -1,4 +1,8 @@
 
+import {
+        Control
+    } from "../og/og.es.js";
+   
 function listenSubMenuMeteoEntry( btnSubMenuMeteoId, mainSubMenuMeteoDivId ) {
 	
 	document.getElementById(btnSubMenuMeteoId).onclick = function () {
@@ -25,7 +29,6 @@ function listenSubMenuMeteoEntry( btnSubMenuMeteoId, mainSubMenuMeteoDivId ) {
 		};
 	
 }
-
 
 function listenSubMenuFuelEntry( btnSubMenuFuelId , mainSubMenuFuelDivId) {
 	
@@ -110,7 +113,7 @@ function listenSubMenuAirwaysEntry( btnAirwaysId , mainSubMenuAirwaysDivId) {
 
 
 //Define custom control class
-class MainControl extends og.Control {
+export class MainControl extends Control {
 	
 	constructor(options) {
 		super(options);
