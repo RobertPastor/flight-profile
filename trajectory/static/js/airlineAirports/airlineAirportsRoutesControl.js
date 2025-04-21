@@ -6,6 +6,7 @@ import {
 // Define custom control class
 // display a floating table related to the right click on an airport 
 export class AirlineAirportsRoutesControl extends Control {
+	
 	constructor(options) {
 		super(options);
 	}

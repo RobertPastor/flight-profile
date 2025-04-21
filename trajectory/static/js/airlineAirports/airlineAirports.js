@@ -21,7 +21,7 @@ export const SingletonAirlineAirports = (function () {
 })();
 
 
-export function showRoute( elem ) {
+export function showHideRoute( elem ) {
 	
 	let globus = SingletonAirlineAirports.getInstance().getGlobus();
 	
@@ -180,10 +180,10 @@ class AirlineAirports {
 								.append( '<span class="arrow-left" ></span>')
 							)
 				}
-					
+				// onclick="showRoute(this);"
 				$("#airlineAirportsRoutesMainDivId").find('tbody').find("tr").last()
 					.append($('<td>')
-							.append( '<span> <a id="' + this.LayerNamePrefix + id + '" href="#" onclick="showRoute(this);" >show / hide route</a> </span>'  )
+							.append( '<span> <a id="' + this.LayerNamePrefix + id + '" href="#"  >show / hide route</a> </span>'  )
 					)
 					.append($('<td>')
 							.append( oneAirlineRoute["DepartureAirport"] )
@@ -197,6 +197,12 @@ class AirlineAirports {
 					.append($('<td>')
 							.append( oneAirlineRoute["ArrivalAirportICAOCode"] )
 					)
+				// manage on click button
+				let showHideLinkId = this.LayerNamePrefix + id;
+				$('#'+showHideLinkId).click(function () {
+					console.log("Show hide link clicked -> " + showHideLinkId);
+					showHideRoute(this);
+				});
 			}
 		}
 	}

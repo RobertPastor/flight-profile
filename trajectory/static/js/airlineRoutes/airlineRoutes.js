@@ -256,7 +256,7 @@ class AirlineRoutes {
 			} else {
 				document.getElementById(elemButton.id).value = "Show";
 				layer.setVisibility( false );
-			}			
+			}
 		}
 		/**
 		* on click function 
