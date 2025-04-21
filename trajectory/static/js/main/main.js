@@ -232,7 +232,7 @@ function switchAirlines(globus) {
 		
 		/**
 		 * airlines data is made available through template index-og.html
-		 * @TODO : compute viewport based upon Lat Long of airports
+		 * @TODO : compute viewport based upon Lat Long of airline airports airports
 		 * */ 
 		if ( airlines && Array.isArray( airlines ) && ( airlines.length > 0 ) ) {
 
@@ -277,6 +277,9 @@ function loadAirlinesSelector() {
 	}
 }
 
+/**
+ * initialize og.Controls
+ */
 function initTools(globus, viewExtent) {
 			
 	// add all controls that are derived from an og control class

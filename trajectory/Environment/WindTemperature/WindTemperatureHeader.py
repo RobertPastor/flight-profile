@@ -47,32 +47,32 @@ class WindTemperatureHeader(object):
         self.transmissionTimeZulu = "1200Z"
         textLineArr = str(textLine).split(" ")
         for elem in textLineArr:
-            print ( elem )
+            #print ( elem )
             if (str(elem).isdigit()):
-                print ( "only digits element = {0}".format(elem))
+                #print ( "only digits element = {0}".format(elem))
                 self.transmissionDay = elem[0:2]
-                print ( "measurement day of the month = {0}".format(self.transmissionDay))
+                #print ( "measurement day of the month = {0}".format(self.transmissionDay))
                 self.transmissionTimeZulu = elem[2:]+ "Z"
-                print ( "measurement Zulu time = {0}".format(self.transmissionTimeZulu))
+                #print ( "measurement Zulu time = {0}".format(self.transmissionTimeZulu))
                 
     def analyseMeasurementDates(self, textLine):
         length = len("DATA BASED ON ")
         self.measurementDayTimeZulu = textLine[length:]
-        print ( "measurement day time = {0}".format(self.measurementDayTimeZulu))
+        #print ( "measurement day time = {0}".format(self.measurementDayTimeZulu))
         self.measurementDay = self.measurementDayTimeZulu[0:2]
-        print ( "measurement day of the month = {0}".format(self.measurementDay))
+        #print ( "measurement day of the month = {0}".format(self.measurementDay))
         self.measurementTimeZulu = self.measurementDayTimeZulu[2:]
-        print ( "measurement time Zulu = {0}".format(self.measurementTimeZulu))
+        #print ( "measurement time Zulu = {0}".format(self.measurementTimeZulu))
         
     def analyseValidityDates(self, textLine):
         begin = len("VALID ")
         end = begin + 7
         self.validityDayTimeZulu = textLine[begin:end]
-        print ( "validity day time = {0}".format(self.validityDayTimeZulu))
+        #print ( "validity day time = {0}".format(self.validityDayTimeZulu))
         self.validityDay = self.validityDayTimeZulu[0:2]
-        print ( "validity day = {0}".format(self.validityDay))
+        #print ( "validity day = {0}".format(self.validityDay))
         self.validityTimeZulu = self.validityDayTimeZulu[2:]
-        print ( "validity time Zulu = {0}".format(self.validityTimeZulu))
+        #print ( "validity time Zulu = {0}".format(self.validityTimeZulu))
         
     def analyseForUseDates(self , textLine ):
         forUseIndex = str(textLine).index("FOR USE")
@@ -80,14 +80,14 @@ class WindTemperatureHeader(object):
             begin = forUseIndex + len ( "FOR USE ")
             end = begin + 10
             self.forUseDayTimeZulu = textLine[begin:end]
-            print ( "for Use day time Zulu = {0}".format(self.forUseDayTimeZulu))
+            #print ( "for Use day time Zulu = {0}".format(self.forUseDayTimeZulu))
             self.forUsePeriodBeginTimeZulu = self.forUseDayTimeZulu[0:4] + "Z"
             self.forUsePeriodEndTimeZulu = self.forUseDayTimeZulu[5:10]
         
     
     def analyseHeader(self, headLineList ):
         assert ( isinstance ( headLineList , list))
-        print (" --- analyse head ----")
+        #print (" --- analyse head ----")
         
         for textLine in headLineList:
             if ( str(textLine).startswith("FB")):

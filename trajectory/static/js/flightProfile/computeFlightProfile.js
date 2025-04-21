@@ -1,5 +1,5 @@
 
-import { initProgressBar , initWorker , stopBusyAnimation } from "../main/main.js";
+import { initProgressBar , initWorker , stopBusyAnimation , removeLayer } from "../main/main.js";
 import { SingletonMainClass } from "../main/mainSingletonClass.js";
 
 document.addEventListener('DOMContentLoaded', () => { 

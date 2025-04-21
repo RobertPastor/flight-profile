@@ -20,7 +20,7 @@ class WeatherStationFeet(object):
         return self.feetLevels
 
     def exploitFeetLine(self, feetLine):
-        print ( feetLine )
+        #print ( feetLine )
         self.feetLevels = []
         if str(feetLine).startswith( "FT" ):
             #print ( "Feet line starts with FT as expected ")

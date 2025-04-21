@@ -2,7 +2,6 @@ import {
         Control
     } from "../og/og.es.js";
     
-    
 // Define custom control class
 // display a floating table related to the right click on an airport 
 export class AirlineAirportsRoutesControl extends Control {

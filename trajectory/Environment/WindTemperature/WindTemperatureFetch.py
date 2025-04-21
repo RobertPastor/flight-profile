@@ -64,7 +64,7 @@ def fetchWindTemperature(USregion, ForecastHour, Level):
                     #rq.raise_for_status()
                     #print ( response.status_code )
                     if response.status_code == requests.codes.ok:
-                        print ( "answer is OK")
+                        #print ( "answer is OK")
                         #intext = str(response.json())
                         #print ( intext )
                         #print ( response.text )

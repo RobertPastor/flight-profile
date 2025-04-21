@@ -1,7 +1,6 @@
 
-import {
-        Control
-    } from "../og/og.es.js";
+import { Control } from "../og/og.es.js";
+import { initDownloadPdfPresentation } from "./downloadPdfPresentation.js";
    
 function listenSubMenuMeteoEntry( btnSubMenuMeteoId, mainSubMenuMeteoDivId ) {
 	
@@ -135,10 +134,11 @@ export class MainControl extends Control {
 		
 		let span = document.createElement('span');
 		span.id = "PdfPresentationId";
-		span.innerHTML = "<a title='download a pdf presentation' id='linkDownloadPdfPresentationId' class='download' href='#' onclick='initDownloadPdfPresentation()' ></a>";
+		span.innerHTML = "<a title='download a pdf presentation' id='linkDownloadPdfPresentationId' class='download' href='#'  ></a>";
 		draggableMainDiv.appendChild(span);
-		
 		mainDiv.appendChild(draggableMainDiv);
+		
+		
 
 		let table = document.createElement('table');
 		let tbody = document.createElement('tbody');
@@ -307,6 +307,14 @@ export class MainControl extends Control {
 		listenSubMenuFuelEntry("btnSubMenuFuelId", "mainSubMenuFuelDivId");
 		// 22nd August 2024 - listen to sub menu Meteo - metar and wind temperature
 		listenSubMenuMeteoEntry("btnSubMenuMeteoId" , "mainSubMenuMeteoDivId");
+		
+		// listen to download presentation pdf
+		let linkDownloadPdfPresentationId = "linkDownloadPdfPresentationId";
+		$('#'+linkDownloadPdfPresentationId).click(function () {
+			//console.log("download pdf presentation clicked -> " + linkDownloadPdfPresentationId);
+			initDownloadPdfPresentation();
+		});
+		
 		
 	}
 };

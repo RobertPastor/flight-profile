@@ -1,5 +1,5 @@
 
-import { stopBusyAnimation } from "./main.js";
+import { stopBusyAnimation , initProgressBar , initWorker } from "./main.js";
 
 window.addEventListener('load', (event) => { 
        
@@ -9,7 +9,7 @@ window.addEventListener('load', (event) => {
 }); 
 
 
-function initDownloadPdfPresentation() {
+export function initDownloadPdfPresentation() {
 	
 		// init progress bar.
 		initProgressBar();

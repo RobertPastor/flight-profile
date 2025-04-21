@@ -55,7 +55,7 @@ export function initDownloadKMLfile(flightProfileControl) {
 				
 				let blob = req.response;
 				let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
-				// filename starts with attachment followed by an EQUAL signe
+				// filename starts with attachment followed by an EQUAL sign
 				if ( fileName ) {
 					
 					fileName = fileName.split("=")[1];

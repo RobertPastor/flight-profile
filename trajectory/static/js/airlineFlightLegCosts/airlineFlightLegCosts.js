@@ -1,4 +1,5 @@
 import { initProgressBar , initWorker } from "../main/main.js";
+import { SingletonMainClass } from "../main/mainSingletonClass.js";
 
 export const SingletonAirlineFlightLegCosts = (function () {
 	

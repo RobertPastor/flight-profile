@@ -200,7 +200,7 @@ class AirlineAirports {
 				// manage on click button
 				let showHideLinkId = this.LayerNamePrefix + id;
 				$('#'+showHideLinkId).click(function () {
-					console.log("Show hide link clicked -> " + showHideLinkId);
+					//console.log("Show hide link clicked -> " + showHideLinkId);
 					showHideRoute(this);
 				});
 			}
