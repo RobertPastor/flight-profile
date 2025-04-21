@@ -1,4 +1,7 @@
 
+import { SingletonMainClass } from "../main/mainSingletonClass.js";
+import { stopBusyAnimation , showMessage } from "../main/main.js";
+import { Entity , Vector } from "../og/og.es.js";
 
 export const SingletonAirlineRoutes = (function () {
 	
@@ -20,7 +23,7 @@ export const SingletonAirlineRoutes = (function () {
 /**
  * same function used to show or hide a Sid Star
  */
-function showHideSidStarRoute( elem ) {
+export function showHideSidStarRoute( elem ) {
 	
 	let globus = SingletonAirlineRoutes.getInstance().getGlobus();
 	
@@ -87,7 +90,7 @@ class AirlineRoutes {
 			name = waypoint.name;
 		}
 		// add the waypoint
-		layerRouteWayPoints.add(new og.Entity({
+		layerRouteWayPoints.add(new Entity({
 				lonlat: [longitude, latitude],
 				label: SingletonMainClass.getInstance().getStandardOgLabel(name),
 				billboard: {
@@ -102,7 +105,7 @@ class AirlineRoutes {
 	loadRouteWayPoints(  airlineRoutesWaypointsArray , layerName ) {
 		
 		let globus = this.globus;
-		let layerRouteWayPoints = new og.layer.Vector( layerName , {
+		let layerRouteWayPoints = new Vector( layerName , {
 				billboard: { 
 					src: '/static/trajectory/images/marker.png', 
 					color: '#6689db' ,

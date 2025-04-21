@@ -1,3 +1,7 @@
+
+import { SingletonMainClass } from "../main/mainSingletonClass.js";
+import { stopBusyAnimation } from "../main/main.js";
+
 document.addEventListener('DOMContentLoaded', (event) => { 
        
 	//console.log("Airline Fleet.js is loaded");

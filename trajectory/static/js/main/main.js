@@ -3,12 +3,9 @@ import {
         Globe,
         GlobusRgbTerrain,
         control,
-        XYZ,
         LonLat,
         Extent,
-        utils,
-        OpenStreetMap,
-        Bing
+        OpenStreetMap
     } from "../og/og.es.js";
     
 import { MainControl } from "./mainControl.js";
@@ -34,6 +31,7 @@ import { MetarsOgControl } from "../metars/metarsOgControl.js";
 
 import { SingletonAirlineFleet } from "../airlineFleet/airlineFleet.js";
 import { SingletonAirlineAirports } from "../airlineAirports/airlineAirports.js";
+import { SingletonAirlineWayPoints } from "../airlineWayPoints/airlineWayPoints.js";
 import { SingletonAirlineRoutes } from "../airlineRoutes/airlineRoutes.js";
 import { SingletonAirlineCosts } from "../airlineCosts/airlineCosts.js";
 import { SingletonProfileCosts } from "../flightProfile/computeFlightProfile.js";
@@ -459,30 +457,25 @@ function initMain(viewExtent) {
 	// 10th September 2023 - use .de OSM instance
 	let osm = new OpenStreetMap();
 	
-	/*
-	var osm = new og.layer.XYZ("OpenStreetMap", {
-            isBaseLayer: true,
-            url: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
-            visibility: true,
-            attribution: 'Data @ OpenStreetMap contributors, ODbL'
-    });
-	*/
     // a HTMLDivElement whose id is `globus`
+    //"resourcesSrc": "/static/js/og/res"
     
 	var globus = new Globe({
-            "target": "globusDivId", 
-            "name": "Earth",
-            "terrain": new GlobusRgbTerrain(),
-            "layers": [osm],
-            "autoActivated": true,
-			"viewExtent" : viewExtent,
-			"controls": [
+            target: "globusDivId", 
+            name: "Earth",
+            terrain: new GlobusRgbTerrain(),
+            layers: [osm],
+            autoActivated: true,
+            viewExtent : viewExtent,
+            controls: [
 				new control.MouseNavigation({ autoActivate: true }),
                 new control.KeyboardNavigation({ autoActivate: true }),
                 new control.EarthCoordinates({ autoActivate: true, center: false , type: 1}),
                 new control.ZoomControl({ autoActivate: true }),
-                new control.CompassButton()                
-                ]
+                new control.CompassButton()
+                ],
+            fontsSrc: "/static/js/og/fonts",
+            resourcesSrc: "/static/js/og/res"
 	});
 	
 	initTools (globus, viewExtent);

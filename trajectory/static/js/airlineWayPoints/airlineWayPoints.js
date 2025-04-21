@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	// console.log("waypoints.js is loaded");
 }); 
 
-const SingletonAirlineWayPoints = (function () {
+export const SingletonAirlineWayPoints = (function () {
 	
 	let instance;
 
