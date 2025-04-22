@@ -1,6 +1,10 @@
 
-import { initProgressBar , initWorker , stopBusyAnimation , removeLayer } from "../main/main.js";
+import { initProgressBar , initWorker , stopBusyAnimation , removeLayer , showMessage } from "../main/main.js";
+import { Ellipsoid , Entity , LonLat , KML , Vector } from "../og/og.es.js";
 import { SingletonMainClass } from "../main/mainSingletonClass.js";
+import { SingletonOgLayerCleaner } from "../ogLayerCleaner/ogLayerCleaner.js";
+
+import { VerticalProfile } from "./verticalProfile.js";
 
 document.addEventListener('DOMContentLoaded', () => { 
        	 
@@ -167,7 +171,7 @@ class AirlineProfileCosts {
 			name = parseFloat(waypoint.name);
 		}
 		
-		layerWayPoints.add(new og.Entity({
+		layerWayPoints.add(new Entity({
 				lonlat: [longitude, latitude],
 				label: {
 						text: name,
@@ -215,7 +219,7 @@ class AirlineProfileCosts {
 			name = airport.AirportName;
 		}
 		
-		layerAirports.add(new og.Entity({
+		layerAirports.add(new Entity({
 				lonlat: [longitude, latitude],
 				label: {
 						text: name,
@@ -239,7 +243,7 @@ class AirlineProfileCosts {
 		/**
 		 * @TODO get these constants from og
 		 */ 
-		let ellipsoid = new og.Ellipsoid(6378137.0, 6356752.3142);
+		let ellipsoid = new Ellipsoid(6378137.0, 6356752.3142);
 		
 		let latitude = 0.0;
 		if ( placeMark.hasOwnProperty("latitude")) {
@@ -256,9 +260,9 @@ class AirlineProfileCosts {
 			height = parseFloat(placeMark["height"]);
 		}
 		
-		let lonlat = new og.LonLat(longitude, latitude , 0.0);
+		let lonlat = new LonLat(longitude, latitude , 0.0);
 		//coordinate above Bochum to allow a upwards direction of ray
-		let lonlatAir = new og.LonLat(longitude, latitude , height);
+		let lonlatAir = new LonLat(longitude, latitude , height);
 		
 		//coordinates of Bochum in Cartesian
 		let cart = ellipsoid.lonLatToCartesian(lonlat);
@@ -273,7 +277,7 @@ class AirlineProfileCosts {
 			if ( placeMark["name"].includes("ground") || placeMark["name"].includes("slope") || placeMark["name"].includes("takeOff") ) {
 				offset = [10, +20];
 			}
-			rayLayer.add(new og.Entity({
+			rayLayer.add(new Entity({
 				cartesian : cartAir,
 				label: {
 						text: placeMark["name"],
@@ -286,7 +290,7 @@ class AirlineProfileCosts {
 			}));
 		}
 		// create a ray
-		rayLayer.add ( new og.Entity({
+		rayLayer.add ( new Entity({
 				ray: {
 					startPosition: cart,
 					endPosition: cartAir,
@@ -315,7 +319,7 @@ class AirlineProfileCosts {
 		 */
 		removeLayer( globus , finalLayerName );
 		
-		let layerKML = new og.layer.KML( finalLayerName , {
+		let layerKML = new KML( finalLayerName , {
 			billboard: { 
 				src: '/static/images/move_down_icon.png', 
 				color: '#6689db' ,
@@ -361,7 +365,7 @@ class AirlineProfileCosts {
 		}
 
 		//polygonOffsetUnits is needed to hide rays behind globe
-		let rayLayer = new og.layer.Vector( layerName , { polygonOffsetUnits: 0 });
+		let rayLayer = new Vector( layerName , { polygonOffsetUnits: 0 });
 		rayLayer.addTo(globus.planet);
 		
 		// add layer to the House Keeping class
@@ -832,7 +836,7 @@ class AirlineProfileCosts {
 										// need to create a Pull Request to openglobus to add this function
 										layerKML.addKmlFromXml(  xmlDoc ,  null ,  null );
 									} catch (err) {
-										showMessage("Error" , JSON.stringify(err) );
+										showMessage("Error - add KML from XML" , JSON.stringify(err) );
 									}
 								}
 								

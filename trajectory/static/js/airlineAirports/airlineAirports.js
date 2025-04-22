@@ -303,7 +303,7 @@ class AirlineAirports {
 							src: "/static/images/plane.png",
 							width: 16,
 							height: 16,
-							offset: [0, -10]
+							offset: [0, -20]
 							}
 			}));
 			

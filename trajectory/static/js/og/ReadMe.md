@@ -5,7 +5,7 @@
 
 ## install git / git Bash
 
-## move to the target folder -> 
+## ====== move to the node.js folder -> 
 
 $ pwd
 /c/Users/rober
@@ -20,7 +20,7 @@ openglobus.0.17.0/
 rober@RobertPastor MINGW64 ~/node.js
 $
 
-## in the target folder 
+## ===== in the node.js target folder -> git clone 
 
 in gitBash launch 
 $ git clone https://github.com/openglobus/openglobus.git
@@ -55,6 +55,7 @@ this command should create a node_modules folder
 
 
 ## ============== if needed upgrade the node.js version
+
 l$ node -v
 v22.14.0
 
@@ -127,7 +128,7 @@ minimize: false
 
 ##================== build again ===============================
 
-npm run buildd
+npm run build
 
 #=================== copy files to the flight profile folder ==============
 
@@ -168,7 +169,7 @@ layerKML.addKmlFromXml(  xmlDoc ,  null ,  null );
 ## in GlobusTerrain _createHeights
 
 /**
-     * Converts loaded data to segment elevation data type(colum major elevation data array in meters)
+     * Converts loaded data to segment elevation data type (colum major elevation data array in meters)
      * @public
      * @virtual
      * @param {*} data - Loaded elevation data.

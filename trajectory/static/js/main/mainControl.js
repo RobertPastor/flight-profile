@@ -303,8 +303,10 @@ export class MainControl extends Control {
 		// buttons are defined in this js, but ids are defined in each js that is creating a sub menu
 		listenSubMenuAirwaysEntry( "btnAirwaysId" , "mainSubMenuAirwaysDivId");
 		listenSubMenuOptimizationsEntry( "btnOptimizationsId" , "mainSubMenuOptimizationsDivId");
+		
 		// 30th December 2023 - add a submenu for fuel efficiency and fuel planning
 		listenSubMenuFuelEntry("btnSubMenuFuelId", "mainSubMenuFuelDivId");
+		
 		// 22nd August 2024 - listen to sub menu Meteo - metar and wind temperature
 		listenSubMenuMeteoEntry("btnSubMenuMeteoId" , "mainSubMenuMeteoDivId");
 		

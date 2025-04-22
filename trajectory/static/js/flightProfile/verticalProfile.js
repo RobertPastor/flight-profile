@@ -1,5 +1,7 @@
+import { removeAllChilds } from "../main/main.js"
+//import { d3 } from "../d"
 
-class VerticalProfile {
+export class VerticalProfile {
 	
 	constructor() {
 		//console.log("Vertical Profile constructor") 

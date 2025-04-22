@@ -1,5 +1,6 @@
+import { SingletonMainClass } from "../main/mainSingletonClass.js";
 
-const SingletonFuelEfficiency = (function () {
+export const SingletonFuelEfficiency = (function () {
 	
 	let instance;
     function createInstance() {

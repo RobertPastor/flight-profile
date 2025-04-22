@@ -1,5 +1,6 @@
+import { removeLayer } from "../main/main.js";
 
-const SingletonOgLayerCleaner = (function () {
+export const SingletonOgLayerCleaner = (function () {
 	
 	let instance;
 

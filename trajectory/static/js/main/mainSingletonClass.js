@@ -106,7 +106,7 @@ class MainClass {
 	enableDisableMainMenuButtons(enable) {
 		const buttonNames = ["btnAirlineFleet","btnAirwaysId", "btnAirports",
 							"btnLaunchFlightProfile","btnLaunchAirlineCosts","btnOptimizationsId","btnLaunchCostsOptimization", "btnLaunchCASM",
-							"btnLaunchCasmOptimization","btnLaunchSeatMilesMaximization","btnSubMenuFuelId","btnMetar",
+							"btnLaunchCasmOptimization","btnLaunchSeatMilesMaximization","btnSubMenuFuelId","btnSubMenuMeteoId", "btnMetar",
 							"btnComputeFlightProfileId","btnComputeCostsId","btnDownLoadVerticalProfileId","btnDownLoadKMLfileId"];
 		if ( enable ) {
 			for (const button of buttonNames) { 

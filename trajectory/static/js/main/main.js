@@ -45,6 +45,8 @@ import { SingletonAirlineSeatMiles } from "../airlineSeatMilesMaximization/airli
 import { SingletonSidStar } from "../SidStar/SidStar.js";
 import { SingletonWindTemperature } from "../windTemperature/windTemperature.js";
 import { SingletonMainClass } from "./mainSingletonClass.js";
+import { SingletonFuelEfficiency } from "../fuelPlanner/fuelEfficiency.js";
+import { SingletonOgLayerCleaner } from "../ogLayerCleaner/ogLayerCleaner.js";
 
 
 import { initDownloadVerticalProfile } from "../flightProfile/dowloadVerticalProfile.js";
@@ -60,7 +62,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	});
 });
 
-function removeAllChilds (parent) {
+export function removeAllChilds (parent) {
     while (parent.lastChild) {
         parent.removeChild(parent.lastChild);
     }

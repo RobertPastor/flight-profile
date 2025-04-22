@@ -30216,6 +30216,25 @@ class sg extends Ma {
     r2.forEach(this.add.bind(this));
     return { entities: r2, extent: n2 };
   }
+  /**
+    	* Robert - 18th July 2022
+    	* @public
+    	* @param {string} [color]
+        * @param {Billboard} [billboard]
+        * @returns {Promise<{entities: Entity[], extent: Extent}>}
+    	*/
+    	async addKmlFromXml( kmlAsXml , color = null, billboard = null ) {
+    		const coordinates = this._extractCoordonatesFromKml(kmlAsXml);
+            const { entities, extent } = this._convertCoordonatesIntoEntities(
+                [coordinates],
+                color || this._color,
+                billboard || this._billboard
+            );
+            this._extent = this._expandExtents(this._extent, extent);
+            entities.forEach(this.add.bind(this));
+            return { entities, extent };
+    		
+    	}
 }
 class rg extends Hf {
   constructor(e4, t2 = {}) {
