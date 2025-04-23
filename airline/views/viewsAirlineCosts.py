@@ -333,7 +333,8 @@ def createExcelWorkbook(memoryFile, request, airlineName):
     
     row = row + 1
     
-    wsReadMe.write(row, 0 , "Objective function - Minimize Sum of Costs -US$")
+    styleYellow = wb.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
+    wsReadMe.write(row, 0 , "Objective function - Minimize Sum of Costs -US$" , styleYellow )
     wsReadMe.write(row, 1 ,  ( valueProblemObjective ) )
     wsReadMe.autofit()
     

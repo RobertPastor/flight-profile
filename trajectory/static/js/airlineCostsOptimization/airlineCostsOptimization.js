@@ -1,5 +1,6 @@
 
-import { initProgressBar , initWorker } from "../main/main.js";
+import { initProgressBar , initWorker , stopBusyAnimation , showMessage } from "../main/main.js";
+import { SingletonMainClass } from "../main/mainSingletonClass.js";
 
 export const SingletonAirlineCostsOptimization = (function () {
 	
@@ -9,7 +10,6 @@ export const SingletonAirlineCostsOptimization = (function () {
         var object = new AirlineCostsOptimization();
         return object;
     }
-
     return {
         getInstance: function () {
             if (!instance) {
@@ -136,7 +136,6 @@ class AirlineCostsOptimization {
 							}
 				});
 			} else {
-				
 				SingletonAirlineCostsOptimization.getInstance().hideAirlineCostsOptimizationDiv();
 			}
 		}

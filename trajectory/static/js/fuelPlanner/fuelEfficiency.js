@@ -1,3 +1,4 @@
+import { initProgressBar , initWorker , stopBusyAnimation } from "../main/main.js";
 import { SingletonMainClass } from "../main/mainSingletonClass.js";
 
 export const SingletonFuelEfficiency = (function () {
@@ -7,7 +8,6 @@ export const SingletonFuelEfficiency = (function () {
         var object = new AirlineFuelEfficiency();
         return object;
     }
-
     return {
         getInstance: function () {
             if (!instance) {
@@ -70,7 +70,6 @@ class AirlineFuelEfficiency {
 			 }
 			// send the request
 			req.send();
-			
 		}
 	}
 }

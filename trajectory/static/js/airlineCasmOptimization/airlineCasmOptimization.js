@@ -1,6 +1,6 @@
 
-import { initProgressBar , initWorker } from "../main/main.js";
-
+import { initProgressBar , initWorker , stopBusyAnimation , showMessage } from "../main/main.js";
+import { SingletonMainClass } from "../main/mainSingletonClass.js";
 
 export const SingletonAirlineCasmOptimization = (function () {
 	
@@ -124,7 +124,6 @@ class AirlineCasmOptimization {
 				});
 				
 			} else {
-				
 				SingletonAirlineCasmOptimization.getInstance().hideAirlineCasmOptimizationDiv();
 			}
 		}

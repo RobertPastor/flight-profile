@@ -1,4 +1,5 @@
-
+import { stopBusyAnimation , showMessage } from "../main/main.js";
+import { SingletonMainClass } from "../main/mainSingletonClass.js";
 
 export const SingletonFuelPlanner = (function () {
 	
@@ -8,7 +9,6 @@ export const SingletonFuelPlanner = (function () {
         let object = new FuelPlanner();
         return object;
     }
-
     return {
         getInstance: function () {
             if (!instance) {
@@ -100,7 +100,6 @@ class FuelPlanner {
 		
 		SingletonFuelPlanner.getInstance().setRouteAirportsICAOcode();
 		SingletonFuelPlanner.getInstance().setRouteLengthMiles();
-		
 	}
 	
 	setRouteLengthMiles() {
@@ -192,7 +191,6 @@ class FuelPlanner {
 					 
 				let flightLegLength = document.getElementById('fuelPlannerLegLengthId');
 				flightLegLength.value = airlineAircraftPerformanceArray[index]["LegLengthMiles"];
-				
 				
 			}
 		}
@@ -318,7 +316,7 @@ class FuelPlanner {
 		document.getElementById("fuelPlannerAirlineAircraftSelectId").onchange = function () {
 			
 			//console.log ("selected aircraft changed");
-			let aircraftICAOcode = $("#fuelPlannerAirlineAircraftSelectId option:selected").val();
+			//let aircraftICAOcode = $("#fuelPlannerAirlineAircraftSelectId option:selected").val();
 			//console.log(aircraftICAOcode)
 			
 			SingletonFuelPlanner.getInstance().setAircraftICAOcodeInput();

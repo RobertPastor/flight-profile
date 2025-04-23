@@ -137,7 +137,6 @@ def writeHeaders(worksheet, style, headers):
         worksheet.write(row, col , header , style)
         col = col + 1
     
-    
 def writeAirlineSeatMilesResults(workbook, airlineName):
     
     worksheet = workbook.add_worksheet("Airline Seat Miles Results")
@@ -366,8 +365,12 @@ def createExcelWorkbook(memoryFile, airlineName):
     maxSumSeatMiles = writeAirlineSeatMilesMaximization(workbook=wb , airlineName=airlineName)
     
     row = row + 1
-    wsReadMe.write(row, 0 , "Objective function - max Sum Seat Miles")
-    wsReadMe.write(row, 1 , maxSumSeatMiles)
+    
+    styleBoldYellow = wb.add_format({'bold': True, 'border': True, 'bg_color': 'yellow'})
+    styleEntete = wb.add_format({'bold': False, 'border': True})
+    
+    wsReadMe.write(row, 0 , "Objective function - max Sum Seat Miles" , styleBoldYellow )
+    wsReadMe.write(row, 1 , maxSumSeatMiles, styleEntete)
     wsReadMe.autofit()
     return wb
 
