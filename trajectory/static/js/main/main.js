@@ -48,7 +48,6 @@ import { SingletonMainClass } from "./mainSingletonClass.js";
 import { SingletonFuelEfficiency } from "../fuelPlanner/fuelEfficiency.js";
 import { SingletonOgLayerCleaner } from "../ogLayerCleaner/ogLayerCleaner.js";
 
-
 import { initDownloadVerticalProfile } from "../flightProfile/dowloadVerticalProfile.js";
 import { initDownloadKMLfile } from "../flightProfile/downloadKMLfile.js";
     

@@ -1,7 +1,9 @@
+import { Entity , Vector , LonLat , Ellipsoid , math  } from "../og/og.es.js";
+import { removeLayer } from "../main/main.js";
 
 const POINTS_NUMBER = 30;
 
-class PolyLine {
+export class PolyLine {
 	
 	constructor( sidStarPattern ) {
 		//console.log("Polyline constructor");
@@ -42,15 +44,15 @@ class PolyLine {
 				if ( srcWayPoint.hasOwnProperty("Longitude") && srcWayPoint.hasOwnProperty("Latitude") && 
 					dstWayPoint.hasOwnProperty("Longitude") && dstWayPoint.hasOwnProperty("Latitude") )  {
 										
-					let src = new og.LonLat( Number(srcWayPoint["Longitude"] ), Number( srcWayPoint["Latitude"] ) );
-					let dst = new og.LonLat( Number(dstWayPoint["Longitude"] ), Number( dstWayPoint["Latitude"] ) );
+					let src = new LonLat( Number(srcWayPoint["Longitude"] ), Number( srcWayPoint["Latitude"] ) );
+					let dst = new LonLat( Number(dstWayPoint["Longitude"] ), Number( dstWayPoint["Latitude"] ) );
 					
 					let path = this.getPath( globus.planet.ellipsoid, src, dst );
 					
 					this.paths.push(path.path);
 	        		this.colors.push(path.colors);
 	            
-	        		this.animIndex.push(og.math.randomi(0, POINTS_NUMBER));
+	        		this.animIndex.push(math.randomi(0, POINTS_NUMBER));
 				}
 			}
 		}
@@ -59,7 +61,7 @@ class PolyLine {
 	draw() {
 		
 		let globus = this.globus ;
-       	let entity = new og.Entity({
+       	let entity = new Entity({
                     'polyline': {
 	                    'path3v': this.paths,
 	                    'pathColors': this.colors,
@@ -69,7 +71,7 @@ class PolyLine {
                     }
         });
         let layerName = this.getLayerName();
-        let collection = new og.layer.Vector(layerName, {
+        let collection = new Vector(layerName, {
 	            	'entities': []
 	    });
 	    collection.add( entity );
@@ -106,8 +108,8 @@ class PolyLine {
 	getPath(ell, start, end) {
 		 
          let num = POINTS_NUMBER;
-
-         let brng = og.Ellipsoid.getInitialBearing(start, end);
+		// getInitialBearing no more in Ellipsoid for og 0.25.0
+         let brng = Ellipsoid.getBearing(start, end);
          let dist = ell.getGreatCircleDistance(start, end);
 
          let p25 = ell.getGreatCircleDestination(start, brng, dist * 0.25);
@@ -128,9 +130,9 @@ class PolyLine {
          let path = [];
          let colors = [];
          
-         let color = [og.math.random(0, 2), og.math.random(0, 2), og.math.random(0, 2)];
+         let color = [math.random(0, 2), Math.random(0, 2), Math.random(0, 2)];
          for (let i = 0; i <= num; i++) {
-             let cn = og.math.bezier3v(i / num, startCart, p25Cart, p75Cart, endCart);
+             let cn = math.bezier3v(i / num, startCart, p25Cart, p75Cart, endCart);
              path.push(cn);
              colors.push([color[0], color[1], color[2], 0.1]);
          }

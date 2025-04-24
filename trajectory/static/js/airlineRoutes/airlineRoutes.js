@@ -1,5 +1,6 @@
 
 import { SingletonMainClass } from "../main/mainSingletonClass.js";
+import { SingletonSidStar } from "../SidStar/SidStar.js";
 import { stopBusyAnimation , showMessage } from "../main/main.js";
 import { Entity , Vector } from "../og/og.es.js";
 
@@ -35,7 +36,7 @@ export function showHideSidStarRoute( elem ) {
 			layer.setVisibility(true);
 			try {
 				// load a SID STAR from backend
-				SingletonSidStar.getInstance().queryServer ( elem.id );
+				SingletonSidStar.getInstance().queryServer ( elem.name );
 			} catch (err) {
 				console.error( JSON.stringify(err));
 			}
@@ -46,7 +47,7 @@ export function showHideSidStarRoute( elem ) {
 		// load a Sid Star route
 		try {
 			// load a SID STAR from backend
-			SingletonSidStar.getInstance().queryServer ( elem.id );
+			SingletonSidStar.getInstance().queryServer ( elem.name );
 		} catch (err) {
 			console.error( JSON.stringify(err));
 		}
@@ -161,7 +162,6 @@ class AirlineRoutes {
 							
 						} else {
 							
-						
 							let airlineRoutesWaypointsArray = dataJson["airlineRouteWayPoints"];
 							let layerName =  LayerNamePrefix + Adep + "-" + Ades;
 							SingletonAirlineRoutes.getInstance().loadRouteWayPoints( airlineRoutesWaypointsArray , layerName );
@@ -269,25 +269,40 @@ class AirlineRoutes {
 	}
 	
 	configureSidStarLink( oneAirlineRoute ) {
-		
 		// correct the SID Id on the fly
 		if ( oneAirlineRoute["SID"] && (oneAirlineRoute["SID"].length > 0 )) {
 			let elemTdSid = document.getElementById( 'tdSidId-' + oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"] );
 		
 			elemTdSid.id = "tdSidId-" + oneAirlineRoute["SID"];
-			let id = this.LayerSidPrefix +  oneAirlineRoute["SID"];
-			elemTdSid.innerHTML = '<span> <a id="' +  id + '" href="#" onclick="showHideSidStarRoute(this);" >' + oneAirlineRoute["SID"] + '</a> </span>'  
+			let idSidName = this.LayerSidPrefix +  oneAirlineRoute["SID"];
+			let idSidId = idSidName.replaceAll("/","-");
+			elemTdSid.innerHTML = '<span> <a name="' + idSidName + '" id="' +  idSidId + '" href="#" >' + oneAirlineRoute["SID"] + '</a> </span>'  
 			elemTdSid.title = "click me";
+			// onclick
+			$('#'+idSidId).click(function () {
+				//console.log("link SID clicked") 
+				showHideSidStarRoute( this );
+			});
 		}
 		// correct the STAR Id on the fly
 		if ( oneAirlineRoute["STAR"] && (oneAirlineRoute["STAR"].length > 0 )) {
 			let elemTdStar = document.getElementById( 'tdStarId-' + oneAirlineRoute["DepartureAirportICAOCode"] + "-" + oneAirlineRoute["ArrivalAirportICAOCode"] );
 		
 			elemTdStar.id = "tdStarId-" + oneAirlineRoute["STAR"];
-			let id = this.LayerStarPrefix +  oneAirlineRoute["STAR"];
-			elemTdStar.innerHTML = '<span> <a id="' +  id + '" href="#" onclick="showHideSidStarRoute(this);" >' + oneAirlineRoute["STAR"] + '</a> </span>'  
+			let idStarName = this.LayerStarPrefix +  oneAirlineRoute["STAR"];
+			let idStarId = idStarName.replaceAll("/","-");
+			elemTdStar.innerHTML = '<span> <a name="' + idStarName + '" id="' +  idStarId + '" href="#"  >' + oneAirlineRoute["STAR"] + '</a> </span>'  
 			elemTdStar.title = "click me";
+			// onclick
+			$('#'+idStarId).click(function () {
+				//console.log("link STAR clicked") 
+				showHideSidStarRoute( this );
+			});
 		}
+		// onclick
+		
+		
+		
 	}
 	
 

@@ -1,5 +1,8 @@
 
-import { initProgressBar , initWorker } from "../main/main.js";
+import { initProgressBar , initWorker , removeLayer , stopBusyAnimation } from "../main/main.js";
+import { SingletonMainClass } from "../main/mainSingletonClass.js";
+import { Entity , Vector } from "../og/og.es.js";
+import { PolyLine  } from "./polyline.js";
 
 export const SingletonSidStar = (function () {
 	
@@ -19,7 +22,7 @@ export const SingletonSidStar = (function () {
 })();
 
 
-class SidStar {
+export class SidStar {
 	
 	constructor() {
 		//console.log("SID STAR constructor");
@@ -76,7 +79,7 @@ class SidStar {
 		if (wayPoint.hasOwnProperty("Longitude")) {
 			longitude  = parseFloat(wayPoint["Longitude"]);
 		}
-		layerSidStarGlobusLayer.add(new og.Entity({
+		layerSidStarGlobusLayer.add(new Entity({
 				lonlat: [longitude, latitude],
 				label: {
 						text: name,
@@ -84,7 +87,7 @@ class SidStar {
 						outlineColor: "rgba(255,255,255,.4)",
 						size: 12,
 						color: "black",
-						offset: [0, -2]
+						offset: [0, -10]
 						},
 				billboard: {
 						src: "/static/images/marker.png",
@@ -127,7 +130,7 @@ class SidStar {
 			let layerName = sidStarPattern.replaceAll("/", "-");
 			//console.log( "layer Name with underscores only = " + layerName );
 			
-			let sidStarGlobusLayer = new og.layer.Vector( layerName , {
+			let sidStarGlobusLayer = new Vector( layerName , {
 					billboard: { 
 						src: '/static/trajectory/images/marker.png', 
 						color: '#6689db' ,

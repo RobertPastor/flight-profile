@@ -382,7 +382,7 @@ class AirlineProfileCosts {
 	displayD3LineChart( arrayAltitudeMSLtime ) {
 	
 		let verticalProfile = new VerticalProfile();
-		verticalProfile.displayVerticalProfile (arrayAltitudeMSLtime);
+		//verticalProfile.displayVerticalProfile (arrayAltitudeMSLtime);
 	}
 	
 	populateBestDepartureRunway(airlineRoutesArray) {
@@ -848,7 +848,7 @@ class AirlineProfileCosts {
 								if ( dataJson.hasOwnProperty( "csvAltitudeMSLtime" )) {
 									let arrayAltitudeMSLtime = dataJson["csvAltitudeMSLtime"];
 									SingletonProfileCosts.getInstance().displayD3LineChart(arrayAltitudeMSLtime);
-									showMessage("Information" , "Double Click in the vertical profile to return to the map");
+									//showMessage("Information" , "Double Click in the vertical profile to return to the map");
 								}
 							}
 						},
