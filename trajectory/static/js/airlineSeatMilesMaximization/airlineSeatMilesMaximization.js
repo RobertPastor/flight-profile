@@ -54,7 +54,6 @@ class AirlineSeatsMilesMaximization {
 				stopBusyAnimation();
 				document.getElementById("btnLaunchSeatMilesMaximization").disabled = false;
 
-				
 				let blob = req.response;
 				let fileName = req.getResponseHeader("Content-Disposition") //if you have the fileName header available
 				// name starts with attachment followed by a EQUAL sign and the file name
