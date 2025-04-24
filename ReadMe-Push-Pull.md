@@ -34,6 +34,7 @@ ls -al .virtualenvs/airlineservices
 
 ## perform a git pull
 
+
 ## sometimes , when local changes (on pythonanywhere) are seeing... -> git reset --hard
 
 (airlineservices) 18:31 ~/flight-profile (master)$ git pull
