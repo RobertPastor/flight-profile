@@ -312,27 +312,32 @@ class AirlineAirports {
 				//console.log("right click - airport name = " + e.pickingObject.label._text);
 				
 				let position = {}
-				position["x"] = e.clientX;
+				position["x"] = e.clientX + 30;
 				position["y"] = e.clientY;
 				
 				// show table with routes starting in this airport
 				$("#airlineAirportsRoutesMainDivId").show();
 				
 				let airportICAOcode = this.name.split("-")[1];
+				//console.log("right click - " + airportICAOcode);
 				SingletonAirlineAirports.getInstance().queryRoutesStartingFromAirport( airportICAOcode, position );
 
 			});
-			// show airport ICAO code
+			// show airport ICAO code as a popup
 			layerAirport.events.on("mouseenter", function (e) {
+				let airportICAOcode = this.name.split("-")[1];
+				//console.log("event - on mouse enter - " + airportICAOcode);
 				e.renderer.handler.canvas.style.cursor = "pointer";
 				// show ICAO code of the airport
-				e.renderer.handler.canvas.title = this.name.split("-")[1];
+				e.renderer.handler.canvas.title = airportICAOcode;
 			});
 			// hide airports routes div
+			// here it is about leaving the airport displayed with an airport image
 			layerAirport.events.on("mouseleave", function (e) {
+				//console.log("event - on mouse leave");
 				e.renderer.handler.canvas.style.cursor = "default";
 				e.renderer.handler.canvas.title = "";
-				// hide table with routes starting in this airport
+				// hide table with routes starting at this airport
 				$("#airlineAirportsRoutesMainDivId").hide();
 			});
 			
