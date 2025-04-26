@@ -177,7 +177,7 @@ export class MainControl extends Control {
 		let row_1_data_3 = document.createElement('td');
 		row_1_data_3.colSpan = "7";
 		
-		row_1_data_3.innerHTML = '<div class="alignCenter"><span> Airline Services Tool </span></div>';
+		row_1_data_3.innerHTML = '<div class="alignCenter" >Airline Services Tool</div>';
 		row_1.appendChild(row_1_data_3);
 		
 		let row_1_data_4 = document.createElement('td');
