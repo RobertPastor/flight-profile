@@ -25,8 +25,7 @@ function listenSubMenuMeteoEntry( btnSubMenuMeteoId, mainSubMenuMeteoDivId ) {
 				});
 			}
     		return false;
-		};
-	
+		}
 }
 
 function listenSubMenuFuelEntry( btnSubMenuFuelId , mainSubMenuFuelDivId) {
@@ -52,7 +51,7 @@ function listenSubMenuFuelEntry( btnSubMenuFuelId , mainSubMenuFuelDivId) {
 				});
 			}
     		return false;
-		};
+		}
 }
 
 function listenSubMenuOptimizationsEntry( btnOptimizationsId , mainSubMenuOptimizationsDivId) {
@@ -79,7 +78,7 @@ function listenSubMenuOptimizationsEntry( btnOptimizationsId , mainSubMenuOptimi
 				});
 			}
     		return false;
-		};
+		}
 }
 
 
@@ -107,7 +106,7 @@ function listenSubMenuAirwaysEntry( btnAirwaysId , mainSubMenuAirwaysDivId) {
 				});
 			}
     		return false;
-		};
+		}
 }
 
 
@@ -313,8 +312,7 @@ export class MainControl extends Control {
 		$('#'+linkDownloadPdfPresentationId).click(function () {
 			//console.log("download pdf presentation clicked -> " + linkDownloadPdfPresentationId);
 			initDownloadPdfPresentation();
-		});
-		
+		})
 		
 	}
 }
