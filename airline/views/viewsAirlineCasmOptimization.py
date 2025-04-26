@@ -47,27 +47,30 @@ def computeAirlineCostsArray(airline, airlineName):
         for airlineRoute in AirlineRoute.objects.filter(airline=airline):
                     
                     #print ( airlineRoute.getFlightLegAsString() )
-                    airlineFlightLegsList.append(airlineRoute.getFlightLegAsString())
+            airlineFlightLegsList.append(airlineRoute.getFlightLegAsString())
                     
-                    airlineCosts = AirlineCosts.objects.all().filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
-                    if airlineCosts:
-                        
-                        massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
-                        fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
-                                
-                        operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
-                                
-                        crewCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
-                        totalCostsUSdollars = fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars     
-                        
-                        ''' 5th February 2023 - Costs per Available Seat Mile '''
-                        miles = airlineCosts.finalLengthMeters * Meter2NauticalMiles
-                        seatsPerMiles = nbSeats * miles
-                        casmUSdollars = totalCostsUSdollars / seatsPerMiles
-                        
-                        #print ( "{0} - {1} - {2}".format(airlineAircraft.aircraftICAOcode, airlineRoute.getFlightLegAsString() , type(totalCostsUSdollars) ))
-                            
-                        aircraftCasmArray.append( float(casmUSdollars) )
+            airlineCosts = AirlineCosts.objects.all().filter(airline=airline, airlineAircraft=airlineAircraft, airlineRoute=airlineRoute).first()
+            if airlineCosts:
+                
+                massLossKg =  airlineCosts.initialTakeOffMassKg - airlineCosts.finalMassKg    
+                fuelCostsUSdollars = massLossKg * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars
+                
+                operationalFlyingCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
+                
+                crewCostsUSdollars = ( airlineCosts.flightDurationSeconds / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
+                totalCostsUSdollars = fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars     
+                
+                ''' 5th February 2023 - Costs per Available Seat Mile '''
+                miles = airlineCosts.finalLengthMeters * Meter2NauticalMiles
+                seatsPerMiles = nbSeats * miles
+                casmUSdollars = totalCostsUSdollars / seatsPerMiles
+                
+                #print ( "{0} - {1} - {2}".format(airlineAircraft.aircraftICAOcode, airlineRoute.getFlightLegAsString() , type(totalCostsUSdollars) ))
+                
+                aircraftCasmArray.append( float(casmUSdollars) )
+            else:
+                ''' no available costs for this flight leg '''
+                aircraftCasmArray.append( float(0.0) )
                         
         airlineCasmArray.append(aircraftCasmArray)
                 
