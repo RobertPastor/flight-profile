@@ -151,7 +151,7 @@ export class MainControl extends Control {
 		row_0_data_1.colSpan = "11";
 		row_0_data_1.innerHTML = '<div id="workerId" class="w3-container progressBar" style="width:100%"></div>';
 		row_0.appendChild(row_0_data_1);
-						
+		
 		tbody.appendChild(row_0);
 		
 		//===================================================
@@ -177,7 +177,7 @@ export class MainControl extends Control {
 		let row_1_data_3 = document.createElement('td');
 		row_1_data_3.colSpan = "7";
 		row_1_data_3.classList.add("alignCenter");
-		row_1_data_3.innerHTML = '<div><span>Airline Services Tool</span></div>';
+		row_1_data_3.innerHTML = "<div><span>Airline Services Tool</span></div>";
 		row_1.appendChild(row_1_data_3);
 		
 		let row_1_data_4 = document.createElement('td');
@@ -317,4 +317,4 @@ export class MainControl extends Control {
 		
 		
 	}
-};
+}
