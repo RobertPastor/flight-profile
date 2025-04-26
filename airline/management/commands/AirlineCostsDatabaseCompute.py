@@ -51,9 +51,9 @@ class Command(BaseCommand):
                             #print ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
                             #print ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
                             
-                            for reducedClimbPowerCoeff in range(16):
+                            reducedClimbPowerCoeff = 15
                             
-                                flightPath = FlightPath(
+                            flightPath = FlightPath(
                                         route = routeAsString, 
                                         aircraftICAOcode = aircraftICAOcode,
                                         RequestedFlightLevel = acPerformance.getMaxOpAltitudeFeet() / 100., 
@@ -61,10 +61,10 @@ class Command(BaseCommand):
                                         takeOffMassKilograms = acPerformance.getReferenceMassKilograms(),
                                         reducedClimbPowerCoeff = reducedClimbPowerCoeff)
         
-                                abortedFlight = flightPath.computeFlight(deltaTimeSeconds = 1.0)
-                                if ( abortedFlight == False ):
-                                    raise ValueError( "flight did not go to a normal end")
-                                
+                            abortedFlight = flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                            if ( abortedFlight == False ):
+                                print( "flight did not go to a normal end")
+                                    
                                 airlineCosts = AirlineCosts(
                                             airline = airline ,
                                             airlineAircraft = airlineAircraft,
@@ -79,9 +79,25 @@ class Command(BaseCommand):
                                             finalLengthMeters = flightPath.finalRoute.getLengthMeters(),
                                             reducedClimbPowerCoeff = reducedClimbPowerCoeff
                                             )
-                                airlineCosts.save()
-                                logger.info("----------- reduced climb power coeff = {0} ------------".format(reducedClimbPowerCoeff))
-                                sleep(3)
+                            else:
+                                airlineCosts = AirlineCosts(
+                                            airline = airline ,
+                                            airlineAircraft = airlineAircraft,
+                                            airlineRoute = airlineRoute,
+                                            isAborted = flightPath.abortedFlight,
+                                            flightDurationSeconds = flightPath.getFlightDurationSeconds(),
+                                            initialTakeOffMassKg = flightPath.aircraft.getAircraftInitialMassKilograms(),
+                                            targetCruiseLevelFeet = acPerformance.getMaxOpAltitudeFeet(),
+                                            adepRunway = adepRunway,
+                                            adesRunway = adesRunway,
+                                            finalMassKg =  flightPath.aircraft.getAircraftCurrentMassKilograms() ,
+                                            finalLengthMeters = flightPath.finalRoute.getLengthMeters(),
+                                            reducedClimbPowerCoeff = reducedClimbPowerCoeff
+                                            )
+ 
+                            airlineCosts.save()
+                            logger.info("----------- reduced climb power coeff = {0} ------------".format(reducedClimbPowerCoeff))
+                            sleep(3)
                             
                             logger.info("----------- airline = {0} ------------".format(airline))
                             logger.info("----------- aircraft = {0} ------------".format(aircraftICAOcode))

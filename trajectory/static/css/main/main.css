@@ -125,7 +125,7 @@ th {
 
 .mainTable {
 	position: absolute;
-	top: 5px;
+	top: 20px;
 	left: 5px;
 }
 
@@ -262,6 +262,9 @@ th {
 
 .alignRight {
 	text-align: right;
+}
+.alignCenter {
+	text-align: center;
 }
 
 .mainAirwaysSubMenuDivIdHide {
