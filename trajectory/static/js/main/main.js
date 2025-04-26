@@ -56,7 +56,10 @@ var worker = undefined;
 window.addEventListener('DOMContentLoaded', () => {
 	window.addEventListener("load", ($) => {
 			setTimeout( function() {
+				
+				// call init function after a certain amount of milliseconds
 				init();
+				
 			} , 500 );
 	});
 });
@@ -506,6 +509,11 @@ function init() {
 	
 		setTimeout( function() {
 			initMain(viewExtent);
+			// check if firefox is used
+			if (navigator.userAgent.indexOf("Firefox") == -1 ) { 
+					showMessage("Browser usage" , "Please envisage using FireFox to see the globe map");
+			}
+				
 		} , 500 );
 	}
 }

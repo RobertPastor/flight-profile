@@ -1,6 +1,4 @@
-import {
-        Control
-    } from "../og/og.es.js";
+import { Control } from "../og/og.es.js";
     
 //Define custom control class
 export class DialogControl extends Control {
