@@ -97,6 +97,18 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
     def getAltitudeMSLmeters(self):
         return self.altitudeMSLmeters
     
+    def setCruiseLevelFeet(self ):
+        print ( json.dumps ( self.wrap.cruise_alt() ) )
+        self.cruiseLevelFeet = self.wrap.cruise_alt()['default'] * 1000.0 * Meter2Feet
+        
+    def getCruiseLevelFeet(self):
+        return self.cruiseLevelFeet
+    
+    def getMaxCruiseAltitudeFeet(self):
+        self.maxCruiseAltitudeFeet = self.wrap.cruise_max_alt()['default'] * 1000.0 * Meter2Feet
+        return self.maxCruiseAltitudeFeet
+    
+    
     def setDepartureRunwayMSLmeters(self, departureRunwayMSLmeters ):
         self.departureRunwayMSLmeters = departureRunwayMSLmeters
         
@@ -109,12 +121,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
     def getArrivalRunwayMSLmeters(self):
         return self.arrivalRunwayMSLmeters
     
-    def setCruiseLevelFeet(self ):
-        print ( json.dumps ( self.wrap.cruise_alt() ) )
-        self.cruiseLevelFeet = self.wrap.cruise_alt()['default'] * 1000.0 * Meter2Feet
-        
-    def getCruiseLevelFeet(self):
-        return self.cruiseLevelFeet
+   
     
     def computeRateOfClimbFeetMinutes(self , rateOfClimbFeetMinutes , altitudeMSLfeet ):
         if ( altitudeMSLfeet < ( self.getCruiseLevelFeet() - 2500.0 )):

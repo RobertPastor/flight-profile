@@ -31,6 +31,7 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
     initialTASknots = 0.0
     currentTASknots = 0.0
     maximumSpeedMmoMach = 0.0
+    targetCruiseMach = 0.0
 
     def __init__(self , aircraftICAOcode):
         logger.setLevel(logging.INFO)
@@ -65,6 +66,9 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         
     def getMaximumSpeedMmoMach(self):
         return self.maximumSpeedMmoMach
+    
+    def setTargetCruiseMach(self, targetCruiseMach ):
+        self.targetCruiseMach = targetCruiseMach
         
     def getDefaultTakeOffCASknots(self):
         ''' @TODO correct for difference to reference mass '''

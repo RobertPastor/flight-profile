@@ -74,9 +74,9 @@ def computeAirlineCostsArray(airline, airlineName):
                         
         airlineCasmArray.append(aircraftCasmArray)
                 
-    print ( aircraftInstancesList )
-    print ( airlineFlightLegsList )
-    print ( airlineCasmArray )
+    #print ( aircraftInstancesList )
+    #print ( airlineFlightLegsList )
+    #print ( airlineCasmArray )
     return aircraftInstancesList , airlineFlightLegsList , airlineCasmArray
 
 

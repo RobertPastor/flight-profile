@@ -141,10 +141,18 @@ class WRAP(object):
     def cruise_alt(self):
         """Get average cruise altitude."""
         return self._get_var("cr_h_mean")
+    
+    def cruise_mean_alt(self):
+        """Get average cruise altitude."""
+        return self._get_var("cr_h_mean")
 
     def cruise_init_alt(self):
         """Get initial crusie altitude."""
         return self._get_var("cr_h_init")
+    
+    ''' Robert - 27th April 2025 '''
+    def cruise_max_alt(self):
+        return self._get_var("cr_h_max")
 
     def cruise_mach(self):
         """Get average cruise Mach number."""

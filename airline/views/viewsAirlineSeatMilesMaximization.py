@@ -362,8 +362,8 @@ def createExcelWorkbook(memoryFile, airlineName):
     ''' write the seat miles results '''
     writeAirlineSeatMilesResults(workbook=wb , airlineName=airlineName)
     ''' write the maximisation results '''
-    #maxSumSeatMiles = writeAirlineSeatMilesMaximization(workbook=wb , airlineName=airlineName)
-    maxSumSeatMiles = 0.0
+    maxSumSeatMiles = writeAirlineSeatMilesMaximization(workbook=wb , airlineName=airlineName)
+    #maxSumSeatMiles = 0.0
     row = row + 1
     
     styleBoldYellow = wb.add_format({'bold': True, 'border': True, 'bg_color': 'yellow'})

@@ -41,7 +41,6 @@ class OpenapAircraft(OpenapAircraftConfiguration):
         else:
             self.setInitialMassKilograms(initialMassKilograms)
 
-        
         logger.info ( self.className  + " --- " + self.getAircraftName() )
         
         
