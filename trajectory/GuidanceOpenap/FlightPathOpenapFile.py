@@ -77,9 +77,9 @@ class FlightPathOpenap(FlightPlan):
     def __init__(self, 
                  route, 
                  aircraftICAOcode = 'A320', 
-                 RequestedFlightLevel = 330.0, 
-                 cruiseMach = 0.8, 
-                 takeOffMassKilograms = 62000.0,
+                 RequestedFlightLevel  = 330.0, 
+                 cruiseMach            = 0.8, 
+                 takeOffMassKilograms  = 62000.0,
                  reducedClimbPowerCoeff = 0.0):
         
         ''' The root logger always defaults to WARNING level. '''
@@ -103,10 +103,17 @@ class FlightPathOpenap(FlightPlan):
         assert isinstance(self.aircraft, OpenapAircraft) and not(self.aircraft is None)
         self.aircraft.setAircraftMassKilograms(takeOffMassKilograms)
         
-        ''' sanity checks '''
-        assert RequestedFlightLevel >= MinFlightLevel and RequestedFlightLevel <= MaxFlightLevel
+        print ( self.className + " : Max TakeOff Weight kilograms = {0}".format(self.aircraft.getMaximumTakeOffMassKilograms() ) )   
+        print ( self.className + " : Max Cruise Altitude Feet = {0}".format(self.aircraft.getMaxCruiseAltitudeFeet() ) )   
+        print ( self.className + " : Max Speed MMO Cruise Mach = {0}".format(self.aircraft.getMaximumSpeedMmoMach() ) )
         
+        self.RequestedFlightLevel = self.aircraft.getMaxCruiseAltitudeFeet() / 100.0
+        
+        ''' sanity checks '''
+        assert self.RequestedFlightLevel >= MinFlightLevel and self.RequestedFlightLevel <= MaxFlightLevel
+        print("set cruise level")
         self.aircraft.setCruiseLevelFeet()
+        print("set target cruise mach")
         self.aircraft.setTargetCruiseMach(targetCruiseMach = cruiseMach)
         # 17th july 2023
         #self.aircraft.setReducedClimbPowerCoeff( reducedClimbPowerCoeff )
@@ -240,6 +247,7 @@ class FlightPathOpenap(FlightPlan):
                            initialHeadingDegrees, 
                            elapsedTimeSeconds):
         
+        print ( self.className + " : loop through fix list")
         anticipatedTurnWayPoint = None
         ''' start loop over the fix list '''
         ''' assumption: fix list does not contain departure and arrival airports '''
@@ -325,7 +333,7 @@ class FlightPathOpenap(FlightPlan):
                                      distanceToLastFixMeters = distanceToLastFixMeters,
                                      climbRampLengthNautics = climbRampLengthNautics )
             self.finalRoute.addGraph(climbRamp)
-                                
+            
             initialWayPoint = self.finalRoute.getLastVertex().getWeight()
             lastLeg = self.finalRoute.getLastEdge()
             initialHeadingDegrees = lastLeg.getBearingTailHeadDegrees()
@@ -492,6 +500,7 @@ class FlightPathOpenap(FlightPlan):
         
       
     def computeFlight(self, deltaTimeSeconds):
+        print ( self.className + " : compute flight")
         ''' 
         main entry to compute a whole flight 
         '''
@@ -501,9 +510,12 @@ class FlightPathOpenap(FlightPlan):
         assert not( self.departureRunway is None)
         assert not( self.departureAirport is None)
         
+        print ( self.className + " : start computing the trajectory ")
         try:
             if self.isDomestic() or self.isOutBound():
+                print ( self.className + " : Build departure phase")
                 self.endOfSimulation, initialHeadingDegrees , initialWayPoint = self.buildDeparturePhase()
+                
             ''' end of simulation = True means the flight is aborted '''
             if ( self.endOfSimulation == False ) and ( self.isDomestic() or self.isInBound() ):
                 assert not(self.arrivalAirport is None)

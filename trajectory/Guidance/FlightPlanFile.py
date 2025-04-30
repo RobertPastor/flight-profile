@@ -69,7 +69,6 @@ class FlightPlan(FixList):
         FixList.__init__(self, strRoute)
         
         self.wayPointsDict = {}
-        
         # call to build the fix list
         self.buildFixList()
          
@@ -83,6 +82,7 @@ class FlightPlan(FixList):
         return self.departureAirport
 
     def buildFixList(self):
+        print ( self.className + " : Build the fix list")
         '''
         from the route build a fix list and from the fix list build a way point list
         '''
@@ -114,9 +114,11 @@ class FlightPlan(FixList):
                                       ICAOcode = arrivalAirport.AirportICAOcode,
                                       Country = arrivalAirport.Continent)
         
+        print( self.className + " : arrival airport : " + str(self.arrivalAirport))
+        
         #self.arrivalRunway =  runwaysDb.getFilteredRunWays(airportICAOcode = self.arrivalAirportICAOcode, runwayName = self.arrivalRunwayName)
         arrivalRunway = AirlineRunWay.objects.filter(Airport=arrivalAirport, Name=self.arrivalRunwayName).first()
-        logging.debug ( "Arrival RunWay = {0}".format(arrivalRunway) )
+        
         assert ( not (arrivalRunway is None) and isinstance(arrivalRunway, AirlineRunWay ))
         
         self.arrivalRunway = RunWay(Name = arrivalRunway.Name,
@@ -126,6 +128,8 @@ class FlightPlan(FixList):
                                     LatitudeDegrees = arrivalRunway.LatitudeDegrees,
                                     LongitudeDegrees = arrivalRunway.LongitudeDegrees)
         
+        print ( self.className + " : arrival runway : " + str(self.arrivalRunway) )
+
         #self.departureAirport = airportsDb.getAirportFromICAOCode(ICAOcode = self.departureAirportICAOcode)
         departureAirport = AirlineAirport.objects.filter(AirportICAOcode=self.departureAirportICAOcode).first()
         assert ( not (departureAirport is None) and isinstance( departureAirport, AirlineAirport))
@@ -138,7 +142,7 @@ class FlightPlan(FixList):
                                       isArrival = False,
                                       ICAOcode = departureAirport.AirportICAOcode,
                                       Country = departureAirport.Continent)
-                                
+        print( self.className + " : departure airport : " + str(self.departureAirport))
         #self.departureRunway = runwaysDb.getFilteredRunWays(airportICAOcode = self.departureAirportICAOcode, runwayName = self.departureRunwayName)
         departureRunway = AirlineRunWay.objects.filter(Airport=departureAirport, Name=self.departureRunwayName).first()
         assert ( not (departureRunway is None) and isinstance(departureRunway, AirlineRunWay ))
@@ -149,7 +153,7 @@ class FlightPlan(FixList):
                                     TrueHeadingDegrees = departureRunway.TrueHeadingDegrees,
                                     LatitudeDegrees = departureRunway.LatitudeDegrees,
                                     LongitudeDegrees = departureRunway.LongitudeDegrees)
-        
+        print ( self.className + " : departure runway : " + str(self.departureRunway) )
 
         #logging.debug self.className + ': fix list= ' + str(self.fixList)
         assert (self.allAnglesLessThan90degrees(minIntervalNautics = 10.0))
