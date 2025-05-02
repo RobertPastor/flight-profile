@@ -50,7 +50,7 @@ from trajectory.Environment.Earth import Earth
 from trajectory.Environment.Utils import logElapsedRealTime
 
 from trajectory.Guidance.FlightPlanFile import FlightPlan
-from trajectory.Guidance.GroundRunLegFile import GroundRunLeg
+from trajectory.GuidanceOpenap.GroundRunLegOpenapFile import GroundRunLeg
 from trajectory.Guidance.ClimbRampFile import ClimbRamp
 from trajectory.Guidance.TurnLegFile import TurnLeg
 from trajectory.Guidance.GreatCircleRouteFile import GreatCircleRoute
@@ -103,17 +103,17 @@ class FlightPathOpenap(FlightPlan):
         assert isinstance(self.aircraft, OpenapAircraft) and not(self.aircraft is None)
         self.aircraft.setAircraftMassKilograms(takeOffMassKilograms)
         
-        print ( self.className + " : Max TakeOff Weight kilograms = {0}".format(self.aircraft.getMaximumTakeOffMassKilograms() ) )   
-        print ( self.className + " : Max Cruise Altitude Feet = {0}".format(self.aircraft.getMaxCruiseAltitudeFeet() ) )   
-        print ( self.className + " : Max Speed MMO Cruise Mach = {0}".format(self.aircraft.getMaximumSpeedMmoMach() ) )
+        logging.info ( self.className + " : Max TakeOff Weight kilograms = {0}".format(self.aircraft.getMaximumTakeOffMassKilograms() ) )   
+        logging.info ( self.className + " : Max Cruise Altitude Feet = {0}".format(self.aircraft.getMaxCruiseAltitudeFeet() ) )   
+        logging.info ( self.className + " : Max Speed MMO Cruise Mach = {0}".format(self.aircraft.getMaximumSpeedMmoMach() ) )
         
         self.RequestedFlightLevel = self.aircraft.getMaxCruiseAltitudeFeet() / 100.0
         
         ''' sanity checks '''
         assert self.RequestedFlightLevel >= MinFlightLevel and self.RequestedFlightLevel <= MaxFlightLevel
-        print("set cruise level")
+        logging.info( self.className +  "set cruise level")
         self.aircraft.setCruiseLevelFeet()
-        print("set target cruise mach")
+        logging.info( self.className +  "set target cruise mach")
         self.aircraft.setTargetCruiseMach(targetCruiseMach = cruiseMach)
         # 17th july 2023
         #self.aircraft.setReducedClimbPowerCoeff( reducedClimbPowerCoeff )
@@ -127,7 +127,6 @@ class FlightPathOpenap(FlightPlan):
         assert isinstance(self.departureAirport, Airport) and not(self.departureAirport is None)
         
     def getAircraft(self):
-        
         if ( self.aircraft ):
             return self.aircraft
         else:
@@ -288,14 +287,17 @@ class FlightPathOpenap(FlightPlan):
     
     def buildDeparturePhase(self):
         ''' this function manages the departure phases with a ground run and a climb ramp  '''
-        logging.debug ( self.className + ' ============== build the departure ground run =========== '  )
+        logging.info ( self.className + ' : ============== build the departure ground run =========== '  )
         self.finalRoute = GroundRunLeg(runway = self.departureRunway, 
                                  aircraft = self.aircraft,
                                  airport = self.departureAirport)
         
         distanceToLastFixMeters = self.computeDistanceToLastFixMeters(currentPosition = self.departureAirport,
                                                                       fixListIndex = 0)
+        logging.info(self.className + " : distance to last fix {0} meters".format(distanceToLastFixMeters))
+        
         distanceStillToFlyMeters = self.flightLengthMeters - self.finalRoute.getLengthMeters()
+        logging.info(self.className + " : distance still to fly {0} meters".format(distanceToLastFixMeters))
 
         elapsedTimeSeconds = 0.0
         self.finalRoute.buildDepartureGroundRun(deltaTimeSeconds  = self.deltaTimeSeconds,
@@ -346,7 +348,7 @@ class FlightPathOpenap(FlightPlan):
         
         
     def buildSimulatedArrivalPhase(self):
-        ''' simulated phse to compute fix at 10Nm of runway '''
+        ''' simulated arrival phase to compute fix at 10Nm of runway '''
         logging.debug ( self.className + '=========== add final turn, descent and ground run ===================' )
         arrivalGroundRun = GroundRunLeg( runway   = self.arrivalRunway,
                                          aircraft = self.aircraft,
@@ -519,12 +521,15 @@ class FlightPathOpenap(FlightPlan):
             ''' end of simulation = True means the flight is aborted '''
             if ( self.endOfSimulation == False ) and ( self.isDomestic() or self.isInBound() ):
                 assert not(self.arrivalAirport is None)
+                
+                print ( self.className + " : build simulated arrival phase")
                 finalRadiusOfTurnMeters = self.buildSimulatedArrivalPhase()
                 logging.debug ( "final radius of turn = {0} meters".format(finalRadiusOfTurnMeters))
                 #sys.exit()
             
             #logging.debug '==================== Loop over the fix list ==================== '
             if (self.endOfSimulation == False):
+                print ( self.className + " : loop through fix list")
                 self.endOfSimulation, initialHeadingDegrees = self.loopThroughFixList(initialHeadingDegrees = initialHeadingDegrees,
                                                                                       elapsedTimeSeconds = initialWayPoint.getElapsedTimeSeconds())
             

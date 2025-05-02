@@ -1,6 +1,9 @@
 
 from time import time
 
+import logging
+
+
 from django.core.management.base import BaseCommand
 from airline.models import AirlineRoute
 
@@ -13,10 +16,18 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
+        
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
+        #handler = logging.StreamHandler()
+        #logger.addHandler(handler)
+        
         start_time = time()
         
-        ''' warning letters in aircraft code must be in mower case '''
+        ''' warning letters in aircraft code must be in lower case '''
         aircraftICAOcode = 'a320'
+        logging.info(aircraftICAOcode)
         route = 'KLAX-KATL'
         
         AdepRunway = "24R"
@@ -32,7 +43,7 @@ class Command(BaseCommand):
             if ( airlineRoute ):
                 ''' try with direct route '''
                 routeAsString = airlineRoute.getRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway , direct = True)
-                print ( routeAsString )
+                logging.info ( routeAsString )
                 
                 flightPath = FlightPathOpenap(
                     route                = routeAsString, 

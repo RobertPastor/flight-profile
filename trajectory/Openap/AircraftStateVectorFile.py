@@ -16,7 +16,7 @@ class OpenapAircraftStateVector(object):
     aircraftStateHistory = []
 
     def __init__(self , aircraftICAOcode ):
-        pass
+        self.className = self.__class__.__name__
         self.aircraftICAOcode = aircraftICAOcode
         self.aircraftStateHistory = []
     
@@ -30,6 +30,7 @@ class OpenapAircraftStateVector(object):
                         totalDistanceFlownMeters = 0.0,
                         distanceStillToFlyMeters = 0.0):
  
+        logger.info( self.className + " : initialize state vector")
         ''' 9th September 2023 - add flight phase point to state vector '''
         self.updateAircraftStateVector(elapsedTimeSeconds, 
                                     flightPhase,
@@ -44,6 +45,7 @@ class OpenapAircraftStateVector(object):
                                     liftNewtons   = 0.0       ,
                                     currentPosition = "None"  ,
                                     endOfSimulation = False)
+        logger.info( self.className + " : state vector initialized")
 
         
     ''' 15th September 2024 - currentPosition used to retrieve the nearest weather station '''
@@ -61,7 +63,7 @@ class OpenapAircraftStateVector(object):
                                     liftNewtons                = 0.0,
                                     currentPosition            = "None",
                                     endOfSimulation            = False):
-            
+        
         ''' need to store both TAS and altitude => compute CAS '''
         aircraftStateDict = {}
         ''' 9th September 2023 - add flight phase point '''

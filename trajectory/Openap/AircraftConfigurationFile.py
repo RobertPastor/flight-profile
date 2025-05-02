@@ -18,10 +18,9 @@ import logging
 import math
 from trajectory.Guidance.ConstraintsFile import feet2Meters
 
-
 logger = logging.getLogger(__name__)
 from trajectory.Openap.AircaftSpeedsFile import OpenapAircraftSpeeds
-from trajectory.aerocalc.airspeed import tas2cas, tas2mach, cas2tas
+from trajectory.aerocalc.airspeed import tas2cas, cas2tas
 
 
 class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
@@ -98,7 +97,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         return self.altitudeMSLmeters
     
     def setCruiseLevelFeet(self ):
-        print ( json.dumps ( self.wrap.cruise_alt() ) )
+        logger.info ( self.className + json.dumps ( self.wrap.cruise_alt() ) )
         self.cruiseLevelFeet = self.wrap.cruise_alt()['default'] * 1000.0 * Meter2Feet
         
     def getCruiseLevelFeet(self):
@@ -107,7 +106,6 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
     def getMaxCruiseAltitudeFeet(self):
         self.maxCruiseAltitudeFeet = self.wrap.cruise_max_alt()['default'] * 1000.0 * Meter2Feet
         return self.maxCruiseAltitudeFeet
-    
     
     def setDepartureRunwayMSLmeters(self, departureRunwayMSLmeters ):
         self.departureRunwayMSLmeters = departureRunwayMSLmeters
@@ -120,8 +118,6 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         
     def getArrivalRunwayMSLmeters(self):
         return self.arrivalRunwayMSLmeters
-    
-   
     
     def computeRateOfClimbFeetMinutes(self , rateOfClimbFeetMinutes , altitudeMSLfeet ):
         if ( altitudeMSLfeet < ( self.getCruiseLevelFeet() - 2500.0 )):
@@ -148,6 +144,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         2) the delta increase - decrease in altitude
         
         '''
+        logger.info (self.className + " ---> aircraft fly")
         
         altitudeMSLfeet = altitudeMSLmeters * Meter2Feet
         self.setAltitudeMSLfeet(altitudeMSLfeet)
@@ -166,7 +163,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             logger.info( self.className + " -----------------------------")
             logger.info( self.className + " ----- start flying ----------")
             logger.info( self.className + " -----------------------------")
-            self.initStateVector(elapsedTimeSeconds , self.getCurrentConfiguration() , 0.0 , 0.0 , altitudeMSLmeters , aircraftMassKilograms)
+            #self.initStateVector(elapsedTimeSeconds , self.getCurrentConfiguration() , 0.0 , 0.0 , altitudeMSLmeters , aircraftMassKilograms)
         else:
             logger.info( self.className + " ---------------------------------------------------")
             logger.info( self.className + " ----- {0} - elapsed time {1} seconds----".format ( self.aircraftCurrentConfiguration , elapsedTimeSeconds ) )
@@ -174,6 +171,8 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             
         
         if self.isTakeOff():
+            
+            logger.info(self.className + " --> TakeOff phase")
             
             rateOfClimbFeetMinutes = 0.0
             rateOfClimbMetersSeconds = rateOfClimbFeetMinutes * FeetMinutes2MetersSeconds
@@ -461,6 +460,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             raise ValueError("not yet implemented")
     
         elapsedTimeSeconds = elapsedTimeSeconds + deltaTimeSeconds 
+        logger.info(self.className + " : update state vector")
         self.updateAircraftStateVector( elapsedTimeSeconds       = elapsedTimeSeconds , 
                                         flightPhase              = self.getCurrentConfiguration() , 
                                         flightPathAngleDegrees   = flightPathAngleDegrees , 
@@ -471,5 +471,6 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
                                         aircraftMassKilograms    = aircraftMassKilograms , 
                                         thrustNewtons            = thrustNewtons , 
                                         dragNewtons              = dragNewtons)
+        logger.info( self.className + " : state vector updated")
         return totalDistanceFlownMeters , altitudeMSLmeters
         
