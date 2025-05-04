@@ -51,8 +51,9 @@ from trajectory.Environment.Utils import logElapsedRealTime
 
 from trajectory.Guidance.FlightPlanFile import FlightPlan
 from trajectory.GuidanceOpenap.GroundRunLegOpenapFile import GroundRunLeg
-from trajectory.Guidance.ClimbRampFile import ClimbRamp
-from trajectory.Guidance.TurnLegFile import TurnLeg
+from trajectory.GuidanceOpenap.ClimbRampOpenapFile import ClimbRamp
+
+from trajectory.GuidanceOpenap.TurnLegOpenapFile import TurnLeg
 from trajectory.Guidance.GreatCircleRouteFile import GreatCircleRoute
 from trajectory.Guidance.DescentGlideSlopeFile import DescentGlideSlope
 
@@ -111,9 +112,9 @@ class FlightPathOpenap(FlightPlan):
         
         ''' sanity checks '''
         assert self.RequestedFlightLevel >= MinFlightLevel and self.RequestedFlightLevel <= MaxFlightLevel
-        logging.info( self.className +  "set cruise level")
+        logging.info( self.className +  " - set cruise level")
         self.aircraft.setCruiseLevelFeet()
-        logging.info( self.className +  "set target cruise mach")
+        logging.info( self.className +  " - set target cruise mach")
         self.aircraft.setTargetCruiseMach(targetCruiseMach = cruiseMach)
         # 17th july 2023
         #self.aircraft.setReducedClimbPowerCoeff( reducedClimbPowerCoeff )
@@ -125,13 +126,13 @@ class FlightPathOpenap(FlightPlan):
         
         self.departureAirport = self.getDepartureAirport()
         assert isinstance(self.departureAirport, Airport) and not(self.departureAirport is None)
+        self.aircraft.setDepartureRunwayMSLmeters ( self.departureAirport.getFieldElevationAboveSeaLevelMeters())
         
     def getAircraft(self):
         if ( self.aircraft ):
             return self.aircraft
         else:
             raise ValueError(self.className + ' aircraft not found= ' + self.aircraftICAOcode)
-
 
     def printPassedWayPoint(self, finalWayPoint):
         
@@ -141,7 +142,7 @@ class FlightPathOpenap(FlightPlan):
                                                     finalWayPoint.getAltitudeMeanSeaLevelMeters(),
                                                     finalWayPoint.getAltitudeMeanSeaLevelMeters() * Meter2Feet,
                                                     distanceFlownNautics)
-        logging.debug  ( "{0} - {1}".format (self.className, strMsg ) )
+        logging.info  ( "{0} - {1}".format (self.className, strMsg ) )
         elapsedTimeSeconds = finalWayPoint.getElapsedTimeSeconds()
         logElapsedRealTime ( self.className  , elapsedTimeSeconds)
         
@@ -284,13 +285,13 @@ class FlightPathOpenap(FlightPlan):
         ''' return final heading of the last great circle '''
         return self.endOfSimulation, initialHeadingDegrees
     
-    
     def buildDeparturePhase(self):
         ''' this function manages the departure phases with a ground run and a climb ramp  '''
         logging.info ( self.className + ' : ============== build the departure ground run =========== '  )
-        self.finalRoute = GroundRunLeg(runway = self.departureRunway, 
-                                 aircraft = self.aircraft,
-                                 airport = self.departureAirport)
+        
+        self.finalRoute = GroundRunLeg( runway   = self.departureRunway, 
+                                        aircraft = self.aircraft,
+                                        airport  = self.departureAirport)
         
         distanceToLastFixMeters = self.computeDistanceToLastFixMeters(currentPosition = self.departureAirport,
                                                                       fixListIndex = 0)
@@ -300,10 +301,12 @@ class FlightPathOpenap(FlightPlan):
         logging.info(self.className + " : distance still to fly {0} meters".format(distanceToLastFixMeters))
 
         elapsedTimeSeconds = 0.0
-        self.finalRoute.buildDepartureGroundRun(deltaTimeSeconds  = self.deltaTimeSeconds,
-                                                elapsedTimeSeconds = elapsedTimeSeconds,
+        self.finalRoute.buildDepartureGroundRun(deltaTimeSeconds         = self.deltaTimeSeconds,
+                                                elapsedTimeSeconds       = elapsedTimeSeconds,
                                                 distanceStillToFlyMeters = distanceStillToFlyMeters,
-                                                distanceToLastFixMeters = distanceToLastFixMeters)
+                                                distanceToLastFixMeters  = distanceToLastFixMeters)
+        
+        logging.info( self.className + " - end of departure ground run")
         distanceStillToFlyMeters = self.flightLengthMeters - self.finalRoute.getLengthMeters()
         
         ''' return values as expected at the end of this take off phase ( ground run PLUS climb ramp) '''
@@ -315,17 +318,18 @@ class FlightPathOpenap(FlightPlan):
         ''' check if runway overshoot '''
         if ( self.finalRoute.getTotalLegDistanceMeters() > self.departureRunway.getLengthMeters()):
             #print ("ground run length = {0:.2f} meters - runway length = {1:.2f} meters".format( self.finalRoute.getTotalLegDistanceMeters() , self.departureRunway.getLengthMeters()))
-            #print ( "-----> runway overshoot---------")
+            print ( "-----> runway overshoot---------")
             self.endOfSimulation = True
             
         else:
                         
             distanceToFirstFixNautics = initialWayPoint.getDistanceMetersTo(self.getFirstWayPoint()) * Meter2NauticalMiles
-    
-            climbRamp = ClimbRamp(  initialWayPoint = initialWayPoint,
-                                        runway = self.departureRunway, 
-                                        aircraft = self.aircraft, 
-                                        departureAirport = self.departureAirport)
+            ''' next lateral phase is a climb ramp '''
+            climbRamp = ClimbRamp(  initialWayPoint  = initialWayPoint,
+                                    runway           = self.departureRunway, 
+                                    aircraft         = self.aircraft,
+                                    departureAirport = self.departureAirport)
+            
             ''' climb ramp of 5.0 nautical miles is not possible if first fix placed in between '''
             ''' @TODO - First fix must not be allowed nearer to 5 Nautical Miles '''
             climbRampLengthNautics = min(distanceToFirstFixNautics / 2.0 , 5.0)
@@ -348,8 +352,10 @@ class FlightPathOpenap(FlightPlan):
         
         
     def buildSimulatedArrivalPhase(self):
+        
+        logging.info( self.className + " - build simulated arrival phase")
         ''' simulated arrival phase to compute fix at 10Nm of runway '''
-        logging.debug ( self.className + '=========== add final turn, descent and ground run ===================' )
+        logging.info ( self.className + '=========== add final turn, descent and ground run ===================' )
         arrivalGroundRun = GroundRunLeg( runway   = self.arrivalRunway,
                                          aircraft = self.aircraft,
                                          airport  = self.arrivalAirport )
@@ -357,11 +363,11 @@ class FlightPathOpenap(FlightPlan):
         # add touch down to constraint list
         self.constraintsList.append(ArrivalRunWayTouchDownConstraint(self.touchDownWayPoint))
         
-        logging.debug ( self.touchDownWayPoint )
+        logging.info ( self.touchDownWayPoint )
         ''' distance from last fix to touch down '''
         distanceToLastFixNautics = self.touchDownWayPoint.getDistanceMetersTo(self.getLastWayPoint()) * Meter2NauticalMiles
         
-        logging.debug ( self.className + '===================== final 3 degrees descending glide slope ================' )
+        logging.info ( self.className + '===================== final 3 degrees descending glide slope ================' )
         descentGlideSlope = DescentGlideSlope( runway   = self.arrivalRunway,
                                                aircraft = self.aircraft,
                                                arrivalAirport = self.arrivalAirport,
@@ -382,7 +388,7 @@ class FlightPathOpenap(FlightPlan):
         lastFixListWayPoint = self.wayPointsDict[self.fixList[-1]]
         initialHeadingDegrees = self.arrivalRunway.getTrueHeadingDegrees()
         
-        logging.debug ( "=====> arrival runway - true heading degrees = {0}".format(initialHeadingDegrees))
+        logging.info ( "=====> arrival runway - true heading degrees = {0}".format(initialHeadingDegrees))
 
         lastTurnLeg = TurnLeg( initialWayPoint = self.firstGlideSlopeWayPoint, 
                            finalWayPoint = lastFixListWayPoint,
@@ -502,7 +508,7 @@ class FlightPathOpenap(FlightPlan):
         
       
     def computeFlight(self, deltaTimeSeconds):
-        print ( self.className + " : compute flight")
+        logging.info ( self.className + " : compute flight")
         ''' 
         main entry to compute a whole flight 
         '''
@@ -512,22 +518,24 @@ class FlightPathOpenap(FlightPlan):
         assert not( self.departureRunway is None)
         assert not( self.departureAirport is None)
         
-        print ( self.className + " : start computing the trajectory ")
+        logging.info ( self.className + " : start computing the trajectory ")
         try:
             if self.isDomestic() or self.isOutBound():
                 print ( self.className + " : Build departure phase")
                 self.endOfSimulation, initialHeadingDegrees , initialWayPoint = self.buildDeparturePhase()
                 
+                logging.info( self.className + " --->>> end of departure phase")
+                
             ''' end of simulation = True means the flight is aborted '''
             if ( self.endOfSimulation == False ) and ( self.isDomestic() or self.isInBound() ):
                 assert not(self.arrivalAirport is None)
                 
-                print ( self.className + " : build simulated arrival phase")
+                logging.info ( self.className + " : build simulated arrival phase")
                 finalRadiusOfTurnMeters = self.buildSimulatedArrivalPhase()
                 logging.debug ( "final radius of turn = {0} meters".format(finalRadiusOfTurnMeters))
                 #sys.exit()
             
-            #logging.debug '==================== Loop over the fix list ==================== '
+            logging.debug ( self.className + "==================== Loop over the fix list ====================")
             if (self.endOfSimulation == False):
                 print ( self.className + " : loop through fix list")
                 self.endOfSimulation, initialHeadingDegrees = self.loopThroughFixList(initialHeadingDegrees = initialHeadingDegrees,

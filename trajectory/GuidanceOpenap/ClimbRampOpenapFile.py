@@ -34,7 +34,8 @@ Created on 9 December 2014
 '''
 import logging
 
-from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
+from trajectory.Openap.AircraftMainFile import OpenapAircraft
+
 from trajectory.Guidance.WayPointFile import WayPoint, Airport
 from trajectory.Environment.RunWayFile import RunWay
 from trajectory.Guidance.GraphFile import Graph
@@ -71,7 +72,7 @@ class ClimbRamp(Graph):
         assert isinstance(departureAirport, Airport)
         self.departureAirport = departureAirport
         
-        assert isinstance(aircraft, BadaAircraft)
+        assert isinstance(aircraft, OpenapAircraft)
         self.aircraft = aircraft
         ''' everything is OKay to start '''
         logging.info( self.className + " - Climb Ramp init Ok")

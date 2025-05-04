@@ -27,7 +27,7 @@ class Command(BaseCommand):
         
         ''' warning letters in aircraft code must be in lower case '''
         aircraftICAOcode = 'a320'
-        logging.info(aircraftICAOcode)
+        logging.info("Trajectory Compute Wrap - " + aircraftICAOcode)
         route = 'KLAX-KATL'
         
         AdepRunway = "24R"
@@ -43,7 +43,7 @@ class Command(BaseCommand):
             if ( airlineRoute ):
                 ''' try with direct route '''
                 routeAsString = airlineRoute.getRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway , direct = True)
-                logging.info ( routeAsString )
+                logging.info ( "Trajectory Compute Wrap - " + routeAsString )
                 
                 flightPath = FlightPathOpenap(
                     route                = routeAsString, 

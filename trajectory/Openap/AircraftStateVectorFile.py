@@ -30,7 +30,7 @@ class OpenapAircraftStateVector(object):
                         totalDistanceFlownMeters = 0.0,
                         distanceStillToFlyMeters = 0.0):
  
-        logger.info( self.className + " : initialize state vector")
+        logger.info( self.className + " - initialize state vector")
         ''' 9th September 2023 - add flight phase point to state vector '''
         self.updateAircraftStateVector(elapsedTimeSeconds, 
                                     flightPhase,
@@ -45,7 +45,7 @@ class OpenapAircraftStateVector(object):
                                     liftNewtons   = 0.0       ,
                                     currentPosition = "None"  ,
                                     endOfSimulation = False)
-        logger.info( self.className + " : state vector initialized")
+        logger.info( self.className + " - state vector initialized")
 
         
     ''' 15th September 2024 - currentPosition used to retrieve the nearest weather station '''

@@ -52,7 +52,7 @@ from trajectory.Guidance.GraphFile import Graph
 from trajectory.Environment.Constants import MeterPerSecond2Knots, Knots2MetersPerSecond, Meter2NauticalMiles
 from trajectory.Environment.Constants import NauticalMiles2Meter, FinalArrivalTurnRadiusNauticalMiles, GravityMetersPerSquareSeconds
     
-from trajectory.BadaAircraftPerformance.BadaAircraftFile import BadaAircraft
+from trajectory.Openap.AircraftMainFile import OpenapAircraft
 
 from trajectory.Guidance.TurnLegBaseFile import BaseTurnLeg
 from trajectory.Guidance.WayPointFile import WayPoint
@@ -136,7 +136,7 @@ class TurnLeg(Graph):
         assert (self.finalHeadingDegrees <= 360.0)
         
         ''' sanity check aircraft '''
-        assert (isinstance(aircraft, BadaAircraft))
+        assert (isinstance(aircraft, OpenapAircraft))
         self.aircraft = aircraft
                 
         ''' compute angle difference '''
@@ -474,7 +474,8 @@ class TurnLeg(Graph):
  
         if ( radiusOfTurnMeters * Meter2NauticalMiles < FinalArrivalTurnRadiusNauticalMiles):
             radiusOfTurnMeters = FinalArrivalTurnRadiusNauticalMiles * NauticalMiles2Meter
-
+ 
+        #stop()
         ''' index used to initialize the loop '''        
         index = 0
         ''' build a list that can be reversed afterwards '''

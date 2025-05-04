@@ -208,7 +208,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             logger.info( self.className + " - CAS = {0:.2f} meters per second - CAS = {1:.2f} knots ".format( casKnots * Knots2MetersSeconds , casKnots ) )
     
             if ( casKnots >= self.getDefaultTakeOffCASknots() ):
-                logger.debug ( self.className + ' CAS= {0:.2f} knots >= takeoff Stall Speed= {1:.2f} knots'.format(casKnots, self.getDefaultTakeOffCASknots()) )
+                logger.info ( self.className + ' - CAS= {0:.2f} knots >= takeoff Stall Speed= {1:.2f} knots'.format(casKnots, self.getDefaultTakeOffCASknots()) )
                 self.setInitialClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
             
         
@@ -255,6 +255,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             AboveGroundMeters = 35.0 * feet2Meters
             ''' From the application of takeoff power, through rotation and to an altitude of 35 feet above runway elevation.  '''
             if ( altitudeMSLmeters > self.getDepartureRunwayMSLmeters() + AboveGroundMeters):
+                logging.info( self.className + " -> 35 feet above ground" )
                 self.setClimbConfiguration(elapsedTimeSeconds + deltaTimeSeconds)
 
 
@@ -460,7 +461,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             raise ValueError("not yet implemented")
     
         elapsedTimeSeconds = elapsedTimeSeconds + deltaTimeSeconds 
-        logger.info(self.className + " : update state vector")
+        logger.info(self.className + " - update state vector")
         self.updateAircraftStateVector( elapsedTimeSeconds       = elapsedTimeSeconds , 
                                         flightPhase              = self.getCurrentConfiguration() , 
                                         flightPathAngleDegrees   = flightPathAngleDegrees , 
@@ -471,6 +472,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
                                         aircraftMassKilograms    = aircraftMassKilograms , 
                                         thrustNewtons            = thrustNewtons , 
                                         dragNewtons              = dragNewtons)
-        logger.info( self.className + " : state vector updated")
-        return totalDistanceFlownMeters , altitudeMSLmeters
+        logger.info( self.className + " - state vector updated")
+        endOfSimulation = False
+        return endOfSimulation , deltaDistanceFlownMeters , altitudeMSLmeters
         

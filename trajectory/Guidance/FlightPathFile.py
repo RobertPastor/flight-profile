@@ -310,13 +310,14 @@ class FlightPath(FlightPlan):
         ''' check if runway overshoot '''
         if ( self.finalRoute.getTotalLegDistanceMeters() > self.departureRunway.getLengthMeters()):
             #print ("ground run length = {0:.2f} meters - runway length = {1:.2f} meters".format( self.finalRoute.getTotalLegDistanceMeters() , self.departureRunway.getLengthMeters()))
-            #print ( "-----> runway overshoot---------")
+            print ( "-----> runway overshoot---------")
             self.endOfSimulation = True
             
         else:
                         
             distanceToFirstFixNautics = initialWayPoint.getDistanceMetersTo(self.getFirstWayPoint()) * Meter2NauticalMiles
-    
+            logging.info( self.className + " - distance to 1st fix {0} Nm".format(distanceToFirstFixNautics))
+            
             climbRamp = ClimbRamp(  initialWayPoint = initialWayPoint,
                                         runway = self.departureRunway, 
                                         aircraft = self.aircraft, 
