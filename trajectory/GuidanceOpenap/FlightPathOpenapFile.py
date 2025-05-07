@@ -54,8 +54,8 @@ from trajectory.GuidanceOpenap.GroundRunLegOpenapFile import GroundRunLeg
 from trajectory.GuidanceOpenap.ClimbRampOpenapFile import ClimbRamp
 
 from trajectory.GuidanceOpenap.TurnLegOpenapFile import TurnLeg
-from trajectory.Guidance.GreatCircleRouteFile import GreatCircleRoute
-from trajectory.Guidance.DescentGlideSlopeFile import DescentGlideSlope
+from trajectory.GuidanceOpenap.GreatCircleRouteOpenapFile import GreatCircleRoute
+from trajectory.GuidanceOpenap.DescentGlideSlopeOpenapFile import DescentGlideSlope
 
 from trajectory.Guidance.ConstraintsFile import ArrivalRunWayTouchDownConstraint, TargetApproachConstraint
 
@@ -363,7 +363,7 @@ class FlightPathOpenap(FlightPlan):
         # add touch down to constraint list
         self.constraintsList.append(ArrivalRunWayTouchDownConstraint(self.touchDownWayPoint))
         
-        logging.info ( self.touchDownWayPoint )
+        logging.info ( self.className + " - " + str(self.touchDownWayPoint) )
         ''' distance from last fix to touch down '''
         distanceToLastFixNautics = self.touchDownWayPoint.getDistanceMetersTo(self.getLastWayPoint()) * Meter2NauticalMiles
         
@@ -379,9 +379,9 @@ class FlightPathOpenap(FlightPlan):
         descentGlideSlope.buildSimulatedGlideSlope(descentGlideSlopeSizeNautics)
         
         self.firstGlideSlopeWayPoint = descentGlideSlope.getVertex(v=0).getWeight()
-        logging.debug ( self.className + ' top of arrival glide slope= {0}'.format(self.firstGlideSlopeWayPoint) )
+        logging.info ( self.className + ' top of arrival glide slope= {0}'.format(self.firstGlideSlopeWayPoint) )
         
-        logging.debug ( self.className + ' ================= need a turn leg to find the junction point the last way-point in the fix list to the top of the final glide slope' )
+        logging.info ( self.className + ' ================= need a turn leg to find the junction point the last way-point in the fix list to the top of the final glide slope' )
         '''
         initial heading is the orientation of the run-way
         '''
@@ -406,7 +406,7 @@ class FlightPathOpenap(FlightPlan):
         descentGlideSlope.addGraph(lastTurnLeg)
         ''' prepare next step '''
         beginOfLastTurnLeg = lastTurnLeg.getVertex(v=0).getWeight()
-        logging.debug ( self.className + ' begin last turn= {0}'.format(beginOfLastTurnLeg) )
+        logging.info ( self.className + ' begin last turn= {0}'.format(beginOfLastTurnLeg) )
         ''' add to constraint list '''
         self.constraintsList.append(TargetApproachConstraint(beginOfLastTurnLeg))
         
@@ -421,7 +421,7 @@ class FlightPathOpenap(FlightPlan):
         ''' target approach fix is equal to the begin of the SIMULATED last turn leg '''
         self.aircraft.setTargetApproachWayPoint(beginOfLastTurnLeg)
         self.aircraft.setArrivalRunwayTouchDownWayPoint(self.touchDownWayPoint)
-        logging.debug ( self.className + ' fix list= {0}'.format(self.fixList) )
+        logging.info ( self.className + ' fix list= {0}'.format(self.fixList) )
         
         ''' 16th January 2022 - Robert - return the final radius of turn '''
         return finalRadiusOfTurnMeters

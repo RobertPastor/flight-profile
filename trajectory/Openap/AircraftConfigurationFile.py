@@ -96,6 +96,9 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
     def getAltitudeMSLmeters(self):
         return self.altitudeMSLmeters
     
+    def getCurrentAltitudeSeaLevelMeters(self):
+        return self.altitudeMSLmeters
+    
     def setCruiseLevelFeet(self ):
         logger.info ( self.className + json.dumps ( self.wrap.cruise_alt() ) )
         self.cruiseLevelFeet = self.wrap.cruise_alt()['default'] * 1000.0 * Meter2Feet

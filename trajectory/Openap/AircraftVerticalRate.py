@@ -3,7 +3,6 @@ Created on 25 déc. 2024
 
 @author: robert
 '''
-import sys
 import json
 import logging 
 from trajectory.Environment.Constants import Meter2Feet
@@ -14,9 +13,9 @@ logger = logging.getLogger(__name__)
 from openap import prop, FuelFlow, Emission, WRAP
 
 from trajectory.Openap.AircraftFlightPhasesFile import OpenapAircraftFlightPhases
+from trajectory.Openap.AircraftMiscellaneousFile import OpenapAircraftMiscelleaneous
 
-
-class OpenapAircraftVerticalRate(OpenapAircraftFlightPhases):
+class OpenapAircraftVerticalRate(OpenapAircraftMiscelleaneous):
     pass
 
     def __init__(self, aircraftICAOcode):

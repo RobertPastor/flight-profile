@@ -107,15 +107,15 @@ class TurnLeg(Graph):
         
         assert (reverse == True) or (reverse == False)
         self.reverse = reverse
-                
+        
         ''' sanity check initial WayPoint '''
         assert (isinstance(initialWayPoint, WayPoint))
         self.initialWayPoint = initialWayPoint
-
+        
         ''' sanity check final WayPoint '''
         assert (isinstance(finalWayPoint, WayPoint))
         self.finalWayPoint = finalWayPoint
-
+        
         ''' sanity check initial Heading Degrees '''
         assert isinstance(initialHeadingDegrees, float)
         assert (initialHeadingDegrees >= 0.0)
@@ -172,7 +172,7 @@ class TurnLeg(Graph):
                      bankAngleDegrees = 15.0,
                      arrivalRunway = None,
                      finalRadiusOfTurnMeters = None):
-        
+        logging.info ( self.className + " - build turn leg " )
         ''' start building a set of turning legs from initial heading to final heading '''
         ''' heading changes according to an aircraft speed => radius of turn '''
         ''' for the last turn => final heading is the heading of run-way '''
@@ -210,7 +210,7 @@ class TurnLeg(Graph):
             shortestDistanceMeters = arrivalRunway.computeShortestDistanceToRunway(self.initialWayPoint)
             newRadiusOfTurnMeters = shortestDistanceMeters / 2.0
             if (newRadiusOfTurnMeters > radiusOfTurnMeters):
-                logging.debug ("{0} - new radius of turn greater --> take this one = {1} meters".format(self.className, newRadiusOfTurnMeters))
+                logging.info ("{0} - new radius of turn greater --> take this one = {1} meters".format(self.className, newRadiusOfTurnMeters))
                 radiusOfTurnMeters = newRadiusOfTurnMeters
             #exit()
             

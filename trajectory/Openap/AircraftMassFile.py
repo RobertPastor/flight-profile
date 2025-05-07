@@ -74,3 +74,4 @@ class OpenapAircraftMass(OpenapAircraftFuelFlow):
     def getMaximumTakeOffMassKilograms(self):
         return self.maximumTakeOffMassKilograms
     
+    

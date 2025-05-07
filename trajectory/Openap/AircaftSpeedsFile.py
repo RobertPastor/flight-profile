@@ -104,6 +104,9 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
     def getFinalApproachCASknots( self ):
         return self.wrap.finalapp_vcas()['default'] 
     
+    def computeLandingStallSpeedCasKnots(self):
+        return self.wrap.landing_speed()['default'] 
+    
     def computeClimbCASknots(self , altitudeMSLfeet , CASknots ):
         
         if self.initialClimbCASset == False:
@@ -214,3 +217,6 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         logger.info( self.className + " - descent CAS speed = {0} m/s".format (  self.constantCASdescentKnots ) )
         return self.constantCASdescentKnots
         
+        
+    def isCruiseSpeedReached(self):
+        return False
