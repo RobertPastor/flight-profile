@@ -83,8 +83,10 @@ class ClimbRamp(Graph):
                        elapsedTimeSeconds, 
                        distanceStillToFlyMeters, 
                        distanceToLastFixMeters,
-                       climbRampLengthNautics = ConstantClimbRampLengthNauticalMiles ):
+                       climbRampLengthNautics  ,
+                       totalDistanceFlownMeters ):
         
+        logging.info( self.className + " - total distance flown = {0:.2f} meters".format( totalDistanceFlownMeters ))
         ''' from the run-way , we get the orientation or run-way true heading in degrees '''
         runWayOrientationDegrees = self.runway.getTrueHeadingDegrees()     
         logging.debug ( self.className + ': run-way orientation degrees= ' + str(runWayOrientationDegrees) + ' degrees' )
@@ -100,7 +102,8 @@ class ClimbRamp(Graph):
         '''========================'''
         cumulatedLegDistanceMeters = 0.0
         elapsedTimeSeconds = elapsedTimeSeconds
-        altitudeMeanSeaLevelMeters = self.departureAirport.getFieldElevationAboveSeaLevelMeters()
+        self.altitudeMeanSeaLevelMeters = self.departureAirport.getFieldElevationAboveSeaLevelMeters()
+        logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
 
         '''========================'''        
         ''' loop on the climb ramp '''
@@ -113,14 +116,20 @@ class ClimbRamp(Graph):
                 intermediateWayPoint = self.initialWayPoint
                 
             ''' aircraft fly '''
-            endOfSimulation, deltaDistanceMeters , altitudeMeanSeaLevelMeters = self.aircraft.fly(
+            endOfSimulation, deltaDistanceMeters , self.altitudeMeanSeaLevelMeters = self.aircraft.fly(
                                                                     elapsedTimeSeconds       = elapsedTimeSeconds,
                                                                     deltaTimeSeconds         = deltaTimeSeconds , 
+                                                                    totalDistanceFlownMeters = totalDistanceFlownMeters ,
+                                                                    altitudeMSLmeters        = self.altitudeMeanSeaLevelMeters,
                                                                     distanceStillToFlyMeters = distanceStillToFlyMeters,
                                                                     currentPosition          = intermediateWayPoint,
                                                                     distanceToLastFixMeters  = distanceToLastFixMeters)
             ''' distance flown '''
             cumulatedLegDistanceMeters += deltaDistanceMeters
+            totalDistanceFlownMeters += deltaDistanceMeters
+            logging.info(self.className + " - total distance flown = {0:.2f} meters".format (totalDistanceFlownMeters ))
+            logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
+
             distanceStillToFlyMeters -= deltaDistanceMeters
 #             ''' if altitude above ground > 50 feet => move from take-off to initial climb '''
 #             if ((altitudeMeanSeaLevelMeters - self.departureAirport.getFieldElevationAboveSeaLevelMeters())*Meter2Feet > 50.0):
@@ -135,13 +144,14 @@ class ClimbRamp(Graph):
             newIntermediateWayPoint = intermediateWayPoint.getWayPointAtDistanceBearing(Name = Name, 
                                                                                   DistanceMeters = deltaDistanceMeters, 
                                                                                   BearingDegrees = bearingDegrees)
-            newIntermediateWayPoint.setAltitudeMeanSeaLevelMeters(altitudeMeanSeaLevelMeters)
+            newIntermediateWayPoint.setAltitudeMeanSeaLevelMeters(self.altitudeMeanSeaLevelMeters)
+            logging.info( self.className + " - aircraft altitude MSL {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
 
             ''' update aircraft state vector '''
             elapsedTimeSeconds += deltaTimeSeconds
             newIntermediateWayPoint.setElapsedTimeSeconds(elapsedTimeSeconds)     
             
-            ''' build Climb Ramp the core of the route '''
+            ''' build Climb Ramp - the core of the route '''
             self.addVertex(newIntermediateWayPoint)
             
             ''' replace the intermediate point '''
@@ -151,5 +161,6 @@ class ClimbRamp(Graph):
         ''' set name of the last point '''
         Name = 'climbRamp-{0:.1f} nm'.format( cumulatedLegDistanceMeters * Meter2NauticalMiles )
         newIntermediateWayPoint.setName(Name = Name)
- 
+        logging.info( self.className + " - end of climb ramp")
+        logging.info( self.className + " - aircraft altitude MSL {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
  

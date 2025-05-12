@@ -172,6 +172,7 @@ class TurnLeg(Graph):
                      bankAngleDegrees = 15.0,
                      arrivalRunway = None,
                      finalRadiusOfTurnMeters = None):
+        
         logging.info ( self.className + " - build turn leg " )
         ''' start building a set of turning legs from initial heading to final heading '''
         ''' heading changes according to an aircraft speed => radius of turn '''
@@ -195,13 +196,14 @@ class TurnLeg(Graph):
             
         ''' case of last turn '''
         if lastTurn == True:
+            logging.info( self.className + " - it is the last turn")
             tasMetersPerSecond = cas2tas(cas = self.aircraft.computeLandingStallSpeedCasKnots(),
                                          altitude = altitudeMeanSeaLevelMeters,
                                          temp = 'std',
                                          speed_units = 'kt',
                                          alt_units = 'm' ) * Knots2MetersPerSecond
             tasKnots = tasMetersPerSecond * MeterPerSecond2Knots
-        
+            
             ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
             radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( GravityMetersPerSquareSeconds * math.tan(math.radians(bankAngleDegrees)))
             logging.debug ("{0} - radius of turn = {1:.2f} in meters - for a 15 degrees bank angle".format(self.className, radiusOfTurnMeters))
@@ -250,11 +252,13 @@ class TurnLeg(Graph):
             
             ''' aircraft fly '''
             endOfSimulation, deltaDistanceMeters , altitudeMeanSeaLevelMeters = self.aircraft.fly(
-                                                                    elapsedTimeSeconds = elapsedTimeSeconds,
-                                                                    deltaTimeSeconds = deltaTimeSeconds , 
+                                                                    elapsedTimeSeconds       = elapsedTimeSeconds,
+                                                                    deltaTimeSeconds         = deltaTimeSeconds , 
+                                                                    totalDistanceFlownMeters = self.aircraft.getTotalDistanceFlownMeters(),
+                                                                    altitudeMSLmeters        = altitudeMeanSeaLevelMeters,
                                                                     distanceStillToFlyMeters = distanceStillToFlyMeters,
-                                                                    currentPosition = intermediateWayPoint,
-                                                                    distanceToLastFixMeters = distanceToLastFixMeters)
+                                                                    currentPosition          = intermediateWayPoint,
+                                                                    distanceToLastFixMeters  = distanceToLastFixMeters)
             ''' update elapsed time seconds '''
             elapsedTimeSeconds += deltaTimeSeconds
             ''' update distance to fly '''
@@ -573,6 +577,9 @@ class TurnLeg(Graph):
             ''' do not reverse it '''
             for point in turnLegList:
                 self.addVertex(point)
+        
+        logging.info ( self.className + " - end of simulated arrival last turn leg")
+        logging.info ( self.className + " - radius of last turn = {0:.2f} (meters) of simulated arrival last turn leg".format( radiusOfTurnMeters ))
         
         ''' 16th January 2022 - return the radius of turn '''
         return radiusOfTurnMeters        

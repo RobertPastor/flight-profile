@@ -116,7 +116,7 @@ class FuelFlow(object):
         """Compute the fuel flow at takeoff.
 
         The net thrust is first estimated based on the maximum thrust model
-        and throttle setting. Then FuelFlow.at_thrust() is called to compted
+        and throttle setting. Then FuelFlow.at_thrust() is called to compute
         the thrust.
 
         Args:

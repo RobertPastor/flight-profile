@@ -105,7 +105,6 @@ class GreatCircleRoute(Graph):
         self.ptlon2_radians = math.radians(ptlon2)
         self.ptlat2_radians = math.radians(ptlat2)
 
-
     def computeGreatCircle(self, 
                            deltaTimeSeconds,
                            elapsedTimeSeconds,
@@ -134,7 +133,7 @@ class GreatCircleRoute(Graph):
             
             ''' initialization of the loop '''
             if index == 0:
-                logging.debug ( self.className + ': initial way-point= {0}'.format(self.initialWayPoint) )
+                logging.info ( self.className + ': initial way-point= {0}'.format(self.initialWayPoint) )
                 intermediateWayPoint = self.initialWayPoint
             
             if self.aircraft.isCruiseSpeedReached():
@@ -146,11 +145,13 @@ class GreatCircleRoute(Graph):
                 
             ''' fly => increase in true air speed '''
             endOfSimulation, deltaDistanceMeters , altitudeMeanSeaLevelMeters = self.aircraft.fly(
-                                                                    elapsedTimeSeconds = elapsedTimeSeconds,
-                                                                    deltaTimeSeconds = deltaTimeSeconds, 
+                                                                    elapsedTimeSeconds       = elapsedTimeSeconds,
+                                                                    deltaTimeSeconds         = deltaTimeSeconds, 
+                                                                    totalDistanceFlownMeters = self.aircraft.getTotalDistanceFlownMeters(),
+                                                                    altitudeMSLmeters        = self.aircraft.getAircraftAltitudeMSLmeters(),
                                                                     distanceStillToFlyMeters = distanceStillToFlyMeters,
-                                                                    currentPosition = intermediateWayPoint,
-                                                                    distanceToLastFixMeters = distanceToLastFixMeters)
+                                                                    currentPosition          = intermediateWayPoint,
+                                                                    distanceToLastFixMeters  = distanceToLastFixMeters)
             #logging.debug self.className + ': True AirSpeed= ' + str(trueAirSpeedMetersSecond) + ' meters/second'
 
             ''' cumulated  over-flown distance '''

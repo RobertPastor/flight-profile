@@ -28,6 +28,13 @@ class OpenapAircraftVerticalRate(OpenapAircraftMiscelleaneous):
         
         self.wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
         
+    def getDescentRangeMeters(self):
+        self.descentRangeDict = self.wrap.descent_range()
+        self.descentRangeMeters = self.descentRangeDict['default'] * 1000.0
+        logger.info( self.className + " - descent range = {0:.2f} meters ".format ( self.descentRangeMeters ) )
+        return self.descentRangeMeters
+
+        
     def getInitialClimbVerticalRateMeterSeconds(self):
         self.initialClimbVerticalRateDictMeterSeconds = self.wrap.initclimb_vs()
         logger.info( self.className + " - initial climb vertical rate = {0} m/s".format ( json.dumps( self.initialClimbVerticalRateDictMeterSeconds ) ) )
@@ -67,9 +74,9 @@ class OpenapAircraftVerticalRate(OpenapAircraftMiscelleaneous):
         logger.info( self.className + " - descent vertical rate = {0} m/s".format (  self.descentVerticalRateMeterSeconds ) )
         return self.descentVerticalRateMeterSeconds
     
-    def getApproachVerticalRateMeterSeconds(self , altitudeMSLfeet):
+    def getFinalApproachVerticalRateMeterSeconds(self , altitudeMSLfeet):
         
         self.finalApproachVerticalRateMeterSeconds =  self.wrap.finalapp_vs()['default']
-        logger.info( self.className + " - final approach vertical rate = {0} m/s".format (  self.descentVerticalRateMeterSeconds ) )
+        logger.info( self.className + " - final approach vertical rate = {0:.2f} m/s".format (  self.descentVerticalRateMeterSeconds ) )
         return self.finalApproachVerticalRateMeterSeconds
         

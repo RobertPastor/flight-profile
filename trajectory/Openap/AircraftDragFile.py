@@ -81,6 +81,12 @@ class OpenapAircraftDrag(OpenapAircraftMass):
             #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
             dragNewtons = self.getCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , verticalSpeedFeetMinutes )
 
+        elif self.isApproach():
+            flap_angle_degrees = 10.0
+            ''' landing gear is retracted '''
+            landing_gear = False
+            #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
+            dragNewtons = self.getNonCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , flap_angle_degrees, landing_gear)
             
         else:
             raise ValueError("not yet implemented")

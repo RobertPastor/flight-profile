@@ -216,6 +216,11 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
             
         logger.info( self.className + " - descent CAS speed = {0} m/s".format (  self.constantCASdescentKnots ) )
         return self.constantCASdescentKnots
+    
+    def computeApproachCASknots(self):
+        self.approachCASknots = self.wrap.finalapp_vcas()['default']
+        logging.info( self.className + ' - approach CAS = {0:.2f} knots'.format( self.approachCASknots ))
+        return self.approachCASknots
         
         
     def isCruiseSpeedReached(self):

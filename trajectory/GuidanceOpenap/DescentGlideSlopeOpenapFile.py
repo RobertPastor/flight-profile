@@ -82,9 +82,9 @@ class DescentGlideSlope(Graph):
 
         strName = arrivalAirport.getName() + '-' + 'RunWay'+'-'+ self.runway.getName()
         self.runWayEndPoint = WayPoint (Name=strName, 
-                                            LatitudeDegrees=runway.getLatitudeDegrees(),
-                                            LongitudeDegrees=runway.getLongitudeDegrees(),
-                                            AltitudeMeanSeaLevelMeters=fieldElevationAboveSeaLevelMeters)
+                                            LatitudeDegrees            = runway.getLatitudeDegrees(),
+                                            LongitudeDegrees           = runway.getLongitudeDegrees(),
+                                            AltitudeMeanSeaLevelMeters = fieldElevationAboveSeaLevelMeters)
  
         ''' touch down is provided from BADA Ground Movement Landing Length '''
         ''' landing length from WRAP '''
@@ -142,7 +142,9 @@ class DescentGlideSlope(Graph):
             ''' aircraft fly '''
             endOfSimulation, deltaDistanceMeters , aircraftAltitudeMeanSeaLevelMeters = self.aircraft.fly(
                                                                     elapsedTimeSeconds = elapsedTimeSeconds,
-                                                                    deltaTimeSeconds = deltaTimeSeconds , 
+                                                                    deltaTimeSeconds         = deltaTimeSeconds , 
+                                                                    totalDistanceFlownMeters = self.getTotalDistanceFlownMeters() ,
+                                                                    altitudeMSLmeters        = self.altitudeMeanSeaLevelMeters,
                                                                     distanceStillToFlyMeters = distanceStillToFlyMeters,
                                                                     currentPosition =  intermediateWayPoint,
                                                                     distanceToLastFixMeters = distanceToLastFixMeters)
@@ -178,9 +180,10 @@ class DescentGlideSlope(Graph):
 
     def buildSimulatedGlideSlope(self, descentGlideSlopeSizeNautics):
         '''====================================================='''
-        ''' build the three degrees glide slope '''
-        ''' the slope is built backwards from the touch-down point and then it is reversed
-        ''======================================================'''
+        ''' build the three degrees descent glide slope '''
+        ''' the slope is built backwards from the touch-down point '''
+        ''' and then it is reversed '''
+        '''======================================================'''
         #logging.info self.className + ' ======= simulated glide slope ========='
         glideSlopeLengthMeters = descentGlideSlopeSizeNautics * NauticalMiles2Meters
         logging.debug ( self.className + ': glide slope Length= {0} meters'.format(str(glideSlopeLengthMeters)) )

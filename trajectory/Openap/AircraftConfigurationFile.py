@@ -93,10 +93,16 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
     def setAltitudeMSLfeet(self , altitudeMSLfeet ):
         self.altitudeMSLmeters = altitudeMSLfeet * feet2Meters
         
+    def setAltitudeMSLmeters(self , altitudeMSLmeters):
+        self.altitudeMSLmeters = altitudeMSLmeters
+        
     def getAltitudeMSLmeters(self):
         return self.altitudeMSLmeters
     
     def getCurrentAltitudeSeaLevelMeters(self):
+        return self.altitudeMSLmeters
+    
+    def getAircraftAltitudeMSLmeters(self):
         return self.altitudeMSLmeters
     
     def setCruiseLevelFeet(self ):
@@ -147,6 +153,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         2) the delta increase - decrease in altitude
         
         '''
+        self.setTotalDistanceFlownMeters(totalDistanceFlownMeters)
         logger.info (self.className + " ---> aircraft fly")
         
         altitudeMSLfeet = altitudeMSLmeters * Meter2Feet
@@ -329,6 +336,9 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             deltaAltitudeMeters = rateOfClimbMetersSeconds * deltaTimeSeconds
             altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
             
+            logging.info( self.className + " - distance still to fly = {0:.2f} meters".format( distanceStillToFlyMeters ))
+            logging.info( self.className + " - distance still to fly = {0:.2f} Nm".format( distanceStillToFlyMeters * Meter2NauticalMiles ))
+            
             logger.info( self.className + " - cruise level feet = {0:.2f} feet ".format ( self.getCruiseLevelFeet() ) )
             if ( ( altitudeMSLmeters * Meter2Feet ) > ( self.getCruiseLevelFeet() - 1000.0 ) ) and  \
                      ( ( altitudeMSLmeters * Meter2Feet )  < ( self.getCruiseLevelFeet() + 1000.0 ) ):
@@ -362,19 +372,29 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             logger.info( self.className + " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
 
             ''' mass loss due to fuel flow '''
-            fuelFlowKilogramsSeconds = self.computeFuelFlowKilogramsSeconds(TASknots         =trueAirSpeedMetersSecond * MeterSecond2Knots , 
-                                                                     aircraftAltitudeMSLfeet =altitudeMSLfeet , 
-                                                                     aircraftMassKilograms   =aircraftMassKilograms , 
-                                                                     verticalRateFeetMinutes  =rateOfClimbFeetMinutes,
+            fuelFlowKilogramsSeconds = self.computeFuelFlowKilogramsSeconds(TASknots         = trueAirSpeedMetersSecond * MeterSecond2Knots , 
+                                                                     aircraftAltitudeMSLfeet = altitudeMSLfeet , 
+                                                                     aircraftMassKilograms   = aircraftMassKilograms , 
+                                                                     verticalRateFeetMinutes  = rateOfClimbFeetMinutes,
                                                                      accelerationMetersSecondsSquare=aircraftAccelerationMetersSecondSquare)
             aircraftMassKilograms = aircraftMassKilograms - ( fuelFlowKilogramsSeconds * deltaTimeSeconds )
             self.setAircraftMassKilograms(aircraftMassKilograms)
             
-            ''' altitude does not change , or increases slightly due to lighter aircraft '''
+            rateOfDescentMetersSeconds = self.getDescentVerticalRateMeterSeconds( altitudeMSLfeet )
+            rateOfDescentFeetMinutes   = rateOfDescentMetersSeconds * MeterSeconds2FeetMinutes
 
-            if ( totalDistanceFlownMeters > 500.0 * 1000.0 ):
+            #===================================================================
+            logging.info( self.className + " - rate of descent feet per minutes = {0:.2f}".format( rateOfDescentFeetMinutes ) )
+            logging.info( self.className + " - distance still to fly = {0:.2f} meters".format( distanceStillToFlyMeters ))
+            logging.info( self.className + " - distance still to fly = {0:.2f} Nm".format( distanceStillToFlyMeters * Meter2NauticalMiles ))
+            
+            descentRangeMeters = self.getDescentRangeMeters()
+            #===================================================================0:
+            
+            ''' altitude does not change , or increases slightly due to lighter aircraft '''
+            if ( distanceStillToFlyMeters <=  descentRangeMeters ):
                 self.setDescentConfiguration( elapsedTimeSeconds )
-  
+                
             
         elif self.isDescent():
             
@@ -397,8 +417,8 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             
             descentCASknots = self.computeDescentCASknots( altitudeMSLfeet = altitudeMSLfeet ,
                                                            CASknots        = tas2cas ( 
-                                                            tas         = self.getCurrentTASspeedKnots() ,
-                                                            altitude    = altitudeMSLfeet ,
+                                                            tas            = self.getCurrentTASspeedKnots() ,
+                                                            altitude       = altitudeMSLfeet ,
                                                             temp        = 'std' ,
                                                             speed_units = 'kt' , 
                                                             alt_units   = 'ft' , 
@@ -432,7 +452,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             aircraftMassKilograms = aircraftMassKilograms - ( fuelFlowKilogramsSeconds * deltaTimeSeconds )
             self.setAircraftMassKilograms(aircraftMassKilograms)
             
-            ''' transition to initial climb as soon as height above ground is 1000 feet / 300 meters '''
+            ''' transition to final approach as soon as height above ground is 1000 feet / 300 meters '''
             deltaAltitudeMeters = rateOfDescentMetersSeconds * deltaTimeSeconds
             altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
             
@@ -457,14 +477,15 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
                                                    latitudeDegrees            = latitudeDegrees)
             
             approachCASknots = self.computeApproachCASknots()
-            
+            stop()
             
         else:
             
             raise ValueError("not yet implemented")
-    
+        
+        self.setAltitudeMSLmeters(altitudeMSLmeters)
         elapsedTimeSeconds = elapsedTimeSeconds + deltaTimeSeconds 
-        logger.info(self.className + " - update state vector")
+        #logger.info(self.className + " - update state vector")
         self.updateAircraftStateVector( elapsedTimeSeconds       = elapsedTimeSeconds , 
                                         flightPhase              = self.getCurrentConfiguration() , 
                                         flightPathAngleDegrees   = flightPathAngleDegrees , 
@@ -475,7 +496,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
                                         aircraftMassKilograms    = aircraftMassKilograms , 
                                         thrustNewtons            = thrustNewtons , 
                                         dragNewtons              = dragNewtons)
-        logger.info( self.className + " - state vector updated")
+        #logger.info( self.className + " - state vector updated")
         endOfSimulation = False
         return endOfSimulation , deltaDistanceFlownMeters , altitudeMSLmeters
         

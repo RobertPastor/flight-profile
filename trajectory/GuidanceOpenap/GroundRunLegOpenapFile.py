@@ -181,6 +181,7 @@ class GroundRunLeg(Graph):
                                 elapsedTimeSeconds,
                                 distanceStillToFlyMeters,
                                 distanceToLastFixMeters):
+        
         logging.info( self.className + " : build departure ground run")
         ''' elapsedTimeSeconds in seconds '''
         # -> @TODO to be suppressed -> elapsedTimeSeconds = elapsedTimeSeconds
@@ -224,6 +225,10 @@ class GroundRunLeg(Graph):
         
         ''' loop until 1.2 * Stall CAS speed reached '''
         endOfSimulation = False
+        
+        ''' initialize the aircraft altitude '''
+        self.altitudeMeters = self.airport.getFieldElevationAboveSeaLevelMeters()
+        
         while ((endOfSimulation == False) and
                ( tas2cas(tas = trueAirSpeedMetersSecond ,
                          altitude = self.airport.getFieldElevationAboveSeaLevelMeters(),
@@ -234,23 +239,24 @@ class GroundRunLeg(Graph):
             if index == 1:
                 logging.info( self.className + " : flight list index = {0}".format( index ))
                 intermediateWayPoint = runWayEndPoint
+                
             
             ''' fly => increase in true air speed '''
             ''' during ground run => all the energy is used to increase the Kinetic energy => no potential energy increase '''
-            endOfSimulation , deltaDistanceMeters , altitudeMeters = self.aircraft.fly(
+            endOfSimulation , deltaDistanceMeters , self.altitudeMeters = self.aircraft.fly(
                                                                      elapsedTimeSeconds       = elapsedTimeSeconds,
                                                                      deltaTimeSeconds         = deltaTimeSeconds, 
                                                                      totalDistanceFlownMeters = self.totalLegDistanceMeters ,
-                                                                     altitudeMSLmeters        = self.airport.getFieldElevationAboveSeaLevelMeters(),
+                                                                     altitudeMSLmeters        = self.altitudeMeters,
                                                                      distanceStillToFlyMeters = distanceStillToFlyMeters,
                                                                      currentPosition          = intermediateWayPoint,
                                                                      distanceToLastFixMeters  = distanceToLastFixMeters)
             logging.info( self.className + " - back from fly step")
-            logging.info( self.className + " - altitude {0} meters".format( altitudeMeters ))
+            logging.info( self.className + " - altitude {0} meters".format( self.altitudeMeters ))
             trueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
             
-            assert (((self.airport.getFieldElevationAboveSeaLevelMeters() - 10.0) <= altitudeMeters) and
-                    ( altitudeMeters <= (self.airport.getFieldElevationAboveSeaLevelMeters() + 10.0)))
+            assert (((self.airport.getFieldElevationAboveSeaLevelMeters() - 10.0) <= self.altitudeMeters) and
+                    ( self.altitudeMeters <= (self.airport.getFieldElevationAboveSeaLevelMeters() + 10.0)))
             #logging.debug self.className + ': delta distance= ' + str(deltaDistanceMeters) + ' meters'
             # name of the next point            
             self.totalLegDistanceMeters += deltaDistanceMeters
@@ -289,6 +295,7 @@ class GroundRunLeg(Graph):
         logging.info( self.className + " - last ground run point = {0}".format( Name ) )
         # keep the last true airspeed
         self.lastTrueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
+        
    
     def getElapsedTimeSeconds(self):
         return self.elapsedTimeSeconds
