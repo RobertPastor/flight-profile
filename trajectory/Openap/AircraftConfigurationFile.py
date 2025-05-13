@@ -470,18 +470,70 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             thrustNewtons = self.computeThrustNewtons( tasKnots , altitudeMSLfeet , rateOfDescentFeetMinutes)
             dragNewtons = self.computeDragNewtons ( aircraftMassKilograms , tasKnots , altitudeMSLfeet , rateOfDescentFeetMinutes )
 
-            trueAirSpeedMetersSecond = self.getCurrentTASmetersSeconds()
-            liftNewtons = self.computeLiftNewtons( aircraftMassKilograms      = aircraftMassKilograms, 
-                                                   altitudeMeanSeaLevelMeters = altitudeMSLmeters, 
-                                                   trueAirSpeedMetersSecond   = trueAirSpeedMetersSecond , 
-                                                   latitudeDegrees            = latitudeDegrees)
+            trueAirSpeedMetersSecond = self.getCurrentTASmetersSeconds( )
+            currentCASknots = tas2cas(tas      = trueAirSpeedMetersSecond, 
+                                      altitude = altitudeMSLfeet ,
+                                      temp     = 'std', 
+                                      speed_units = 'm/s', 
+                                      alt_units   = 'ft', 
+                                      temp_units  = 'C')
+            #liftNewtons = self.computeLiftNewtons( aircraftMassKilograms      = aircraftMassKilograms, 
+            #                                       altitudeMeanSeaLevelMeters = altitudeMSLmeters, 
+            #                                       trueAirSpeedMetersSecond   = trueAirSpeedMetersSecond , 
+            #                                       latitudeDegrees            = latitudeDegrees)
             
-            approachCASknots = self.computeApproachCASknots()
-            stop()
+            aircraftAccelerationMetersSecondSquare = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * rateOfDescentMetersSeconds )/ trueAirSpeedMetersSecond ) 
+
+            approachCASknots = self.computeApproachCASknots( altitudeMSLfeet = altitudeMSLfeet,
+                                                             currentCASknots = currentCASknots,
+                                                             arrivalRunwayAltitudeMSLfeet = self.arrivalRunwayMSLmeters * Meter2Feet)
+            trueAirSpeedKnots = cas2tas( cas         = approachCASknots ,
+                                         altitude    = altitudeMSLfeet ,
+                                         temp        = 'std' ,
+                                         speed_units = 'kt' ,
+                                         alt_units   = 'ft' ,
+                                         temp_units  = 'C' )
+            
+            trueAirSpeedMetersSecond = trueAirSpeedKnots * Knots2MetersSeconds
+            logger.info( self.className + " - TAS = {0:.2f} m/s - TAS = {1:.2f} kt ".format( trueAirSpeedMetersSecond , trueAirSpeedMetersSecond * MeterSecond2Knots))
+            self.setCurrentTASmetersSeconds(trueAirSpeedMetersSecond)
+             
+            ''' flight path angle  '''
+            flightPathAngleDegrees = self.computeFlightPathAngleDegrees( rateOfDescentMetersSeconds , trueAirSpeedMetersSecond )
+            
+            ''' distance flown '''
+            deltaDistanceFlownMeters = trueAirSpeedMetersSecond * math.cos(math.radians(flightPathAngleDegrees)) * deltaTimeSeconds
+            totalDistanceFlownMeters = totalDistanceFlownMeters + deltaDistanceFlownMeters
+            self.setTotalDistanceFlownMeters(totalDistanceFlownMeters)
+            logger.info( self.className + " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
+
+            ''' mass loss due to fuel flow '''
+            fuelFlowKilogramsSeconds = self.computeFuelFlowKilogramsSeconds(TASknots          = trueAirSpeedMetersSecond * MeterSecond2Knots , 
+                                                                     aircraftAltitudeMSLfeet  = altitudeMSLfeet , 
+                                                                     aircraftMassKilograms    = aircraftMassKilograms , 
+                                                                     verticalRateFeetMinutes  = rateOfDescentMetersSeconds,
+                                                                     accelerationMetersSecondsSquare = aircraftAccelerationMetersSecondSquare)
+            aircraftMassKilograms = aircraftMassKilograms - ( fuelFlowKilogramsSeconds * deltaTimeSeconds )
+            self.setAircraftMassKilograms(aircraftMassKilograms)
+            
+            ''' transition to landing as soon as landing stall speed is reached '''
+            deltaAltitudeMeters = rateOfDescentMetersSeconds * deltaTimeSeconds
+            altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
+            
+            ''' compute stall speed to change configuration to landing '''
+            LandingStallSpeedCASKnots = self.computeLandingStallSpeedCasKnots()
+            ''' move to Landing as soon as Stall CAS reached '''
+            altitudeMeanSeaLevelMeters = altitudeMSLfeet * feet2Meters
+            if ( ( tas2cas(tas = trueAirSpeedMetersSecond , altitude = altitudeMeanSeaLevelMeters, temp = 'std',
+                     speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots ) <= LandingStallSpeedCASKnots):
+                ''' as soon as speed decrease to landing configuration => change aircraft configuration '''
+                #logger.debug ( self.className +' distance to approach fix= {0:.2f} meters - delta altitude to approach fix= {1:.2f} meters'.format(distanceToTargetApproachFixMeters, deltaAltitudeToTargetApproachFixMeters) )
+                self.setLandingConfiguration(elapsedTimeSeconds + deltaTimeSeconds )
+            
             
         else:
             
-            raise ValueError("not yet implemented")
+            raise ValueError("Landing not yet implemented")
         
         self.setAltitudeMSLmeters(altitudeMSLmeters)
         elapsedTimeSeconds = elapsedTimeSeconds + deltaTimeSeconds 

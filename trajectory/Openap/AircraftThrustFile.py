@@ -43,7 +43,7 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
     
     def getDescentIdleThrustNewtons(self , tasKnots , altitudeMSLfeet):
         descentIdleThrustNewtons = self.thrust.descent_idle ( tas = tasKnots , alt = altitudeMSLfeet)
-        logger.info ( self.className + ': descent idle thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(descentIdleThrustNewtons , tasKnots , altitudeMSLfeet) )
+        #logger.info ( self.className + ': descent idle thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(descentIdleThrustNewtons , tasKnots , altitudeMSLfeet) )
         return descentIdleThrustNewtons
 
     def computeThrustNewtons(self , tasKnots, altitudeMSLfeet , rateOfClimbFeetMinutes = 0.0):

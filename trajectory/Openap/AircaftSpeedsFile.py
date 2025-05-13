@@ -64,6 +64,10 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         self.initialClimbCASknots = 0.0
         self.initialClimbAltitudeFeet = 0.0
         
+        self.initialApproachCASset = False
+        self.initialApproachCASknots = 0.0
+        self.initialApproachAltitudeFeet = 0.0
+        
     def getMaximumSpeedMmoMach(self):
         return self.maximumSpeedMmoMach
     
@@ -153,6 +157,7 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         return self.climbCASknots
         
     def computeDescentCASknots(self , altitudeMSLfeet , CASknots ):
+        
         if self.initialDescentCASset == False:
             self.initialDescentCASset = True
             self.initialDescentCASknots = CASknots
@@ -214,12 +219,36 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
                                                        xp = [ altitudeFinalApproachStartFeet , altitudeConstantCASfeet  ] , 
                                                        fp = [ finalApproachCAS , descentConstantCAS ])
             
-        logger.info( self.className + " - descent CAS speed = {0} m/s".format (  self.constantCASdescentKnots ) )
+        logger.info( self.className + " - descent CAS speed = {0:.2f} kt".format (  self.constantCASdescentKnots ) )
+        self.altitudeFinalDescentMSLfeet = altitudeMSLfeet
+        logger.info( self.className + " - altitude final descent = {0:.2f} feet".format ( self.altitudeFinalDescentMSLfeet ))
         return self.constantCASdescentKnots
     
-    def computeApproachCASknots(self):
+    def computeApproachCASknots(self , altitudeMSLfeet , currentCASknots , arrivalRunwayAltitudeMSLfeet ):
+        
+        if self.initialApproachCASset == False:
+            self.initialApproachCASset = True
+            self.initialApproachCASknots = currentCASknots
+            self.initialApproachAltitudeFeet = altitudeMSLfeet
+        
+        logger.info( self.className + " - altitude final descent = {0:.2f} feet".format ( self.altitudeFinalDescentMSLfeet ))
+        logger.info( self.className + " - altitude arrival runway = {0:.2f} feet".format ( arrivalRunwayAltitudeMSLfeet ))
+        assert ( self.altitudeFinalDescentMSLfeet >= arrivalRunwayAltitudeMSLfeet )
+
         self.approachCASknots = self.wrap.finalapp_vcas()['default']
+        logger.info( self.className + " - approach CAS = {0:.2f} knots".format( self.approachCASknots ))
+        self.landingCASknots = self.wrap.landing_speed()['default']
+        logger.info( self.className + " - landing CAS = {0:.2f} knots".format( self.landingCASknots ))
+        
+        ''' interpolate from current altitude to runway altitude '''
+        ''' interpolate from current CAS to landing CAS '''
+        ''' xp must be in increasing order '''
+        self.approachCASknots = np.interp ( x = altitudeMSLfeet , 
+                                            xp = [ arrivalRunwayAltitudeMSLfeet , self.altitudeFinalDescentMSLfeet  ] , 
+                                            fp = [ self.landingCASknots , self.initialApproachCASknots , ])
+   
         logging.info( self.className + ' - approach CAS = {0:.2f} knots'.format( self.approachCASknots ))
+        stop()
         return self.approachCASknots
         
         
