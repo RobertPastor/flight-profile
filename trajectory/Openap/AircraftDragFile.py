@@ -22,13 +22,11 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         self.className = self.__class__.__name__
         super().__init__(aircraftICAOcode)
                 
-        self.aircraftDict = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
         self.drag         = Drag(ac=str( aircraftICAOcode ).lower() , wave_drag=False)
         
         
     def getWingAreaSurfaceSquareMeters(self):
-        return self.aircraftDict['wing']['area']
-        
+        return self.aircraft['wing']['area']
         
     def getCleanDragNewtons(self , massKilograms , tasKnots , altitudeMSLfeet , verticalSpeedFeetMinutes ):
         self.currentDragNewtons = self.drag.clean( mass = massKilograms, 
@@ -88,8 +86,16 @@ class OpenapAircraftDrag(OpenapAircraftMass):
             #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
             dragNewtons = self.getNonCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , flap_angle_degrees, landing_gear)
             
+        elif self.isLanding():
+            flap_angle_degrees = 15.0
+            ''' landing gear is down '''
+            landing_gear = True
+            #return self.getCleanDragNewtons( massKilograms = massKilograms , tasKnots = tasKnots , altitudeMSLfeet = altitudeMSLfeet , verticalSpeedFeetMinutes = verticalSpeedFeetMinutes)
+            dragNewtons = self.getNonCleanDragNewtons( massKilograms , tasKnots , altitudeMSLfeet , flap_angle_degrees, landing_gear)
+           
+            
         else:
-            raise ValueError("not yet implemented")
+            raise ValueError("Compute Drag - not yet implemented")
         
         logger.info ( self.className + ' - drag = {0:.2f} Newtons'.format( dragNewtons ) )
         return dragNewtons

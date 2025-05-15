@@ -16,7 +16,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
-        
         logging.basicConfig(level=logging.INFO)
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
@@ -46,13 +45,16 @@ class Command(BaseCommand):
                 logging.info ( "Trajectory Compute Wrap - " + routeAsString )
                 
                 flightPath = FlightPathOpenap(
-                    route                = routeAsString, 
-                    aircraftICAOcode     = aircraftICAOcode,
-                    RequestedFlightLevel = 330.0, 
-                    cruiseMach           = 0.82, 
-                    takeOffMassKilograms = 62000.0)
-        
-                flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                        route                = routeAsString, 
+                        aircraftICAOcode     = aircraftICAOcode,
+                        RequestedFlightLevel = 330.0, 
+                        cruiseMach           = 0.82, 
+                        takeOffMassKilograms = 62000.0)
+                try:
+                    flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                except:
+                    flightPath.createStateVectorOutputFile()
+
                 
                 #print ( "Trajectory Compute - distance flown = {0:.2f} meters - {1:.2f} Nm".format( flightPath.flightLengthMeters , flightPath.flightLengthMeters * Meter2NauticalMiles ))
                 

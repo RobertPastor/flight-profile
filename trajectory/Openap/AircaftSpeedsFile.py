@@ -12,7 +12,7 @@ from trajectory.Environment.Constants import Knots2MetersSeconds,  MeterSecond2K
 from trajectory.Environment.Constants import Meter2Feet
 from trajectory.aerocalc.airspeed import mach_alt2cas
 from trajectory.Environment.Constants import NauticalMiles2Meter
-from sqlalchemy.sql._elements_constructors import false
+
 
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
@@ -34,11 +34,10 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
     targetCruiseMach = 0.0
 
     def __init__(self , aircraftICAOcode):
+        
         logger.setLevel(logging.INFO)
         self.className = self.__class__.__name__
         super().__init__(aircraftICAOcode)
-
-        self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
         
         self.maximumSpeedVmoKnots = self.aircraft['vmo']
         logger.info( self.className + " - max operational speed = {0} knots".format ( self.maximumSpeedVmoKnots ))
@@ -49,12 +48,15 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         self.initialTASknots = 0.0
         self.currentTASknots = self.initialTASknots
         
-        self.wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
         self.takeOffCASspeedsMeterSecondsDict = self.wrap.takeoff_speed() 
         logger.info( self.className + " - Take Off CAS speeds = (m/s)" + json.dumps ( self.takeOffCASspeedsMeterSecondsDict ) )
         
-        self.takeOffMeanAccelerationMetersSecondsSquareDict = self.wrap.takeoff_acceleration()
-        logger.info( self.className + " - Take Off mean acceleration = {0} meters per seconds square".format( json.dumps ( self.takeOffMeanAccelerationMetersSecondsSquareDict ) ) )
+        self.takeOffAccelerationMetersSecondsSquareDict = self.wrap.takeoff_acceleration()
+        logger.info( self.className + " - Take Off mean acceleration = {0} meters per seconds square".format( json.dumps ( self.takeOffAccelerationMetersSecondsSquareDict ) ) )
+
+        self.landingDecelerationMetersSecondsSquareDict = self.wrap.landing_acceleration()
+        logger.info( self.className + " - Landing deceleration = {0} meters per seconds square".format( json.dumps ( self.landingDecelerationMetersSecondsSquareDict ) ) )
+
 
         self.initialDescentCASset = False
         self.initialDescentCASknots = 0.0
@@ -80,10 +82,13 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
     
     def getDefaultTakeOffAccelerationMetersSecondsSquare(self):
         ''' @TODO correct for difference to reference mass '''
-        return self.takeOffMeanAccelerationMetersSecondsSquareDict['default']
+        return self.takeOffAccelerationMetersSecondsSquareDict['default']
     
     def getMinimumTakeOffAccelerationMetersSecondsSquare(self):
-        return self.takeOffMeanAccelerationMetersSecondsSquareDict['minimum']
+        return self.takeOffAccelerationMetersSecondsSquareDict['minimum']
+    
+    def getDefaultLandingDecelerationMetersSecondsSquare(self):
+        return self.landingDecelerationMetersSecondsSquareDict['default']
         
     def getCurrentTrueAirSpeedMetersSecond(self):
         return self.currentTASknots * Knots2MetersSeconds
@@ -209,7 +214,8 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
             ''' low altitude to transition from constant CAS to final approach CAS '''
             altitudeConstantCASfeet = self.wrap.descent_cross_alt_concas() ['default'] * 1000.0 * Meter2Feet
             ''' altitude of final approach '''
-            altitudeFinalApproachStartFeet = altitudeConstantCASfeet - glideSlopeHeightFeet
+            #altitudeFinalApproachStartFeet = altitudeConstantCASfeet - glideSlopeHeightFeet
+            altitudeFinalApproachStartFeet = self.getTargetApproachWayPoint().getAltitudeMeanSeaLevelMeters() * Meter2Feet
             ''' transition speed before entering final approach configuration '''
             descentConstantCAS = self.wrap.descent_const_vcas()['default']
             finalApproachCAS = self.wrap.finalapp_vcas()['default']
@@ -225,7 +231,7 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         return self.constantCASdescentKnots
     
     def computeApproachCASknots(self , altitudeMSLfeet , currentCASknots , arrivalRunwayAltitudeMSLfeet ):
-        
+        ''' approach is flying the last turn followed by the descent glide slope to the arrival runway '''
         if self.initialApproachCASset == False:
             self.initialApproachCASset = True
             self.initialApproachCASknots = currentCASknots
@@ -234,9 +240,12 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         logger.info( self.className + " - altitude final descent = {0:.2f} feet".format ( self.altitudeFinalDescentMSLfeet ))
         logger.info( self.className + " - altitude arrival runway = {0:.2f} feet".format ( arrivalRunwayAltitudeMSLfeet ))
         assert ( self.altitudeFinalDescentMSLfeet >= arrivalRunwayAltitudeMSLfeet )
-
-        self.approachCASknots = self.wrap.finalapp_vcas()['default']
-        logger.info( self.className + " - approach CAS = {0:.2f} knots".format( self.approachCASknots ))
+        
+        #self.approachCASknots = self.wrap.finalapp_vcas()['default']
+        #logger.info( self.className + " - approach CAS = {0:.2f} knots".format( self.approachCASknots ))
+        
+        logging.info( self.className + " - last descent CAS = {0:.2f} knots".format( self.constantCASdescentKnots ))
+        
         self.landingCASknots = self.wrap.landing_speed()['default']
         logger.info( self.className + " - landing CAS = {0:.2f} knots".format( self.landingCASknots ))
         
@@ -245,10 +254,9 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         ''' xp must be in increasing order '''
         self.approachCASknots = np.interp ( x = altitudeMSLfeet , 
                                             xp = [ arrivalRunwayAltitudeMSLfeet , self.altitudeFinalDescentMSLfeet  ] , 
-                                            fp = [ self.landingCASknots , self.initialApproachCASknots , ])
-   
+                                            fp = [ self.landingCASknots , self.constantCASdescentKnots ])
+        
         logging.info( self.className + ' - approach CAS = {0:.2f} knots'.format( self.approachCASknots ))
-        stop()
         return self.approachCASknots
         
         

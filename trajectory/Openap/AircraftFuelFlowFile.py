@@ -25,7 +25,6 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
         self.aircraftICAOcode = aircraftICAOcode
         
         super().__init__(aircraftICAOcode)
-
         self.fuelFlow = FuelFlow(ac=aircraftICAOcode)
         
     def getFuelFlowAtTakeOffKgSeconds(self, TASknots , aircraftAltitudeMSLfeet ):
@@ -39,13 +38,22 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
         return fuelFlowKgSeconds
     
     def getFuelFlowCruiseKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , verticalRateFeetMinutes , accelerationMetersSecondsSquare ):
-        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=verticalRateFeetMinutes, acc=accelerationMetersSecondsSquare, limit=True)
+        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, 
+                                                  tas=TASknots, 
+                                                  alt=aircraftAltitudeMSLfeet, 
+                                                  vs=verticalRateFeetMinutes, 
+                                                  acc=accelerationMetersSecondsSquare, 
+                                                  limit=True)
         logger.info(self.className + " - fuel flow cruise {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
     
-    def getFuelFlowDescentKgSeconds(self ,  aircraftAltitudeMSLfeet , thrustNewtons ):
+    def getFuelFlowDescentKgSeconds(self , aircraftMassKilograms , TASknots, aircraftAltitudeMSLfeet , verticalRateFeetMinutes , accelerationMetersSecondsSquare):
         #fuelFlowKgSeconds = self.fuelFlow.at_thrust( acthr = thrustNewtons , alt=aircraftAltitudeMSLfeet, limit=True)
-        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=verticalRateFeetMinutes, acc=accelerationMetersSecondsSquare, limit=True)
+        fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, 
+                                                  tas=TASknots, 
+                                                  alt=aircraftAltitudeMSLfeet, 
+                                                  vs=verticalRateFeetMinutes,
+                                                  acc=accelerationMetersSecondsSquare, limit=True)
 
         logger.info(self.className + " - fuel flow descent {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
@@ -83,7 +91,7 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
                                                                        verticalRateFeetMinutes          = verticalRateFeetMinutes, 
                                                                        accelerationMetersSecondsSquare  = accelerationMetersSecondsSquare)
             
-        elif self.isDescent() or self.isApproach():
+        elif self.isDescent() or self.isApproach() or self.isLanding():
             fuelFlowKilogramSeconds = self.getFuelFlowCruiseKgSeconds( aircraftMassKilograms            = aircraftMassKilograms ,  
                                                                        TASknots                         = TASknots , 
                                                                        aircraftAltitudeMSLfeet          = aircraftAltitudeMSLfeet , 

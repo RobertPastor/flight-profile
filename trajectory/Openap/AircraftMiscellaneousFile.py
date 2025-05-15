@@ -19,10 +19,7 @@ class OpenapAircraftMiscelleaneous(OpenapAircraftFlightPhases):
         self.aircraftICAOcode = aircraftICAOcode
         
         super().__init__(aircraftICAOcode)
-        
-        self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
         self.wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
-        
         
     def getLandingLengthMeters(self):
         self.LandingLengthMetersDict = self.wrap.landing_distance()
@@ -31,9 +28,11 @@ class OpenapAircraftMiscelleaneous(OpenapAircraftFlightPhases):
         return self.LandingLengthMeters
     
     def setTargetApproachWayPoint(self , approachWayPoint):
+        ''' it is the top of the last turn before the descent glide slope to the arrival runway '''
         self.approachWayPoint = approachWayPoint
         
     def getTargetApproachWayPoint(self):
+        ''' it is the top of the last turn before the descent glide slope to the arrival runway '''
         assert ( self.approachWayPoint and isinstance(self.approachWayPoint, WayPoint) )
         return self.approachWayPoint
     

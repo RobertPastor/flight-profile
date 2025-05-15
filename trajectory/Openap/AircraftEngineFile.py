@@ -4,11 +4,10 @@ Created on 12 nov. 2024
 @author: robert
 '''
 
-import sys
+#import sys
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import prop
-import json
 from trajectory.Openap.AircraftThrustFile import OpenapAircraftThrust
 
 import logging 
@@ -25,7 +24,6 @@ class OpenapAircraftEngine(OpenapAircraftThrust):
         
         self.engineOptions = prop.aircraft_engine_options(aircraftICAOcode)
         
-        self.aircraft        = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
         self.defaultEngine   = self.aircraft['engine']['default']
         self.numberOfEngines = self.aircraft['engine']['number']
         

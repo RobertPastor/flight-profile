@@ -33,11 +33,9 @@ class OpenapAircraftMass(OpenapAircraftFuelFlow):
         
         super().__init__(aircraftICAOcode)
         
-        self.openapAircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True) 
-        
-        self.maximumTakeOffMassKilograms   = self.openapAircraft['mtow']
-        self.maxLandingMassKilograms       = self.openapAircraft['mlw']
-        self.operatingEmptyWeightKilograms = self.openapAircraft['oew']
+        self.maximumTakeOffMassKilograms   = self.aircraft['mtow']
+        self.maxLandingMassKilograms       = self.aircraft['mlw']
+        self.operatingEmptyWeightKilograms = self.aircraft['oew']
         self.referenceMassKilograms        = self.maximumTakeOffMassKilograms * 0.85
         
         logger.info ( self.className + " max TakeOff mass = {0} kilograms ".format(self.maximumTakeOffMassKilograms))

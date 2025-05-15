@@ -6,6 +6,8 @@ Created on 12 nov. 2024
 import logging 
 logger = logging.getLogger(__name__)
 
+from openap import prop, WRAP
+
 from trajectory.Environment.Constants import MeterSecond2Knots , Meter2Feet, Meter2NauticalMiles
 from trajectory.OutputFiles.XlsxOutputFile import XlsxOutput
 from trajectory.aerocalc.airspeed import tas2cas
@@ -18,6 +20,10 @@ class OpenapAircraftStateVector(object):
     def __init__(self , aircraftICAOcode ):
         self.className = self.__class__.__name__
         self.aircraftICAOcode = aircraftICAOcode
+        
+        self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
+        self.wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
+
         self.aircraftStateHistory = []
     
     def initStateVector(self,

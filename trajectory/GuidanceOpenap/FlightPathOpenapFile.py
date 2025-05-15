@@ -404,7 +404,8 @@ class FlightPathOpenap(FlightPlan):
                            reverse = True)
         
         ''' 16th January 2022 - final radius of turn '''
-        finalRadiusOfTurnMeters = lastTurnLeg.buildNewSimulatedArrivalTurnLeg(deltaTimeSeconds = self.deltaTimeSeconds,
+        finalRadiusOfTurnMeters = lastTurnLeg.buildNewSimulatedArrivalTurnLeg(
+                                                deltaTimeSeconds    = self.deltaTimeSeconds,
                                                  elapsedTimeSeconds = 0.0,
                                                  distanceStillToFlyMeters = 0.0,
                                                  simulatedAltitudeSeaLevelMeters = self.firstGlideSlopeWayPoint.getAltitudeMeanSeaLevelMeters(),
@@ -414,6 +415,7 @@ class FlightPathOpenap(FlightPlan):
         ''' prepare next step '''
         beginOfLastTurnLeg = lastTurnLeg.getVertex(v=0).getWeight()
         logging.info ( self.className + ' begin last turn= {0}'.format(beginOfLastTurnLeg) )
+        
         ''' add to constraint list '''
         self.constraintsList.append(TargetApproachConstraint(beginOfLastTurnLeg))
         
@@ -421,7 +423,7 @@ class FlightPathOpenap(FlightPlan):
         self.insert(position = 'end', wayPoint = beginOfLastTurnLeg )
         ''' update the length of the flight path '''
         self.distanceFromApproachToTouchDownMeters = descentGlideSlope.getLengthMeters()
-        self.flightLengthMeters = self.computeLengthMeters()  + descentGlideSlope.getLengthMeters()
+        self.flightLengthMeters = self.computeLengthMeters() + descentGlideSlope.getLengthMeters()
         
         logging.info ( self.className + ' updated flight path length= {0:.2f} Nm'.format(self.flightLengthMeters * Meter2NauticalMiles ) )
                 

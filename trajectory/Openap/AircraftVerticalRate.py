@@ -10,9 +10,6 @@ logger = logging.getLogger(__name__)
 
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
-from openap import prop, FuelFlow, Emission, WRAP
-
-from trajectory.Openap.AircraftFlightPhasesFile import OpenapAircraftFlightPhases
 from trajectory.Openap.AircraftMiscellaneousFile import OpenapAircraftMiscelleaneous
 
 class OpenapAircraftVerticalRate(OpenapAircraftMiscelleaneous):
@@ -24,16 +21,12 @@ class OpenapAircraftVerticalRate(OpenapAircraftMiscelleaneous):
         self.aircraftICAOcode = aircraftICAOcode
         
         super().__init__(aircraftICAOcode)
-        self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
-        
-        self.wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
         
     def getDescentRangeMeters(self):
         self.descentRangeDict = self.wrap.descent_range()
         self.descentRangeMeters = self.descentRangeDict['default'] * 1000.0
         logger.info( self.className + " - descent range = {0:.2f} meters ".format ( self.descentRangeMeters ) )
         return self.descentRangeMeters
-
         
     def getInitialClimbVerticalRateMeterSeconds(self):
         self.initialClimbVerticalRateDictMeterSeconds = self.wrap.initclimb_vs()

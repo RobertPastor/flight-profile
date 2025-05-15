@@ -4,10 +4,10 @@ Created on 12 nov. 2024
 @author: robert
 '''
 
-import sys
+#import sys
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
-from openap import prop, FuelFlow, Emission, WRAP
+from openap import prop
 import json
 
 from trajectory.Openap.AircraftConfigurationFile import OpenapAircraftConfiguration
@@ -41,7 +41,7 @@ class OpenapAircraft(OpenapAircraftConfiguration):
         else:
             self.setInitialMassKilograms(initialMassKilograms)
 
-        logger.info ( self.className  + " --- " + self.getAircraftName() )
+        logging.info ( self.className  + " --- " + self.getAircraftName() )
         
         
     def getAircraftName(self):
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     
         initialMassKilograms = ac.getReferenceMassKilograms()
         print("reference mass = {0} kilograms".format( initialMassKilograms ))
-        logger.info( ac )
+        logging.info( ac )
     
         ac.setCruiseLevelFeet()
         altitudeMSLmeters = departureRunwayAltitudeMSLmeters

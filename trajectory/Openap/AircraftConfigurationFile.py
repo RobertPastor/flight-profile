@@ -7,12 +7,11 @@ Created on 14 nov. 2024
 import json
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
-from openap import prop, FuelFlow, Emission, WRAP
 
-from trajectory.Environment.Constants import  Meter2Feet , MeterSecond2Knots, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
-from trajectory.Environment.Constants import Meter2NauticalMiles, MaxRateOfClimbFeetPerMinutes , FeetMinutes2MetersSeconds
+from trajectory.Environment.Constants import Meter2Feet , MeterSecond2Knots, RollingFrictionCoefficient
+from trajectory.Environment.Constants import Meter2NauticalMiles, FeetMinutes2MetersSeconds
 from trajectory.Environment.Constants import MeterSeconds2FeetMinutes 
-from trajectory.Environment.Constants import MeterSecond2Knots, Knots2MetersSeconds
+from trajectory.Environment.Constants import Knots2MetersSeconds , ConstantTaxiSpeedCasKnots
 
 import logging 
 import math
@@ -21,7 +20,6 @@ from trajectory.Guidance.ConstraintsFile import feet2Meters
 logger = logging.getLogger(__name__)
 from trajectory.Openap.AircaftSpeedsFile import OpenapAircraftSpeeds
 from trajectory.aerocalc.airspeed import tas2cas, cas2tas
-
 
 class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
     
@@ -37,12 +35,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         self.atmosphere = atmosphere
         
         self.distanceFlownMeters = 0.0
-        
-        self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
-        
-        self.wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
         #self.ceilingMeters = self.aircraft['ceiling']
-
         
     def computeLiftCoeff(self, aircraftMassKilograms, altitudeMSLmeters, TrueAirSpeedMetersSecond, latitudeDegrees):
         '''
@@ -153,17 +146,19 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         2) the delta increase - decrease in altitude
         
         '''
+        endOfSimulation = False
+        
         self.setTotalDistanceFlownMeters(totalDistanceFlownMeters)
-        logger.info (self.className + " ---> aircraft fly")
+        #logger.info (self.className + " ---> aircraft fly")
         
         altitudeMSLfeet = altitudeMSLmeters * Meter2Feet
         self.setAltitudeMSLfeet(altitudeMSLfeet)
         
         latitudeDegrees = 45.0
-        latitudeRadians = math.radians(latitudeDegrees)
+        #latitudeRadians = math.radians(latitudeDegrees)
         
         gravityCenterMetersPerSquaredSeconds = self.earth.gravityWelmec( heightMSLmeters = altitudeMSLmeters, latitudeDegrees = latitudeDegrees )
-        logger.info( self.className + " --- gravity at a given altitude = {0:.2f} m/s2 at altitude = {1:.2f} meters".format( gravityCenterMetersPerSquaredSeconds , altitudeMSLmeters ))
+        #logger.info( self.className + " --- gravity at a given altitude = {0:.2f} m/s2 at altitude = {1:.2f} meters".format( gravityCenterMetersPerSquaredSeconds , altitudeMSLmeters ))
 
         tasKnots = self.getCurrentTASspeedKnots()
         aircraftMassKilograms = self.getCurrentMassKilograms()
@@ -452,18 +447,23 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             aircraftMassKilograms = aircraftMassKilograms - ( fuelFlowKilogramsSeconds * deltaTimeSeconds )
             self.setAircraftMassKilograms(aircraftMassKilograms)
             
-            ''' transition to final approach as soon as height above ground is 1000 feet / 300 meters '''
+            ''' transition to final approach as soon as altitude is below last turn followed by the descent glide slope to the arrival runway  '''
             deltaAltitudeMeters = rateOfDescentMetersSeconds * deltaTimeSeconds
             altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
             
             if ( descentCASknots < self.getFinalApproachCASknots() ):
-                self.setFinalApproachConfiguration( elapsedTimeSeconds )
+                pass
+                #self.setFinalApproachConfiguration( elapsedTimeSeconds )
             
-            if ( altitudeMSLmeters < self.getArrivalRunwayMSLmeters()):
+            if ( altitudeMSLmeters < self.getTargetApproachWayPoint().getAltitudeMeanSeaLevelMeters() ):
+                ''' target approach is the top of the last turn before the descent glide slope to the runway '''
+                logging.info( self.className + ' - current aircraft altitude = {0:.2f} meters'.format ( altitudeMSLmeters ))
+                logging.info( self.className + ' - approach last fix altitude = {0:.2f} meters'.format ( self.getTargetApproachWayPoint().getAltitudeMeanSeaLevelMeters() ))
                 self.setFinalApproachConfiguration( elapsedTimeSeconds )
         
         elif self.isApproach(): 
             
+            ''' approach starts on top of the last turn and descent slope '''
             rateOfDescentMetersSeconds = self.getFinalApproachVerticalRateMeterSeconds( altitudeMSLfeet )
             rateOfDescentFeetMinutes   = rateOfDescentMetersSeconds * MeterSeconds2FeetMinutes
             
@@ -519,25 +519,69 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             ''' transition to landing as soon as landing stall speed is reached '''
             deltaAltitudeMeters = rateOfDescentMetersSeconds * deltaTimeSeconds
             altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
+            logging.info( self.className + " - current altitude = {0:.2f} meters - {1:.2f} feet".format( altitudeMSLmeters , altitudeMSLmeters * Meter2Feet))
             
             ''' compute stall speed to change configuration to landing '''
             LandingStallSpeedCASKnots = self.computeLandingStallSpeedCasKnots()
+            
             ''' move to Landing as soon as Stall CAS reached '''
-            altitudeMeanSeaLevelMeters = altitudeMSLfeet * feet2Meters
-            if ( ( tas2cas(tas = trueAirSpeedMetersSecond , altitude = altitudeMeanSeaLevelMeters, temp = 'std',
+            if ( ( tas2cas(tas = trueAirSpeedMetersSecond , altitude = altitudeMSLmeters, temp = 'std',
                      speed_units = 'm/s', alt_units = 'm') * MeterSecond2Knots ) <= LandingStallSpeedCASKnots):
                 ''' as soon as speed decrease to landing configuration => change aircraft configuration '''
                 #logger.debug ( self.className +' distance to approach fix= {0:.2f} meters - delta altitude to approach fix= {1:.2f} meters'.format(distanceToTargetApproachFixMeters, deltaAltitudeToTargetApproachFixMeters) )
                 self.setLandingConfiguration(elapsedTimeSeconds + deltaTimeSeconds )
+            ''' move to landing as soon as arrival runway altitude is reached '''
+            if ( altitudeMSLmeters <= self.arrivalRunwayMSLmeters ):
+                logging.info( self.className + " - aircraft flying at the runway altitude ")
+                self.setLandingConfiguration(elapsedTimeSeconds + deltaTimeSeconds )
             
+        elif self.isLanding():
             
-        else:
+            flightPathAngleDegrees = 0.0
+            logging.info( self.className + " - touch down CAS = {0:.2f} knots".format( self.landingCASknots ))
             
-            raise ValueError("Landing not yet implemented")
+            trueAirSpeedMetersSecond = self.getCurrentTASmetersSeconds( )
+            currentCASknots = tas2cas(tas      = trueAirSpeedMetersSecond, 
+                                      altitude = altitudeMSLfeet ,
+                                      temp     = 'std', 
+                                      speed_units = 'm/s', 
+                                      alt_units   = 'ft', 
+                                      temp_units  = 'C')
+            logging.info( self.className + " - current CAS = {0:.2f} knots".format( currentCASknots ))
+            
+            thrustNewtons = self.computeThrustNewtons( currentCASknots , altitudeMSLfeet , 0.0 )
+            dragNewtons = self.computeDragNewtons ( aircraftMassKilograms , currentCASknots , altitudeMSLfeet  )
+            
+            aircraftDecelerationMetersSecondSquare = self.getDefaultLandingDecelerationMetersSecondsSquare()
+            logging.info( self.className + " - aircraft default landing deceleration = {0:.2f} meters per seconds square".format( aircraftDecelerationMetersSecondSquare ))
+
+            trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + ( aircraftDecelerationMetersSecondSquare * deltaTimeSeconds )
+            self.setCurrentTASmetersSeconds(trueAirSpeedMetersSecond)
+            
+            ''' distance flown '''
+            deltaDistanceFlownMeters = trueAirSpeedMetersSecond * deltaTimeSeconds
+            totalDistanceFlownMeters = totalDistanceFlownMeters + deltaDistanceFlownMeters
+            self.setTotalDistanceFlownMeters(totalDistanceFlownMeters)
+            logging.info( self.className + " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nm ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
+
+            ''' mass loss due to fuel flow '''
+            fuelFlowKilogramsSeconds = self.computeFuelFlowKilogramsSeconds(TASknots          = trueAirSpeedMetersSecond * MeterSecond2Knots , 
+                                                                     aircraftAltitudeMSLfeet  = altitudeMSLfeet , 
+                                                                     aircraftMassKilograms    = aircraftMassKilograms , 
+                                                                     verticalRateFeetMinutes  = 0.0,
+                                                                     accelerationMetersSecondsSquare = aircraftDecelerationMetersSecondSquare)
+            logging.info( self.className + " - fuel flow = {0:.2f} kg/s".format( fuelFlowKilogramsSeconds ))
+            aircraftMassKilograms = aircraftMassKilograms - ( fuelFlowKilogramsSeconds * deltaTimeSeconds )
+            self.setAircraftMassKilograms(aircraftMassKilograms)
+            
+            if currentCASknots < ConstantTaxiSpeedCasKnots:
+                logging.info( self.className + " - taxi speed reached - end of simulation")
+                endOfSimulation = True
+
         
         self.setAltitudeMSLmeters(altitudeMSLmeters)
         elapsedTimeSeconds = elapsedTimeSeconds + deltaTimeSeconds 
-        #logger.info(self.className + " - update state vector")
+        #logging.info(self.className + " - update state vector")
         self.updateAircraftStateVector( elapsedTimeSeconds       = elapsedTimeSeconds , 
                                         flightPhase              = self.getCurrentConfiguration() , 
                                         flightPathAngleDegrees   = flightPathAngleDegrees , 
@@ -548,7 +592,6 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
                                         aircraftMassKilograms    = aircraftMassKilograms , 
                                         thrustNewtons            = thrustNewtons , 
                                         dragNewtons              = dragNewtons)
-        #logger.info( self.className + " - state vector updated")
-        endOfSimulation = False
+        #logging.info( self.className + " - state vector updated")
         return endOfSimulation , deltaDistanceFlownMeters , altitudeMSLmeters
         

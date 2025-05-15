@@ -23,7 +23,6 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
         self.className = self.__class__.__name__
         super().__init__(aircraftICAOcode)
         
-        self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
         self.thrust = Thrust(ac=str( aircraftICAOcode ).lower() , eng=None)
         
     def getTakeOffThrustNewtons(self, tasKnots , altitudeMSLfeet ):
@@ -62,7 +61,7 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
         elif self.isCruise():
             thrustNewtons = self.getCruiseThrustNewtons( tasKnots        = tasKnots , 
                                                          altitudeMSLfeet = altitudeMSLfeet )
-        elif self.isDescent() or self.isApproach():
+        elif self.isDescent() or self.isApproach() or self.isLanding():
             thrustNewtons = self.getDescentIdleThrustNewtons( tasKnots        = tasKnots , 
                                                               altitudeMSLfeet = altitudeMSLfeet )
         else:
