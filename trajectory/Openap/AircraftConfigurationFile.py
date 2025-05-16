@@ -154,7 +154,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         altitudeMSLfeet = altitudeMSLmeters * Meter2Feet
         self.setAltitudeMSLfeet(altitudeMSLfeet)
         
-        latitudeDegrees = 45.0
+        latitudeDegrees = currentPosition.getLatitudeDegrees()
         #latitudeRadians = math.radians(latitudeDegrees)
         
         gravityCenterMetersPerSquaredSeconds = self.earth.gravityWelmec( heightMSLmeters = altitudeMSLmeters, latitudeDegrees = latitudeDegrees )

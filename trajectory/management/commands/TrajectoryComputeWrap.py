@@ -52,8 +52,10 @@ class Command(BaseCommand):
                         takeOffMassKilograms = 62000.0)
                 try:
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
-                except:
-                    flightPath.createStateVectorOutputFile()
+                    flightPath.createStateVectorHistoryFile()
+
+                except Exception as e:
+                    logging.error("Trajectory Compute Wrap - Exception = {0}".format( str(e ) ) )
 
                 
                 #print ( "Trajectory Compute - distance flown = {0:.2f} meters - {1:.2f} Nm".format( flightPath.flightLengthMeters , flightPath.flightLengthMeters * Meter2NauticalMiles ))

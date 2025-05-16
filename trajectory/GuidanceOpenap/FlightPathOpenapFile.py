@@ -589,8 +589,9 @@ class FlightPathOpenap(FlightPlan):
         logging.debug (  '{0} - final route length = {1:.2f} Nm'.format(self.className, self.finalRoute.getLengthMeters()*Meter2NauticalMiles) )
         return kmlXmlDocument
     
-    def createStateVectorOutputFile(self):
-        self.aircraft.createStateVectorOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
+    def createStateVectorHistoryFile(self):
+        fileName = "{0}-{1}-{2}-Aborted-{3}".format( self.aircraftICAOcode , self.departureAirport.getICAOcode() , self.arrivalAirport.getICAOcode() , self.abortedFlight )
+        self.aircraft.createStateVectorHistoryFile( fileName )
 
     def createStateVectorOutputSheet(self, workbook):
         self.aircraft.createStateVectorOutputSheet(workbook, self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
