@@ -77,7 +77,6 @@ class GroundRunLeg(Graph):
         assert (isinstance(airport, Airport)  and not(airport is None))
         self.airport = airport
     
-    
     def computeTouchDownWayPoint(self):
         ''' get landing length in meters '''
         landingLengthMeters = self.aircraft.getLandingLengthMeters()
@@ -98,7 +97,6 @@ class GroundRunLeg(Graph):
         touchDownWayPoint.setAltitudeMeanSeaLevelMeters(self.airport.getFieldElevationAboveSeaLevelMeters())
         return touchDownWayPoint
         
-    
     def buildArrivalGroundRun(self,
                               deltaTimeSeconds,
                               elapsedTimeSeconds,
@@ -137,10 +135,12 @@ class GroundRunLeg(Graph):
             ''' fly => decrease the true air speed '''
             endOfSimulation, deltaDistanceMeters , altitudeMeters = self.aircraft.fly(  elapsedTimeSeconds        = elapsedTimeSeconds,
                                                                                         deltaTimeSeconds          = deltaTimeSeconds , 
+                                                                                        totalDistanceFlownMeters  = 0.0 ,
+                                                                                        altitudeMSLmeters         = self.aircraft.getCurrentAltitudeSeaLevelMeters(),
                                                                                         distanceStillToFlyMeters  = distanceStillToFlyMeters,
                                                                                         currentPosition           = intermediateWayPoint,
                                                                                         distanceToLastFixMeters   = 0.0)
-            distanceStillToFlyMeters -= deltaDistanceMeters
+            distanceStillToFlyMeters = distanceStillToFlyMeters - deltaDistanceMeters
             #trueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
             #logging.debug 'true air speed= ' + str(trueAirSpeedMetersSecond) + ' meters/second'
             

@@ -7,7 +7,7 @@ import logging
 from trajectory.Openap.AircraftFlightPhasesFile import OpenapAircraftFlightPhases
 from trajectory.Guidance.WayPointFile import WayPoint
 
-from openap import prop, WRAP
+from openap import WRAP
 
 
 class OpenapAircraftMiscelleaneous(OpenapAircraftFlightPhases):
@@ -28,17 +28,19 @@ class OpenapAircraftMiscelleaneous(OpenapAircraftFlightPhases):
         return self.LandingLengthMeters
     
     def setTargetApproachWayPoint(self , approachWayPoint):
+        ''' this point is the end of the descent '''
         ''' it is the top of the last turn before the descent glide slope to the arrival runway '''
+        assert ( approachWayPoint and isinstance(approachWayPoint, WayPoint) )
         self.approachWayPoint = approachWayPoint
         
     def getTargetApproachWayPoint(self):
         ''' it is the top of the last turn before the descent glide slope to the arrival runway '''
-        assert ( self.approachWayPoint and isinstance(self.approachWayPoint, WayPoint) )
         return self.approachWayPoint
     
+    ''' this point is the end of the descent glide slope '''
     def setArrivalRunwayTouchDownWayPoint(self , touchDownWayPoint ):
+        assert ( touchDownWayPoint and isinstance(touchDownWayPoint, WayPoint) )
         self.touchDownWayPoint = touchDownWayPoint
         
     def getArrivalRunwayTouchDownPoint(self):
-        assert ( self.touchDownWayPoint and isinstance( self.touchDownWayPoint , WayPoint ))
         return self.touchDownWayPoint

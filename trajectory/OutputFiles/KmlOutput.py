@@ -52,6 +52,14 @@ class KmlOutput(object):
         #sanity check : filename shall not contain "/"
         assert (not ('/' in self.fileName))
         
+        self.fileName = fileName
+        
+        self.FilesFolder = os.path.dirname(__file__)
+        
+        logging.info ( self.className + ': file folder= {0}'.format(self.FilesFolder) )
+        self.filePath = os.path.abspath( os.path.join ( self.FilesFolder , ".." , "ResultsFiles" , self.fileName ) )
+        logging.info ( self.className + ': file path= {0}'.format(self.filePath) )
+        
         # This constructs the KML document
         self.kmlDoc = xml.dom.minidom.Document()
         kmlElement = self.kmlDoc.createElementNS('http://earth.google.com/kml/2.2', 'kml')
@@ -107,30 +115,27 @@ class KmlOutput(object):
         
     def close(self):
         ''' always write in the static kml folder '''
-        self.FilesFolder = os.path.dirname(__file__)
-        self.FilesFolder =  os.path.join( self.FilesFolder , '..' , 'static' , 'kml')
+        #self.FilesFolder = os.path.dirname(__file__)
+        #self.FilesFolder =  os.path.join( self.FilesFolder , '..' , 'static' , 'kml')
         
         #self.filePath = os.path.join( self.FilesFolder , self.fileName )
-        self.filePath = os.path.join( "/static/kml" , self.fileName)
+        #self.filePath = os.path.join( "/static/kml" , self.fileName)
         #self.filePath = "static/kml/" + self.fileName
         logging.info ( self.className + ': file path= {0}'.format(self.filePath) )
-        
+        kmlFile = open( self.filePath , 'wb')
         kmlXmlDocument = self.kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8')
-        return kmlXmlDocument
-        
+        kmlFile.write ( kmlXmlDocument )
+        kmlFile.close()
+        #return kmlXmlDocument
         
     def getFilePath(self):
         return self.filePath
     
-    
     def getKmlFileName(self):
         return self.fileName
     
-    
-    
 class KmlFileLike(KmlOutput):
     
-        
     def close(self, memoryFile):
         indent="\t";
         addindent = ""

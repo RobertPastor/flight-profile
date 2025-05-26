@@ -67,7 +67,11 @@ class WayPoint(GeographicalPoint):
         self.isFlyBy = True
         
     def __str__(self):
-        return  "{0} = {1} - latitude= {2:.2f} degrees - longitude= {3:.2f} degrees".format(self.className, self.Name, self.LatitudeDegrees, self.LongitudeDegrees)
+        return  "{0} - {1} - latitude = {2:.2f} degrees - longitude = {3:.2f} degrees - altitude MSL = {4:.2f} meters".format(self.className, 
+                                                                                                                              self.Name, 
+                                                                                                                              self.LatitudeDegrees, 
+                                                                                                                              self.LongitudeDegrees,
+                                                                                                                              self.getAltitudeMeanSeaLevelMeters())
     
     def setElapsedTimeSeconds(self, elapsedTimeSeconds):
         self.elapsedTimeSeconds = elapsedTimeSeconds
@@ -82,7 +86,7 @@ class WayPoint(GeographicalPoint):
         self.Name = Name
     
     def getDistanceMetersTo(self, nextWayPoint):
-        if isinstance(nextWayPoint, WayPoint)==True:
+        if isinstance(nextWayPoint, WayPoint) == True:
             return points2distanceMeters([self.LatitudeDegrees,self.LongitudeDegrees],
                                          [nextWayPoint.LatitudeDegrees, nextWayPoint.LongitudeDegrees])
         return 0.0

@@ -479,7 +479,6 @@ class TurnLeg(Graph):
         if ( radiusOfTurnMeters * Meter2NauticalMiles < FinalArrivalTurnRadiusNauticalMiles):
             radiusOfTurnMeters = FinalArrivalTurnRadiusNauticalMiles * NauticalMiles2Meter
  
-        #stop()
         ''' index used to initialize the loop '''        
         index = 0
         ''' build a list that can be reversed afterwards '''
@@ -501,7 +500,7 @@ class TurnLeg(Graph):
             ''' initialize the loop '''
             if index == 0:
                 ''' set initial way Point altitude '''
-                self.initialWayPoint.setAltitudeAboveSeaLevelMeters(altitudeMeanSeaLevelMeters)             
+                self.initialWayPoint.setAltitudeAboveSeaLevelMeters(altitudeMeanSeaLevelMeters)
                 ''' prepare for the next round '''
                 intermediateWayPoint = self.initialWayPoint
     

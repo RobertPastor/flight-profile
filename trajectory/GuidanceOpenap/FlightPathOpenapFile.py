@@ -43,8 +43,6 @@ The aircraft speed is used to calculate a turn radius.
 import math
 import logging
 
-from openap import prop
-
 from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.Environment.Earth import Earth
 from trajectory.Environment.Utils import logElapsedRealTime
@@ -108,12 +106,15 @@ class FlightPathOpenap(FlightPlan):
         logging.info ( self.className + " : Max Cruise Altitude Feet = {0}".format(self.aircraft.getMaxCruiseAltitudeFeet() ) )   
         logging.info ( self.className + " : Max Speed MMO Cruise Mach = {0}".format(self.aircraft.getMaximumSpeedMmoMach() ) )
         
-        self.RequestedFlightLevel = self.aircraft.getMaxCruiseAltitudeFeet() / 100.0
+        #self.RequestedFlightLevel = self.aircraft.getMaxCruiseAltitudeFeet() / 100.0
+        ''' requested flight level such as FL 330 '''
+        self.RequestedFlightLevel = RequestedFlightLevel
         
         ''' sanity checks '''
         assert self.RequestedFlightLevel >= MinFlightLevel and self.RequestedFlightLevel <= MaxFlightLevel
-        logging.info( self.className +  " - set cruise level")
-        self.aircraft.setCruiseLevelFeet()
+        logging.info( self.className +  " - set cruise level = {0:.2f} feet".format( self.RequestedFlightLevel * 100.0 ))
+        self.aircraft.setCruiseLevelFeet(self.RequestedFlightLevel * 100.0)
+        
         logging.info( self.className +  " - set target cruise mach")
         self.aircraft.setTargetCruiseMach(targetCruiseMach = cruiseMach)
         # 17th july 2023
@@ -123,6 +124,8 @@ class FlightPathOpenap(FlightPlan):
         if (self.arrivalAirport is None):
             logging.info (self.className + ' there is no arrival airport => flight is out-bound !!!')
         #assert isinstance(self.arrivalAirport, Airport) and not(self.arrivalAirport is None)
+        assert isinstance ( self.arrivalAirport , Airport ) and not ( self.arrivalAirport is None)
+        self.aircraft.setArrivalRunwayMSLmeters( self.arrivalAirport.getFieldElevationAboveSeaLevelMeters())
         
         self.departureAirport = self.getDepartureAirport()
         assert isinstance(self.departureAirport, Airport) and not(self.departureAirport is None)
@@ -381,12 +384,13 @@ class FlightPathOpenap(FlightPlan):
         
         ''' if there is a fix nearer to 5 Nm of the touch-down then limit size of simulated glide slope '''
         descentGlideSlopeSizeNautics = min(distanceToLastFixNautics / 2.0 , DescentGlideSlopeDistanceNauticalMiles)
+        
         ''' build simulated glide slope '''
         descentGlideSlope.buildSimulatedGlideSlope(descentGlideSlopeSizeNautics)
         logging.info( self.className + " - Simulated arrival descent glide slope is correctly finished")
         
         self.firstGlideSlopeWayPoint = descentGlideSlope.getVertex(v=0).getWeight()
-        logging.info ( self.className + ' top of arrival glide slope= {0}'.format(self.firstGlideSlopeWayPoint) )
+        logging.info ( self.className + ' top of arrival glide slope= {0}'.format(str(self.firstGlideSlopeWayPoint)) )
         
         logging.info ( self.className + ' ================= need a turn leg to find the junction point the last way-point in the fix list to the top of the final glide slope' )
         '''
@@ -414,13 +418,14 @@ class FlightPathOpenap(FlightPlan):
         descentGlideSlope.addGraph(lastTurnLeg)
         ''' prepare next step '''
         beginOfLastTurnLeg = lastTurnLeg.getVertex(v=0).getWeight()
-        logging.info ( self.className + ' begin last turn= {0}'.format(beginOfLastTurnLeg) )
+        logging.info ( self.className + ' begin last turn= {0}'.format(str(beginOfLastTurnLeg) ))
         
         ''' add to constraint list '''
         self.constraintsList.append(TargetApproachConstraint(beginOfLastTurnLeg))
         
         ''' add the three last way-points in the fix list '''
         self.insert(position = 'end', wayPoint = beginOfLastTurnLeg )
+        
         ''' update the length of the flight path '''
         self.distanceFromApproachToTouchDownMeters = descentGlideSlope.getLengthMeters()
         self.flightLengthMeters = self.computeLengthMeters() + descentGlideSlope.getLengthMeters()
@@ -429,6 +434,7 @@ class FlightPathOpenap(FlightPlan):
                 
         ''' target approach fix is equal to the begin of the SIMULATED last turn leg '''
         self.aircraft.setTargetApproachWayPoint(beginOfLastTurnLeg)
+        
         self.aircraft.setArrivalRunwayTouchDownWayPoint(self.touchDownWayPoint)
         logging.info ( self.className + ' fix list= {0}'.format(self.fixList) )
         
@@ -438,15 +444,15 @@ class FlightPathOpenap(FlightPlan):
 
     def buildArrivalPhase(self, initialHeadingDegrees , finalRadiusOfTurnMeters):
         
-        logging.debug ( self.className + ' initial heading= {0:.2f} deg'.format(initialHeadingDegrees) )
-        logging.debug ( self.className + ' ==================== add last turn ==================== ' )
+        logging.info ( self.className + ' initial heading= {0:.2f} degrees'.format(initialHeadingDegrees) )
+        logging.info ( self.className + ' ==================== add last turn ==================== ' )
         if self.isDomestic() or self.isInBound():
             
             endOfLastGreatCircleWayPoint = self.finalRoute.getLastVertex().getWeight()
                 
             finalHeadingDegrees = self.arrivalRunway.getTrueHeadingDegrees()
             finalHeadingDegrees = math.fmod ( finalHeadingDegrees + 180.0 , 360.0 )
-            logging.debug ( self.className + ' runway final heading = {0:.2f} deg'.format(finalHeadingDegrees) )
+            logging.info ( self.className + ' runway final heading = {0:.2f} deg'.format(finalHeadingDegrees) )
             
             turnLeg = TurnLeg(  initialWayPoint           = endOfLastGreatCircleWayPoint,
                                     #finalWayPoint    = self.firstGlideSlopeWayPoint,
@@ -460,9 +466,9 @@ class FlightPathOpenap(FlightPlan):
                                                                           fixListIndex    = self.flightListIndex)
             distanceToLastFixMeters = distanceStillToFlyMeters
             ''' for the last turn => final heading towards the runway orientation '''
-            deltaTimeSeconds = 0.1
-            turnLeg.buildTurnLeg(deltaTimeSeconds = deltaTimeSeconds,
-                                 elapsedTimeSeconds = endOfLastGreatCircleWayPoint.getElapsedTimeSeconds(),
+            deltaTimeSeconds = 1.0
+            turnLeg.buildTurnLeg(deltaTimeSeconds         = deltaTimeSeconds,
+                                 elapsedTimeSeconds       = endOfLastGreatCircleWayPoint.getElapsedTimeSeconds(),
                                  distanceStillToFlyMeters = distanceStillToFlyMeters,
                                  distanceToLastFixMeters = distanceToLastFixMeters,
                                  finalHeadingDegrees = finalHeadingDegrees,
@@ -475,7 +481,7 @@ class FlightPathOpenap(FlightPlan):
             endOfTurnLegWayPoint = self.finalRoute.getLastVertex().getWeight()
             ''' ============= use touch-down way-point to compute distance to fly ============='''
             distanceStillToFlyMeters = endOfTurnLegWayPoint.getDistanceMetersTo(self.touchDownWayPoint)
-            logging.debug ( self.className + ' distance still to fly= {0:.2f} Nm'.format(distanceStillToFlyMeters * Meter2NauticalMiles) )
+            logging.info ( self.className + ' distance still to fly= {0:.2f} Nm'.format(distanceStillToFlyMeters * Meter2NauticalMiles) )
     
             #logging.debug '==================== add descent slope ================= '
             descentGlideSlope = DescentGlideSlope( runway   = self.arrivalRunway,
@@ -486,15 +492,15 @@ class FlightPathOpenap(FlightPlan):
             flownDistanceMeters = self.finalRoute.getLengthMeters()    
             distanceStillToFlyMeters = self.flightLengthMeters - self.finalRoute.getLengthMeters()
             distanceToLastFixMeters = self.computeDistanceToLastFixMeters(currentPosition = endOfTurnLegWayPoint,
-                                                                          fixListIndex = self.flightListIndex)
+                                                                          fixListIndex    = self.flightListIndex)
             distanceToLastFixMeters = distanceStillToFlyMeters
 
-            descentGlideSlope.buildGlideSlope(deltaTimeSeconds = self.deltaTimeSeconds,
-                                              elapsedTimeSeconds = endOfTurnLegWayPoint.getElapsedTimeSeconds(), 
-                                               initialWayPoint = endOfTurnLegWayPoint, 
+            descentGlideSlope.buildGlideSlope(deltaTimeSeconds     = self.deltaTimeSeconds,
+                                              elapsedTimeSeconds   = endOfTurnLegWayPoint.getElapsedTimeSeconds(), 
+                                               initialWayPoint     = endOfTurnLegWayPoint, 
                                                flownDistanceMeters = flownDistanceMeters, 
-                                               distanceStillToFlyMeters= distanceStillToFlyMeters ,
-                                               distanceToLastFixMeters = distanceToLastFixMeters)
+                                               distanceStillToFlyMeters = distanceStillToFlyMeters ,
+                                               distanceToLastFixMeters  = distanceToLastFixMeters)
             
             self.finalRoute.addGraph(descentGlideSlope)
             endOfDescentGlideSlope = self.finalRoute.getLastVertex().getWeight()
@@ -530,7 +536,8 @@ class FlightPathOpenap(FlightPlan):
         logging.info ( self.className + " : start computing the trajectory ")
         try:
             if self.isDomestic() or self.isOutBound():
-                print ( self.className + " : Build departure phase")
+                
+                logging.info ( self.className + " : Build departure phase")
                 self.endOfSimulation, initialHeadingDegrees , initialWayPoint = self.buildDeparturePhase()
                 
                 logging.info( self.className + " --->>> end of departure phase")

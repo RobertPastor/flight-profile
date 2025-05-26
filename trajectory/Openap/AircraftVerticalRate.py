@@ -5,12 +5,16 @@ Created on 25 déc. 2024
 '''
 import json
 import logging 
+import math
+
 from trajectory.Environment.Constants import Meter2Feet
+from trajectory.Guidance.WayPointFile import WayPoint
 logger = logging.getLogger(__name__)
 
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from trajectory.Openap.AircraftMiscellaneousFile import OpenapAircraftMiscelleaneous
+from trajectory.Guidance.WayPointFile import WayPoint
 
 class OpenapAircraftVerticalRate(OpenapAircraftMiscelleaneous):
     pass
@@ -72,4 +76,34 @@ class OpenapAircraftVerticalRate(OpenapAircraftMiscelleaneous):
         self.finalApproachVerticalRateMeterSeconds =  self.wrap.finalapp_vs()['default']
         logger.info( self.className + " - final approach vertical rate = {0:.2f} m/s".format (  self.descentVerticalRateMeterSeconds ) )
         return self.finalApproachVerticalRateMeterSeconds
+    
+    def computeDescentVerticalRateMeterSeconds(self, deltaTimeSeconds, currentPosition , distanceToLastFixMeters , deltaDistanceMeters ):
+        
+        logging.info( self.className + " - distance to last fix = {0:.2f}".format( distanceToLastFixMeters ))
+        logging.info( self.className + " - current position = {0}".format( str( currentPosition )))
+
+        approachWayPoint = self.getTargetApproachWayPoint()
+        logging.info( self.className + " - approach way point = {0}".format( str( approachWayPoint )))
+        ''' sanity checks '''
+        assert isinstance ( currentPosition , WayPoint )
+        assert isinstance ( approachWayPoint , WayPoint )
+        ''' distance to target approach fix '''
+        #distanceToTargetApproachFixMeters = currentPosition.getDistanceMetersTo( approachWayPoint )
+        
+        ''' patch Robert : 17th May 2015 '''
+        distanceToTargetApproachFixMeters = distanceToLastFixMeters
+        aircraftAltitudeMeanSeaLevelMeters = currentPosition.getAltitudeMeanSeaLevelMeters()
+        deltaAltitudeToTargetApproachFixMeters = approachWayPoint.getAltitudeMeanSeaLevelMeters() - 20.0 - aircraftAltitudeMeanSeaLevelMeters
+        
+        approachGlideSlopeDegrees = -8.0
+        if distanceToTargetApproachFixMeters > 0.0:
+            approachGlideSlopeDegrees = math.degrees(math.atan(deltaAltitudeToTargetApproachFixMeters / distanceToTargetApproachFixMeters))
+        else:
+            raise ValueError( self.className + " - compute descent vertical rate - distance to approach fix is negative")
+            
+        deltaAltitudeMeters = math.tan(math.radians(approachGlideSlopeDegrees)) * deltaDistanceMeters
+        ''' 15th November 2023 - apply speed restrictions - wait at 10.000 feet until speed is lower to 250 knots '''
+        #deltaAltitudeMeters = self.applySpeedRestrictionsDuringDescent(trueAirSpeedMetersSecond, deltaAltitudeMeters, altitudeMeanSeaLevelMeters)
+        ''' compute ROCD Rate Of Climb Descent in meters per second '''
+        return deltaAltitudeMeters / deltaTimeSeconds
         

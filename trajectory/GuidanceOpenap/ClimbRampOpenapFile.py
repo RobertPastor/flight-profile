@@ -89,7 +89,7 @@ class ClimbRamp(Graph):
         logging.info( self.className + " - total distance flown = {0:.2f} meters".format( totalDistanceFlownMeters ))
         ''' from the run-way , we get the orientation or run-way true heading in degrees '''
         runWayOrientationDegrees = self.runway.getTrueHeadingDegrees()     
-        logging.debug ( self.className + ': run-way orientation degrees= ' + str(runWayOrientationDegrees) + ' degrees' )
+        logging.info ( self.className + ': run-way orientation degrees= ' + str(runWayOrientationDegrees) + ' degrees' )
                 
         ''' climb ramp length in meters '''
         ClimbSlopeLengthMeters = climbRampLengthNautics * NauticalMiles2Meter
@@ -145,7 +145,6 @@ class ClimbRamp(Graph):
                                                                                   DistanceMeters = deltaDistanceMeters, 
                                                                                   BearingDegrees = bearingDegrees)
             newIntermediateWayPoint.setAltitudeMeanSeaLevelMeters(self.altitudeMeanSeaLevelMeters)
-            logging.info( self.className + " - aircraft altitude MSL {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
 
             ''' update aircraft state vector '''
             elapsedTimeSeconds += deltaTimeSeconds
@@ -162,5 +161,5 @@ class ClimbRamp(Graph):
         Name = 'climbRamp-{0:.1f} nm'.format( cumulatedLegDistanceMeters * Meter2NauticalMiles )
         newIntermediateWayPoint.setName(Name = Name)
         logging.info( self.className + " - end of climb ramp")
-        logging.info( self.className + " - aircraft altitude MSL {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
+        logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
  

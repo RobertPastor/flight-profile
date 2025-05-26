@@ -396,7 +396,7 @@ class FlightPath(FlightPlan):
         descentGlideSlope.addGraph(lastTurnLeg)
         ''' prepare next step '''
         beginOfLastTurnLeg = lastTurnLeg.getVertex(v=0).getWeight()
-        logging.debug ( self.className + ' begin last turn= {0}'.format(beginOfLastTurnLeg) )
+        logging.info ( self.className + ' - begin last turn= {0}'.format(beginOfLastTurnLeg) )
         ''' add to constraint list '''
         self.constraintsList.append(TargetApproachConstraint(beginOfLastTurnLeg))
         
@@ -406,7 +406,7 @@ class FlightPath(FlightPlan):
         self.distanceFromApproachToTouchDownMeters = descentGlideSlope.getLengthMeters()
         self.flightLengthMeters = self.computeLengthMeters()  + descentGlideSlope.getLengthMeters()
         
-        logging.debug ( self.className + ' updated flight path length= {0:.2f} nautics'.format(self.flightLengthMeters * Meter2NauticalMiles ) )
+        logging.info ( self.className + ' updated flight path length= {0:.2f} nautics'.format(self.flightLengthMeters * Meter2NauticalMiles ) )
                 
         ''' target approach fix is equal to the begin of the SIMULATED last turn leg '''
         self.aircraft.setTargetApproachWayPoint(beginOfLastTurnLeg)

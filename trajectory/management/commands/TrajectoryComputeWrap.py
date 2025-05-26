@@ -41,7 +41,7 @@ class Command(BaseCommand):
             airlineRoute = AirlineRoute.objects.filter(DepartureAirportICAOCode=Adep, ArrivalAirportICAOCode=Ades).first()
             if ( airlineRoute ):
                 ''' try with direct route '''
-                routeAsString = airlineRoute.getRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway , direct = True)
+                routeAsString = airlineRoute.getRouteAsString( AdepRunWayName = AdepRunway, AdesRunWayName = AdesRunway , direct = False)
                 logging.info ( "Trajectory Compute Wrap - " + routeAsString )
                 
                 flightPath = FlightPathOpenap(
@@ -49,10 +49,11 @@ class Command(BaseCommand):
                         aircraftICAOcode     = aircraftICAOcode,
                         RequestedFlightLevel = 330.0, 
                         cruiseMach           = 0.82, 
-                        takeOffMassKilograms = 62000.0)
+                        takeOffMassKilograms = 72000.0)
                 try:
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
                     flightPath.createStateVectorHistoryFile()
+                    flightPath.createKmlXmlDocument()
 
                 except Exception as e:
                     logging.error("Trajectory Compute Wrap - Exception = {0}".format( str(e ) ) )

@@ -130,7 +130,7 @@ class DescentGlideSlope(Graph):
         
         while ( (endOfSimulation == False) and
                (aircraftAltitudeMeanSeaLevelMeters >= fieldElevationAboveSeaLevelMeters) and 
-               not( self.aircraft.isArrivalGroundRun()) ):
+               not( self.aircraft.isLanding()) ):
             ''' initial way point '''
             if index == 0:
                 intermediateWayPoint = initialWayPoint
@@ -141,13 +141,13 @@ class DescentGlideSlope(Graph):
             
             ''' aircraft fly '''
             endOfSimulation, deltaDistanceMeters , aircraftAltitudeMeanSeaLevelMeters = self.aircraft.fly(
-                                                                    elapsedTimeSeconds = elapsedTimeSeconds,
+                                                                    elapsedTimeSeconds       = elapsedTimeSeconds,
                                                                     deltaTimeSeconds         = deltaTimeSeconds , 
-                                                                    totalDistanceFlownMeters = self.getTotalDistanceFlownMeters() ,
-                                                                    altitudeMSLmeters        = self.altitudeMeanSeaLevelMeters,
+                                                                    totalDistanceFlownMeters = flownDistanceMeters ,
+                                                                    altitudeMSLmeters        = aircraftAltitudeMeanSeaLevelMeters,
                                                                     distanceStillToFlyMeters = distanceStillToFlyMeters,
-                                                                    currentPosition =  intermediateWayPoint,
-                                                                    distanceToLastFixMeters = distanceToLastFixMeters)
+                                                                    currentPosition          = intermediateWayPoint,
+                                                                    distanceToLastFixMeters  = distanceToLastFixMeters)
             flownDistanceMeters += deltaDistanceMeters
             distanceStillToFlyMeters -= deltaDistanceMeters
             distanceToLastFixMeters -= deltaDistanceMeters
@@ -157,7 +157,7 @@ class DescentGlideSlope(Graph):
             Name = ''
             ''' only the first and the last point has a name '''
             if index == 0:
-                Name = 'slope-{0:.1f}-Nm'.format( flownDistanceMeters*Meter2NauticalMiles)
+                Name = 'slope-{0:.1f}-Nm'.format( flownDistanceMeters * Meter2NauticalMiles)
             newIntermediatePoint = intermediateWayPoint.getWayPointAtDistanceBearing( Name = Name, 
                                                                                   DistanceMeters = deltaDistanceMeters, 
                                                                                   BearingDegrees = self.bearingDegrees)
@@ -176,9 +176,10 @@ class DescentGlideSlope(Graph):
         Name = 'slope-{0:.1f}-Nm'.format( flownDistanceMeters*Meter2NauticalMiles)
         if not(newIntermediatePoint is None):
             newIntermediatePoint.setName(Name = Name)
-  
+
 
     def buildSimulatedGlideSlope(self, descentGlideSlopeSizeNautics):
+        logging.info( self.className + " - build simulated glide slope")
         '''====================================================='''
         ''' build the three degrees descent glide slope '''
         ''' the slope is built backwards from the touch-down point '''
@@ -186,10 +187,10 @@ class DescentGlideSlope(Graph):
         '''======================================================'''
         #logging.info self.className + ' ======= simulated glide slope ========='
         glideSlopeLengthMeters = descentGlideSlopeSizeNautics * NauticalMiles2Meters
-        logging.debug ( self.className + ': glide slope Length= {0} meters'.format(str(glideSlopeLengthMeters)) )
-
+        logging.info ( self.className + ': glide slope Length= {0:.2f} meters - {1:.2f} Nm'.format( glideSlopeLengthMeters , descentGlideSlopeSizeNautics) )
+        
         bearingDegrees = self.runway.getTrueHeadingDegrees()
-        logging.debug ( self.className + ': glide slope orientation= {0} degrees'.format ( str(bearingDegrees) ) )
+        logging.info ( self.className + ': glide slope orientation= {0:.2f} degrees'.format ( bearingDegrees ) )
 
         fieldElevationAboveSeaLevelMeters = self.arrivalAirport.getFieldElevationAboveSeaLevelMeters()
 
@@ -207,7 +208,7 @@ class DescentGlideSlope(Graph):
         distanceMeters = 0.0
         while (distanceMeters < glideSlopeLengthMeters) :
             
-            distanceMeters += glideSlopeLengthMeters / NumberOfSlopeParts
+            distanceMeters = distanceMeters + glideSlopeLengthMeters / NumberOfSlopeParts
             #logging.info 'index= ', index
             if index == initialIndex:
                 ''' first point is the run way touch down '''
@@ -215,19 +216,23 @@ class DescentGlideSlope(Graph):
                 #intermediatePoint.dump()
             ''' glide slope angle needs to be positive here : because slope is built backwards from run-way threshold '''
             altitudeMeters = math.tan(math.radians(abs(self.descentGlideSlopeDegrees))) * distanceMeters
+            
             name = 'glide-slope-pt-{0}-{1:.2f}-meters'.format(index, distanceMeters)
             ''' distance between each slope point is slope length divided by number of parts '''
-            newIntermediatePoint = intermediatePoint.getWayPointAtDistanceBearing(Name=name, 
-                                                                                  DistanceMeters=glideSlopeLengthMeters/NumberOfSlopeParts, 
-                                                                                  BearingDegrees=bearingDegrees)
+            newIntermediatePoint = intermediatePoint.getWayPointAtDistanceBearing(Name           = name, 
+                                                                                  DistanceMeters = glideSlopeLengthMeters / NumberOfSlopeParts, 
+                                                                                  BearingDegrees = bearingDegrees)
             ''' set altitude '''
             if isinstance(newIntermediatePoint, WayPoint):
+                
                 ''' need to add altitude above ground to field elevation '''
-                altitudeMeters += fieldElevationAboveSeaLevelMeters
+                altitudeMeters = altitudeMeters + fieldElevationAboveSeaLevelMeters
                 newIntermediatePoint.setAltitudeMeanSeaLevelMeters(altitudeMeters)
+                
+                #logging.info( self.className + " - intermediate point altitude MSL {0:.2f} meters".format( altitudeMeters ))
+                
                 elapsedTimeSeconds += 0.1
                 newIntermediatePoint.setElapsedTimeSeconds(elapsedTimeSeconds = elapsedTimeSeconds)
-
                 
             ''' append the new point to the list '''
             intermediateGlideSlopeRoute.append(newIntermediatePoint)
@@ -241,7 +246,6 @@ class DescentGlideSlope(Graph):
         for point in reversed(intermediateGlideSlopeRoute):
             self.addVertex(point)
         simulatedGlideSlopeLengthMeters = newIntermediatePoint.getDistanceMetersTo(self.runWayTouchDownPoint)
-        logging.debug ( self.className + ': distance from last way point to touch-down: {0:.2f} nautics'.format(simulatedGlideSlopeLengthMeters * Meter2NauticalMiles) )
-
+        logging.info ( self.className + ': distance from last way point to touch-down: {0:.2f} nautics'.format(simulatedGlideSlopeLengthMeters * Meter2NauticalMiles) )
 
 
