@@ -246,6 +246,6 @@ class DescentGlideSlope(Graph):
         for point in reversed(intermediateGlideSlopeRoute):
             self.addVertex(point)
         simulatedGlideSlopeLengthMeters = newIntermediatePoint.getDistanceMetersTo(self.runWayTouchDownPoint)
-        logging.info ( self.className + ': distance from last way point to touch-down: {0:.2f} nautics'.format(simulatedGlideSlopeLengthMeters * Meter2NauticalMiles) )
+        logging.info ( self.className + ': distance from last way point to touch-down: {0:.2f} Nm'.format(simulatedGlideSlopeLengthMeters * Meter2NauticalMiles) )
 
 

@@ -561,8 +561,12 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             self.setAircraftMassKilograms(aircraftMassKilograms)
             
             ''' transition to landing as soon as landing stall speed is reached '''
-            deltaAltitudeMeters = rateOfDescentMetersSeconds * deltaTimeSeconds
-            altitudeMSLmeters = altitudeMSLmeters + deltaAltitudeMeters
+            #deltaAltitudeMeters = rateOfDescentMetersSeconds * deltaTimeSeconds
+            
+            deltaAltitudeMeters = deltaDistanceFlownMeters * math.tan( math.radians ( flightPathAngleDegrees ) )
+            logging.info( self.className + " - delta altitude = {0:.2f} meters".format(deltaAltitudeMeters))
+            
+            altitudeMSLmeters = altitudeMSLmeters - deltaAltitudeMeters
             logging.info( self.className + " - current altitude = {0:.2f} meters - {1:.2f} feet".format( altitudeMSLmeters , altitudeMSLmeters * Meter2Feet))
             
             ''' compute stall speed to change configuration to landing '''
@@ -583,7 +587,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         elif self.isLanding():
             
             logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( altitudeMSLmeters ))
-            stop()
+            
             flightPathAngleDegrees = 0.0
             logging.info( self.className + " - touch down CAS = {0:.2f} knots".format( self.landingCASknots ))
             

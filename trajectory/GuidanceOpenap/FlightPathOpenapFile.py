@@ -409,8 +409,8 @@ class FlightPathOpenap(FlightPlan):
         
         ''' 16th January 2022 - final radius of turn '''
         finalRadiusOfTurnMeters = lastTurnLeg.buildNewSimulatedArrivalTurnLeg(
-                                                deltaTimeSeconds    = self.deltaTimeSeconds,
-                                                 elapsedTimeSeconds = 0.0,
+                                                 deltaTimeSeconds         = self.deltaTimeSeconds,
+                                                 elapsedTimeSeconds       = 0.0,
                                                  distanceStillToFlyMeters = 0.0,
                                                  simulatedAltitudeSeaLevelMeters = self.firstGlideSlopeWayPoint.getAltitudeMeanSeaLevelMeters(),
                                                  flightPathAngleDegrees = 3.0,
@@ -436,6 +436,8 @@ class FlightPathOpenap(FlightPlan):
         self.aircraft.setTargetApproachWayPoint(beginOfLastTurnLeg)
         
         self.aircraft.setArrivalRunwayTouchDownWayPoint(self.touchDownWayPoint)
+        logging.info ( self.className + ' arrival runway touch down point = {0}'.format(str(self.touchDownWayPoint) ))
+        
         logging.info ( self.className + ' fix list= {0}'.format(self.fixList) )
         
         ''' 16th January 2022 - Robert - return the final radius of turn '''
