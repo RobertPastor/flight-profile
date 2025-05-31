@@ -3,7 +3,6 @@
 	<name>flight-profile</name>
 	<comment></comment>
 	<projects>
-		<project>openap</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

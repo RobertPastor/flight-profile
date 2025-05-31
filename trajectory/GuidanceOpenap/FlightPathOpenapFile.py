@@ -566,12 +566,12 @@ class FlightPathOpenap(FlightPlan):
                 
             if (self.endOfSimulation == False):
                 logging.info ( self.className + ' ========== delta mass status ==============' )
-                logging.info ( self.className + ' initial mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getAircraftInitialMassKilograms(),
-                                                                                                   self.aircraft.getAircraftInitialMassKilograms()*Kilogram2Pounds) )
-                logging.info ( self.className + ' final mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getAircraftCurrentMassKilograms(),
-                                                                                                 self.aircraft.getAircraftCurrentMassKilograms()*Kilogram2Pounds) )
-                logging.info ( self.className + ' diff mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getAircraftInitialMassKilograms()-self.aircraft.getAircraftCurrentMassKilograms(),
-                                                                                                (self.aircraft.getAircraftInitialMassKilograms()-self.aircraft.getAircraftCurrentMassKilograms())*Kilogram2Pounds) )
+                logging.info ( self.className + ' initial mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getTakeOffMassKilograms(),
+                                                                                                   self.aircraft.getTakeOffMassKilograms()*Kilogram2Pounds) )
+                logging.info ( self.className + ' final mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getCurrentMassKilograms(),
+                                                                                                 self.aircraft.getCurrentMassKilograms()*Kilogram2Pounds) )
+                logging.info ( self.className + ' diff mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getTakeOffMassKilograms()-self.aircraft.getCurrentMassKilograms(),
+                                                                                                (self.aircraft.getTakeOffMassKilograms()-self.aircraft.getCurrentMassKilograms())*Kilogram2Pounds) )
                 logging.info ( self.className + ' ========== delta mass status ==============' )
                 
             if ( self.endOfSimulation ==  True ):

@@ -209,7 +209,7 @@ class Graph(object):
         count = 0
         for vertex in self.getVertices():
             wayPoint = vertex.getWeight()
-            if ( len(wayPoint.getName())> 0):
+            if ( len(wayPoint.getName()) > 0):
                     # if waypoint gas a name -> reset counter
                     count = 0
                     kmlFileLike.write( wayPoint.getName(),
@@ -256,6 +256,7 @@ class Graph(object):
             strFileName += '-{0}.kml'.format(datetime.now().strftime("%d-%b-%Y-%Hh%Mm%S"))
             
             kmlFileLike = KmlFileLike( strFileName, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde)
+            
             kmlFileLike = self.hideSomeVertices(kmlFileLike, 10)
             ''' this is where the xml / kml document is pushed into the StringIO '''
             kmlFileLike.close(memoryFile)
@@ -291,6 +292,8 @@ class Graph(object):
             strFileName += '-{0}.kml'.format(datetime.now().strftime("%d-%b-%Y-%Hh%Mm%S"))
             
             kmlOutputFile = KmlOutput(strFileName, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde)
+            kmlOutputFile = self.hideSomeVertices(kmlOutputFile, 10)
+
             for vertex in self.getVertices():
                 wayPoint = vertex.getWeight()
                 kmlOutputFile.write(wayPoint.getName(),

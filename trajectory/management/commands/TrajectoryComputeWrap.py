@@ -19,18 +19,24 @@ class Command(BaseCommand):
         logging.basicConfig(level=logging.INFO)
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
-        #handler = logging.StreamHandler()
-        #logger.addHandler(handler)
         
         start_time = time()
         
         ''' warning letters in aircraft code must be in lower case '''
         aircraftICAOcode = 'a320'
+        aircraftICAOcode = 'a332'
+        
         logging.info("Trajectory Compute Wrap - " + aircraftICAOcode)
         route = 'KLAX-KATL'
+        route = "MMMX-KSEA"
         
         AdepRunway = "24R"
+        AdepRunway = "05L"
+        
         AdesRunway = "26L"
+        AdesRunway = "16L"
+        
+        takeOffWeightKg = 230000.0
         
         if not ( aircraftICAOcode in prop.available_aircraft(use_synonym=True) ):
             print ( "Aircraft code = {0} not in openap Wrap".format( aircraftICAOcode ))
@@ -49,7 +55,7 @@ class Command(BaseCommand):
                         aircraftICAOcode     = aircraftICAOcode,
                         RequestedFlightLevel = 330.0, 
                         cruiseMach           = 0.82, 
-                        takeOffMassKilograms = 72000.0)
+                        takeOffMassKilograms = takeOffWeightKg)
                 try:
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
                     flightPath.createStateVectorHistoryFile()

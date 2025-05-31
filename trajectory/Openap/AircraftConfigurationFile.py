@@ -4,10 +4,7 @@ Created on 14 nov. 2024
 @author: robert
 '''
 
-import json
-import math
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
-
 
 from trajectory.Environment.Constants import Meter2Feet , MeterSecond2Knots, RollingFrictionCoefficient
 from trajectory.Environment.Constants import Meter2NauticalMiles, FeetMinutes2MetersSeconds
