@@ -81,26 +81,29 @@ class DescentGlideSlope(Graph):
         logging.info ( self.className + ': arrival airport field Elevation Above Sea Level= {0:.2f} meters'.format(fieldElevationAboveSeaLevelMeters) )
 
         strName = arrivalAirport.getName() + '-' + 'RunWay'+'-'+ self.runway.getName()
-        self.runWayEndPoint = WayPoint (Name=strName, 
+        self.runWayEndPoint = WayPoint (    Name                       = strName, 
                                             LatitudeDegrees            = runway.getLatitudeDegrees(),
                                             LongitudeDegrees           = runway.getLongitudeDegrees(),
                                             AltitudeMeanSeaLevelMeters = fieldElevationAboveSeaLevelMeters)
  
         ''' touch down is provided from BADA Ground Movement Landing Length '''
         ''' landing length from WRAP '''
-        landingDistanceMeters = self.aircraft.getLandingLengthMeters()
+        #landingDistanceMeters = self.aircraft.getLandingLengthMeters()
+        ''' touch down zone 1/3 of the runway length '''
+        touchDownZoneLengthMeters = runway.getLengthMeters() - ( runway.getLengthMeters() / 3.0 )
         
         #logging.info self.className + ': {0} aircraft landing length: {1:.2F} meters'.format(self.aircraft.ICAOcode, landingDistanceMeters)
         runWayOrientationDegrees = self.runway.getTrueHeadingDegrees()
         ''' if orientation is 270 degrees from runway end point then ... touch down bearing is 360-270=90 bearing from end point '''
-        self.runWayTouchDownPoint = self.runWayEndPoint.getWayPointAtDistanceBearing(Name='runway-touch-down',
-                                                                          DistanceMeters=landingDistanceMeters,
-                                                                          BearingDegrees=runWayOrientationDegrees )
+        self.runWayTouchDownPoint = self.runWayEndPoint.getWayPointAtDistanceBearing(Name = 'runway-touch-down',
+                                                                          DistanceMeters  = touchDownZoneLengthMeters,
+                                                                          BearingDegrees  = runWayOrientationDegrees )
         
         ''' elevation of touch down point = field elevation'''
         self.runWayTouchDownPoint.setAltitudeMeanSeaLevelMeters(fieldElevationAboveSeaLevelMeters)
-        strMsg =   "{0} - distance from RunWay - TouchDown to RunWay - End= {1:.2f} meters".format(self.className, self.runWayTouchDownPoint.getDistanceMetersTo(self.runWayEndPoint))
+        strMsg =   "{0} - distance from RunWay - TouchDown to RunWay - End = {1:.2f} meters".format(self.className, self.runWayTouchDownPoint.getDistanceMetersTo(self.runWayEndPoint))
         logging.info ( self.className + " - " + strMsg )
+        logging.info ( self.className + " - arrival runway length = {0:.2f} meters".format(runway.getLengthMeters()))
         
         self.bearingDegrees = self.runWayTouchDownPoint.getBearingDegreesTo(self.runWayEndPoint)
         logging.info ( self.className + ": bearing from touch-down to runway end= {0:.2f} degrees".format(self.bearingDegrees) )
@@ -179,6 +182,7 @@ class DescentGlideSlope(Graph):
 
 
     def buildSimulatedGlideSlope(self, descentGlideSlopeSizeNautics):
+        
         logging.info( self.className + " - build simulated glide slope")
         '''====================================================='''
         ''' build the three degrees descent glide slope '''
