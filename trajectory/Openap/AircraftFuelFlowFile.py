@@ -5,14 +5,12 @@ Created on 12 nov. 2024
 
 '''
 
-import sys
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from openap import FuelFlow
 import logging 
 logger = logging.getLogger(__name__)
 
-from trajectory.Openap.AircraftFlightPhasesFile import OpenapAircraftFlightPhases
 from trajectory.Openap.AircraftVerticalRate import OpenapAircraftVerticalRate
 
 class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
@@ -29,12 +27,12 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
         
     def getFuelFlowAtTakeOffKgSeconds(self, TASknots , aircraftAltitudeMSLfeet ):
         fuelFlowKgSeconds = self.fuelFlow.takeoff(tas = TASknots, alt = aircraftAltitudeMSLfeet, throttle=1)
-        logger.info(self.className + " - fuel flow takeOff {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
+        #logger.info(self.className + " - fuel flow takeOff {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
     
     def getFuelFlowClimbKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , verticalRateFeetMinutes , accelerationMetersSecondsSquare ):
         fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, tas=TASknots, alt=aircraftAltitudeMSLfeet, vs=verticalRateFeetMinutes, acc=accelerationMetersSecondsSquare, limit=True)
-        logger.info(self.className + " - fuel flow climb {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
+        #logger.info(self.className + " - fuel flow climb {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
     
     def getFuelFlowCruiseKgSeconds(self , aircraftMassKilograms , TASknots , aircraftAltitudeMSLfeet , verticalRateFeetMinutes , accelerationMetersSecondsSquare ):
@@ -44,7 +42,7 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
                                                   vs=verticalRateFeetMinutes, 
                                                   acc=accelerationMetersSecondsSquare, 
                                                   limit=True)
-        logger.info(self.className + " - fuel flow cruise {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
+        #logger.info(self.className + " - fuel flow cruise {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
     
     def getFuelFlowDescentKgSeconds(self , aircraftMassKilograms , TASknots, aircraftAltitudeMSLfeet , verticalRateFeetMinutes , accelerationMetersSecondsSquare):
@@ -55,7 +53,7 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
                                                   vs=verticalRateFeetMinutes,
                                                   acc=accelerationMetersSecondsSquare, limit=True)
 
-        logger.info(self.className + " - fuel flow descent {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
+        #logger.info(self.className + " - fuel flow descent {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
 
     def computeFuelFlowKilogramsSeconds(self , 
@@ -97,8 +95,7 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
                                                                        aircraftAltitudeMSLfeet          = aircraftAltitudeMSLfeet , 
                                                                        verticalRateFeetMinutes          = verticalRateFeetMinutes, 
                                                                        accelerationMetersSecondsSquare  = accelerationMetersSecondsSquare)
- 
- 
+
             #fuelFlowKilogramSeconds = self.getFuelFlowDescentKgSeconds( aircraftAltitudeMSLfeet          = aircraftAltitudeMSLfeet , 
             #                                                            thrustNewtons                    = thrustNewtons )
             

@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 
 from trajectory.aerocalc.airspeed import tas2cas, tas2mach
 
-from trajectory.Environment.Constants import  Meter2Feet , Feet2Meter, MeterSecond2Knots, RollingFrictionCoefficient, ConstantTaxiSpeedCasKnots
-from trajectory.Environment.Constants import  Meter2NauticalMiles, MaxRateOfClimbFeetPerMinutes , FeetMinutes2MetersSeconds
+from trajectory.Environment.Constants import  Meter2Feet , MeterSecond2Knots
+from trajectory.Environment.Constants import  Meter2NauticalMiles
 from trajectory.Openap.AircraftStateVectorFile import OpenapAircraftStateVector
 
 

@@ -6,7 +6,6 @@ Created on 15 nov. 2024
 '''
 
 
-import sys
 import math
 from trajectory.Environment.Constants import Knots2MetersSeconds,  MeterSecond2Knots
 from trajectory.Environment.Constants import Meter2Feet
@@ -16,7 +15,6 @@ from trajectory.Environment.Constants import NauticalMiles2Meter
 
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
-from openap import prop, FuelFlow, Emission, WRAP
 import json
 from trajectory.Openap.AircraftEngineFile import OpenapAircraftEngine
 

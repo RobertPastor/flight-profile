@@ -79,7 +79,9 @@ class GroundRunLeg(Graph):
     
     def computeTouchDownWayPoint(self):
         ''' get landing length in meters '''
-        landingLengthMeters = self.aircraft.getLandingLengthMeters()
+        #landingLengthMeters = self.aircraft.getLandingLengthMeters()
+        touchDownZoneLengthMeters = self.runway.getLengthMeters() - ( self.runway.getLengthMeters() / 3.0 )
+
         ''' run-way orientation '''
         runwayTrueHeadingDegrees = self.runway.getTrueHeadingDegrees()
         
@@ -92,7 +94,7 @@ class GroundRunLeg(Graph):
         
         strTouchDownWayPointName = self.runway.getName() + '-touchDown-' + self.airport.getName() 
         touchDownWayPoint = runWayEndPoint.getWayPointAtDistanceBearing(Name = strTouchDownWayPointName, 
-                                                                        DistanceMeters = landingLengthMeters, 
+                                                                        DistanceMeters = touchDownZoneLengthMeters, 
                                                                         BearingDegrees = runwayTrueHeadingDegrees)
         touchDownWayPoint.setAltitudeMeanSeaLevelMeters(self.airport.getFieldElevationAboveSeaLevelMeters())
         return touchDownWayPoint

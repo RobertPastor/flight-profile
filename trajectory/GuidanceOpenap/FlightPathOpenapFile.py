@@ -101,6 +101,7 @@ class FlightPathOpenap(FlightPlan):
         
         assert isinstance(self.aircraft, OpenapAircraft) and not(self.aircraft is None)
         self.aircraft.setAircraftMassKilograms(takeOffMassKilograms)
+        self.aircraft.setInitialMassKilograms(takeOffMassKilograms)
         
         logging.info ( self.className + " : Max TakeOff Weight kilograms = {0}".format(self.aircraft.getMaximumTakeOffMassKilograms() ) )   
         logging.info ( self.className + " : Max Cruise Altitude Feet = {0}".format(self.aircraft.getMaxCruiseAltitudeFeet() ) )   

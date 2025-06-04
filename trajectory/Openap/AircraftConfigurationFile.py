@@ -583,7 +583,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             
         elif self.isLanding():
             
-            logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( altitudeMSLmeters ))
+            #logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( altitudeMSLmeters ))
             
             flightPathAngleDegrees = 0.0
             logging.info( self.className + " - touch down CAS = {0:.2f} knots".format( self.landingCASknots ))

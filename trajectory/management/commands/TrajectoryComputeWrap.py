@@ -24,19 +24,21 @@ class Command(BaseCommand):
         
         ''' warning letters in aircraft code must be in lower case '''
         aircraftICAOcode = 'a320'
-        aircraftICAOcode = 'a332'
+        #aircraftICAOcode = 'a332'
         
         logging.info("Trajectory Compute Wrap - " + aircraftICAOcode)
         route = 'KLAX-KATL'
-        route = "MMMX-KSEA"
+        #route = "MMMX-KSEA"
         
         AdepRunway = "24R"
-        AdepRunway = "05L"
+        #AdepRunway = "05L"
         
         AdesRunway = "26L"
-        AdesRunway = "16L"
+        #AdesRunway = "16L"
         
-        takeOffWeightKg = 230000.0
+        takeOffWeightKg = 64000.0
+        #takeOffWeightKg = 230000.0
+        
         
         if not ( aircraftICAOcode in prop.available_aircraft(use_synonym=True) ):
             print ( "Aircraft code = {0} not in openap Wrap".format( aircraftICAOcode ))

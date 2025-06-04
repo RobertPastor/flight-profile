@@ -87,8 +87,6 @@ class DescentGlideSlope(Graph):
                                             AltitudeMeanSeaLevelMeters = fieldElevationAboveSeaLevelMeters)
  
         ''' touch down is provided from BADA Ground Movement Landing Length '''
-        ''' landing length from WRAP '''
-        #landingDistanceMeters = self.aircraft.getLandingLengthMeters()
         ''' touch down zone 1/3 of the runway length '''
         touchDownZoneLengthMeters = runway.getLengthMeters() - ( runway.getLengthMeters() / 3.0 )
         

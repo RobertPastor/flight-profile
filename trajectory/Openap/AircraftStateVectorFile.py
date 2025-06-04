@@ -22,6 +22,7 @@ class OpenapAircraftStateVector(object):
         self.aircraftICAOcode = aircraftICAOcode
         
         self.aircraft = prop.aircraft( ac=str(aircraftICAOcode).lower(), use_synonym=True )
+        ''' ensure that there is only one unique access to the WRAP database '''
         self.wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
 
         self.aircraftStateHistory = []

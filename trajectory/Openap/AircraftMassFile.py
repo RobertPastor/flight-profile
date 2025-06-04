@@ -4,10 +4,6 @@ Created on 12 nov. 2024
 @author: robert
 '''
 from trajectory.Openap.AircraftFuelFlowFile import OpenapAircraftFuelFlow
-import sys
-#sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
-
-from openap import prop, FuelFlow, Emission, WRAP
 
 import logging
 # create logger
@@ -38,20 +34,20 @@ class OpenapAircraftMass(OpenapAircraftFuelFlow):
         self.operatingEmptyWeightKilograms = self.aircraft['oew']
         self.referenceMassKilograms        = self.maximumTakeOffMassKilograms * 0.85
         
-        logger.info ( self.className + " max TakeOff mass = {0} kilograms ".format(self.maximumTakeOffMassKilograms))
-        logger.info ( self.className + " max Landing mass = {0} kilograms".format(self.maxLandingMassKilograms))
+        #logger.info ( self.className + " max TakeOff mass = {0} kilograms ".format(self.maximumTakeOffMassKilograms))
+        #logger.info ( self.className + " max Landing mass = {0} kilograms".format(self.maxLandingMassKilograms))
         
     def getReferenceMassKilograms (self):
         return self.referenceMassKilograms
         
     def setInitialMassKilograms(self, initialMassKilograms):
-        logger.info ( self.className + " --- set initial mass = {0} kilograms".format(initialMassKilograms))
+        #logger.info ( self.className + " --- set initial mass = {0} kilograms".format(initialMassKilograms))
         self.takeOfMassKilograms  = initialMassKilograms
         self.initialMassKilograms = initialMassKilograms
         self.currentMassKilograms = initialMassKilograms
         
     def getCurrentMassKilograms(self):
-        logger.info ( self.className + " --- current mass = {0:.2f} kilograms".format(self.currentMassKilograms))
+        #logger.info ( self.className + " --- current mass = {0:.2f} kilograms".format(self.currentMassKilograms))
         return self.currentMassKilograms
     
     def setAircraftMassKilograms(self, aircraftMassKilograms ):

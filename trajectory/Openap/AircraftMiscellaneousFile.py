@@ -7,8 +7,6 @@ import logging
 from trajectory.Openap.AircraftFlightPhasesFile import OpenapAircraftFlightPhases
 from trajectory.Guidance.WayPointFile import WayPoint
 
-from openap import WRAP
-
 
 class OpenapAircraftMiscelleaneous(OpenapAircraftFlightPhases):
     pass
@@ -19,7 +17,6 @@ class OpenapAircraftMiscelleaneous(OpenapAircraftFlightPhases):
         self.aircraftICAOcode = aircraftICAOcode
         
         super().__init__(aircraftICAOcode)
-        self.wrap = WRAP(str(aircraftICAOcode).upper(), use_synonym=True)
         
     def getLandingLengthMeters(self):
         self.LandingLengthMetersDict = self.wrap.landing_distance()
