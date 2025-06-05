@@ -6,10 +6,10 @@ Created on 12 nov. 2024
 
 ''' Thrust expressed in Newtons '''
 
-import sys
+
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
-from openap import prop, Thrust
+from openap import Thrust
 
 from trajectory.Openap.AircraftDragFile import OpenapAircraftDrag
 
@@ -27,17 +27,17 @@ class OpenapAircraftThrust(OpenapAircraftDrag):
         
     def getTakeOffThrustNewtons(self, tasKnots , altitudeMSLfeet ):
         takeOffThrustNewtons = self.thrust.takeoff(tas = tasKnots, alt = altitudeMSLfeet)
-        logger.info ( self.className + ': take off thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(takeOffThrustNewtons , tasKnots , altitudeMSLfeet) )
+        #logger.info ( self.className + ': take off thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(takeOffThrustNewtons , tasKnots , altitudeMSLfeet) )
         return takeOffThrustNewtons
     
     def getClimbThrustNewtons(self , tasKnots, altitudeMSLfeet , rateOfClimbFeetMinutes ):
         climbThrustNewtons = self.thrust.climb( tas = tasKnots, alt = altitudeMSLfeet , roc = rateOfClimbFeetMinutes )
-        logger.info ( self.className + ': climb thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(climbThrustNewtons , tasKnots , altitudeMSLfeet) )
+        #logger.info ( self.className + ': climb thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(climbThrustNewtons , tasKnots , altitudeMSLfeet) )
         return climbThrustNewtons
     
     def getCruiseThrustNewtons(self , tasKnots , altitudeMSLfeet):
         cruiseThrustNewtons = self.thrust.cruise ( tas = tasKnots , alt = altitudeMSLfeet)
-        logger.info ( self.className + ': cruise thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(cruiseThrustNewtons , tasKnots , altitudeMSLfeet) )
+        #logger.info ( self.className + ': cruise thrust = {0:.2f} newtons - tas = {1:.2f} knots at MSL altitude {2:.2f} feet'.format(cruiseThrustNewtons , tasKnots , altitudeMSLfeet) )
         return cruiseThrustNewtons
     
     def getDescentIdleThrustNewtons(self , tasKnots , altitudeMSLfeet):

@@ -8,7 +8,7 @@ Created on 15 nov. 2024
 import sys
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
-from openap import prop, Thrust, Drag
+from openap import Drag
 
 from trajectory.Openap.AircraftMassFile import OpenapAircraftMass
 
@@ -33,7 +33,7 @@ class OpenapAircraftDrag(OpenapAircraftMass):
                                                    tas = tasKnots, 
                                                    alt = altitudeMSLfeet, 
                                                    vs = verticalSpeedFeetMinutes * 0.80 )
-        logger.info( self.className + " - clean drag = {0:.2f} Newtons".format ( self.currentDragNewtons ))
+        #logger.info( self.className + " - clean drag = {0:.2f} Newtons".format ( self.currentDragNewtons ))
         return self.currentDragNewtons
     
     
@@ -46,7 +46,7 @@ class OpenapAircraftDrag(OpenapAircraftMass):
                                                       alt = altitudeMSLfeet, 
                                                       flap_angle = flap_angle_degrees, 
                                                       landing_gear = landing_gear )
-        logger.info( self.className + " - non clean drag = {0:.2f} Newtons".format ( self.currentDragNewtons ))
+        #logger.info( self.className + " - non clean drag = {0:.2f} Newtons".format ( self.currentDragNewtons ))
         return self.currentDragNewtons
         
         
@@ -97,6 +97,6 @@ class OpenapAircraftDrag(OpenapAircraftMass):
         else:
             raise ValueError("Compute Drag - not yet implemented")
         
-        logger.info ( self.className + ' - drag = {0:.2f} Newtons'.format( dragNewtons ) )
+        #logger.info ( self.className + ' - drag = {0:.2f} Newtons'.format( dragNewtons ) )
         return dragNewtons
         

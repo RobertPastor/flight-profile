@@ -21,7 +21,7 @@ class OpenapAircraftMiscelleaneous(OpenapAircraftFlightPhases):
     def getLandingLengthMeters(self):
         self.LandingLengthMetersDict = self.wrap.landing_distance()
         self.LandingLengthMeters = self.LandingLengthMetersDict['default'] * 1000.0
-        logging.info( self.className + " - landing length = {0} meters".format(self.LandingLengthMeters))
+        #logging.info( self.className + " - landing length = {0} meters".format(self.LandingLengthMeters))
         return self.LandingLengthMeters
     
     def setTargetApproachWayPoint(self , approachWayPoint):

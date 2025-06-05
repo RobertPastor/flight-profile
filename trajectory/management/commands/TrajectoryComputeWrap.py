@@ -60,6 +60,14 @@ class Command(BaseCommand):
                         takeOffMassKilograms = takeOffWeightKg)
                 try:
                     flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                    
+                    end_time = time()
+                    seconds_elapsed = end_time - start_time
+                
+                    hours, rest = divmod(seconds_elapsed, 3600)
+                    minutes, seconds = divmod(rest, 60)
+                    print ( "hours = {0} - minutes = {1} - seconds = {2}".format( hours, minutes, seconds))
+                
                     flightPath.createStateVectorHistoryFile()
                     flightPath.createKmlXmlDocument()
 

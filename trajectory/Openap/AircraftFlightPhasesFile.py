@@ -50,7 +50,7 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
         
     def getCurrentConfiguration(self):
         return self.aircraftCurrentConfiguration
-
+    
     def setTakeOffConfiguration(self, elapsedTimeSeconds):
         ''' take off starts at the end of the ground-run when speed > 1.2 * Take-off stall speed '''
         ''' high lifting devices are used '''
@@ -117,7 +117,6 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
     
     def isLanding(self):
         return (self.aircraftCurrentConfiguration=='landing')
-    
             
     def showConfigurationChange(self, newConfiguration, elapsedTimeSeconds):
         assert isinstance(newConfiguration, str)
