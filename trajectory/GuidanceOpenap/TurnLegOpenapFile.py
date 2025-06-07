@@ -173,7 +173,7 @@ class TurnLeg(Graph):
                      arrivalRunway = None,
                      finalRadiusOfTurnMeters = None):
         
-        logging.info ( self.className + " - build turn leg " )
+        #logging.info ( self.className + " - build turn leg " )
         ''' start building a set of turning legs from initial heading to final heading '''
         ''' heading changes according to an aircraft speed => radius of turn '''
         ''' for the last turn => final heading is the heading of run-way '''
@@ -196,17 +196,17 @@ class TurnLeg(Graph):
             
         ''' case of last turn '''
         if lastTurn == True:
-            logging.info( self.className + " - it is the last turn")
+            #logging.info( self.className + " - it is the last turn")
             tasMetersPerSecond = cas2tas(cas = self.aircraft.computeLandingStallSpeedCasKnots(),
                                          altitude = altitudeMeanSeaLevelMeters,
                                          temp = 'std',
                                          speed_units = 'kt',
                                          alt_units = 'm' ) * Knots2MetersPerSecond
-            tasKnots = tasMetersPerSecond * MeterPerSecond2Knots
+            #tasKnots = tasMetersPerSecond * MeterPerSecond2Knots
             
             ''' Radius = (tas*tas) / (gravity * tan(bank angle = 15 degrees)) '''
             radiusOfTurnMeters = (tasMetersPerSecond * tasMetersPerSecond) / ( GravityMetersPerSquareSeconds * math.tan(math.radians(bankAngleDegrees)))
-            logging.debug ("{0} - radius of turn = {1:.2f} in meters - for a 15 degrees bank angle".format(self.className, radiusOfTurnMeters))
+            #logging.debug ("{0} - radius of turn = {1:.2f} in meters - for a 15 degrees bank angle".format(self.className, radiusOfTurnMeters))
                         
             #newRadiusOfTurnMeters = self.computeRadiusOfTurn()
             shortestDistanceMeters = arrivalRunway.computeShortestDistanceToRunway(self.initialWayPoint)
@@ -218,9 +218,9 @@ class TurnLeg(Graph):
             
             ''' use radius of turn computed during initial simulated arrival '''
             radiusOfTurnMeters = finalRadiusOfTurnMeters
-            logging.debug ("{0} - final radius of turn = {1:.2f} in meters".format(self.className, radiusOfTurnMeters))
+            #logging.debug ("{0} - final radius of turn = {1:.2f} in meters".format(self.className, radiusOfTurnMeters))
 
-        logging.debug ( self.className + ': tas= {0:.2f} knots - radius of turn= {1:.2f} meters - radius of turn= {2:.2f} Nm'.format(tasKnots, radiusOfTurnMeters, radiusOfTurnMeters*Meter2NauticalMiles) )           
+        #logging.debug ( self.className + ': tas= {0:.2f} knots - radius of turn= {1:.2f} meters - radius of turn= {2:.2f} Nm'.format(tasKnots, radiusOfTurnMeters, radiusOfTurnMeters*Meter2NauticalMiles) )           
 
         ''' index used to initialize the loop '''        
         index = 0
@@ -235,7 +235,7 @@ class TurnLeg(Graph):
         ''' loop from initial heading to final heading '''
         continueTurning = True
         currentHeadingDegrees = self.initialHeadingDegrees
-        logging.debug ( '{0} - initial heading= {1:.2f} degrees'.format(self.className, self.initialHeadingDegrees) )
+        #logging.debug ( '{0} - initial heading= {1:.2f} degrees'.format(self.className, self.initialHeadingDegrees) )
         passedThrough360 = False
         endOfSimulation = False
         
@@ -314,7 +314,7 @@ class TurnLeg(Graph):
                                                                                 Name = name, 
                                                                                 DistanceMeters = deltaDistanceMeters, 
                                                                                 BearingDegrees = bearingDegrees)
-            
+
 #             if lastTurn == True:
 #                 arrivalTouchDownWayPoint = self.aircraft.getArrivalRunwayTouchDownWayPoint()
 #                 distanceToArrivalTouchDownMeters = newIntermediateWayPoint.getDistanceMetersTo(arrivalTouchDownWayPoint)
@@ -358,7 +358,7 @@ class TurnLeg(Graph):
                 self.addVertex(point)
         
         '''' logging.debug final heading  '''
-        logging.debug ( self.className + ': final heading= {0:.2f} degrees'.format(currentHeadingDegrees) )
+        #logging.debug ( self.className + ': final heading= {0:.2f} degrees'.format(currentHeadingDegrees) )
         return endOfSimulation
 
 

@@ -86,10 +86,10 @@ class ClimbRamp(Graph):
                        climbRampLengthNautics  ,
                        totalDistanceFlownMeters ):
         
-        logging.info( self.className + " - total distance flown = {0:.2f} meters".format( totalDistanceFlownMeters ))
+        #logging.info( self.className + " - total distance flown = {0:.2f} meters".format( totalDistanceFlownMeters ))
         ''' from the run-way , we get the orientation or run-way true heading in degrees '''
         runWayOrientationDegrees = self.runway.getTrueHeadingDegrees()     
-        logging.info ( self.className + ': run-way orientation degrees= ' + str(runWayOrientationDegrees) + ' degrees' )
+        #logging.info ( self.className + ': run-way orientation degrees= ' + str(runWayOrientationDegrees) + ' degrees' )
                 
         ''' climb ramp length in meters '''
         ClimbSlopeLengthMeters = climbRampLengthNautics * NauticalMiles2Meter
@@ -103,7 +103,7 @@ class ClimbRamp(Graph):
         cumulatedLegDistanceMeters = 0.0
         elapsedTimeSeconds = elapsedTimeSeconds
         self.altitudeMeanSeaLevelMeters = self.departureAirport.getFieldElevationAboveSeaLevelMeters()
-        logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
+        #logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
 
         '''========================'''        
         ''' loop on the climb ramp '''
@@ -127,8 +127,8 @@ class ClimbRamp(Graph):
             ''' distance flown '''
             cumulatedLegDistanceMeters += deltaDistanceMeters
             totalDistanceFlownMeters += deltaDistanceMeters
-            logging.info(self.className + " - total distance flown = {0:.2f} meters".format (totalDistanceFlownMeters ))
-            logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
+            #logging.info(self.className + " - total distance flown = {0:.2f} meters".format (totalDistanceFlownMeters ))
+            #logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
 
             distanceStillToFlyMeters -= deltaDistanceMeters
 #             ''' if altitude above ground > 50 feet => move from take-off to initial climb '''
@@ -160,6 +160,6 @@ class ClimbRamp(Graph):
         ''' set name of the last point '''
         Name = 'climbRamp-{0:.1f} nm'.format( cumulatedLegDistanceMeters * Meter2NauticalMiles )
         newIntermediateWayPoint.setName(Name = Name)
-        logging.info( self.className + " - end of climb ramp")
-        logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
+        #logging.info( self.className + " - end of climb ramp")
+        #logging.info( self.className + " - aircraft altitude MSL = {0:.2f} meters".format( self.altitudeMeanSeaLevelMeters ))
  

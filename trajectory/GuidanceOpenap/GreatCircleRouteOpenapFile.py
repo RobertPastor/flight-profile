@@ -133,7 +133,7 @@ class GreatCircleRoute(Graph):
             
             ''' initialization of the loop '''
             if index == 0:
-                logging.info ( self.className + ': initial way-point= {0}'.format(self.initialWayPoint) )
+                #logging.info ( self.className + ': initial way-point= {0}'.format(self.initialWayPoint) )
                 intermediateWayPoint = self.initialWayPoint
             
             if self.aircraft.isCruiseSpeedReached():
@@ -204,7 +204,7 @@ class GreatCircleRoute(Graph):
 #                                                     self.computeLengthMeters()* Meter2NauticalMiles,
 #                                                     elapsedTimeSeconds, int(minutes), int(seconds))
 #         logging.debug self.className + strMsg                                               
-        logging.debug ( self.className + ': final way-point= {0}'.format(intermediateWayPoint) )
+        #logging.debug ( self.className + ': final way-point= {0}'.format(intermediateWayPoint) )
         return endOfSimulation
        
 

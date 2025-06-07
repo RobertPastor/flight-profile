@@ -51,7 +51,8 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
                                                   tas=TASknots, 
                                                   alt=aircraftAltitudeMSLfeet, 
                                                   vs=verticalRateFeetMinutes,
-                                                  acc=accelerationMetersSecondsSquare, limit=True)
+                                                  acc=accelerationMetersSecondsSquare, 
+                                                  limit=True)
 
         #logger.info(self.className + " - fuel flow descent {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds

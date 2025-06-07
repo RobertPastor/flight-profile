@@ -101,10 +101,10 @@ class DescentGlideSlope(Graph):
         self.runWayTouchDownPoint.setAltitudeMeanSeaLevelMeters(fieldElevationAboveSeaLevelMeters)
         strMsg =   "{0} - distance from RunWay - TouchDown to RunWay - End = {1:.2f} meters".format(self.className, self.runWayTouchDownPoint.getDistanceMetersTo(self.runWayEndPoint))
         logging.info ( self.className + " - " + strMsg )
-        logging.info ( self.className + " - arrival runway length = {0:.2f} meters".format(runway.getLengthMeters()))
+        #logging.info ( self.className + " - arrival runway length = {0:.2f} meters".format(runway.getLengthMeters()))
         
         self.bearingDegrees = self.runWayTouchDownPoint.getBearingDegreesTo(self.runWayEndPoint)
-        logging.info ( self.className + ": bearing from touch-down to runway end= {0:.2f} degrees".format(self.bearingDegrees) )
+        #logging.info ( self.className + ": bearing from touch-down to runway end= {0:.2f} degrees".format(self.bearingDegrees) )
                 
         
     def buildGlideSlope(self,
@@ -189,10 +189,10 @@ class DescentGlideSlope(Graph):
         '''======================================================'''
         #logging.info self.className + ' ======= simulated glide slope ========='
         glideSlopeLengthMeters = descentGlideSlopeSizeNautics * NauticalMiles2Meters
-        logging.info ( self.className + ': glide slope Length= {0:.2f} meters - {1:.2f} Nm'.format( glideSlopeLengthMeters , descentGlideSlopeSizeNautics) )
+        #logging.info ( self.className + ': glide slope Length= {0:.2f} meters - {1:.2f} Nm'.format( glideSlopeLengthMeters , descentGlideSlopeSizeNautics) )
         
         bearingDegrees = self.runway.getTrueHeadingDegrees()
-        logging.info ( self.className + ': glide slope orientation= {0:.2f} degrees'.format ( bearingDegrees ) )
+        #logging.info ( self.className + ': glide slope orientation= {0:.2f} degrees'.format ( bearingDegrees ) )
 
         fieldElevationAboveSeaLevelMeters = self.arrivalAirport.getFieldElevationAboveSeaLevelMeters()
 
@@ -247,7 +247,7 @@ class DescentGlideSlope(Graph):
         '''============================================================='''
         for point in reversed(intermediateGlideSlopeRoute):
             self.addVertex(point)
-        simulatedGlideSlopeLengthMeters = newIntermediatePoint.getDistanceMetersTo(self.runWayTouchDownPoint)
-        logging.info ( self.className + ': distance from last way point to touch-down: {0:.2f} Nm'.format(simulatedGlideSlopeLengthMeters * Meter2NauticalMiles) )
+        #simulatedGlideSlopeLengthMeters = newIntermediatePoint.getDistanceMetersTo(self.runWayTouchDownPoint)
+        #logging.info ( self.className + ': distance from last way point to touch-down: {0:.2f} Nm'.format(simulatedGlideSlopeLengthMeters * Meter2NauticalMiles) )
 
 

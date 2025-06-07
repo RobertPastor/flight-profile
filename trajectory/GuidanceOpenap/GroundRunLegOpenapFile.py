@@ -36,7 +36,7 @@ from trajectory.Guidance.WayPointFile import Airport, WayPoint
 from trajectory.Guidance.GraphFile import Graph
 from trajectory.Openap.AircraftMainFile import OpenapAircraft
 
-from trajectory.Environment.Constants import  MeterPerSecond2Knots , Meter2NauticalMiles
+from trajectory.Environment.Constants import  MeterPerSecond2Knots 
 from trajectory.Environment.Utils import logElapsedRealTime
 
 class GroundRunLeg(Graph):
@@ -104,7 +104,7 @@ class GroundRunLeg(Graph):
                               elapsedTimeSeconds,
                               initialWayPoint):
         
-        assert isinstance(initialWayPoint, WayPoint)
+        #assert isinstance(initialWayPoint, WayPoint)
         ''' 
         speed decreases from 1.2 V Stall to taxi speed
         (according to the airport elevation stall speed changes with air density)
@@ -137,7 +137,7 @@ class GroundRunLeg(Graph):
             ''' fly => decrease the true air speed '''
             endOfSimulation, deltaDistanceMeters , altitudeMeters = self.aircraft.fly(  elapsedTimeSeconds        = elapsedTimeSeconds,
                                                                                         deltaTimeSeconds          = deltaTimeSeconds , 
-                                                                                        totalDistanceFlownMeters  = 0.0 ,
+                                                                                        totalDistanceFlownMeters  = self.aircraft.getTotalDistanceFlownMeters(),
                                                                                         altitudeMSLmeters         = self.aircraft.getCurrentAltitudeSeaLevelMeters(),
                                                                                         distanceStillToFlyMeters  = distanceStillToFlyMeters,
                                                                                         currentPosition           = intermediateWayPoint,
@@ -171,7 +171,7 @@ class GroundRunLeg(Graph):
             ''' increment the index '''
             index += 1
   
-        logging.debug ('============ end of arrival ground run ======================')
+        #logging.debug ('============ end of arrival ground run ======================')
         logElapsedRealTime ( self.className , elapsedTimeSeconds)
         strRunWayEndPointName = self.runway.getName() + '-' + self.airport.getName() 
         #logging.debug( '{0}: current distance flown = {1:.2f} meters = {2:.2f} Nm'.format ( self.className, self.aircraft.getCurrentDistanceFlownMeters(), self.aircraft.getCurrentDistanceFlownMeters() * Meter2NauticalMiles) )
@@ -184,7 +184,7 @@ class GroundRunLeg(Graph):
                                 distanceStillToFlyMeters,
                                 distanceToLastFixMeters):
         
-        logging.info( self.className + " : build departure ground run")
+        #logging.info( self.className + " : build departure ground run")
         ''' elapsedTimeSeconds in seconds '''
         # -> @TODO to be suppressed -> elapsedTimeSeconds = elapsedTimeSeconds
 
@@ -195,10 +195,10 @@ class GroundRunLeg(Graph):
                                     LongitudeDegrees = self.runway.getLongitudeDegrees(),
                                     AltitudeMeanSeaLevelMeters = self.airport.getFieldElevationAboveSeaLevelMeters())
         
-        logging.info( self.className + " : departure runway = "+ str (runWayEndPoint))
+        #logging.info( self.className + " : departure runway = "+ str (runWayEndPoint))
         ''' run-way true heading '''
         runwayTrueHeadingDegrees = self.runway.getTrueHeadingDegrees()
-        logging.info ( self.className + " : runway true heading = " + str(runwayTrueHeadingDegrees) + " degrees")
+        #logging.info ( self.className + " : runway true heading = " + str(runwayTrueHeadingDegrees) + " degrees")
         
         ''' call base class Graph to build Climb Ramp core of the route '''
         index = 0
@@ -223,7 +223,7 @@ class GroundRunLeg(Graph):
         These V speeds are normally published as IAS rather than CAS so they can be read directly from the airspeed indicator.
         '''
         VStallSpeedCASKnots = self.aircraft.getDefaultTakeOffCASknots()
-        logging.info ( self.className + ': V stall Calibrated AirSpeed= {0:.2f} knots'.format(VStallSpeedCASKnots) )
+        #logging.info ( self.className + ': V stall Calibrated AirSpeed= {0:.2f} knots'.format(VStallSpeedCASKnots) )
         
         ''' loop until 1.2 * Stall CAS speed reached '''
         endOfSimulation = False
@@ -236,10 +236,10 @@ class GroundRunLeg(Graph):
                          altitude = self.airport.getFieldElevationAboveSeaLevelMeters(),
                          temp = 'std', speed_units = 'm/s', alt_units = 'm') * MeterPerSecond2Knots )  < (1.0 * VStallSpeedCASKnots)):
             ''' initial loop index '''
-            logging.info( self.className + " : flight list index = {0}".format( index ))
+            #logging.info( self.className + " : flight list index = {0}".format( index ))
 
             if index == 1:
-                logging.info( self.className + " : flight list index = {0}".format( index ))
+                #logging.info( self.className + " : flight list index = {0}".format( index ))
                 intermediateWayPoint = runWayEndPoint
                 
             
@@ -253,8 +253,8 @@ class GroundRunLeg(Graph):
                                                                      distanceStillToFlyMeters = distanceStillToFlyMeters,
                                                                      currentPosition          = intermediateWayPoint,
                                                                      distanceToLastFixMeters  = distanceToLastFixMeters)
-            logging.info( self.className + " - back from fly step")
-            logging.info( self.className + " - altitude {0} meters".format( self.altitudeMeters ))
+            #logging.info( self.className + " - back from fly step")
+            #logging.info( self.className + " - altitude {0} meters".format( self.altitudeMeters ))
             trueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
             
             assert (((self.airport.getFieldElevationAboveSeaLevelMeters() - 10.0) <= self.altitudeMeters) and
@@ -268,7 +268,7 @@ class GroundRunLeg(Graph):
             Name = ''
             if index == 1:
                 Name = 'groundRun-{0}'.format( self.runway.getName() )
-                logging.info( self.className + " - " + Name )
+                #logging.info( self.className + " - " + Name )
                 
             #bearingDegrees = math.fmod ( runwayTrueHeadingDegrees + 180.0 , 360.0 )
             bearingDegrees = runwayTrueHeadingDegrees
@@ -294,7 +294,7 @@ class GroundRunLeg(Graph):
         ''' rename last point as take-off '''
         Name = 'takeOff-{0:.1f}-meters'.format(self.totalLegDistanceMeters)
         intermediateWayPoint.setName(Name)
-        logging.info( self.className + " - last ground run point = {0}".format( Name ) )
+        #logging.info( self.className + " - last ground run point = {0}".format( Name ) )
         # keep the last true airspeed
         self.lastTrueAirSpeedMetersSecond = self.aircraft.getCurrentTrueAirSpeedMetersSecond()
         
