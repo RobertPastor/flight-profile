@@ -8,7 +8,7 @@ Created on 26 nov. 2024
 import logging 
 logger = logging.getLogger(__name__)
 
-from trajectory.aerocalc.airspeed import tas2cas, tas2mach
+from trajectory.aerocalc.airspeed import tas2cas, tas2mach, default_temp_units
 
 from trajectory.Environment.Constants import  Meter2Feet , MeterSecond2Knots
 from trajectory.Environment.Constants import  Meter2NauticalMiles
@@ -126,7 +126,7 @@ class OpenapAircraftFlightPhases(OpenapAircraftStateVector):
         #cas = self.atmosphere.tas2cas(tas = tas, altitude = altitudeMeanSeaLevelMeters,alt_units='m', speed_units='m/s',)
         cas = tas2cas(tas = tas, altitude = altitudeMeanSeaLevelMeters, temp='std', speed_units='m/s', alt_units='m')
         #mach = self.atmosphere.tas2mach(tas = tas, altitude = altitudeMeanSeaLevelMeters, alt_units='m', speed_units='m/s')
-        mach = tas2mach(tas = tas , temp='std', altitude = altitudeMeanSeaLevelMeters, temp_units= 'C', speed_units='m/s')
+        mach = tas2mach(tas = tas , temp='std', altitude = altitudeMeanSeaLevelMeters, temp_units = default_temp_units, alt_units = 'm' , speed_units='m/s')
         logger.info ( self.className + ' ====================================' )
         logger.info ( self.className + ' elapsed time = {0:.0f} seconds ->  {1:.2f} hours '.format(elapsedTimeSeconds , elapsedTimeSeconds/3600.0))
         logger.info ( self.className + ' entering {0} configuration - distance flown {1:.2f} meters - distance flown {2:.2f} Nm'.format(newConfiguration, currentDistanceFlownMeters, currentDistanceFlownMeters*Meter2NauticalMiles) )

@@ -39,7 +39,6 @@ class Command(BaseCommand):
         takeOffWeightKg = 64000.0
         #takeOffWeightKg = 230000.0
         
-        
         if not ( aircraftICAOcode in prop.available_aircraft(use_synonym=True) ):
             print ( "Aircraft code = {0} not in openap Wrap".format( aircraftICAOcode ))
         else:
@@ -55,7 +54,7 @@ class Command(BaseCommand):
                 flightPath = FlightPathOpenap(
                         route                = routeAsString, 
                         aircraftICAOcode     = aircraftICAOcode,
-                        RequestedFlightLevel = 330.0, 
+                        RequestedFlightLevel = 390.0, 
                         cruiseMach           = 0.82, 
                         takeOffMassKilograms = takeOffWeightKg)
                 try:

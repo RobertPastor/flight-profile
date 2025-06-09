@@ -82,7 +82,7 @@ class FlightPlan(FixList):
         return self.departureAirport
 
     def buildFixList(self):
-        print ( self.className + " : Build the fix list")
+        #print ( self.className + " : Build the fix list")
         '''
         from the route build a fix list and from the fix list build a way point list
         '''

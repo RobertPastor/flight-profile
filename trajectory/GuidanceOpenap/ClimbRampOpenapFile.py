@@ -75,8 +75,7 @@ class ClimbRamp(Graph):
         assert isinstance(aircraft, OpenapAircraft)
         self.aircraft = aircraft
         ''' everything is OKay to start '''
-        logging.info( self.className + " - Climb Ramp init Ok")
-
+        #logging.info( self.className + " - Climb Ramp init Ok")
         
     def buildClimbRamp(self,
                        deltaTimeSeconds,

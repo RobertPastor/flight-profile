@@ -103,9 +103,9 @@ class FlightPathOpenap(FlightPlan):
         self.aircraft.setAircraftMassKilograms(takeOffMassKilograms)
         self.aircraft.setInitialMassKilograms(takeOffMassKilograms)
         
-        logging.info ( self.className + " : Max TakeOff Weight kilograms = {0}".format(self.aircraft.getMaximumTakeOffMassKilograms() ) )   
-        logging.info ( self.className + " : Max Cruise Altitude Feet = {0}".format(self.aircraft.getMaxCruiseAltitudeFeet() ) )   
-        logging.info ( self.className + " : Max Speed MMO Cruise Mach = {0}".format(self.aircraft.getMaximumSpeedMmoMach() ) )
+        logging.info ( self.className + " : Max TakeOff Weight kilograms = {0:.2f}".format(self.aircraft.getMaximumTakeOffMassKilograms() ) )   
+        logging.info ( self.className + " : Max Cruise Altitude Feet = {0:.2f}".format(self.aircraft.getMaxCruiseAltitudeFeet() ) )   
+        logging.info ( self.className + " : Max Speed MMO Cruise Mach = {0:.2f}".format(self.aircraft.getMaximumSpeedMmoMach() ) )
         
         #self.RequestedFlightLevel = self.aircraft.getMaxCruiseAltitudeFeet() / 100.0
         ''' requested flight level such as FL 330 '''
@@ -242,7 +242,7 @@ class FlightPathOpenap(FlightPlan):
             distanceStillToFlyMeters = self.flightLengthMeters - self.finalRoute.getLengthMeters()
             #logging.debug ( self.className + ' still to fly= {0:.2f} meters - still to fly= {1:.2f} Nm'.format(distanceStillToFlyMeters, distanceStillToFlyMeters * Meter2NauticalMiles) )
             ''' logging.debug the way point that has been passed right now '''
-            self.printPassedWayPoint(finalWayPoint)
+            #self.printPassedWayPoint(finalWayPoint)
             
         ''' return to caller '''
         return self.endOfSimulation, finalHeadingDegrees, finalWayPoint.getElapsedTimeSeconds(), anticipatedTurnWayPoint
@@ -288,6 +288,7 @@ class FlightPathOpenap(FlightPlan):
 
         ''' return final heading of the last great circle '''
         return self.endOfSimulation, initialHeadingDegrees
+    
     
     def buildDeparturePhase(self):
         ''' this function manages the departure phases with a ground run and a climb ramp  '''
@@ -566,6 +567,7 @@ class FlightPathOpenap(FlightPlan):
                 
             if (self.endOfSimulation == False):
                 logging.info ( self.className + ' ========== delta mass status ==============' )
+
                 logging.info ( self.className + ' initial mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getTakeOffMassKilograms(),
                                                                                                    self.aircraft.getTakeOffMassKilograms()*Kilogram2Pounds) )
                 logging.info ( self.className + ' final mass= {0:.2f} kilograms = {1:.2f} pounds'.format(self.aircraft.getCurrentMassKilograms(),

@@ -6,7 +6,7 @@ Created on 11 oct. 2024
 
 import unittest
 import os
-import xlsxwriter
+
 from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.aerocalc.airspeed import tas2cas, cas2tas
 

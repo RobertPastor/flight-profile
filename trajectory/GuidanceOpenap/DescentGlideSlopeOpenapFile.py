@@ -63,22 +63,22 @@ class DescentGlideSlope(Graph):
         self.className = self.__class__.__name__
         Graph.__init__(self)
         
-        assert isinstance(descentGlideSlopeDegrees, float)
+        #assert isinstance(descentGlideSlopeDegrees, float)
         self.descentGlideSlopeDegrees = descentGlideSlopeDegrees
         
         ''' sanity check '''
-        assert isinstance(arrivalAirport, Airport)
+        #assert isinstance(arrivalAirport, Airport)
         self.arrivalAirport = arrivalAirport
 
         ''' sanity check RunWay '''
-        assert isinstance(runway, RunWay)
+        #assert isinstance(runway, RunWay)
         self.runway = runway
             
-        assert isinstance(aircraft, OpenapAircraft)
+        #assert isinstance(aircraft, OpenapAircraft)
         self.aircraft = aircraft
         
         fieldElevationAboveSeaLevelMeters = arrivalAirport.getFieldElevationAboveSeaLevelMeters()
-        logging.info ( self.className + ': arrival airport field Elevation Above Sea Level= {0:.2f} meters'.format(fieldElevationAboveSeaLevelMeters) )
+        #logging.info ( self.className + ': arrival airport field Elevation Above Sea Level= {0:.2f} meters'.format(fieldElevationAboveSeaLevelMeters) )
 
         strName = arrivalAirport.getName() + '-' + 'RunWay'+'-'+ self.runway.getName()
         self.runWayEndPoint = WayPoint (    Name                       = strName, 
@@ -99,8 +99,8 @@ class DescentGlideSlope(Graph):
         
         ''' elevation of touch down point = field elevation'''
         self.runWayTouchDownPoint.setAltitudeMeanSeaLevelMeters(fieldElevationAboveSeaLevelMeters)
-        strMsg =   "{0} - distance from RunWay - TouchDown to RunWay - End = {1:.2f} meters".format(self.className, self.runWayTouchDownPoint.getDistanceMetersTo(self.runWayEndPoint))
-        logging.info ( self.className + " - " + strMsg )
+        #strMsg =   "{0} - distance from RunWay - TouchDown to RunWay - End = {1:.2f} meters".format(self.className, self.runWayTouchDownPoint.getDistanceMetersTo(self.runWayEndPoint))
+        #logging.info ( self.className + " - " + strMsg )
         #logging.info ( self.className + " - arrival runway length = {0:.2f} meters".format(runway.getLengthMeters()))
         
         self.bearingDegrees = self.runWayTouchDownPoint.getBearingDegreesTo(self.runWayEndPoint)

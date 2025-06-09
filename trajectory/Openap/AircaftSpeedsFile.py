@@ -10,18 +10,24 @@ import math
 from trajectory.Environment.Constants import Knots2MetersSeconds,  MeterSecond2Knots
 from trajectory.Environment.Constants import Meter2Feet
 from trajectory.aerocalc.airspeed import mach_alt2cas
-from trajectory.Environment.Constants import NauticalMiles2Meter
 
 
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
-import json
 from trajectory.Openap.AircraftEngineFile import OpenapAircraftEngine
-
+from trajectory.aerocalc.airspeed import tas2mach , default_temp_units , mach2tas
 import logging
 # create logger
 logger = logging.getLogger()
-import numpy as np
+
+def interpolate(x , xArray, yArray):
+    #x1 must be greater to x0
+    x0 , x1 = xArray
+    y0 , y1 = yArray
+    
+    y = ( ( (y1 - y0) / (x1 - x0) ) * ( x - x0 ) ) + y0
+    
+    return y
 
 class OpenapAircraftSpeeds(OpenapAircraftEngine):
 
@@ -55,7 +61,6 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         self.landingDecelerationMetersSecondsSquareDict = self.wrap.landing_acceleration()
         #logger.info( self.className + " - Landing deceleration = {0} meters per seconds square".format( json.dumps ( self.landingDecelerationMetersSecondsSquareDict ) ) )
 
-
         self.initialDescentCASset = False
         self.initialDescentCASknots = 0.0
         self.initialDescentAltitudeFeet = 0.0
@@ -68,11 +73,19 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         self.initialApproachCASknots = 0.0
         self.initialApproachAltitudeFeet = 0.0
         
+        self.initialCruiseTASset = False
+        self.initialCruiseTASknots = 0.0
+        self.initialCruiseAltitudeFeet = 0.0
+        
     def getMaximumSpeedMmoMach(self):
         return self.maximumSpeedMmoMach
     
     def setTargetCruiseMach(self, targetCruiseMach ):
+        logging.info( self.className + " - target cruise mach = {0:.2f}".format(targetCruiseMach))
         self.targetCruiseMach = targetCruiseMach
+        
+    def getTargetCruiseMach(self):
+        return self.targetCruiseMach
         
     def getDefaultTakeOffCASknots(self):
         ''' @TODO correct for difference to reference mass '''
@@ -98,12 +111,22 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
     def getCurrentTASmetersSeconds(self):
         return self.currentTASknots * Knots2MetersSeconds
     
-    def setCurrentTASmetersSeconds(self, TASmetersSeconds ):
+    def setCurrentTASmetersSeconds(self, TASmetersSeconds , aircraftAltitudeMSLfeet ):
         if TASmetersSeconds < 0.0:
             #logger.info ( self.className + " - Error - TAS is negative " )
             raise ValueError( self.className + " - Error - TAS is negative ")
-        if (TASmetersSeconds * MeterSecond2Knots) > self.maximumSpeedVmoKnots:
-            self.currentTASknots = self.maximumSpeedVmoKnots
+        if tas2mach(tas        = TASmetersSeconds ,
+                    temp       = 'std',
+                    altitude   = aircraftAltitudeMSLfeet,
+                    temp_units = default_temp_units,
+                    alt_units  = 'ft',
+                    speed_units= 'm/s' ) > self.targetCruiseMach:
+            self.currentTASknots = mach2tas ( mach     = self.targetCruiseMach,
+                                              temp     = 'std',
+                                              altitude = aircraftAltitudeMSLfeet,
+                                              temp_units = default_temp_units,
+                                              alt_units  = 'ft',
+                                              speed_units = 'kt')
         else:
             self.currentTASknots = TASmetersSeconds * MeterSecond2Knots
         
@@ -125,37 +148,48 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         ''' cross over altitude when constant CAS climb starts '''
         if ( altitudeMSLfeet < self.wrap.climb_cross_alt_concas() ['default'] * 1000.0 * Meter2Feet ):
             ''' below cross over altitude when constant CAS climb starts '''
+            #logging.info( self.className + " - aircraft altitude MSL {0:.2f} feet".format ( altitudeMSLfeet ))
             
             self.constantClimbCASknots = self.wrap.climb_const_vcas()['default']
             ''' xp must be in increasing order '''
             if ( self.initialClimbCASknots < self.constantClimbCASknots):
-                self.climbCASknots = np.interp ( x = altitudeMSLfeet , 
-                                            xp = [ self.initialClimbAltitudeFeet , self.wrap.climb_cross_alt_concas() ['default'] * 1000.0 * Meter2Feet ],
-                                            fp = [ self.initialClimbCASknots , self.constantClimbCASknots ] )
+                self.climbCASknots = interpolate ( x = altitudeMSLfeet , 
+                                            xArray = [ self.initialClimbAltitudeFeet , self.wrap.climb_cross_alt_concas() ['default'] * 1000.0 * Meter2Feet ],
+                                            yArray = [ self.initialClimbCASknots , self.constantClimbCASknots ] )
             else:
                 self.climbCASknots = self.initialClimbCASknots
                 self.initialClimbCASknots = self.climbCASknots
                 
         elif ( altitudeMSLfeet < self.wrap.climb_cross_alt_conmach() ['default'] * 1000.0 * Meter2Feet ):
-            
+            ''' cross over altitude from constant CAS to use constant climb mach '''
+            #logging.info( self.className + " - aircraft altitude MSL {0:.2f} feet".format ( altitudeMSLfeet ))
+
             self.constantClimbMach = self.wrap.climb_const_mach()['default']
             
             self.constantClimbCASknots = mach_alt2cas( mach = self.constantClimbMach , 
                                                          altitude = altitudeMSLfeet , 
                                                          alt_units = 'ft',
                                                          speed_units = 'kt')
-            self.climbCASknots = np.interp ( x = altitudeMSLfeet , 
-                                            xp = [ self.wrap.climb_cross_alt_concas() ['default'] * 1000.0 * Meter2Feet , self.wrap.climb_cross_alt_conmach() ['default'] * 1000.0 * Meter2Feet ],
-                                            fp = [ self.initialClimbCASknots , self.constantClimbCASknots ] )
-           
+            self.climbCASknots = interpolate ( x = altitudeMSLfeet , 
+                                            xArray= [ self.wrap.climb_cross_alt_concas() ['default'] * 1000.0 * Meter2Feet , self.wrap.climb_cross_alt_conmach() ['default'] * 1000.0 * Meter2Feet ],
+                                            yArray = [ self.initialClimbCASknots , self.constantClimbCASknots ,   ] )
+            self.lastClimbCASknots = self.climbCASknots
+            
         else:
+            #logging.info( self.className + " - aircraft altitude = {0:.2f} feet".format( altitudeMSLfeet ))
             self.constantClimbMach = self.wrap.climb_const_mach()['default']
             
-            self.climbCASknots = mach_alt2cas( mach = self.constantClimbMach , 
-                                                         altitude = altitudeMSLfeet , 
-                                                         alt_units = 'ft',
-                                                         speed_units = 'kt')
-        
+            self.targetCruiseCASknots = mach_alt2cas( mach        = self.getTargetCruiseMach() , 
+                                                      altitude    = self.getCruiseLevelFeet()  , 
+                                                      alt_units   = 'ft',
+                                                      speed_units = 'kt')
+            #logging.info( self.className + " target cruise CAS {0:.2f} mach - {1:.2f} knots".format ( self.getTargetCruiseMach() , self.targetCruiseCASknots ))
+            self.climbCASknots = interpolate ( x = altitudeMSLfeet ,
+                                             xArray = [ self.wrap.climb_cross_alt_conmach() ['default'] * 1000.0 * Meter2Feet , self.getCruiseLevelFeet() ] ,
+                                             yArray = [ self.lastClimbCASknots , self.targetCruiseCASknots ])
+            #logging.info( self.className + " - cruise CAS = {0:.2f} knots ".format( self.climbCASknots  ))
+            #logging.info( "---------")
+            
         #logger.info( self.className + " - climb CAS speed = {0} kt".format (  self.climbCASknots ) )
         return self.climbCASknots
         
@@ -167,9 +201,9 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
             self.initialDescentAltitudeFeet = altitudeMSLfeet
         
         ''' distance from runway = 10 Nautical miles '''
-        glideSlopeLenthFeet = 10.0 * NauticalMiles2Meter * Meter2Feet  # 10.0 Nautical miles
+        #glideSlopeLenthFeet = 10.0 * NauticalMiles2Meter * Meter2Feet  # 10.0 Nautical miles
         ''' 3 degrees glide slope '''
-        glideSlopeHeightFeet = math.tan( math.radians( 3.0 )) * glideSlopeLenthFeet
+        #glideSlopeHeightFeet = math.tan( math.radians( 3.0 )) * glideSlopeLenthFeet
         
         self.constantCASdescentKnots = 0.0
         
@@ -183,9 +217,9 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
             
             if ( CASknots > self.constantCASDescentKnots ):
                 ''' xp must be in increasing order '''
-                self.constantCASdescentKnots = np.interp ( x = altitudeMSLfeet , 
-                                                      xp = [ self.wrap.descent_cross_alt_conmach() ['default'] * 1000.0 * Meter2Feet , self.initialDescentAltitudeFeet],
-                                                      fp = [ self.constantCASDescentKnots , self.initialDescentCASknots ])
+                self.constantCASdescentKnots = interpolate ( x = altitudeMSLfeet , 
+                                                      xArray = [ self.wrap.descent_cross_alt_conmach() ['default'] * 1000.0 * Meter2Feet , self.initialDescentAltitudeFeet],
+                                                      yArray = [ self.constantCASDescentKnots , self.initialDescentCASknots ])
             else:
                 self.constantCASdescentKnots = self.initialDescentCASknots
             
@@ -203,9 +237,9 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
             
             self.constantCASdescentKnots = self.wrap.descent_const_vcas()['default']
             ''' xp must be in increasing order '''            
-            self.constantCASdescentKnots = np.interp ( x = altitudeMSLfeet , 
-                                                  xp = [ self.wrap.descent_cross_alt_concas() ['default'] * 1000.0 * Meter2Feet , self.wrap.descent_cross_alt_conmach() ['default'] * 1000.0 * Meter2Feet ],
-                                                  fp = [ self.constantCASdescentKnots , self.initialDescentCASknots ])
+            self.constantCASdescentKnots = interpolate ( x = altitudeMSLfeet , 
+                                                  xArray = [ self.wrap.descent_cross_alt_concas() ['default'] * 1000.0 * Meter2Feet , self.wrap.descent_cross_alt_conmach() ['default'] * 1000.0 * Meter2Feet ],
+                                                  yArray = [ self.constantCASdescentKnots , self.initialDescentCASknots ])
              
             
         else:
@@ -219,14 +253,28 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
             finalApproachCAS = self.wrap.finalapp_vcas()['default']
             
             ''' xp must be in increasing order '''
-            self.constantCASdescentKnots = np.interp ( x = altitudeMSLfeet , 
-                                                       xp = [ altitudeFinalApproachStartFeet , altitudeConstantCASfeet  ] , 
-                                                       fp = [ finalApproachCAS , descentConstantCAS ])
+            self.constantCASdescentKnots = interpolate ( x = altitudeMSLfeet , 
+                                                       xArray = [ altitudeFinalApproachStartFeet , altitudeConstantCASfeet  ] , 
+                                                       yArray = [ finalApproachCAS , descentConstantCAS ])
             
         #logger.info( self.className + " - descent CAS speed = {0:.2f} kt".format (  self.constantCASdescentKnots ) )
         self.altitudeFinalDescentMSLfeet = altitudeMSLfeet
         #logger.info( self.className + " - altitude final descent = {0:.2f} feet".format ( self.altitudeFinalDescentMSLfeet ))
         return self.constantCASdescentKnots
+    
+    def computeCruiseTASknots (self):
+        if self.initialCruiseTASset == False:
+            self.initialClimbCASset = True
+            
+        #logging.info( self.className + " - target cruise = {0:.2f} mach".format( self.getTargetCruiseMach() ))
+        self.targetCruiseCASknots = mach2tas( mach        = self.getTargetCruiseMach() ,
+                                              temp        = 'std',
+                                                altitude    = self.getCruiseLevelFeet()  , 
+                                                temp_units  = default_temp_units,
+                                                alt_units   = 'ft',
+                                                speed_units = 'kt')
+        return self.targetCruiseCASknots
+        
     
     def computeApproachCASknots(self , altitudeMSLfeet , currentCASknots , arrivalRunwayAltitudeMSLfeet ):
         ''' approach is flying the last turn followed by the descent glide slope to the arrival runway '''
@@ -250,13 +298,14 @@ class OpenapAircraftSpeeds(OpenapAircraftEngine):
         ''' interpolate from current altitude to runway altitude '''
         ''' interpolate from current CAS to landing CAS '''
         ''' xp must be in increasing order '''
-        self.approachCASknots = np.interp ( x = altitudeMSLfeet , 
-                                            xp = [ arrivalRunwayAltitudeMSLfeet , self.altitudeFinalDescentMSLfeet  ] , 
-                                            fp = [ self.landingCASknots , self.constantCASdescentKnots ])
+        self.approachCASknots = interpolate ( x = altitudeMSLfeet , 
+                                            xArray = [ arrivalRunwayAltitudeMSLfeet , self.altitudeFinalDescentMSLfeet  ] , 
+                                            yArray = [ self.landingCASknots , self.constantCASdescentKnots ])
         
         #logging.info( self.className + ' - approach CAS = {0:.2f} knots'.format( self.approachCASknots ))
         return self.approachCASknots
-        
+    
+    
         
     def isCruiseSpeedReached(self):
         return False
