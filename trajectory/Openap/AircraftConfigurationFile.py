@@ -480,11 +480,9 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             #logger.info( self.className + " - distance flown = {0:.2f} meters - distance flown = {1:.2f} Nautical miles ".format( totalDistanceFlownMeters , totalDistanceFlownMeters * Meter2NauticalMiles ))
 
             ''' mass loss due to fuel flow '''
-            fuelFlowKilogramsSeconds = self.computeFuelFlowKilogramsSeconds(TASknots          = trueAirSpeedMetersSecond * MeterSecond2Knots , 
-                                                                     aircraftAltitudeMSLfeet  = altitudeMSLfeet , 
-                                                                     aircraftMassKilograms    = aircraftMassKilograms , 
-                                                                     verticalRateFeetMinutes  = rateOfDescentMetersSeconds,
-                                                                     accelerationMetersSecondsSquare = aircraftAccelerationMetersSecondSquare)
+            fuelFlowKilogramsSeconds = self.computeFuelFlowDescentKilogramsSeconds(descentIdleThrustNewtons = thrustNewtons , 
+                                                                                   aircraftAltitudeMSLfeet = altitudeMSLfeet )
+                                                                   
             aircraftMassKilograms = aircraftMassKilograms - ( fuelFlowKilogramsSeconds * deltaTimeSeconds )
             self.setAircraftMassKilograms(aircraftMassKilograms)
             

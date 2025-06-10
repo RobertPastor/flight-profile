@@ -47,6 +47,7 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
     
     def getFuelFlowDescentKgSeconds(self , aircraftMassKilograms , TASknots, aircraftAltitudeMSLfeet , verticalRateFeetMinutes , accelerationMetersSecondsSquare):
         #fuelFlowKgSeconds = self.fuelFlow.at_thrust( acthr = thrustNewtons , alt=aircraftAltitudeMSLfeet, limit=True)
+       
         fuelFlowKgSeconds = self.fuelFlow.enroute(mass=aircraftMassKilograms, 
                                                   tas=TASknots, 
                                                   alt=aircraftAltitudeMSLfeet, 
@@ -55,6 +56,12 @@ class OpenapAircraftFuelFlow(OpenapAircraftVerticalRate):
                                                   limit=True)
 
         #logger.info(self.className + " - fuel flow descent {0:.2f} kilograms per second".format( fuelFlowKgSeconds ))
+        return fuelFlowKgSeconds
+    
+    def computeFuelFlowDescentKilogramsSeconds(self , descentIdleThrustNewtons , aircraftAltitudeMSLfeet ):
+        fuelFlowKgSeconds = self.fuelFlow.at_thrust ( acthr = descentIdleThrustNewtons , 
+                                                      alt = aircraftAltitudeMSLfeet )
+        #logging.info( self.className + " - descent idle fuel flow = {0:.2f} kg/s".format( fuelFlowKgSeconds ))
         return fuelFlowKgSeconds
 
     def computeFuelFlowKilogramsSeconds(self , 

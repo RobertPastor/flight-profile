@@ -45,7 +45,7 @@ from trajectory.BadaAircraftPerformance.BadaFlightEnvelopeFile import FlightEnve
 
 from trajectory.Environment.Atmosphere import Atmosphere
 from trajectory.Environment.Earth import Earth
-from trajectory.aerocalc.airspeed import tas2cas, tas2mach
+from trajectory.aerocalc.airspeed import tas2cas, tas2mach, default_temp_units
 from trajectory.Environment.Utils import logElapsedRealTime
 from trajectory.Environment.Constants import Meter2NauticalMiles
 
@@ -223,6 +223,8 @@ class AircraftConfiguration(FlightEnvelope):
         cas = tas2cas(tas = tas, altitude = altitudeMeanSeaLevelMeters, temp='std', speed_units='m/s', alt_units='m')
         #mach = self.atmosphere.tas2mach(tas = tas, altitude = altitudeMeanSeaLevelMeters, alt_units='m', speed_units='m/s')
         mach = tas2mach(tas = tas , temp='std', altitude = altitudeMeanSeaLevelMeters, temp_units= 'C',speed_units='m/s')
+        mach = tas2mach(tas = tas , temp='std', altitude = altitudeMeanSeaLevelMeters, temp_units = default_temp_units, alt_units = 'm' , speed_units='m/s')
+
         logger.info ( self.className + ' ====================================' )
         logger.info ( self.className + ' entering {0} configuration - flown {1:.2f} meters - distance flown {2:.2f} Nm'.format(newConfiguration, currentDistanceFlownMeters, currentDistanceFlownMeters*Meter2NauticalMiles) )
         logger.info ( self.className + ' alt= {0:.2f} meters alt= {1:.2f} feet'.format(altitudeMeanSeaLevelMeters, (altitudeMeanSeaLevelMeters*Meter2Feet)) ) 
