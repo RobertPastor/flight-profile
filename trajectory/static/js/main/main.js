@@ -88,7 +88,7 @@ export function showMessage ( title, message ) {
 						  $( this ).dialog( "close" );
 						}
 					  }			   
-	            })
+				})
 				.html(typeof message === 'string' ? message : JSON.stringify(message))
 				.dialog('open'); 
 	}
@@ -447,10 +447,10 @@ function initTools(globus, viewExtent) {
 		let airlineCasmOptimizationTable = document.getElementById(airlineCasmOptimizationControl.getMainTableId());
 		airlineCasmOptimizationTable.classList.add('sortable');
 		
-		let airlineFlightLegCostsResultsTable =  document.getElementById(airlineFlightLegCostsResultsControl.getMainTableId());
+		let airlineFlightLegCostsResultsTable = document.getElementById(airlineFlightLegCostsResultsControl.getMainTableId());
 		airlineFlightLegCostsResultsTable.classList.add('sortable');
 		
-		let metarsTable =  document.getElementById(metarsOgControl.getMainTableId());
+		let metarsTable = document.getElementById(metarsOgControl.getMainTableId());
 		metarsTable.classList.add('sortable');
 		
 		let airlineAirportsRoutesTable = document.getElementById(airlineAirportsRoutesControl.getMainTableId());
@@ -458,7 +458,6 @@ function initTools(globus, viewExtent) {
 		
 	}
 }
-
 
 function initMain(viewExtent) {
 	// 10th September 2023 - use .de OSM instance

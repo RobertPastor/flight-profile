@@ -762,7 +762,18 @@ class AirlineProfileCosts {
 						}
 			});
 		}
-		 
+		
+		/**
+		 * monitor the radio button used to switch from BADA to WRAP
+		 **/
+		document.getElementsByName("BadaWrap")[0].addEventListener('click', function(){
+			console.log("radio button Bada has been clicked");
+		});
+		document.getElementsByName("BadaWrap")[1].addEventListener('click', function(){
+			console.log("radio button Wrap has been clicked");
+		});
+		
+		
 		/**
 		* monitor the button used to launch the profile computation
 		**/

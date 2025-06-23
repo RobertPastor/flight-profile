@@ -25,10 +25,19 @@ export class FlightProfileControl extends Control {
 		return "15";
 	}
 	
+	getBADACheckBoxId() {
+		return "BADAcheckboxId";
+	}
+	
+	getWRAPCheckBoxId() {
+		return "WRAPcheckboxId";
+	}
+	
 	createRowWithAircraftSelector() {
 		
 		let row = document.createElement('tr');
 		let td_1 = document.createElement('td');
+		//td.colSpan = "4";
 		
 		let div_1 = document.createElement('div');
 		div_1.id = "aircraftSelectionId";
@@ -73,6 +82,53 @@ export class FlightProfileControl extends Control {
 		td_2.appendChild(div_2);
 		row.appendChild(td_2);
 		
+		// select BADA or Wrap
+		let td_3 = document.createElement('td');
+		
+		let div_3 = document.createElement('div');
+		div_3.id = "BadaId";
+		div_3.style.textAlign = "center";
+		
+		let label_3 = document.createElement("label");
+		label_3.innerHTML = " Legacy -> " ;
+		div_3.appendChild(label_3);
+		
+		// add a checkbox
+		let checkboxBADA   = document.createElement('input');
+		checkboxBADA.type  = "radio";
+		checkboxBADA.name  = "BadaWrap";
+		checkboxBADA.value = "value";
+		checkboxBADA.title = "Tick to select Legacy aircraft performances"
+		checkboxBADA.id    = this.getBADACheckBoxId();
+		
+		div_3.appendChild(checkboxBADA);
+		td_3.appendChild(div_3);
+		row.appendChild(td_3);
+		
+		// select BADA or Wrap
+		let td_4 = document.createElement('td');
+		//td_3.colSpan = "2";
+		
+		let div_4 = document.createElement('div');
+		div_4.id = "WrapId";
+		div_4.style.textAlign = "center";
+		
+		let label_4 = document.createElement("label");
+		label_4.innerHTML = " WRAP -> " ;
+		div_4.appendChild(label_4);
+		
+		let checkboxWrap   = document.createElement('input');
+		checkboxWrap.type  = "radio";
+		checkboxWrap.name  = "BadaWrap";
+		checkboxWrap.value = "value";
+		checkboxWrap.title = "Tick to select WRAP"
+		checkboxWrap.id    = this.getWRAPCheckBoxId();
+		
+		div_4.appendChild(checkboxWrap);
+		
+		td_4.appendChild(div_4);
+		row.appendChild(td_4);
+		
 		return row;
 	}
 	
@@ -80,6 +136,7 @@ export class FlightProfileControl extends Control {
 		
 		let row = document.createElement('tr');
 		let td_1 = document.createElement('td');
+		td_1.colSpan = "2";
 
 		// ---------- label take off weight
 		let div_1 = document.createElement('div');
@@ -148,6 +205,7 @@ export class FlightProfileControl extends Control {
 		
 		// ------------- Requested Flight Level
 		let td_2 = document.createElement('td');
+		td_2.colSpan = "2";
 		
 		let div_4 = document.createElement('div');
 		div_4.classList.add("horizontal-align-left");
@@ -199,6 +257,7 @@ export class FlightProfileControl extends Control {
 	getAdesICAOcodeInputId() {
 		return "fligthProfileControlAdesICAOInputId";
 	}
+	
 	// 14th August 2023 - checkbox to select best departure runway
 	getBestDepartureRunwayCheckBoxId() {
 		return "BestDepartureRunwayCheckBoxId";
@@ -218,7 +277,7 @@ export class FlightProfileControl extends Control {
 		let row = document.createElement('tr');
 		
 		let td = document.createElement('td');
-		td.colSpan = "2";
+		td.colSpan = "4";
 		
 		let div_1 = document.createElement('div');
 		div_1.classList.add("horizontal-align-left");
@@ -303,6 +362,7 @@ export class FlightProfileControl extends Control {
 		
 		let row = document.createElement('tr');
 		let td_1 = document.createElement('td');
+		td_1.colSpan = "2";
 		
 		let div_3 = document.createElement('div');
 		div_3.id = "runWaysSelectionFlightProfileId";
@@ -332,7 +392,8 @@ export class FlightProfileControl extends Control {
 		
 		// --------------------
 		let td_2 = document.createElement('td');
-					
+		td_2.colSpan = "2";
+		
 		let div_4 = document.createElement('div');
 		div_4.id = "runWaysSelectionFlightProfileId";
 		div_4.classList.add("runWaysSelectionFlightProfileClass");
@@ -351,9 +412,9 @@ export class FlightProfileControl extends Control {
 		label_4.innerHTML = " -> Arrival RunWay -> " ;
 		div_4.appendChild(label_4);
 		
-		let select_4 = document.createElement("select");
-		select_4.id = "airlineArrivalRunWayFlightProfileId";
-		select_4.name = "airlineArrivalRunWayFlightProfileName";
+		let select_4   = document.createElement("select");
+		select_4.id    = "airlineArrivalRunWayFlightProfileId";
+		select_4.name  = "airlineArrivalRunWayFlightProfileName";
 		select_4.title = "click to select the Arrival runway";
 
 		div_4.appendChild(select_4);
@@ -369,6 +430,7 @@ export class FlightProfileControl extends Control {
 		
 		let row = document.createElement('tr');
 		let td_1 = document.createElement('td');
+		td_1.colSpan = "2";
 		
 		let firstMainDiv = document.createElement('div');
 		firstMainDiv.classList.add("rowClass");
@@ -412,6 +474,7 @@ export class FlightProfileControl extends Control {
 		// ---- second td
 		
 		let td_2 = document.createElement('td');
+		td_2.colSpan = "2";
 		
 		let secondMainDiv = document.createElement('div');
 		secondMainDiv.classList.add("rowClass");
@@ -463,8 +526,8 @@ export class FlightProfileControl extends Control {
 		mainDiv.style = "display: none;";
 		mainDiv.classList.add('flightProfileTableDiv');
 		
-		let draggableMainDiv = document.createElement('div');
-		draggableMainDiv.id = mainDiv.id  + "Header";
+		let draggableMainDiv       = document.createElement('div');
+		draggableMainDiv.id        = mainDiv.id  + "Header";
 		draggableMainDiv.innerHTML = "Click here to move -> Flight Profile Computation";
 		draggableMainDiv.classList.add("draggableDivHeader");
 		
@@ -490,6 +553,9 @@ export class FlightProfileControl extends Control {
 		
 		mainDiv.appendChild(table);
 		this.renderer.div.appendChild(mainDiv);
+		
+		// check the BADA checkbox per default
+		$('#'+this.getBADACheckBoxId()).prop("checked", true);
 		
 		// Make the Main Div element draggable:
 		dragElement(document.getElementById(this.getMainDivId()));

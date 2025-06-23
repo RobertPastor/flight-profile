@@ -1,5 +1,4 @@
 import {
-        Control,
         LonLat,
         Extent
     } from "../og/og.es.js";
