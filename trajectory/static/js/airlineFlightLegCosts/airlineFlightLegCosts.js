@@ -119,6 +119,7 @@ class AirlineFlightLegCosts {
 			
 			// get the name of the airline
 			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
+			let BadaWrapMode = SingletonFlightProfileControlClass.getInstance().getSelectedBadaWrapMode();
 
 			// init progress bar.
 			initProgressBar();
@@ -141,7 +142,7 @@ class AirlineFlightLegCosts {
 			
 			$.ajax( {
 						method: 'get',
-						url :  "trajectory/computeCosts/" + airlineName,
+						url :  "trajectory/computeCosts/" + airlineName + "/" + BadaWrapMode,
 						async : true,
 						data :  data,
 						success: function(data) {

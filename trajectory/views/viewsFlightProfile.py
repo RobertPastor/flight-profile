@@ -65,14 +65,15 @@ def getPlaceMarks(XmlDocument):
     return placeMarksList
     
 
-def launchFlightProfile(request , airlineName):
+def launchFlightProfile(request , airlineName , BadaWrap ):
     #print  ("launch Flight Profile - with airline = {0}".format(airlineName))
     if (request.method == 'GET'):
         
+        print ( "Bada or wrap mode = {0}".format( BadaWrap ))
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
             
-            airlineAircraftsList = getAirlineAircraftsFromDB(airline)     
+            airlineAircraftsList = getAirlineAircraftsFromDB(airline , BadaWrap)     
             airlineRoutesList    = getAirlineRoutesFromDB(airline)
             airlineRunWaysList   = getAirlineRunWaysFromDB()
             response_data = {

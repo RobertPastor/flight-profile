@@ -1,10 +1,24 @@
 
-import {
-        Control
-    } from "../og/og.es.js";
+import { Control } from "../og/og.es.js";
     
 import { clickToHide } from "../main/main.js";
 
+export const SingletonFlightProfileControlClass = (function () {
+	
+	let instance;
+    function createInstance() {
+        var object = new FlightProfileControl();
+        return object;
+    }
+    return {
+        getInstance: function () {
+            if (!instance) {
+                instance = createInstance();
+            }
+            return instance;
+        }
+    };
+})();
 
 //Define custom control class
 export class FlightProfileControl extends Control {
@@ -31,6 +45,19 @@ export class FlightProfileControl extends Control {
 	
 	getWRAPCheckBoxId() {
 		return "WRAPcheckboxId";
+	}
+	/**
+	 * as they are radio / toggle buttons only one can be checked
+	 */
+	getSelectedBadaWrapMode() {
+		
+		const radioButtons = document.querySelectorAll('input[name="BadaWrap"]');
+		for (const radioButton of radioButtons) {
+			if (radioButton.checked) {
+				console.log(radioButton.value)
+				return radioButton.value;
+			}
+		}
 	}
 	
 	createRowWithAircraftSelector() {
@@ -97,8 +124,8 @@ export class FlightProfileControl extends Control {
 		let checkboxBADA   = document.createElement('input');
 		checkboxBADA.type  = "radio";
 		checkboxBADA.name  = "BadaWrap";
-		checkboxBADA.value = "value";
-		checkboxBADA.title = "Tick to select Legacy aircraft performances"
+		checkboxBADA.value = "BADA";
+		checkboxBADA.title = "Tick to select legacy aircraft performances"
 		checkboxBADA.id    = this.getBADACheckBoxId();
 		
 		div_3.appendChild(checkboxBADA);
@@ -120,7 +147,7 @@ export class FlightProfileControl extends Control {
 		let checkboxWrap   = document.createElement('input');
 		checkboxWrap.type  = "radio";
 		checkboxWrap.name  = "BadaWrap";
-		checkboxWrap.value = "value";
+		checkboxWrap.value = "WRAP";
 		checkboxWrap.title = "Tick to select WRAP"
 		checkboxWrap.id    = this.getWRAPCheckBoxId();
 		

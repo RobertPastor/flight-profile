@@ -22,15 +22,14 @@ urlpatterns = [
     
     path('airports/<slug:airlineName>' , getAirports , name='getAirports'),
     path('waypoints/<slug:airlineName>' , getWayPoints , name='getWayPoints'),
-    path('launchFlightProfile/<slug:airlineName>' , launchFlightProfile , name='launchFlightProfile'),
+    path('launchFlightProfile/<slug:airlineName>/<slug:BadaWrap>' , launchFlightProfile , name='launchFlightProfile'),
     path('computeFlightProfile/<slug:airlineName>' , computeFlightProfile , name='computeFlightProfile'),
-    path('computeCosts/<slug:airlineName>' , computeCosts , name='computeCosts'),
+    path('computeCosts/<slug:airlineName>/<slug:BadaWrap>' , computeCosts , name='computeCosts'),
     path('aircraft' , getAircraft , name="getAircraft"),
     path('fuelPlanner/<slug:airlineName>' , launchFuelPlanner , name='launchFuelPlanner'),
     path('computeRunwayOvershoot/<slug:aircraftICAOcode>/<slug:airport>/<slug:runway>/<slug:mass>' , computeRunwayOvershoot , name ='computeRunwayOvershoot'),
     path('sidStar/<slug:SidOrStar>/<slug:airport>/<slug:runway>/<slug:waypoint>' , showSidStar , name="showSidStar"),
     path('metar/<slug:airlineName>' , getMetar , name='getMetar'),
-    
     path('windTemperature/<slug:airlineName>' , getWindTemperatureExcel , name='getWindTemperatureExcel')
 
 ]

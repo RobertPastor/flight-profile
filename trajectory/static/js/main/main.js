@@ -19,7 +19,10 @@ import { DialogControl } from "./dialogControl.js";
 import { AirlineFleetControl } from "../airlineFleet/airlineFleetControl.js";
 import { AirlineAirportsRoutesControl } from "../airlineAirports/airlineAirportsRoutesControl.js"; 
 import { AirlineRoutesControl} from "../airlineRoutes/airlineRoutesControl.js";
+
 import { FlightProfileControl } from "../flightProfile/flightProfileControl.js";
+import { SingletonFlightProfileControlClass } from "../flightProfile/flightProfileControl.js";
+
 import { AirlineFlightLegCostsResultsControl } from "../airlineFlightLegCosts/airlineFlightLegCostsResultsControl.js";
 import { AirlineCostsControl } from "../airlineCosts/airlineCostsControl.js";
 import { AirlineCostsOptimizationControl } from "../airlineCostsOptimization/airlineCostsOptimizationControl.js";
@@ -334,7 +337,8 @@ function initTools(globus, viewExtent) {
 		airlineWayPoints.initWayPoints(globus, viewExtent);
 		
 		// compute Flight Profile
-		let flightProfileControl = new FlightProfileControl();
+		//let flightProfileControl = new FlightProfileControl();
+		let flightProfileControl = SingletonFlightProfileControlClass.getInstance();
 		globus.planet.addControl(flightProfileControl);
 		
 		// compute profile and costs for each route and runways selection
