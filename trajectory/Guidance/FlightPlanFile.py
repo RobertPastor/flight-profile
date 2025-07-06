@@ -157,7 +157,6 @@ class FlightPlan(FixList):
 
         #logging.debug self.className + ': fix list= ' + str(self.fixList)
         assert (self.allAnglesLessThan90degrees(minIntervalNautics = 10.0))
-       
         
     def insert(self, position, wayPoint):
         ''' 
@@ -175,7 +174,6 @@ class FlightPlan(FixList):
 
         # need to ensure that the same name does not appear twice in the list
         self.wayPointsDict[wayPoint.getName()] = wayPoint
-
 
     def getFirstWayPoint(self):
         ''' 
@@ -335,7 +333,6 @@ class FlightPlan(FixList):
                 index += 1
         return True
     
-    
     def computeLengthNauticalMiles(self):
         return self.computeLengthMeters() * Meter2NauticalMiles
     
@@ -379,7 +376,6 @@ class FlightPlan(FixList):
             
         return lengthMeters 
 
-  
     def computeDistanceToLastFixMeters(self, currentPosition, fixListIndex):
         '''
         compute length to fly from the provided index in the fix list
@@ -411,6 +407,5 @@ class FlightPlan(FixList):
         ''' do not count distance from last fix to arrival airport '''
 #         if not(self.arrivalAirport is None):
 #             lengthMeters += self.wayPointsDict[self.fixList[-1]].getDistanceMetersTo(self.arrivalAirport)
-
         return lengthMeters
     

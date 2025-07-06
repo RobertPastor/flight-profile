@@ -54,7 +54,7 @@ export class FlightProfileControl extends Control {
 		const radioButtons = document.querySelectorAll('input[name="BadaWrap"]');
 		for (const radioButton of radioButtons) {
 			if (radioButton.checked) {
-				console.log(radioButton.value)
+				//console.log(radioButton.value)
 				return radioButton.value;
 			}
 		}

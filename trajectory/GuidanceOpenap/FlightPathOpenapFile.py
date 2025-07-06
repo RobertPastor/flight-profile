@@ -150,7 +150,6 @@ class FlightPathOpenap(FlightPlan):
         elapsedTimeSeconds = finalWayPoint.getElapsedTimeSeconds()
         logElapsedRealTime ( self.className  , elapsedTimeSeconds)
         
-        
     def turnAndFly(self, 
                    tailWayPoint, 
                    headWayPoint,
@@ -497,8 +496,8 @@ class FlightPathOpenap(FlightPlan):
                                                                           fixListIndex    = self.flightListIndex)
             distanceToLastFixMeters = distanceStillToFlyMeters
 
-            descentGlideSlope.buildGlideSlope(deltaTimeSeconds     = self.deltaTimeSeconds,
-                                              elapsedTimeSeconds   = endOfTurnLegWayPoint.getElapsedTimeSeconds(), 
+            descentGlideSlope.buildGlideSlope( deltaTimeSeconds         = self.deltaTimeSeconds,
+                                               elapsedTimeSeconds       = endOfTurnLegWayPoint.getElapsedTimeSeconds(), 
                                                initialWayPoint          = endOfTurnLegWayPoint, 
                                                flownDistanceMeters      = flownDistanceMeters, 
                                                distanceStillToFlyMeters = distanceStillToFlyMeters ,
@@ -559,7 +558,7 @@ class FlightPathOpenap(FlightPlan):
                 #logging.info ( self.className + " : loop through fix list")
                 
                 self.endOfSimulation, initialHeadingDegrees = self.loopThroughFixList(initialHeadingDegrees = initialHeadingDegrees,
-                                                                                      elapsedTimeSeconds = initialWayPoint.getElapsedTimeSeconds())
+                                                                                      elapsedTimeSeconds    = initialWayPoint.getElapsedTimeSeconds())
             
             if (self.endOfSimulation == False):
                 #logging.debug '=========== build arrival phase =============='
@@ -622,4 +621,4 @@ class FlightPathOpenap(FlightPlan):
         return self.aircraft.getAircraftCurrentMassKilograms()
     
     def getFlightDurationSeconds(self):
-        return self.aircraft.getElapsedTimeSeconds()
+        return self.elapsedTimeSeconds

@@ -62,12 +62,12 @@ def aircraft(ac, use_synonym=False, **kwargs):
 
     # compatibility with old aircraft files
     acdict["limits"] = dict(
-        MTOW=acdict.get("mtow"),
-        MLW=acdict.get("mlw"),
-        OEW=acdict.get("oew"),
-        MFC=acdict.get("mfc"),
-        VMO=acdict.get("vmo"),
-        MMO=acdict.get("mmo"),
+        MTOW =acdict.get("mtow"),
+        MLW  =acdict.get("mlw"),
+        OEW  =acdict.get("oew"),
+        MFC  =acdict.get("mfc"),
+        VMO  =acdict.get("vmo"),
+        MMO  =acdict.get("mmo"),
         ceiling=acdict.get("ceiling"),
     )
 

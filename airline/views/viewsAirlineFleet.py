@@ -13,10 +13,18 @@ from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import A
 
 import logging
 logger = logging.getLogger(__name__)
+from openap import prop
 
+from trajectory.Environment.Earth import Earth
+from trajectory.Environment.Atmosphere import Atmosphere
+
+from trajectory.Openap.AircraftMainFile import OpenapAircraft
 
 def getAirlineFleetFromDB(airline):
     airlineFleetList = []
+    
+    available_acs = prop.available_aircraft(use_synonym=True)
+
     for airlineAircraft in AirlineAircraft.objects.filter(airline = airline):
         
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=airlineAircraft.aircraftICAOcode).first()
@@ -40,6 +48,25 @@ def getAirlineFleetFromDB(airline):
                     "MaximumTakeOffMassKg"        : aircraftPerformance.getMaximumMassKilograms() ,
                     "AircraftTurnAroundTimeMinutes"       : airlineAircraft.getTurnAroundTimesMinutes()
                     })
+        elif  airlineAircraft.aircraftICAOcode.lower() in available_acs:
+            
+            aircraftICAOcode = airlineAircraft.aircraftICAOcode.lower()
+            ac = OpenapAircraft( aircraftICAOcode , Earth() , Atmosphere() , initialMassKilograms = None)
+            
+            airlineFleetList.append({
+                    "Airline"                           : airline.Name,
+                    "AircraftICAOcode"                  : airlineAircraft.aircraftICAOcode,
+                    "AircraftFullName"                  : airlineAircraft.aircraftFullName,
+                    "NumberOfAircrafts"                 : airlineAircraft.numberOfAircraftsInService,
+                    "MaxNumberOfPassengers"             : airlineAircraft.maximumOfPassengers,
+                    "CostsFlyingHoursDollars"           : airlineAircraft.costsFlyingPerHoursDollars,
+                    "CrewCostsFlyingHoursDollars"       : airlineAircraft.crewCostsPerFlyingHoursDollars,
+                    "MinimumTakeOffMassKg"              : ac.getMaximumTakeOffMassKilograms() ,
+                    "ReferenceMassKg"                   : ac.getReferenceMassKilograms(),
+                    "MaximumTakeOffMassKg"              : ac.getMaximumTakeOffMassKilograms() ,
+                    "AircraftTurnAroundTimeMinutes"       : airlineAircraft.getTurnAroundTimesMinutes()
+                    })
+
             
     return airlineFleetList
     

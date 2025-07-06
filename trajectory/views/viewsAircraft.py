@@ -59,7 +59,7 @@ def getAircraft(request):
             earth = Earth()
             atmosphere = Atmosphere()
 
-            print("Wrap mode")
+            #print("Wrap mode")
             ac = None
             available_acs = prop.available_aircraft(use_synonym=True)
             for WrapAcCode in available_acs:

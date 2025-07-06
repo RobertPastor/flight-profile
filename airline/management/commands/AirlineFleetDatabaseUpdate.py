@@ -7,6 +7,7 @@ Created on 3 mai 2023
 from django.core.management.base import BaseCommand
 
 from airline.models import AirlineAircraft
+from openap import prop
 
 class Command(BaseCommand):
     help = 'Update the airline fleet with turn around times'

@@ -1,5 +1,6 @@
-import { initProgressBar , initWorker , stopBusyAnimation } from "../main/main.js";
+import { initProgressBar , initWorker , stopBusyAnimation , showMessage } from "../main/main.js";
 import { SingletonMainClass } from "../main/mainSingletonClass.js";
+import { SingletonFlightProfileControlClass } from "../flightProfile/flightProfileControl.js";
 
 export const SingletonAirlineFlightLegCosts = (function () {
 	

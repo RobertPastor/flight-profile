@@ -75,8 +75,8 @@ def computeWrapCosts ( request , airlineName , aircraftICAOcode ):
                                                                       AdesRunWayName=arrivalAirportRunWayName, 
                                                                       direct=direct)
                         
-                        takeOffMassKg = getMassFromRequest(request)
-                        cruiseFlightLevel = getFlightLevelFromRequest(request) / 100.0
+                        takeOffMassKg = float( getMassFromRequest(request) )
+                        cruiseFlightLevel = float( getFlightLevelFromRequest(request) ) / 100.0
 
                         flightPath = FlightPathOpenap(
                             route                = routeAsString, 
@@ -87,12 +87,32 @@ def computeWrapCosts ( request , airlineName , aircraftICAOcode ):
                         try:
                             flightPath.computeFlight(deltaTimeSeconds = 1.0)
                         
-                        
+                            airlineAircraft = AirlineAircraft.objects.filter(aircraftICAOcode=aircraftICAOcode).first()
+
+                            fuelCostsUSdollars =  ( takeOffMassKg - ac.getCurrentMassKilograms() )  * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
+                            operationalFlyingCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
+                            crewCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
+
+                            response_data = {
+                                            'seats'                  : ac.getMaximumNumberOfPassengers(),
+                                            'isAborted'              : flightPath.abortedFlight ,
+                                            'initialMassKilograms'   : takeOffMassKg,
+                                            'takeOffMassKilograms'   : takeOffMassKg,
+                                            'cruiseLevelFeet'        : round ( float ( getFlightLevelFromRequest(request) ) , 0 ),
+                                            'reducedClimbPowerCoeff' : 0.0,
+                                            'direct'                 : direct,
+                                            'finalMassKilograms'     : round ( flightPath.getAircraft().getCurrentMassKilograms() , 1),
+                                            'massLossFilograms'      : round ( takeOffMassKg - flightPath.getAircraft().getCurrentMassKilograms() , 1 ),
+                                            'fuelCostsDollars'       : round( fuelCostsUSdollars , 0),
+                                            'flightDurationHours'    : round ( ( float(flightPath.getFlightDurationSeconds() ) / 3600.0 ), 4 ),
+                                            'operationalFlyingCostsDollars' : round ( operationalFlyingCostsUSdollars , 0),
+                                            'crewFlyingCostsDollars'        : round( crewCostsUSdollars , 0 ),
+                                            'totalCostsDollars'             : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars , 0 )
+                                            }
+                            return JsonResponse(response_data)
                         
                         except Exception as e:
                             logging.error("Trajectory Compute Wrap - Exception = {0}".format( str(e ) ) )
-
-
 
     if ac == None:
         logger.info ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))
@@ -101,7 +121,7 @@ def computeWrapCosts ( request , airlineName , aircraftICAOcode ):
         return JsonResponse(response_data)
 
         
-def computeBadaCosts ( request , airlineName , aircraftICAOcode):
+def computeBadaCosts ( request , airline , aircraftICAOcode):
     pass
 
     badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
@@ -139,28 +159,29 @@ def computeBadaCosts ( request , airlineName , aircraftICAOcode):
                 ''' 1st April 2024 - checkbox to fly direct route '''
                 direct = getDirectRouteFromRequest(request)
                 
-                airline = Airline.objects.filter(Name=airlineName).first()
-                if (airline):
-    
-                    airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
+                airlineRoute = AirlineRoute.objects.filter(airline = airline, 
+                                                           DepartureAirportICAOCode = departureAirportICAOcode, 
+                                                           ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
                 
-                    if (airlineRoute):
-                        #print ( airlineRoute )
-                        '''  use runways defined in the web page '''
-                        routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=departureAirportRunWayName, AdesRunWayName=arrivalAirportRunWayName, direct=direct)
-                        logger.debug ( routeAsString )
+                if (airlineRoute):
+                    #print ( airlineRoute )
+                    '''  use runways defined in the web page '''
+                    routeAsString = airlineRoute.getRouteAsString(AdepRunWayName = departureAirportRunWayName, 
+                                                                      AdesRunWayName = arrivalAirportRunWayName, 
+                                                                      direct         = direct)
+                    logger.debug ( routeAsString )
                         
-                        acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
-                        if ( acPerformance.read() ):
+                    acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
+                    if ( acPerformance.read() ):
                             #logger.info ( "Max TakeOff Weight kilograms = {0}".format(acPerformance.getMaximumMassKilograms() ) )   
                             #logger.info ( "Max Operational Altitude Feet = {0}".format(acPerformance.getMaxOpAltitudeFeet() ) )   
                             
                             flightPath = FlightPath(
-                                            route = routeAsString, 
-                                            aircraftICAOcode = aircraftICAOcode,
-                                            RequestedFlightLevel = float ( cruiseFLfeet )  / 100.0 , 
-                                            cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                            takeOffMassKilograms =  float(takeOffMassKg) ,
+                                            route                 = routeAsString, 
+                                            aircraftICAOcode      = aircraftICAOcode,
+                                            RequestedFlightLevel  = float ( cruiseFLfeet )  / 100.0 , 
+                                            cruiseMach            = acPerformance.getMaxOpMachNumber(), 
+                                            takeOffMassKilograms  =  float(takeOffMassKg) ,
                                             reducedClimbPowerCoeff = float(reducedClimbPowerCoeff) )
                             
                             flightPath.computeFlight(deltaTimeSeconds = 1.0)
@@ -177,8 +198,8 @@ def computeBadaCosts ( request , airlineName , aircraftICAOcode):
                             crewCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
                             ''' 6th April 204 add direct route '''
                             response_data = {
-                                            'seats' : airlineAircraft.getMaximumNumberOfPassengers(),
-                                            'isAborted': flightPath.abortedFlight ,
+                                            'seats'                  : airlineAircraft.getMaximumNumberOfPassengers(),
+                                            'isAborted'              : flightPath.abortedFlight ,
                                             'initialMassKilograms'   : flightPath.aircraft.getAircraftInitialMassKilograms(),
                                             'takeOffMassKilograms'   : flightPath.aircraft.getAircraftInitialMassKilograms(),
                                             'cruiseLevelFeet'        : cruiseFLfeet,
@@ -193,18 +214,16 @@ def computeBadaCosts ( request , airlineName , aircraftICAOcode):
                                             'totalCostsDollars'             : round ( fuelCostsUSdollars + operationalFlyingCostsUSdollars + crewCostsUSdollars , 0 )
                                             }
                             return JsonResponse(response_data)
-                        else:
-                            logger.info ('Error - acPerformance read failed = {0}'.format(badaAircraft.getAircraftJsonPerformanceFile()))
-                            response_data = { 'errors' : 'acPerformance read failed = {0}'.format(badaAircraft.getAircraftJsonPerformanceFile()) }
-                            return JsonResponse(response_data)
-                        
                     else:
-                        logger.info ('airline route not found = {0}'.format(airlineRoute))
-                        response_data = { 'errors' : 'Airline route not found = {0}'.format(airlineRoute) }
+                        logger.info ('Error - acPerformance read failed = {0}'.format(badaAircraft.getAircraftJsonPerformanceFile()))
+                        response_data = { 'errors' : 'acPerformance read failed = {0}'.format(badaAircraft.getAircraftJsonPerformanceFile()) }
                         return JsonResponse(response_data)
+                        
+                else:
+                    logger.info ('airline route not found = {0}'.format(airlineRoute))
+                    response_data = { 'errors' : 'Airline route not found = {0}'.format(airlineRoute) }
+                    return JsonResponse(response_data)
                     
-                
-
     else:
         logger.info ("aircraft with ICAO code = {0} not found".format(aircraftICAOcode))
         logger.info ("or aircraft performance file = {0} not found".format(badaAircraft))
@@ -213,7 +232,7 @@ def computeBadaCosts ( request , airlineName , aircraftICAOcode):
         return JsonResponse(response_data)
         
 
-def computeCosts(request, airlineName , BadaWrapMode):
+def computeCosts(request, airlineName , BadaWrap ):
     ''' @TODO same inputs as compute profile , compute costs and compute state vector  '''
     logger.setLevel(logging.DEBUG)
     logger.debug ("computeCosts - compute Flight leg related costs")
@@ -225,13 +244,11 @@ def computeCosts(request, airlineName , BadaWrapMode):
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
 
-        
-            if BadaWrapMode ==  "BADA":
-                computeBadaCosts ( request , airlineName , aircraftICAOcode )
+            if BadaWrap ==  "BADA":
+                return computeBadaCosts ( request , airline , aircraftICAOcode )
                 
             else:
-                computeWrapCosts( request , airlineName , aircraftICAOcode )
-            
+                return computeWrapCosts( request , airline , aircraftICAOcode )
             
         else:
             logger.info ('airline not found = {0}'.format(airlineName))

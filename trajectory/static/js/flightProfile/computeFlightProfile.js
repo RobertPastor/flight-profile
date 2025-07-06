@@ -774,7 +774,7 @@ class AirlineProfileCosts {
 		let BADAcheckboxId = SingletonFlightProfileControlClass.getInstance().getBADACheckBoxId();
 		document.getElementById(BADAcheckboxId).addEventListener('click', function(){
 			
-			console.log("radio button Bada has been clicked");
+			//console.log("radio button Bada has been clicked");
 								
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
@@ -827,8 +827,7 @@ class AirlineProfileCosts {
 			let ReducedClimbPowerInputId  = SingletonFlightProfileControlClass.getInstance().getReducedClimbPowerCoeffInputId();
 			$("#"+ ReducedClimbPowerInputId ).prop('disabled', true);
 			
-			console.log("radio button Wrap has been clicked");
-			
+			//console.log("radio button Wrap has been clicked");
 			
 			// get the name of the airline
 			let airlineName = SingletonMainClass.getInstance().getSelectedAirline();

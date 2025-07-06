@@ -3,7 +3,7 @@ Created on 6 mai 2025
 
 @author: robert
 '''
-import logging 
+
 from trajectory.Openap.AircraftFlightPhasesFile import OpenapAircraftFlightPhases
 from trajectory.Guidance.WayPointFile import WayPoint
 
@@ -18,9 +18,13 @@ class OpenapAircraftMiscelleaneous(OpenapAircraftFlightPhases):
         
         super().__init__(aircraftICAOcode)
         
+    def getMaximumNumberOfPassengers(self):
+        return self.aircraft['pax']['max']
+        
+        
     def getLandingLengthMeters(self):
         self.LandingLengthMetersDict = self.wrap.landing_distance()
-        self.LandingLengthMeters = self.LandingLengthMetersDict['default'] * 1000.0
+        self.LandingLengthMeters     = self.LandingLengthMetersDict['default'] * 1000.0
         #logging.info( self.className + " - landing length = {0} meters".format(self.LandingLengthMeters))
         return self.LandingLengthMeters
     
