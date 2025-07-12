@@ -89,7 +89,7 @@ def computeWrapCosts ( request , airlineName , aircraftICAOcode ):
                         
                             airlineAircraft = AirlineAircraft.objects.filter(aircraftICAOcode=aircraftICAOcode).first()
 
-                            fuelCostsUSdollars =  ( takeOffMassKg - ac.getCurrentMassKilograms() )  * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
+                            fuelCostsUSdollars =  ( takeOffMassKg - flightPath.getAircraft().getCurrentMassKilograms() )  * Kerosene_kilo_to_US_gallons * US_gallon_to_US_dollars 
                             operationalFlyingCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCostsFlyingPerHoursDollars()
                             crewCostsUSdollars = ( flightPath.getFlightDurationSeconds() / 3600.0 ) *  airlineAircraft.getCrewCostsPerFlyingHoursDollars()
 

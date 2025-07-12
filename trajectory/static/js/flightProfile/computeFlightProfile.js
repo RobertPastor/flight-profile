@@ -59,6 +59,7 @@ class AirlineProfileCosts {
 		elemMaxTOMassKg.value = "0";
 		if ( aircraftPerformanceData.hasOwnProperty("acMaxTakeOffWeightKg")) {
 			elemMaxTOMassKg.value = aircraftPerformanceData["acMaxTakeOffWeightKg"];
+			console.log(elemMaxTOMassKg.value);
 		}
 		
 		let elemFL = document.getElementById('requestedFlightLevelId');
@@ -96,6 +97,7 @@ class AirlineProfileCosts {
 				elemTOMassKg.value = airlineAircraftsArray[index]["acReferenceTakeOffWeightKg"];
 				elemMinTOMassKg.value = airlineAircraftsArray[index]["acMinTakeOffWeightKg"];
 				elemMaxTOMassKg.value = airlineAircraftsArray[index]["acMaxTakeOffWeightKg"];
+				console.log(elemMaxTOMassKg.value);
 			}
 		}
 		

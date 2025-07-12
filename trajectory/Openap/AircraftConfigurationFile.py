@@ -33,7 +33,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         self.atmosphere = atmosphere
         
         self.distanceFlownMeters = 0.0
-        #self.ceilingMeters = self.aircraft['ceiling']
+        self.ceilingMeters = self.aircraft['ceiling']
         
     def computeLiftCoeff(self, aircraftMassKilograms, altitudeMSLmeters, TrueAirSpeedMetersSecond, latitudeDegrees):
         '''
@@ -132,7 +132,8 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
         return self.cruiseLevelFeet
     
     def getMaxCruiseAltitudeFeet(self):
-        self.maxCruiseAltitudeFeet = self.wrap.cruise_max_alt()['default'] * 1000.0 * Meter2Feet
+        #self.maxCruiseAltitudeFeet = self.wrap.cruise_max_alt()['default'] * 1000.0 * Meter2Feet
+        self.maxCruiseAltitudeFeet = self.ceilingMeters * Meter2Feet
         return self.maxCruiseAltitudeFeet
     
     def setDepartureRunwayMSLmeters(self, departureRunwayMSLmeters ):

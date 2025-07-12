@@ -34,6 +34,8 @@ class OpenapAircraftMass(OpenapAircraftFuelFlow):
         self.operatingEmptyWeightKilograms = self.aircraft['oew']
         self.referenceMassKilograms        = self.maximumTakeOffMassKilograms * 0.85
         
+        self.minimumMassKilograms          = self.aircraft['oew']
+        
         #logger.info ( self.className + " max TakeOff mass = {0} kilograms ".format(self.maximumTakeOffMassKilograms))
         #logger.info ( self.className + " max Landing mass = {0} kilograms".format(self.maxLandingMassKilograms))
         

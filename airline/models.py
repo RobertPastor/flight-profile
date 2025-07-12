@@ -379,6 +379,10 @@ class AirlineAircraft(models.Model):
     takeOffMTOWLengthMeters = models.FloatField(default = 0)
     
     airline = models.ForeignKey(Airline, on_delete=models.CASCADE  )
+    
+    class Meta:
+        ''' django does not support composite primary keys use uniqueness '''
+        unique_together = ('airline', 'aircraftICAOcode')  # Enforces uniqueness
 
     ''' used to compare objects '''
     def __eq__(self, other):

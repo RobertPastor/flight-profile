@@ -40,7 +40,7 @@ class AirlineFleetDataBase(object):
         return os.path.exists(self.FilePath) 
 
 
-    def read(self):
+    def readUpdate(self):
         ''' this method reads the whole file - not only the headers '''
         print (self.FilePath)
         assert len(self.FilePath)>0 and os.path.isfile(self.FilePath) 
@@ -75,6 +75,14 @@ class AirlineFleetDataBase(object):
                     ''' check if airline Aircraft exists '''
                     if AirlineAircraft.objects.filter( airline = airline , aircraftICAOcode = aircraftICAOcode ).exists():
                         print ( "aircraft = {0} - of airline = {1} is already existing".format( aircraftICAOcode, airlineName))
+                        
+                        airlineAircraft = AirlineAircraft.objects.get( airline = airline , aircraftICAOcode = aircraftICAOcode )
+                        airlineAircraft.numberOfAircraftsInService = nbAvailableAircrafts
+                        airlineAircraft.maximumOfPassengers        = nbMaxPassengers
+                        airlineAircraft.costsFlyingPerHoursDollars = costsFlyingDollars
+                        airlineAircraft.crewCostsPerFlyingHoursDollars = crewCostsFlyingDollars
+                        airlineAircraft.turnAroundTimesMinutes         = turnAroundTimesMinutes
+                        airlineAircraft.save()
                     else:
                         print (  "aircraft = {0} - of airline = {1} is new in the database".format( aircraftICAOcode, airlineName) )
                         airlineAircraft = AirlineAircraft( 

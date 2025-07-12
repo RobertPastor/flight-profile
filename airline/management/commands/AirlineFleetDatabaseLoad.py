@@ -17,7 +17,7 @@ class Command(BaseCommand):
             print("airline fleet database exists")
             ret = badaAircraftDatabase.read()
             print("Bada aircraft database read correctly = {0}".format(ret))
-            ret = airlineFleetDatabase.read()
+            ret = airlineFleetDatabase.readUpdate()
             print ("read airline fleet database result = {0}".format(ret))
             
         else:

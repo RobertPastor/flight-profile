@@ -69,7 +69,7 @@ def getAircraft(request):
                     
                     response_data = {
                                         'aircraftICAOcode'           : str(aircraftICAOcode).upper(),
-                                        'acMaxTakeOffWeightKg'       : ac.getMaxCruiseAltitudeFeet() ,
+                                        'acMaxTakeOffWeightKg'       : ac.getMaximumTakeOffMassKilograms() ,
                                         'acMinTakeOffWeightKg'       : ac.getMinimumMassKilograms() ,
                                         'acReferenceTakeOffWeightKg' : ac.getReferenceMassKilograms() ,
                                         'acMaxOpAltitudeFeet'        : ac.getMaxCruiseAltitudeFeet()

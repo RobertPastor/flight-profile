@@ -36,17 +36,17 @@ def getAirlineFleetFromDB(airline):
             
                 #logger.debug ( str ( airlineAircraft ) )
                 airlineFleetList.append({
-                    "Airline"                     : airline.Name,
-                    "AircraftICAOcode"            : airlineAircraft.aircraftICAOcode,
-                    "AircraftFullName"            : airlineAircraft.aircraftFullName,
-                    "NumberOfAircrafts"           : airlineAircraft.numberOfAircraftsInService,
-                    "MaxNumberOfPassengers"       : airlineAircraft.maximumOfPassengers,
-                    "CostsFlyingHoursDollars"     : airlineAircraft.costsFlyingPerHoursDollars,
-                    "CrewCostsFlyingHoursDollars" : airlineAircraft.crewCostsPerFlyingHoursDollars,
-                    "MinimumTakeOffMassKg"        : aircraftPerformance.getMinimumMassKilograms() ,
-                    "ReferenceMassKg"             : aircraftPerformance.getReferenceMassKilograms(),
-                    "MaximumTakeOffMassKg"        : aircraftPerformance.getMaximumMassKilograms() ,
-                    "AircraftTurnAroundTimeMinutes"       : airlineAircraft.getTurnAroundTimesMinutes()
+                    "Airline"                           : airline.Name,
+                    "AircraftICAOcode"                  : airlineAircraft.aircraftICAOcode,
+                    "AircraftFullName"                  : airlineAircraft.aircraftFullName,
+                    "NumberOfAircrafts"                 : airlineAircraft.numberOfAircraftsInService,
+                    "MaxNumberOfPassengers"             : airlineAircraft.maximumOfPassengers,
+                    "CostsFlyingHoursDollars"           : airlineAircraft.costsFlyingPerHoursDollars,
+                    "CrewCostsFlyingHoursDollars"       : airlineAircraft.crewCostsPerFlyingHoursDollars,
+                    "MinimumTakeOffMassKg"              : aircraftPerformance.getMinimumMassKilograms() ,
+                    "ReferenceMassKg"                   : aircraftPerformance.getReferenceMassKilograms(),
+                    "MaximumTakeOffMassKg"              : aircraftPerformance.getMaximumMassKilograms() ,
+                    "AircraftTurnAroundTimeMinutes"     : airlineAircraft.getTurnAroundTimesMinutes()
                     })
         elif  airlineAircraft.aircraftICAOcode.lower() in available_acs:
             
@@ -61,10 +61,10 @@ def getAirlineFleetFromDB(airline):
                     "MaxNumberOfPassengers"             : airlineAircraft.maximumOfPassengers,
                     "CostsFlyingHoursDollars"           : airlineAircraft.costsFlyingPerHoursDollars,
                     "CrewCostsFlyingHoursDollars"       : airlineAircraft.crewCostsPerFlyingHoursDollars,
-                    "MinimumTakeOffMassKg"              : ac.getMaximumTakeOffMassKilograms() ,
+                    "MinimumTakeOffMassKg"              : ac.getMinimumMassKilograms() ,
                     "ReferenceMassKg"                   : ac.getReferenceMassKilograms(),
                     "MaximumTakeOffMassKg"              : ac.getMaximumTakeOffMassKilograms() ,
-                    "AircraftTurnAroundTimeMinutes"       : airlineAircraft.getTurnAroundTimesMinutes()
+                    "AircraftTurnAroundTimeMinutes"     : airlineAircraft.getTurnAroundTimesMinutes()
                     })
 
             
