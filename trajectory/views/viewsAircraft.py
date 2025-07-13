@@ -34,10 +34,10 @@ def getAircraft(request):
                 acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
                 if acPerformance.read():
                     
-                    acMaxTakeOffWeightKg = acPerformance.getMaximumMassKilograms()
-                    acMinTakeOffWeightKg = acPerformance.getMinimumMassKilograms()
+                    acMaxTakeOffWeightKg       = acPerformance.getMaximumMassKilograms()
+                    acMinTakeOffWeightKg       = acPerformance.getMinimumMassKilograms()
                     acReferenceTakeOffWeightKg = acPerformance.getReferenceMassKilograms()
-                    acMaxOpAltitudeFeet = acPerformance.getMaxOpAltitudeFeet()
+                    acMaxOpAltitudeFeet        = round ( acPerformance.getMaxOpAltitudeFeet() , 0 )
                     ''' @TODO warning : keys must be identical to those defined in utils.getAirlineAircraftsFromDB '''
                     response_data = {
                                         'aircraftICAOcode'           : aircraftICAOcode,
@@ -72,7 +72,7 @@ def getAircraft(request):
                                         'acMaxTakeOffWeightKg'       : ac.getMaximumTakeOffMassKilograms() ,
                                         'acMinTakeOffWeightKg'       : ac.getMinimumMassKilograms() ,
                                         'acReferenceTakeOffWeightKg' : ac.getReferenceMassKilograms() ,
-                                        'acMaxOpAltitudeFeet'        : ac.getMaxCruiseAltitudeFeet()
+                                        'acMaxOpAltitudeFeet'        : round ( ac.getMaxCruiseAltitudeFeet() , 0 )
                                         }
                     return JsonResponse(response_data)
                     

@@ -263,46 +263,53 @@ def getAirlineAircraftsFromDB(airline , BadaWrapMode):
             acMaxOpAltitudeFeet  = 0.0 
             acReferenceWeightKg  = 0.0
             
-            badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=airlineAircraft.aircraftICAOcode).first()
+            badaAircraft = BadaSynonymAircraft.objects.filter(AircraftICAOcode = airlineAircraft.aircraftICAOcode).first()
             if ( badaAircraft and badaAircraft.aircraftJsonPerformanceFileExists()):
                 acPerformance = AircraftJsonPerformance(airlineAircraft.aircraftICAOcode, badaAircraft.getAircraftJsonPerformanceFile())
                 if acPerformance.read():
                     acMaxTakeOffWeightKg = acPerformance.getMaximumMassKilograms()
                     acMinTakeOffWeightKg = acPerformance.getMinimumMassKilograms()
-                    acMaxOpAltitudeFeet  = acPerformance.getMaxOpAltitudeFeet()
+                    acMaxOpAltitudeFeet  = round ( acPerformance.getMaxOpAltitudeFeet() , 0 )
                     acMaxPayLoadKg       = acPerformance.getMaximumPayLoadMassKilograms()
                     acReferenceWeightKg  = acPerformance.getReferenceMassKilograms()
                     
-            airlineAircraftsList.append({
-                "airlineAircraftICAOcode"    : airlineAircraft.aircraftICAOcode,
-                "airlineAircraftFullName"    : airlineAircraft.aircraftFullName,
-                "acMaxTakeOffWeightKg"       : acMaxTakeOffWeightKg,
-                "acReferenceTakeOffWeightKg" : acReferenceWeightKg,
-                "acMinTakeOffWeightKg"       : acMinTakeOffWeightKg,
-                "acMaxOpAltitudeFeet"        : acMaxOpAltitudeFeet,
-                "acMaxPayLoadKg"             : acMaxPayLoadKg
-                })
+                    airlineAircraftsList.append({
+                        "airlineAircraftICAOcode"    : airlineAircraft.aircraftICAOcode,
+                        "airlineAircraftFullName"    : airlineAircraft.aircraftFullName,
+                        "acMaxTakeOffWeightKg"       : acMaxTakeOffWeightKg,
+                        "acReferenceTakeOffWeightKg" : acReferenceWeightKg,
+                        "acMinTakeOffWeightKg"       : acMinTakeOffWeightKg,
+                        "acMaxOpAltitudeFeet"        : acMaxOpAltitudeFeet,
+                        "acMaxPayLoadKg"             : acMaxPayLoadKg
+                        })
     else:
-        available_acs = prop.available_aircraft(use_synonym=True)
-        for aircraftICAOcode in available_acs:
+        ''' WRAP mode '''
+        for airlineAircraft in AirlineAircraft.objects.filter(airline=airline):
+
+            airlineAircraftICAOcode = airlineAircraft.aircraftICAOcode
             
-            if ( str( aircraftICAOcode ).lower() in ['a359','a388','b38m','b744','b748','b752','b763','b773','b77w','b788','b789','c550'] \
-                 or str( aircraftICAOcode ).lower() in ['e145','glf6','a124','a306','a310','at72','at75','at76','b733','b735','b762','b77l'] \
-                 or str ( aircraftICAOcode ).lower() in ['c25a','c525','c56x','crj2','crj9','e290','glf5','gl5t','gl6t','tj45','md11','pc24','su95','lj45','bx3m'] ):
-                #pass
-                continue
-        
-            ac = OpenapAircraft( aircraftICAOcode , earth , atmosphere , initialMassKilograms = None)
-            logging.info( ac.getAircraftName() )
-            airlineAircraftsList.append({
-                "airlineAircraftICAOcode"    : str(aircraftICAOcode).upper(),
-                "airlineAircraftFullName"    : ac.getAircraftName(),
-                "acMaxTakeOffWeightKg"       : ac.getMaximumTakeOffMassKilograms(),
-                "acReferenceTakeOffWeightKg" : ac.getReferenceMassKilograms(),
-                "acMinTakeOffWeightKg"       : ac.getMinimumMassKilograms(),
-                "acMaxOpAltitudeFeet"        : ac.getMaxCruiseAltitudeFeet(),
-                "acMaxPayLoadKg"             : 0.0
-                })
+            available_Wrap_aircrafts = prop.available_aircraft(use_synonym=True)
+            for aircraftICAOcode in available_Wrap_aircrafts:
+                
+                if ( str( aircraftICAOcode ).lower() in ['a359','a388','b38m','b744','b748','b752','b763','b773','b77w','b788','b789','c550'] \
+                     or str( aircraftICAOcode ).lower() in ['e145','glf6','a124','a306','a310','at72','at75','at76','b733','b735','b762','b77l'] \
+                     or str ( aircraftICAOcode ).lower() in ['c25a','c525','c56x','crj2','crj9','e290','glf5','gl5t','gl6t','tj45','md11','pc24','su95','lj45','bx3m'] ):
+                    #pass
+                    continue
+                
+                if aircraftICAOcode.upper() == airlineAircraftICAOcode:
+                
+                    ac = OpenapAircraft( aircraftICAOcode , earth , atmosphere , initialMassKilograms = None)
+                    logging.info( ac.getAircraftName() )
+                    airlineAircraftsList.append({
+                        "airlineAircraftICAOcode"    : str(aircraftICAOcode).upper(),
+                        "airlineAircraftFullName"    : ac.getAircraftName(),
+                        "acMaxTakeOffWeightKg"       : ac.getMaximumTakeOffMassKilograms(),
+                        "acReferenceTakeOffWeightKg" : ac.getReferenceMassKilograms(),
+                        "acMinTakeOffWeightKg"       : ac.getMinimumMassKilograms(),
+                        "acMaxOpAltitudeFeet"        : round ( ac.getMaxCruiseAltitudeFeet() ,0),
+                        "acMaxPayLoadKg"             : 0.0
+                        })
 
     #print ("length of airline aircrafts list = {0}".format(len(airlineAircraftsList)))
     return airlineAircraftsList

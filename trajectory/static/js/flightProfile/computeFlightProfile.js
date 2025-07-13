@@ -777,6 +777,10 @@ class AirlineProfileCosts {
 		document.getElementById(BADAcheckboxId).addEventListener('click', function(){
 			
 			//console.log("radio button Bada has been clicked");
+			
+				document.getElementById("btnComputeFlightProfileId").disabled = false;
+				document.getElementById("btnDownLoadVerticalProfileId").disabled = false;
+				document.getElementById("btnDownLoadKMLfileId").disabled = false;
 								
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
@@ -829,6 +833,11 @@ class AirlineProfileCosts {
 			let ReducedClimbPowerInputId  = SingletonFlightProfileControlClass.getInstance().getReducedClimbPowerCoeffInputId();
 			$("#"+ ReducedClimbPowerInputId ).prop('disabled', true);
 			
+			// @TODO temporarily disable compute flight profile
+			document.getElementById("btnComputeFlightProfileId").disabled = true;
+			document.getElementById("btnDownLoadVerticalProfileId").disabled = true;
+			document.getElementById("btnDownLoadKMLfileId").disabled = true;
+
 			//console.log("radio button Wrap has been clicked");
 			
 			// get the name of the airline
@@ -869,6 +878,10 @@ class AirlineProfileCosts {
 							document.getElementById("btnLaunchFlightProfile").disabled = false;
 							// enable all buttons
 							SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
+							
+							document.getElementById("btnComputeFlightProfileId").disabled = true;
+							document.getElementById("btnDownLoadVerticalProfileId").disabled = true;
+							document.getElementById("btnDownLoadKMLfileId").disabled = true;
 						},
 				});
 		});
