@@ -601,7 +601,7 @@ class FlightPathOpenap(FlightPlan):
     
     def createStateVectorHistoryFile(self):
         fileName = "{0}-{1}-{2}-Aborted-{3}".format( self.aircraftICAOcode , self.departureAirport.getICAOcode() , self.arrivalAirport.getICAOcode() , self.abortedFlight )
-        self.aircraft.createStateVectorHistoryFile( fileName )
+        return self.aircraft.createStateVectorHistoryFile( fileName )
 
     def createStateVectorOutputSheet(self, workbook):
         self.aircraft.createStateVectorOutputSheet(workbook, self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())

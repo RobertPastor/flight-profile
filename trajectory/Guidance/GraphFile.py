@@ -300,9 +300,9 @@ class Graph(object):
                                     wayPoint.getLongitudeDegrees(),
                                     wayPoint.getLatitudeDegrees(), 
                                     wayPoint.getAltitudeMeanSeaLevelMeters())
-            kmlXmlDocument = kmlOutputFile.close()
+            kmlOutputFile.close()
             logging.debug ( "{0} - {1}".format(self.className , strFileName) )
-            return kmlXmlDocument
+            return kmlOutputFile
     
         return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")
     

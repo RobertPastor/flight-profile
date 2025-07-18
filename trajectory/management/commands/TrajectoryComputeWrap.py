@@ -30,7 +30,7 @@ class Command(BaseCommand):
         
         start_time = time()
         
-        ''' warning letters in aircraft code must be in lower case '''
+        ''' warning : wrap aircraft code letters must be in lower case '''
         aircraftICAOcode = 'a320'
         #aircraftICAOcode = 'a332'
         

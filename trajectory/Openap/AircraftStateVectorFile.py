@@ -225,3 +225,4 @@ class OpenapAircraftStateVector(object):
                                                 
                                                 endOfSimulation)
         xlsxOutput.close()
+        return xlsxOutput

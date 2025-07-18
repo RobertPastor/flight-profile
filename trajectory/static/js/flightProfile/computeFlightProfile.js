@@ -340,7 +340,6 @@ class AirlineProfileCosts {
 	 * @TODO warning = not applicable if several identical Adep Ades routes for one airline
 	 */
 	getLayerPrefix() {
-		
 		// get the name of the airline
 		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 		return "Rays" + "-" + airlineName;
@@ -778,16 +777,15 @@ class AirlineProfileCosts {
 			
 			//console.log("radio button Bada has been clicked");
 			
-				document.getElementById("btnComputeFlightProfileId").disabled = false;
-				document.getElementById("btnDownLoadVerticalProfileId").disabled = false;
-				document.getElementById("btnDownLoadKMLfileId").disabled = false;
-								
 				// get the name of the airline
 				let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
 				
 				// disable all buttons
 				SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 				let BadaWrapMode = SingletonFlightProfileControlClass.getInstance().getSelectedBadaWrapMode();
+				
+				initProgressBar();
+				initWorker();
 
 				// use ajax to get the data 
 				$.ajax( {
@@ -826,17 +824,12 @@ class AirlineProfileCosts {
 		});
 		
 		
-		let WRAPcheckbocId = SingletonFlightProfileControlClass.getInstance().getWRAPCheckBoxId();
-		document.getElementById(WRAPcheckbocId).addEventListener('click', function(){
+		let WRAPcheckboxId = SingletonFlightProfileControlClass.getInstance().getWRAPCheckBoxId();
+		document.getElementById(WRAPcheckboxId).addEventListener('click', function(){
 			
 			// disable the Reduced climb performance
 			let ReducedClimbPowerInputId  = SingletonFlightProfileControlClass.getInstance().getReducedClimbPowerCoeffInputId();
 			$("#"+ ReducedClimbPowerInputId ).prop('disabled', true);
-			
-			// @TODO temporarily disable compute flight profile
-			document.getElementById("btnComputeFlightProfileId").disabled = true;
-			document.getElementById("btnDownLoadVerticalProfileId").disabled = true;
-			document.getElementById("btnDownLoadKMLfileId").disabled = true;
 
 			//console.log("radio button Wrap has been clicked");
 			
@@ -846,6 +839,9 @@ class AirlineProfileCosts {
 			// disable all buttons
 			SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 			let BadaWrapMode = SingletonFlightProfileControlClass.getInstance().getSelectedBadaWrapMode();
+			
+			initProgressBar();
+			initWorker();
 
 				// use ajax to get the data 
 				$.ajax( {
@@ -896,6 +892,8 @@ class AirlineProfileCosts {
 			document.getElementById("btnComputeFlightProfileId").disabled = true;
 			SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
 			
+			let BadaWrapMode = SingletonFlightProfileControlClass.getInstance().getSelectedBadaWrapMode();
+			
 			let aircraft = $("#airlineAircraftId option:selected").val();
 			let route =  $("#airlineRouteId option:selected").val();
 			
@@ -930,7 +928,7 @@ class AirlineProfileCosts {
 			
 			$.ajax({
 						method:  'get',
-						url   :  "trajectory/computeFlightProfile/" + airlineName,
+						url   :  "trajectory/computeFlightProfile/" + airlineName + "/" + BadaWrapMode,
 						async :  true,
 						data  :  data ,
 						success: function(data) {

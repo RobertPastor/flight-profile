@@ -20,6 +20,11 @@ from trajectory.models import BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 from trajectory.Guidance.FlightPathFile import FlightPath
 
+from trajectory.Environment.Earth import Earth
+from trajectory.Environment.Atmosphere import Atmosphere
+from trajectory.Openap.AircraftMainFile import OpenapAircraft
+from trajectory.GuidanceOpenap.FlightPathOpenapFile import FlightPathOpenap
+
 # Create your views here.
 def indexTrajectory(request):
     # return HttpResponse('Hello from Python!')
@@ -96,14 +101,9 @@ def getAirport(airportICAOcode):
                      "Longitude"       : airport.Longitude,
                      "Latitude"        : airport.Latitude         }
     return {}
+
+def computeBadaFlightProfile(request , airlineName ):
     
-def computeFlightProfile(request, airlineName):
-    
-    logger.setLevel(logging.INFO)
-    logging.info ("compute Flight Profile - for airline = {0}".format(airlineName))
-    
-    #routeWayPointsList = []
-    if (request.method == 'GET'):
         aircraftICAOcode = getAircraftFromRequest(request)
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftJsonPerformanceFileExists()):
@@ -139,10 +139,10 @@ def computeFlightProfile(request, airlineName):
                     routeAsString = airlineRoute.getRouteAsString(AdepRunWayName = departureAirportRunWayName, AdesRunWayName = arrivalAirportRunWayName, direct=direct)
                     ''' compute direct route when requested '''
                     #routeAsString = airlineRoute.getDirectRouteAsString( AdepRunWayName = departureAirportRunWayName, AdesRunWayName = arrivalAirportRunWayName )
-
+                    
                     acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
                     if acPerformance.read():
-        
+                        
                         flightPath = FlightPath(
                                         route                  = routeAsString, 
                                         aircraftICAOcode       = aircraftICAOcode,
@@ -150,12 +150,12 @@ def computeFlightProfile(request, airlineName):
                                         cruiseMach             = acPerformance.getMaxOpMachNumber(), 
                                         takeOffMassKilograms   = float(takeOffMassKg) ,
                                         reducedClimbPowerCoeff = float(reducedClimbPowerCoeff) )
-        
+                        
                         flightPath.computeFlight(deltaTimeSeconds = 1.0)
-            
+                        
                         logger.debug ( "=========== Flight Plan create output files  =========== " )
                         csvAltitudeMSLTimeGroundTrack = flightPath.createCsvAltitudeTimeProfile()
-            
+                        
                         kmlXmlDocument = flightPath.createKmlXmlDocument()
                         if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack ):
                             logger.debug ( "=========== Flight Plan end  =========== "  )
@@ -188,5 +188,100 @@ def computeFlightProfile(request, airlineName):
             response_data = {
                 'errors' : 'Aircraft performance file {0} not found - please select another aircraft'.format(aircraftICAOcode)}
             return JsonResponse(response_data)
+    
+def computeWrapFlightProfile( request , airlineName ):
+    
+    aircraftICAOcode = getAircraftFromRequest(request).lower()
+    logging.info( aircraftICAOcode )
+    
+    earth = Earth()
+    atmosphere = Atmosphere()
+
+    ac = OpenapAircraft( aircraftICAOcode , earth , atmosphere , initialMassKilograms = None)
+    logging.info( ac.getAircraftName())
+    
+    airlineRoute = getRouteFromRequest(request)
+    logging.info( airlineRoute )
+                                    
+    departureAirportICAOcode = str(airlineRoute).split("-")[0]
+    departureAirportRunWayName = getAdepRunwayFromRequest(request)
+            
+    arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
+    arrivalAirportRunWayName = getAdesRunwayFromRequest(request)
+            
+    takeOffMassKg = getMassFromRequest(request)
+    cruiseFlightLevel = float ( getFlightLevelFromRequest(request) ) / 100.0
+    
+    targetCruiseMach = ac.getMaximumSpeedMmoMach()
+    logging.info( "target cruise mach = {0:.2f} ".format( targetCruiseMach ) )
+    
+    airline = Airline.objects.filter(Name=airlineName).first()
+    if (airline):
+
+        airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
+        if (airlineRoute):
+            logger.debug( airlineRoute )
+            
+            ''' 1st April 2024 - checkbox to fly direct route '''
+            direct = getDirectRouteFromRequest(request)
+ 
+            '''  use run-ways defined in the page '''
+            routeAsString = airlineRoute.getRouteAsString(AdepRunWayName = departureAirportRunWayName, AdesRunWayName = arrivalAirportRunWayName, direct=direct)
+
+            ''' try with direct route '''
+            logging.info ( "Trajectory Compute Wrap - " + routeAsString )
+                    
+            flightPath = FlightPathOpenap(
+                        route                = routeAsString, 
+                        aircraftICAOcode     = aircraftICAOcode.lower(),
+                        RequestedFlightLevel = float(cruiseFlightLevel), 
+                        cruiseMach           = float(targetCruiseMach), 
+                        takeOffMassKilograms = float(takeOffMassKg) )
+            try:
+                flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                csvAltitudeMSLTimeGroundTrack = flightPath.createStateVectorHistoryFile()
+                kmlXmlDocument                = flightPath.createKmlXmlDocument()
+                
+                if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack ):
+                    logger.debug ( "=========== Flight Plan end  =========== "  )
+                                                
+                    response_data = {'kmlXMLjson': xmltodict.parse( kmlXmlDocument ),
+                                     'placeMarks' : getPlaceMarks(kmlXmlDocument) ,
+                                     'csvAltitudeMSLtime' : csvAltitudeMSLTimeGroundTrack
+                                        }
+                    return JsonResponse(response_data)
+                else:
+                    response_data = {'errors' : 'Error while retrieving the KML document'}
+                    return JsonResponse(response_data)
+                    
+            except Exception as e:
+                logging.error("Trajectory Compute Wrap - Exception = {0}".format( str(e ) ) )
+
+                        
+    else:
+        response_data = { 'errors' : 'Airline not found = {0}'.format(airlineName)}
+        return JsonResponse(response_data)
+
+    
+def computeFlightProfile( request, airlineName , BadaWrap ):
+    
+    logger.setLevel(logging.INFO)
+    logging.info ("compute Flight Profile - for airline = {0}".format(airlineName))
+    
+    #routeWayPointsList = []
+    if (request.method == 'GET'):
+        
+        airline = Airline.objects.filter(Name=airlineName).first()
+        if (airline):
+        
+            if BadaWrap == "BADA": 
+                return computeBadaFlightProfile(request , airlineName)
+            else:
+                return computeWrapFlightProfile(request, airlineName)
+            
+        else:
+            response_data = { 'errors' : 'Airline not found = {0}'.format(airlineName)}
+            return JsonResponse(response_data)
+
     else:
         return JsonResponse({'errors': "expecting GET method"})
