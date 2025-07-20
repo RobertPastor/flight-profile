@@ -1,12 +1,16 @@
 
 import { initProgressBar , initWorker , stopBusyAnimation } from "../main/main.js";
 import { SingletonMainClass } from "../main/mainSingletonClass.js";
+import { SingletonFlightProfileControlClass } from "../flightProfile/flightProfileControl.js";
+
 
 export function initDownloadVerticalProfile(flightProfileControl) {
 	
 	document.getElementById("btnDownLoadVerticalProfileId").onclick = function () {
 
 		SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
+		
+		let BadaWrapMode = SingletonFlightProfileControlClass.getInstance().getSelectedBadaWrapMode();
 
 		let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
 		let route =  $("#airlineRouteId option:selected").val();
@@ -29,7 +33,7 @@ export function initDownloadVerticalProfile(flightProfileControl) {
 		initProgressBar();
 		initWorker();
 		
-		let urlToSend =  "trajectory/excel/" + airlineName + "?aircraft=" + aircraftICAOcode;
+		let urlToSend =  "trajectory/excel/" + airlineName + "/" + BadaWrapMode + "?aircraft=" + aircraftICAOcode;
 		urlToSend += "&route=" + route;
 		urlToSend += "&adepRwy=" + departureRunWay;
 		urlToSend += "&adesRwy=" + arrivalRunWay;

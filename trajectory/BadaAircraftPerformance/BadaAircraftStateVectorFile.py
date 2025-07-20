@@ -468,15 +468,21 @@ class StateVector(object):
                 thrustNewtons = valueList[7]
                 dragNewtons = valueList[8]
                 liftNewtons = valueList[9]
-                loadFactor = liftNewtons / aircraftMassKilograms
+                if aircraftMassKilograms > 0.0: 
+                    loadFactor = liftNewtons / aircraftMassKilograms
+                else:
+                    loadFactor = 0.0
 
                 calibratedAirSpeedMetersSecond = tas2cas(tas = trueAirSpeedMetersSecond,  altitude = altitudeMeanSeaLevelMeters,
                                                   temp = 'std' , speed_units = 'm/s', alt_units='m' )
                 calibratesAirSpeedKnots = calibratedAirSpeedMetersSecond * MeterSecond2Knots
-                mach = self.atmosphere.tas2mach(tas = trueAirSpeedMetersSecond,
-                                altitude = altitudeMeanSeaLevelMeters,
-                                speed_units='m/s', 
-                                alt_units='m')
+                if trueAirSpeedMetersSecond > 0.0:
+                    mach = self.atmosphere.tas2mach(tas         = trueAirSpeedMetersSecond,
+                                                altitude    = altitudeMeanSeaLevelMeters,
+                                                speed_units = 'm/s', 
+                                                alt_units   = 'm')
+                else:
+                    mach = 0.0
 
                 if (elapsedTimeSeconds-previousElapsedTimeSeconds)>0.0:
                     rateOfClimbDescentFeetMinute = (altitudeMeanSeaLevelFeet-previousAltitudeMeanSeaLevelFeet)/ ((elapsedTimeSeconds-previousElapsedTimeSeconds)/60.)

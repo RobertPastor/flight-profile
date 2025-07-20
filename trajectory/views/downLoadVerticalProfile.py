@@ -32,6 +32,12 @@ from trajectory.views.utils import getAircraftFromRequest, getAdepRunwayFromRequ
 from trajectory.views.utils import getAdesRunwayFromRequest , getMassFromRequest, getFlightLevelFromRequest
 from trajectory.views.utils import getReducedClimbPowerCoeffFromRequest , getDirectRouteFromRequest
 
+from trajectory.Environment.Earth import Earth
+from trajectory.Environment.Atmosphere import Atmosphere
+
+from trajectory.GuidanceOpenap.FlightPathOpenapFile import FlightPathOpenap
+from trajectory.Openap.AircraftMainFile import OpenapAircraft
+
 def writeReadMeRow(worksheet, row, headerStr , styleHeader, dataStr,  styleData):
     worksheet.write(row, 0 , headerStr, styleHeader)
     worksheet.write(row, 1 , dataStr, styleData)
@@ -98,8 +104,186 @@ def createExcelWorkbook(memoryFile, request, airlineName):
     writeReadMe(workbook=wb, request=request, airlineName=airlineName)
     return wb
 
+def createBadaExcelVerticalProfile( request , airlineName ):
+    
+    aircraftICAOcode = getAircraftFromRequest(request)
+    badaAircraft = BadaSynonymAircraft.objects.filter( AircraftICAOcode = aircraftICAOcode).first()
+    if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
+                            
+        airlineRoute = getRouteFromRequest(request)
+        
+        departureAirportICAOcode = str(airlineRoute).split("-")[0]
+        departureAirportRunWayName = getAdepRunwayFromRequest(request)
+        
+        arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
+        arrivalAirportRunWayName = getAdesRunwayFromRequest(request)
+        
+        takeOffMassKg = getMassFromRequest(request)
+        cruiseFLfeet = getFlightLevelFromRequest(request) 
+        
+        reducedClimbPowerCoeff = 0.0
+        try:
+            reducedClimbPowerCoeff = float(getReducedClimbPowerCoeffFromRequest(request))
+        except:
+            reducedClimbPowerCoeff = 0.0
+                    
+        ''' 1st April 2024 - check box to fly direct route '''
+        direct = getDirectRouteFromRequest(request)
+        
+        airline = Airline.objects.filter(Name=airlineName).first()
+        airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
+        if (airlineRoute):
+            '''  use run-ways defined in the web page '''
+            routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=departureAirportRunWayName, AdesRunWayName=arrivalAirportRunWayName, direct=direct)
+            #logger.debug ( routeAsString )
+            acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
+            if ( acPerformance.read() ):
+                
+                flightPath = FlightPath(
+                                            route = routeAsString, 
+                                            aircraftICAOcode = aircraftICAOcode,
+                                            RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
+                                            cruiseMach = acPerformance.getMaxOpMachNumber(), 
+                                            takeOffMassKilograms = float(takeOffMassKg) ,
+                                            reducedClimbPowerCoeff = float(reducedClimbPowerCoeff) )
+                
+                ret = flightPath.computeFlight(deltaTimeSeconds = 1.0)
+                if ret:
+                    
+                    logger.debug ( "=========== Flight Plan create output files  =========== " )
+                    
+                    ''' Robert - python2 to python 3 '''
+                    memoryFile = io.BytesIO() # create a file-like object 
+                    
+                    # warning : we get strings from the URL query
+                    wb = createExcelWorkbook(memoryFile, request, airlineName)
+                    
+                    ''' create State vector output sheet using an existing workbook '''
+                    flightPath.createStateVectorOutputSheet(wb) 
+                    wb.close()
+                    
+                    filename = 'VerticalProfile-{}.xlsx'.format( datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") )
+                    #print filename
+                    
+                    response = HttpResponse( memoryFile.getvalue() )
+                    response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8'
+                    #response['Content-Type'] = 'application/vnd.ms-excel'
+                    response["Content-Transfer-Encoding"] = "binary"
+                    response['Set-Cookie'] = 'fileDownload=true; path=/'
+                    response['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=filename)
+                    response['Content-Length'] = memoryFile.tell()
+                    return response    
+                              
+                else:
+                    response_data = {'errors' : 'Trajectory compute failed'}
+                    return JsonResponse(response_data) 
+            else:
+                response_data = {'errors' : 'Aircraft Performance read failed - = {0}'.format(badaAircraft.getAircraftPerformanceFile())}
+                return JsonResponse(response_data) 
+                    
+        else:
+            logger.debug ('airline route not found = {0}'.format(airlineRoute))
+            response_data = {'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
+            return JsonResponse(response_data)        
+                    
+    else:
+        logger.debug ('Aircraft not found = {0}'.format(badaAircraft))
+        response_data = {'errors' : 'Aircraft not found= {0}'.format(badaAircraft)}
+        return JsonResponse(response_data)  
+
+
+def createWrapExcelVerticalProfile( request, airlineName ):
+    pass
+
+    aircraftICAOcode = getAircraftFromRequest(request).lower()
+    logging.info( aircraftICAOcode )
+    
+    earth = Earth()
+    atmosphere = Atmosphere()
+
+    ac = OpenapAircraft( aircraftICAOcode , earth , atmosphere , initialMassKilograms = None)
+    logging.info( ac.getAircraftName())
+    
+    airlineRoute = getRouteFromRequest(request)
+    logging.info( airlineRoute )
+                                    
+    departureAirportICAOcode = str(airlineRoute).split("-")[0]
+    departureAirportRunWayName = getAdepRunwayFromRequest(request)
+            
+    arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
+    arrivalAirportRunWayName = getAdesRunwayFromRequest(request)
+            
+    takeOffMassKg = getMassFromRequest(request)
+    cruiseFlightLevel = float ( getFlightLevelFromRequest(request) ) / 100.0
+    
+    targetCruiseMach = ac.getMaximumSpeedMmoMach()
+    logging.info( "target cruise mach = {0:.2f} ".format( targetCruiseMach ) )
+    
+    airline = Airline.objects.filter(Name=airlineName).first()
+
+    airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
+    if (airlineRoute):
+        logger.debug( airlineRoute )
+        
+        ''' 1st April 2024 - checkbox to fly direct route '''
+        direct = getDirectRouteFromRequest(request)
+        
+        '''  use run-ways defined in the page '''
+        routeAsString = airlineRoute.getRouteAsString(AdepRunWayName = departureAirportRunWayName, AdesRunWayName = arrivalAirportRunWayName, direct=direct)
+
+        ''' try with direct route '''
+        logging.info ( "Trajectory Compute Wrap - " + routeAsString )
+                    
+        flightPath = FlightPathOpenap(
+                        route                = routeAsString, 
+                        aircraftICAOcode     = aircraftICAOcode.lower(),
+                        RequestedFlightLevel = float(cruiseFlightLevel), 
+                        cruiseMach           = float(targetCruiseMach), 
+                        takeOffMassKilograms = float(takeOffMassKg) )
+        try:
+            ret = flightPath.computeFlight(deltaTimeSeconds = 1.0)
+            if ret:
+                
+                logger.debug ( "=========== Flight Plan create output files  =========== " )
+                
+                ''' Robert - python2 to python 3 '''
+                memoryFile = io.BytesIO() # create a file-like object 
+                
+                # warning : we get strings from the URL query
+                wb = createExcelWorkbook(memoryFile, request, airlineName)
+                
+                ''' create State vector output sheet using an existing workbook '''
+                flightPath.createStateVectorOutputSheet(wb) 
+                wb.close()
+                
+                filename = 'VerticalProfile-{}.xlsx'.format( datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") )
+                #print filename
+                
+                response = HttpResponse( memoryFile.getvalue() )
+                response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8'
+                #response['Content-Type'] = 'application/vnd.ms-excel'
+                response["Content-Transfer-Encoding"] = "binary"
+                response['Set-Cookie'] = 'fileDownload=true; path=/'
+                response['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=filename)
+                response['Content-Length'] = memoryFile.tell()
+                return response    
+                              
+            else:
+                response_data = {'errors' : 'Trajectory compute failed'}
+                return JsonResponse(response_data) 
+            
+        except Exception as e:
+            logging.error("Trajectory Compute Wrap - Exception = {0}".format( str(e ) ) )
+            response_data = {'errors' : 'Trajectory computation failed '}
+            return JsonResponse(response_data)
+
+    else:
+        logger.debug ('airline route not found = {0}'.format(airlineRoute))
+        response_data = {'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
+        return JsonResponse(response_data)        
+ 
 @csrf_protect
-def createExcelVerticalProfile(request, airlineName):
+def createExcelVerticalProfile(request, airlineName , BadaWrap ):
     ''' @TODO same inputs as compute profile , compute costs and compute state vector  '''
     ''' this is the main view entry '''
     locale.setlocale(locale.LC_TIME, French_Locale)
@@ -109,91 +293,15 @@ def createExcelVerticalProfile(request, airlineName):
     
     if request.method == 'GET':
         
-        aircraftICAOcode = getAircraftFromRequest(request)
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
             
-            badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=aircraftICAOcode).first()
-            if ( badaAircraft and badaAircraft.aircraftPerformanceFileExists()):
-                            
-                airlineRoute = getRouteFromRequest(request)
-                
-                departureAirportICAOcode = str(airlineRoute).split("-")[0]
-                departureAirportRunWayName = getAdepRunwayFromRequest(request)
-                
-                arrivalAirportICAOcode = str(airlineRoute).split("-")[1]
-                arrivalAirportRunWayName = getAdesRunwayFromRequest(request)
-                
-                takeOffMassKg = getMassFromRequest(request)
-                cruiseFLfeet = getFlightLevelFromRequest(request) 
-                
-                reducedClimbPowerCoeff = 0.0
-                try:
-                    reducedClimbPowerCoeff = float(getReducedClimbPowerCoeffFromRequest(request))
-                except:
-                    reducedClimbPowerCoeff = 0.0
-                    
-                ''' 1st April 2024 - check box to fly direct route '''
-                direct = getDirectRouteFromRequest(request)
-                
-                airlineRoute = AirlineRoute.objects.filter(airline = airline, DepartureAirportICAOCode = departureAirportICAOcode, ArrivalAirportICAOCode=arrivalAirportICAOcode).first()
-                if (airlineRoute):
-                        '''  use run-ways defined in the web page '''
-                        routeAsString = airlineRoute.getRouteAsString(AdepRunWayName=departureAirportRunWayName, AdesRunWayName=arrivalAirportRunWayName, direct=direct)
-                        #logger.debug ( routeAsString )
-                        acPerformance = AircraftJsonPerformance(aircraftICAOcode, badaAircraft.getAircraftPerformanceFile())
-                        if ( acPerformance.read() ):
-            
-                            flightPath = FlightPath(
-                                            route = routeAsString, 
-                                            aircraftICAOcode = aircraftICAOcode,
-                                            RequestedFlightLevel = float ( cruiseFLfeet ) / 100., 
-                                            cruiseMach = acPerformance.getMaxOpMachNumber(), 
-                                            takeOffMassKilograms = float(takeOffMassKg) ,
-                                            reducedClimbPowerCoeff = float(reducedClimbPowerCoeff) )
-            
-                            ret = flightPath.computeFlight(deltaTimeSeconds = 1.0)
-                            if ret:
-                                
-                                logger.debug ( "=========== Flight Plan create output files  =========== " )
-                    
-                                ''' Robert - python2 to python 3 '''
-                                memoryFile = io.BytesIO() # create a file-like object 
-                        
-                                # warning : we get strings from the URL query
-                                wb = createExcelWorkbook(memoryFile, request, airlineName)
-                                
-                                ''' create State vector output sheet using an existing workbook '''
-                                flightPath.createStateVectorOutputSheet(wb) 
-                                wb.close()
-                                
-                                filename = 'VerticalProfile-{}.xlsx'.format( datetime.now().strftime("%d-%B-%Y-%Hh%Mm%S") )
-                                #print filename
-                                
-                                response = HttpResponse( memoryFile.getvalue() )
-                                response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8'
-                                #response['Content-Type'] = 'application/vnd.ms-excel'
-                                response["Content-Transfer-Encoding"] = "binary"
-                                response['Set-Cookie'] = 'fileDownload=true; path=/'
-                                response['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=filename)
-                                response['Content-Length'] = memoryFile.tell()
-                                return response    
-                              
-                            else:
-                                response_data = {'errors' : 'Trajectory compute failed'}
-                                return JsonResponse(response_data) 
-                        else:
-                            response_data = {'errors' : 'Aircraft Performance read failed - = {0}'.format(badaAircraft.getAircraftPerformanceFile())}
-                            return JsonResponse(response_data) 
-                        
-                else:
-                    logger.debug ('airline route not found = {0}'.format(airlineRoute))
-                    response_data = {'errors' : 'Airline route not found = {0}'.format(airlineRoute)}
-                    return JsonResponse(response_data)                                                                   
+            if BadaWrap == "BADA":
+                return createBadaExcelVerticalProfile( request , airlineName )
             else:
-                logger.debug ('Aircraft not found = {0}'.format(badaAircraft))
-                response_data = {'errors' : 'Aircraft not found= {0}'.format(badaAircraft)}
-                return JsonResponse(response_data)   
+                return createWrapExcelVerticalProfile( request, airlineName )
+                                                                   
+             
              
         else:
             logger.debug ('airline  not found = {0}'.format(airlineName))

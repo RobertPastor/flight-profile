@@ -118,6 +118,7 @@ export class FlightProfileControl extends Control {
 		
 		let label_3 = document.createElement("label");
 		label_3.innerHTML = " Legacy -> " ;
+		label_3.title = "Tick to select legacy aircraft performances";
 		div_3.appendChild(label_3);
 		
 		// add a checkbox
@@ -125,7 +126,7 @@ export class FlightProfileControl extends Control {
 		checkboxBADA.type  = "radio";
 		checkboxBADA.name  = "BadaWrap";
 		checkboxBADA.value = "BADA";
-		checkboxBADA.title = "Tick to select legacy aircraft performances"
+		checkboxBADA.title = "Tick to select legacy aircraft performances";
 		checkboxBADA.id    = this.getBADACheckBoxId();
 		
 		div_3.appendChild(checkboxBADA);
@@ -142,13 +143,15 @@ export class FlightProfileControl extends Control {
 		
 		let label_4 = document.createElement("label");
 		label_4.innerHTML = " WRAP -> " ;
+		label_4.title = "Tick to select WRAP aircraft performances"
+
 		div_4.appendChild(label_4);
 		
 		let checkboxWrap   = document.createElement('input');
 		checkboxWrap.type  = "radio";
 		checkboxWrap.name  = "BadaWrap";
 		checkboxWrap.value = "WRAP";
-		checkboxWrap.title = "Tick to select WRAP"
+		checkboxWrap.title = "Tick to select WRAP aircraft performances"
 		checkboxWrap.id    = this.getWRAPCheckBoxId();
 		
 		div_4.appendChild(checkboxWrap);

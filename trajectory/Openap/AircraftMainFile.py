@@ -57,7 +57,14 @@ class OpenapAircraft(OpenapAircraftConfiguration):
         filePrefix = "Vertical-Profile-" + str(self.aircraftICAOcode).upper()
         self.createStateVectorHistoryFile(filePrefix)
     
-    
+    def createStateVectorOutputSheet(self, workbook, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcode):
+        assert ( type(abortedFlight) == bool )
+        filePrefix = ""
+        if abortedFlight:
+            filePrefix = "Aborted"
+        filePrefix += "-" + aircraftICAOcode + "-" + AdepICAOcode + "-" + AdesICAOcode
+        self.createStateVectorHistorySheet(workbook)
+
     
 if __name__ == '__main__':
     

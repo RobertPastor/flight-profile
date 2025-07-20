@@ -226,3 +226,216 @@ class OpenapAircraftStateVector(object):
                                                 endOfSimulation)
         xlsxOutput.close()
         return xlsxOutput
+    
+    def writeHeaders(self, ws, style, headers):
+        row = 0
+        col = 0
+        for header in headers:
+            ws.write(row, col , header , style)
+            col = col + 1
+    
+    def writeValues(self, ws, row, elapsedTimeSeconds, characteristicPoint,
+                                                 altitudeMeanSeaLevelMeters,
+                                                 altitudeMeanSeaLevelFeet,
+                                                 
+                                                 trueAirSpeedMetersSecond,
+                                                 trueAirSpeedKnots,
+                                                 calibratesAirSpeedKnots,
+                                                 mach,
+                                                 rateOfClimbDescentFeetMinute,
+                                                 
+                                                 cumulatedDistanceFlownNautics,
+                                                 distanceStillToFlyNautics,
+                                                 
+                                                 aircraftMassKilograms,
+                                                 flightPathAngleDegrees,    
+                                                 
+                                                 thrustNewtons          ,
+                                                 dragNewtons            ,
+                                                 liftNewtons            ,
+                                                 
+                                                 loadFactor             ,
+                                                 nearestWeatherStation  ,
+                                                 temperatureAtWeatherStationDegreesCelsius ,
+                                                 windDirectionTrueNorthDegrees ,
+                                                 windSpeedKnots,
+                                                 endOfSimulation):
+
+        ColumnIndex = 0
+        ws.write(row, ColumnIndex, elapsedTimeSeconds)
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, characteristicPoint)    
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, altitudeMeanSeaLevelMeters)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, altitudeMeanSeaLevelFeet)                
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, trueAirSpeedMetersSecond)                
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, trueAirSpeedKnots)                
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, calibratesAirSpeedKnots)                
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, mach)
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, rateOfClimbDescentFeetMinute)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, cumulatedDistanceFlownNautics)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, distanceStillToFlyNautics)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, aircraftMassKilograms)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, flightPathAngleDegrees)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, thrustNewtons)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, dragNewtons)        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, liftNewtons)
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, loadFactor)    
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, nearestWeatherStation)  
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, temperatureAtWeatherStationDegreesCelsius)
+        
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, windDirectionTrueNorthDegrees)
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, windSpeedKnots)
+        ColumnIndex += 1
+        ws.write(row, ColumnIndex, str(endOfSimulation))     
+        row += 1    
+        return row
+    
+    
+    def createStateVectorHistorySheet(self, workbook):
+        
+        ws = workbook.add_worksheet("StateVector")
+        #styleEntete = workbook.add_format({'bold': False, 'border':True})
+        styleLavender = workbook.add_format({'bold': True, 'border':True, 'bg_color': 'yellow'})
+        ''' 9th September 2023 add characteristic point '''
+        self.writeHeaders(ws, styleLavender, ['elapsed-time-seconds', 
+                                              
+                                'characteristic-point',
+                                
+                                'altitude-MSL-meters',
+                                 'altitude-MSL-feet',
+
+                                 'true-air-speed-meters-second',
+                                 'true-air-speed-knots',
+                                 
+                                 'calibrated-air-speed-knots',
+                                 'mach',
+                                 'rate-of-climb-descent-feet-minute',
+                                 
+                                 'distance-flown-nautical-miles',
+                                 'distance-to-fly-nautical-miles',
+                                 
+                                 'aircraft-mass-kilograms'      ,
+                                 'flight-path-angle-degrees'    ,
+                                 
+                                 'thrust-newtons'               ,
+                                 'drag-newtons'                 ,
+                                 'lift-newtons'                 ,
+                                 
+                                 'load-factor-g'                ,
+                                 'nearest-weather-station'      ,
+                                 'temperature-degrees-celsius'  ,
+                                 'wind-direction-true-north-degrees',
+                                 'wind-speed-knots',
+                                 'end of simulation'
+                                 ])
+
+        previousAltitudeMeanSeaLevelFeet = 0.0
+        previousElapsedTimeSeconds = 0.0
+        cumulatedDistanceFlownNautics = 0.0
+        
+        row = 1
+        
+        for stateVectorHistory in self.aircraftStateHistory:
+            for elapsedTimeSeconds, valueList in stateVectorHistory.items():
+
+                ''' 9th September 2023 - characteristic point '''
+                characteristic_point = valueList[0]
+                ''' altitude '''
+                altitudeMeanSeaLevelMeters = valueList[1]
+                altitudeMeanSeaLevelFeet = altitudeMeanSeaLevelMeters * Meter2Feet
+
+                ''' speeds '''
+                trueAirSpeedMetersSecond = valueList[2]
+                trueAirSpeedKnots = trueAirSpeedMetersSecond * MeterSecond2Knots 
+
+                ''' total distance flown in Meters '''
+                totalDistanceFlownMeters = valueList[3]
+                cumulatedDistanceFlownNautics = totalDistanceFlownMeters * Meter2NauticalMiles
+                
+                distanceStillToFlyMeters = valueList[4]
+                distanceStillToFlyNautics = distanceStillToFlyMeters * Meter2NauticalMiles
+                
+                ''' aircraft Mass History in Kilograms '''
+                aircraftMassKilograms = valueList[5]
+                flightPathAngleDegrees = valueList[6]
+
+                thrustNewtons = valueList[7]
+                dragNewtons = valueList[8]
+                liftNewtons = valueList[9]
+                if ( aircraftMassKilograms > 0.0 ): 
+                    loadFactor = liftNewtons / aircraftMassKilograms
+                else:
+                    loadFactor = 0.0
+
+                calibratedAirSpeedMetersSecond = tas2cas(tas = trueAirSpeedMetersSecond,  altitude = altitudeMeanSeaLevelMeters,
+                                                  temp = 'std' , speed_units = 'm/s', alt_units='m' )
+                calibratesAirSpeedKnots = calibratedAirSpeedMetersSecond * MeterSecond2Knots
+                mach = self.atmosphere.tas2mach(tas = trueAirSpeedMetersSecond,
+                                altitude = altitudeMeanSeaLevelMeters,
+                                speed_units='m/s', 
+                                alt_units='m')
+
+                if (elapsedTimeSeconds-previousElapsedTimeSeconds)> 0.0:
+                    rateOfClimbDescentFeetMinute = (altitudeMeanSeaLevelFeet-previousAltitudeMeanSeaLevelFeet)/ ((elapsedTimeSeconds-previousElapsedTimeSeconds)/60.)
+                else:
+                    rateOfClimbDescentFeetMinute = 0.0
+                previousAltitudeMeanSeaLevelFeet = altitudeMeanSeaLevelFeet
+                
+                previousElapsedTimeSeconds = elapsedTimeSeconds
+                ''' 15th September 2024 - nearest weather station '''
+                #nearestWeatherStation = valueList[10]
+                
+                ''' 28th September 2024 - interpolated temperature forecasts at weather station '''
+                #temperatureDegreesCelsius = valueList[11]
+                #windDirectionTrueNorthDegree = valueList[12]
+                #windSpeedKnots = valueList[13]
+                
+                ''' 5th September 2021 - write endOfSimulation '''
+                endOfSimulation = valueList[10]
+                ''' 9th September 2023 - add characteristic point '''
+                row = self.writeValues(ws, row, elapsedTimeSeconds, 
+                                                characteristic_point,
+                                                altitudeMeanSeaLevelMeters,
+                                                altitudeMeanSeaLevelFeet,
+                                                 
+                                                trueAirSpeedMetersSecond,
+                                                trueAirSpeedKnots,
+                                                calibratesAirSpeedKnots,
+                                                mach,
+                                                rateOfClimbDescentFeetMinute,
+                                                 
+                                                cumulatedDistanceFlownNautics,
+                                                distanceStillToFlyNautics,
+                                                 
+                                                aircraftMassKilograms,
+                                                flightPathAngleDegrees,    
+                                                 
+                                                thrustNewtons          ,
+                                                dragNewtons            ,
+                                                liftNewtons            ,
+                                                loadFactor             ,
+                                                ""  ,
+                                                0.0 ,
+                                                0.0 ,
+                                                0.0,
+                                                endOfSimulation)
+        
