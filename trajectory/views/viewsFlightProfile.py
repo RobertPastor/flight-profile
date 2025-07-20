@@ -245,8 +245,8 @@ def computeWrapFlightProfile( request , airlineName ):
                 if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack ):
                     logger.debug ( "=========== Flight Plan end  =========== "  )
                                                 
-                    response_data = {'kmlXMLjson': xmltodict.parse( kmlXmlDocument ),
-                                     'placeMarks' : getPlaceMarks(kmlXmlDocument) ,
+                    response_data = {'kmlXMLjson'         : xmltodict.parse( kmlXmlDocument ),
+                                     'placeMarks'         : getPlaceMarks(kmlXmlDocument) ,
                                      'csvAltitudeMSLtime' : csvAltitudeMSLTimeGroundTrack
                                         }
                     return JsonResponse(response_data)

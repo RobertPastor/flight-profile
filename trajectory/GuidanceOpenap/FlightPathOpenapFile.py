@@ -611,6 +611,7 @@ class FlightPathOpenap(FlightPlan):
         return csvAltitudeTimeProfile
     
     def createKMLfileLike(self, memoryFile):
+        ''' no return statement - result is written into memoryFile '''
         self.finalRoute.createKmlFileLike(memoryFile, self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
     
     def createKmlXmlDocument(self):

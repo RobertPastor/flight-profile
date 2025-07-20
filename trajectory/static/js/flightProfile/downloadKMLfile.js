@@ -1,6 +1,7 @@
 
 import { initProgressBar , initWorker , stopBusyAnimation } from "../main/main.js";
 import { SingletonMainClass } from "../main/mainSingletonClass.js";
+import { SingletonFlightProfileControlClass } from "../flightProfile/flightProfileControl.js";
 
 
 export function initDownloadKMLfile(flightProfileControl) {
@@ -13,7 +14,9 @@ export function initDownloadKMLfile(flightProfileControl) {
 		document.getElementById(buttonId).onclick = function () {
 	
 			SingletonMainClass.getInstance().enableDisableMainMenuButtons(false);
-	
+			
+			let BadaWrapMode = SingletonFlightProfileControlClass.getInstance().getSelectedBadaWrapMode();
+		
 			let aircraftICAOcode = $("#airlineAircraftId option:selected").val();
 			let route =  $("#airlineRouteId option:selected").val();
 			
@@ -35,7 +38,7 @@ export function initDownloadKMLfile(flightProfileControl) {
 			initProgressBar();
 			initWorker();
 			
-			let urlToSend =  "trajectory/kml/" + airlineName + "?aircraft=" + aircraftICAOcode;
+			let urlToSend =  "trajectory/kml/" + airlineName + "/" + BadaWrapMode + "?aircraft=" + aircraftICAOcode;
 			urlToSend += "&route=" + route;
 			urlToSend += "&adepRwy=" + departureRunWay;
 			urlToSend += "&adesRwy=" + arrivalRunWay;

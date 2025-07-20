@@ -37,7 +37,7 @@ urlpatterns = [
 ''' view to create an EXCEL file with the state vector (vertical profile) or a KML Google Earth file '''
 urlpatterns += [
     
-    path('excel/<slug:airlineName>', createExcelVerticalProfile , name='createExcel'),
-    path('kml/<slug:airlineName>', createKMLfile , name='createKMLfile'),
+    path('excel/<slug:airlineName>/<slug:BadaWrap>', createExcelVerticalProfile , name='createExcel'),
+    path('kml/<slug:airlineName>/<slug:BadaWrap>', createKMLfile , name='createKMLfile'),
     
 ]

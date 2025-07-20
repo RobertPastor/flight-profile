@@ -874,10 +874,6 @@ class AirlineProfileCosts {
 							document.getElementById("btnLaunchFlightProfile").disabled = false;
 							// enable all buttons
 							SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
-							
-							document.getElementById("btnComputeFlightProfileId").disabled = true;
-							document.getElementById("btnDownLoadVerticalProfileId").disabled = true;
-							document.getElementById("btnDownLoadKMLfileId").disabled = true;
 						},
 				});
 		});
