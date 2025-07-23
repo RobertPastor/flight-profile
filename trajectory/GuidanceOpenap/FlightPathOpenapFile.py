@@ -246,7 +246,6 @@ class FlightPathOpenap(FlightPlan):
         ''' return to caller '''
         return self.endOfSimulation, finalHeadingDegrees, finalWayPoint.getElapsedTimeSeconds(), anticipatedTurnWayPoint
         
-    
     def loopThroughFixList(self, 
                            initialHeadingDegrees, 
                            elapsedTimeSeconds):
@@ -287,7 +286,6 @@ class FlightPathOpenap(FlightPlan):
 
         ''' return final heading of the last great circle '''
         return self.endOfSimulation, initialHeadingDegrees
-    
     
     def buildDeparturePhase(self):
         ''' this function manages the departure phases with a ground run and a climb ramp  '''
@@ -616,6 +614,10 @@ class FlightPathOpenap(FlightPlan):
     
     def createKmlXmlDocument(self):
         kmlXmlDocument = self.finalRoute.createKmlOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
+        return kmlXmlDocument
+    
+    def createKmlXmlPureDocument(self):
+        kmlXmlDocument = self.finalRoute.createKmlXmlPureDocument(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
         return kmlXmlDocument
     
     def getAircraftCurrentMassKilograms(self):

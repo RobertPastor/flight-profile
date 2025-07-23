@@ -31,6 +31,7 @@ from datetime import datetime
 from trajectory.Guidance.WayPointFile import WayPoint, Airport
 
 from trajectory.OutputFiles.KmlOutput import KmlOutput, KmlFileLike
+from trajectory.OutputFiles.KmlOutputPureDocument import KmlOutputPureDocument
 from trajectory.OutputFiles.GroundTrackOutput import GroundTrackOutput
 
 class Vertex(object):
@@ -256,7 +257,6 @@ class Graph(object):
             strFileName += '-{0}.kml'.format(datetime.now().strftime("%d-%b-%Y-%Hh%Mm%S"))
             
             kmlFileLike = KmlFileLike( strFileName, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde)
-            
             kmlFileLike = self.hideSomeVertices(kmlFileLike, 10)
             ''' this is where the xml / kml document is pushed into the StringIO '''
             kmlFileLike.close(memoryFile)
@@ -264,6 +264,37 @@ class Graph(object):
             logging.debug ( "{0} - {1}".format(self.className , strFileName) )
         
         return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")
+    
+    def createKmlXmlPureDocument(self, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde):
+        self.AbortedFlight = abortedFlight
+        self.AircraftICAOcode = aircraftICAOcode
+        self.AdepICAOcode = AdepICAOcode
+        self.AdesICAOcode = AdesICAOcde
+        
+        kmlOutputPureDocument = None
+        
+        assert ( type(abortedFlight) == bool )
+        if self.getNumberOfVertices() > 1:
+            ''' need at least two vertices '''
+            #tail = self.getVertex(0)
+            #head = self.getVertex(self.getNumberOfVertices()-1)
+            #assert isinstance(tail.getWeight(), WayPoint)
+            #assert isinstance(head.getWeight(), WayPoint)
+            #tailWayPoint = tail.getWeight()
+            #headWayPoint = head.getWeight()
+            
+            kmlOutputPureDocument = KmlOutputPureDocument( abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde)
+            kmlOutputPureDocument = self.hideSomeVertices(kmlOutputPureDocument, 10)
+
+            for vertex in self.getVertices():
+                wayPoint = vertex.getWeight()
+                kmlOutputPureDocument.write(wayPoint.getName(),
+                                    wayPoint.getLongitudeDegrees(),
+                                    wayPoint.getLatitudeDegrees(), 
+                                    wayPoint.getAltitudeMeanSeaLevelMeters())
+            return kmlOutputPureDocument.retrieveBytesLikeObject()
+    
+        return  ValueError("GraphFile - createKmlOutputPureDocument - number of vertices is 0")
     
     def createKmlOutputFile(self, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcde):
         
@@ -305,7 +336,6 @@ class Graph(object):
             return kmlOutputFile
     
         return  ValueError("GraphFile - createKmlOutputFile - number of vertices is 0")
-    
     
     def createXlsxOutputFile(self, abortedFlight, aircraftICAOcode, AdepICAOcode, AdesICAOcode):
         assert (type(abortedFlight) == bool )
@@ -402,7 +432,6 @@ class Graph(object):
             "maxElapsedTimeSeconds" : maxElapsedTimeSeconds
             }
             
-            
     def getLengthMeters(self):
         return self.lengthMeters
     
@@ -412,7 +441,4 @@ class Graph(object):
         for edge in self.getEdges():
             self.lengthMeters +=  edge.getDistanceTailHeadMeters()
         return self.lengthMeters
-
-    
-
     

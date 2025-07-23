@@ -68,17 +68,16 @@ class KmlOutput(object):
         self.documentElement = self.kmlDoc.createElement('Document')
         self.documentElement = kmlElement.appendChild(self.documentElement)
         
-        
     def write(self, 
               name,
               LongitudeDegrees, 
               LatitudeDegrees, 
               AltitudeAboveSeaLevelMeters):
         
-        assert isinstance(name, (str))
-        assert isinstance(LongitudeDegrees, float)
-        assert isinstance(LatitudeDegrees, float)
-        assert isinstance(AltitudeAboveSeaLevelMeters, float)
+        #assert isinstance(name, (str))
+        #assert isinstance(LongitudeDegrees, float)
+        #assert isinstance(LatitudeDegrees, float)
+        #assert isinstance(AltitudeAboveSeaLevelMeters, float)
         
         placemarkElement = self.kmlDoc.createElement('Placemark')
         
@@ -142,6 +141,5 @@ class KmlFileLike(KmlOutput):
         newl="\n"
         encoding='utf-8'
         self.kmlDoc.writexml(memoryFile, indent, addindent, newl, encoding)
-
         
     

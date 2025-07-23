@@ -503,9 +503,9 @@ class FlightPath(FlightPlan):
         '''
         self.deltaTimeSeconds = deltaTimeSeconds
         
-        assert not( self.aircraft is None)
-        assert not( self.departureRunway is None)
-        assert not( self.departureAirport is None)
+        #assert not( self.aircraft is None)
+        #assert not( self.departureRunway is None)
+        #assert not( self.departureAirport is None)
         
         try:
             if self.isDomestic() or self.isOutBound():
@@ -575,6 +575,10 @@ class FlightPath(FlightPlan):
     
     def createKmlXmlDocument(self):
         kmlXmlDocument = self.finalRoute.createKmlOutputFile(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
+        return kmlXmlDocument
+    
+    def createKmlXmlPureDocument(self):
+        kmlXmlDocument = self.finalRoute.createKmlXmlPureDocument(self.abortedFlight, self.aircraftICAOcode, self.departureAirport.getICAOcode(), self.arrivalAirport.getICAOcode())
         return kmlXmlDocument
     
     def getAircraftCurrentMassKilograms(self):

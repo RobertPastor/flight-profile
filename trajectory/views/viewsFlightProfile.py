@@ -156,13 +156,13 @@ def computeBadaFlightProfile(request , airlineName ):
                         logger.debug ( "=========== Flight Plan create output files  =========== " )
                         csvAltitudeMSLTimeGroundTrack = flightPath.createCsvAltitudeTimeProfile()
                         
-                        kmlXmlDocument = flightPath.createKmlXmlDocument()
+                        kmlXmlDocument = flightPath.createKmlXmlPureDocument()
                         if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack ):
                             logger.debug ( "=========== Flight Plan end  =========== "  )
                                                 
                             response_data = {
-                                        'kmlXMLjson': xmltodict.parse( kmlXmlDocument ),
-                                        'placeMarks' : getPlaceMarks(kmlXmlDocument) ,
+                                        'kmlXMLjson'         : xmltodict.parse( kmlXmlDocument ),
+                                        'placeMarks'         : getPlaceMarks(kmlXmlDocument) ,
                                         'csvAltitudeMSLtime' : csvAltitudeMSLTimeGroundTrack
                                         }
                             return JsonResponse(response_data)
@@ -239,8 +239,8 @@ def computeWrapFlightProfile( request , airlineName ):
                         takeOffMassKilograms = float(takeOffMassKg) )
             try:
                 flightPath.computeFlight(deltaTimeSeconds = 1.0)
-                csvAltitudeMSLTimeGroundTrack = flightPath.createStateVectorHistoryFile()
-                kmlXmlDocument                = flightPath.createKmlXmlDocument()
+                csvAltitudeMSLTimeGroundTrack = flightPath.createCsvAltitudeTimeProfile()
+                kmlXmlDocument                = flightPath.createKmlXmlPureDocument()
                 
                 if ( kmlXmlDocument and csvAltitudeMSLTimeGroundTrack ):
                     logger.debug ( "=========== Flight Plan end  =========== "  )
