@@ -59,7 +59,7 @@ class AirlineProfileCosts {
 		elemMaxTOMassKg.value = "0";
 		if ( aircraftPerformanceData.hasOwnProperty("acMaxTakeOffWeightKg")) {
 			elemMaxTOMassKg.value = aircraftPerformanceData["acMaxTakeOffWeightKg"];
-			console.log(elemMaxTOMassKg.value);
+			//console.log(elemMaxTOMassKg.value);
 		}
 		
 		let elemFL = document.getElementById('requestedFlightLevelId');
@@ -97,7 +97,7 @@ class AirlineProfileCosts {
 				elemTOMassKg.value = airlineAircraftsArray[index]["acReferenceTakeOffWeightKg"];
 				elemMinTOMassKg.value = airlineAircraftsArray[index]["acMinTakeOffWeightKg"];
 				elemMaxTOMassKg.value = airlineAircraftsArray[index]["acMaxTakeOffWeightKg"];
-				console.log(elemMaxTOMassKg.value);
+				//console.log(elemMaxTOMassKg.value);
 			}
 		}
 		
@@ -384,7 +384,7 @@ class AirlineProfileCosts {
 	displayD3LineChart( arrayAltitudeMSLtime ) {
 	
 		let verticalProfile = new VerticalProfile();
-		//verticalProfile.displayVerticalProfile (arrayAltitudeMSLtime);
+		verticalProfile.displayVerticalProfile (arrayAltitudeMSLtime);
 	}
 	
 	populateBestDepartureRunway(airlineRoutesArray) {
@@ -874,6 +874,9 @@ class AirlineProfileCosts {
 							document.getElementById("btnLaunchFlightProfile").disabled = false;
 							// enable all buttons
 							SingletonMainClass.getInstance().enableDisableMainMenuButtons(true);
+							
+							let ReducedClimbPowerInputId  = SingletonFlightProfileControlClass.getInstance().getReducedClimbPowerCoeffInputId();
+							$("#"+ ReducedClimbPowerInputId ).prop('disabled', false);
 						},
 				});
 		});

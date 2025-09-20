@@ -168,6 +168,9 @@ trajectory/Bada381DataFiles/A320__.OPF.txt
 trajectory/Bada381DataFiles/A332__.OPF.txt
 trajectory/Bada381DataFiles/B738__.OPF.txt
 
+#new configuration files:
+trajectory/Bada381DataFiles/*.json
+
 # whole AdsBtrajectories sub folders
 trajectory/AdsBtrajectories/*
 

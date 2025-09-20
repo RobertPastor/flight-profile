@@ -45,7 +45,7 @@ export class AirlineFlightLegCostsResultsControl extends Control {
 				// 30th July 2023 - add requested flight level and the reduced climb power coefficient
 				// 6th April 2024 - add direct route
 				let th_list = [ 'Airline' , 'Aircraft' , 'Seats', 'Adep', 'RunWay', 'Ades', 'RunWay', 'Is Aborted', 'direct' ,
-								'TakeOff Mass Kg' , 'Cruise Level ft', 'Climb Power %',
+								'TakeOff Mass Kg' , 'Cruise Level ft', 'Red Climb Pwr %',
 								'Final Mass Kg', 'Lost Mass Kg', 'Fuel Costs US$', 'Flight Duration Hours', 'Flying Costs US$', 'Crew Costs US$', 'Total Costs US$' ];
 				let th = undefined;
 				th_list.forEach ( function ( element ) {

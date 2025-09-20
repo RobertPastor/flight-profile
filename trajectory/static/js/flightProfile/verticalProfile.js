@@ -8,7 +8,7 @@ export class VerticalProfile {
 	}
 	
 	displayVerticalProfile (arrayAltitudeMSLtime) {
-		
+		console.log("displayVerticalProfile");
 		// set the dimensions and margins of the graph
 		let margin = {top: 10, right: 100, bottom: 10, left: 50}
 		let width = 700 - margin.left - margin.right;
@@ -35,10 +35,10 @@ export class VerticalProfile {
 		//removeAllChilds (document.getElementById("dialogId"))
 		// d3vizId is define in MainControl.js
 		removeAllChilds (document.getElementById("d3vizId"));
-		//document.getElementById("d3vizId").classList.add("d3Div");
+		document.getElementById("d3vizId").classList.add("d3Div");
 		
 		// Creating a div element at the end
-		//$("#dialogId").append('<div id="d3vizId" style="width: 100%; height: 100%;"></div>');   
+		//$("#dialogId").append('<div id="d3vizId" style="width: 100%; height: 100%;"></div>');
 		
 		let svg = d3.select("#d3vizId")
 			.data(data)
@@ -59,7 +59,7 @@ export class VerticalProfile {
 		// the axis will appear on the top
 		svg.append("g")
 			.call(d3.axisBottom(x));
-			
+		
 		// x Axis label
 		svg.append("text")
 			.attr("class", "x label")
@@ -87,7 +87,7 @@ export class VerticalProfile {
 			.attr("dy", ".75em")
 			.attr("transform", "rotate(-90)")
 			.text("Altitude Mean Sea Level (meters)");
-				
+		
 		// This allows to find the closest X index of the mouse:
 		let bisect = d3.bisector(function(d) { return d.x; }).left;
 
@@ -107,14 +107,15 @@ export class VerticalProfile {
 		}
 
 		// Create the text that travels along the curve of chart
-		let focusText = svg.append('g')
+		let focusText = svg
+				.append('g')
 				.append('text')
 				.style("opacity", 1)
 				.attr("text-anchor", "left")
 				.attr("alignment-baseline", "middle")
 				.call(getBB);   
 		
-		/*	
+		
 		focusText.insert("rect","text")
 			.attr("width", function(d){
 				return d.bbox.width
@@ -123,7 +124,7 @@ export class VerticalProfile {
 				return d.bbox.height
 				})
 			.style("fill", "yellow");
-		*/
+		
 
 		// Add the line
 		svg.append("path")
@@ -141,7 +142,7 @@ export class VerticalProfile {
 					return y(d.y) 
 				})
 			  )
-			  
+		
 		let path = svg.selectAll("dot")
 			 .data(data)
 			 .enter()
@@ -156,7 +157,7 @@ export class VerticalProfile {
 			 .attr("stroke", "#32CD32")
 			 .attr("stroke-width", 0.5)
 			 .attr("fill", "#FFFFFF");
-			 
+		
 		// What happens when the mouse move -> show the annotations at the right positions.
 		function mouseover() {
 			//console.log("mouse over")
@@ -202,7 +203,7 @@ export class VerticalProfile {
 			.on('dblclick',function(node) { 
 				//console.log("node was double clicked");
 				$("#d3vizId").hide();
-				//$("#globusDivId").show();
+				$("#globusDivId").show();
 		});
 
 		// show the vertical profile
