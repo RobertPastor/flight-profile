@@ -91,8 +91,8 @@ export class SidStar {
 						},
 				billboard: {
 						src: "/static/images/marker.png",
-						width: 16,
-						height: 16,
+						width: 12,
+						height: 12,
 						offset: [0, -2]
 						}
 		}));

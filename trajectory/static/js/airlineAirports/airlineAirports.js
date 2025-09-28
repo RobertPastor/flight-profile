@@ -101,14 +101,14 @@ class AirlineAirports {
 						text: name,
 						outline: 0.77,
 						outlineColor: "rgba(255,255,255,.4)",
-						size: 12,
+						size: 10,
 						color: "black",
-						offset: [0, -2]
+						offset: [0, -10]
 						},
 				billboard: {
 						src: "/static/images/marker.png",
-						width: 16,
-						height: 16,
+						width: 12,
+						height: 12,
 						offset: [0, -2]
 						}
 		}));
@@ -301,8 +301,8 @@ class AirlineAirports {
 					label : SingletonMainClass.getInstance().getStandardOgLabel(name),
 					billboard : {
 							src: "/static/images/plane.png",
-							width: 16,
-							height: 16,
+							width: 12,
+							height: 12,
 							offset: [0, -20]
 							}
 			}));

@@ -8,9 +8,10 @@ export class VerticalProfile {
 	}
 	
 	displayVerticalProfile (arrayAltitudeMSLtime) {
-		console.log("displayVerticalProfile");
+		console.log("display Vertical Profile");
+		
 		// set the dimensions and margins of the graph
-		let margin = {top: 10, right: 100, bottom: 10, left: 50}
+		let margin = {top: 10, right: 200, bottom: 10, left: 50}
 		let width = 700 - margin.left - margin.right;
 		let height = 700 - margin.top - margin.bottom;
 		
@@ -20,16 +21,17 @@ export class VerticalProfile {
 		//let parentDiv = document.getElementById("d3vizId");
 		
 		width = parentDiv.clientWidth - margin.left - margin.right; 
-		height = parentDiv.clientHeight - margin.top - margin.bottom;
+		//height = parentDiv.clientHeight - margin.top - margin.bottom;
 		
-		width = parentDiv.getBoundingClientRect().width;
-		height = parentDiv.getBoundingClientRect().height;
+		//width = parentDiv.getBoundingClientRect().width;
+		//height = parentDiv.getBoundingClientRect().height;
+		
 		// path width 
-		width = width - margin.left - margin.right;
-		height = height - margin.top - margin.bottom;
+		//width = width - margin.left - margin.right;
+		//height = height - margin.top - margin.bottom;
 		
 		let topTable = document.getElementById("mainTableId");
-		height = height - topTable.clientHeight;
+		//height = height - topTable.clientHeight;
 
 		// append the svg object to the body of the page
 		//removeAllChilds (document.getElementById("dialogId"))
@@ -98,7 +100,7 @@ export class VerticalProfile {
 				.attr("stroke", "black")
 				.attr('r', 12.5)
 				.style("opacity", 0)
-				
+		
 		// bounding box
 		function getBB(selection) {
 			selection.each(function(d){
@@ -115,7 +117,7 @@ export class VerticalProfile {
 				.attr("alignment-baseline", "middle")
 				.call(getBB);   
 		
-		
+		// text in a rectangle
 		focusText.insert("rect","text")
 			.attr("width", function(d){
 				return d.bbox.width
@@ -143,7 +145,7 @@ export class VerticalProfile {
 				})
 			  )
 		
-		let path = svg.selectAll("dot")
+		svg.selectAll("dot")
 			 .data(data)
 			 .enter()
 			 .append("circle")
@@ -207,7 +209,8 @@ export class VerticalProfile {
 		});
 
 		// show the vertical profile
-		/*
+		// .html(document.getElementById('d3vizId').innerHTML)
+		
 		$("#dialogId")
 				.dialog({
 				   autoOpen: false,
@@ -218,11 +221,11 @@ export class VerticalProfile {
 				   height: "auto",
 				   width: "auto",
 				   maxHeight: true,
-				   maxWidth: true
+				   maxWidth: true	   
 				})
-				.html(document.getElementById('d3vizId').innerHTML)
+				.html("double click to suppress this vertical profile overlay")
 				.dialog('open'); 
-		*/
+		
 		// show the svg
 		$("#d3vizId").show();
 		//$("#globusDivId").hide()	

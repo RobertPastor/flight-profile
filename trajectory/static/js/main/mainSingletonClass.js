@@ -1,7 +1,4 @@
-import {
-        LonLat,
-        Extent
-    } from "../og/og.es.js";
+import { LonLat, Extent  } from "../og/og.es.js";
  
     
 export const SingletonMainClass = (function () {
@@ -80,10 +77,11 @@ class MainClass {
 	}
 	
 	// 10th September 2023 - get standard label
+	// outlineColor: "rgba(255,255,255,.4)",
 	getStandardOgLabel(name) {
 		return {text: name,
 				outline: 0.58,
-				outlineColor: "rgba(255,255,255,.4)",
+				outlineColor: "white",
 				size: 10,
 				color: "black",
 				align: "center",
@@ -95,8 +93,8 @@ class MainClass {
 	// retrieve a standardized marker
 	getStandardOgBillBoard() {
 		return {src: "/static/images/marker.png",
-				width: 16,
-				height: 16,
+				width: 12,
+				height: 12,
 				offset: [0,-2]};
 	}
 	/**

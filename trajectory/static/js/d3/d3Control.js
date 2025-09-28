@@ -13,8 +13,8 @@ export class D3Control extends Control {
 				d3Div.id = "d3vizId";
 				d3Div.style="display: none;";
 				d3Div.classList.add('d3Div');
-                
-                this.renderer.div.appendChild(d3Div);
+
+				this.renderer.div.appendChild(d3Div);
             }
             oninit() {
                 //console.log("D3 Control - oninit");

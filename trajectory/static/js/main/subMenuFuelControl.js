@@ -1,7 +1,5 @@
 
-import {
-        Control
-    } from "../og/og.es.js";
+import { Control } from "../og/og.es.js";
 
 export class FuelSubMenu extends Control {
 	

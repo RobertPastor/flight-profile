@@ -256,8 +256,7 @@ def computeWrapFlightProfile( request , airlineName ):
                     
             except Exception as e:
                 logging.error("Trajectory Compute Wrap - Exception = {0}".format( str(e ) ) )
-
-                        
+                
     else:
         response_data = { 'errors' : 'Airline not found = {0}'.format(airlineName)}
         return JsonResponse(response_data)
