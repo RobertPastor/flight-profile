@@ -12,3 +12,5 @@ otherwise create it
 when the github repo is created then execute the following command
 
 ## connect local and remote repo
+
+git remote set-url origin https://github.com/RobertPastor/flight-profile.git
