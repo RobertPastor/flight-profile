@@ -80,13 +80,13 @@ class MainClass {
 	// outlineColor: "rgba(255,255,255,.4)",
 	getStandardOgLabel(name) {
 		return {text: name,
-				outline: 0.58,
+				outline: 0.80,
 				outlineColor: "white",
-				size: 10,
+				size: 12,
 				color: "black",
 				align: "center",
 				style: "normal",
-				weight : "normal",
+				weight : "bold",
 				offset: [0, -2]};
 	}
 	

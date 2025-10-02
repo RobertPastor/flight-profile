@@ -61,6 +61,10 @@ def index(request):
     context = {"airlines" : json.dumps(airlineList) }
     # return response with template and context
     return render(request, "index-og.html", context)
+
+    ''' https://github.com/openglobus/openglobus/issues/929 '''
+    ''' used to test arial.json atlas issue with bad color on character lower c '''
+    #return render(request , "billboardsDragging.html" , context)
     #return render(request, "index-maplibre.html", context)
     
     

@@ -114,7 +114,7 @@ class FlightPlan(FixList):
                                       ICAOcode = arrivalAirport.AirportICAOcode,
                                       Country = arrivalAirport.Continent)
         
-        print( self.className + " : arrival airport : " + str(self.arrivalAirport))
+        #print( self.className + " : arrival airport : " + str(self.arrivalAirport))
         
         #self.arrivalRunway =  runwaysDb.getFilteredRunWays(airportICAOcode = self.arrivalAirportICAOcode, runwayName = self.arrivalRunwayName)
         arrivalRunway = AirlineRunWay.objects.filter(Airport=arrivalAirport, Name=self.arrivalRunwayName).first()
@@ -128,7 +128,7 @@ class FlightPlan(FixList):
                                     LatitudeDegrees = arrivalRunway.LatitudeDegrees,
                                     LongitudeDegrees = arrivalRunway.LongitudeDegrees)
         
-        print ( self.className + " : arrival runway : " + str(self.arrivalRunway) )
+        #print ( self.className + " : arrival runway : " + str(self.arrivalRunway) )
 
         #self.departureAirport = airportsDb.getAirportFromICAOCode(ICAOcode = self.departureAirportICAOcode)
         departureAirport = AirlineAirport.objects.filter(AirportICAOcode=self.departureAirportICAOcode).first()

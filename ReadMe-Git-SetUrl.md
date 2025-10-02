@@ -9,3 +9,6 @@ rober@RobertPastor MINGW64 ~/git/flight-profile (master)
 
 ## ensure that the remote GitHub repo called flight-profile is existing
 otherwise create it 
+when the github repo is created then execute the following command
+
+## connect local and remote repo

@@ -112,12 +112,12 @@ def search_engine(eng):
     available_engines = engines.query("name.str.startswith(@ENG)", engine="python")
 
     if available_engines.shape[0] == 0:
-        print("Engine not found.")
+        #print("Engine not found.")
         result = None
     else:
-        print("Engines found:")
+        #print("Engines found:")
         result = available_engines.name.tolist()
-        print(result)
+        #print(result)
 
     return result
 

@@ -146,7 +146,7 @@ class AirlineAirports {
 		$('#airlineAirportsRoutesMainDivId').css({
 			'position': 'absolute',
 			'top': position["y"] - 20, // Leave some margin
-			'left': position["x"] - 20 , // Leave some margin
+			'left': position["x"] - 50, // Leave some margin
 			'display': 'block'
 		});
 		
@@ -303,7 +303,7 @@ class AirlineAirports {
 							src: "/static/images/plane.png",
 							width: 12,
 							height: 12,
-							offset: [0, -20]
+							offset: [0, -10]
 							}
 			}));
 			
@@ -312,15 +312,15 @@ class AirlineAirports {
 				//console.log("right click - airport name = " + e.pickingObject.label._text);
 				
 				let position = {}
-				position["x"] = e.clientX + 30;
+				position["x"] = e.clientX + 20;
 				position["y"] = e.clientY;
-				
-				// show table with routes starting in this airport
-				$("#airlineAirportsRoutesMainDivId").show();
 				
 				let airportICAOcode = this.name.split("-")[1];
 				//console.log("right click - " + airportICAOcode);
 				SingletonAirlineAirports.getInstance().queryRoutesStartingFromAirport( airportICAOcode, position );
+				
+				// show table with routes starting in this airport
+				$("#airlineAirportsRoutesMainDivId").show();
 
 			});
 			// show airport ICAO code as a popup
@@ -331,8 +331,16 @@ class AirlineAirports {
 				// show ICAO code of the airport
 				e.renderer.handler.canvas.title = airportICAOcode;
 			});
+			
 			// hide airports routes div
 			// here it is about leaving the airport displayed with an airport image
+			let div = document.getElementById("airlineAirportsRoutesMainDivId");
+			div.addEventListener("mouseleave", function (e) {
+				//console.log("event - on mouse leave");
+				// hide table with routes starting at this airport
+				$("#airlineAirportsRoutesMainDivId").hide();
+			})
+			/*
 			layerAirport.events.on("mouseleave", function (e) {
 				//console.log("event - on mouse leave");
 				e.renderer.handler.canvas.style.cursor = "default";
@@ -340,6 +348,7 @@ class AirlineAirports {
 				// hide table with routes starting at this airport
 				$("#airlineAirportsRoutesMainDivId").hide();
 			});
+			*/
 			
 		} else {
 			// no need to create the layer

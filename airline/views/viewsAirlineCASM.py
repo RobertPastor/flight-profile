@@ -271,10 +271,8 @@ def writeAirlineCasmOptimizationResults(workbook , airlineName):
                                 
                                 else:
                                     print ("Airline costs not found")
-                            
                             else:
                                 print ("Aircraft not found = {0}".format(airlineAircraft))
-                                
                         else:
                             print ("Error - route not found = {0}".format( airlineRoute ))
             

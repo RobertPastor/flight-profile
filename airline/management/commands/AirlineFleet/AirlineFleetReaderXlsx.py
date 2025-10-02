@@ -42,7 +42,7 @@ class AirlineFleetDataBase(object):
 
     def readUpdate(self):
         ''' this method reads the whole file - not only the headers '''
-        print (self.FilePath)
+        #print (self.FilePath)
         assert len(self.FilePath)>0 and os.path.isfile(self.FilePath) 
         
         df_source = pd.DataFrame(pd.read_excel(self.FilePath, sheet_name="Fleet" , engine="openpyxl"))

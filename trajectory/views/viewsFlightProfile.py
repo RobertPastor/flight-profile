@@ -74,7 +74,7 @@ def launchFlightProfile(request , airlineName , BadaWrap ):
     #print  ("launch Flight Profile - with airline = {0}".format(airlineName))
     if (request.method == 'GET'):
         
-        print ( "Bada or wrap mode = {0}".format( BadaWrap ))
+        #print ( "Bada or wrap mode = {0}".format( BadaWrap ))
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
             

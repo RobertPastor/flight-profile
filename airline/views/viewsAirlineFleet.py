@@ -29,7 +29,7 @@ def getAirlineFleetFromDB(airline):
         
         badaAircraft = BadaSynonymAircraft.objects.all().filter(AircraftICAOcode=airlineAircraft.aircraftICAOcode).first()
         if ( badaAircraft and badaAircraft.aircraftJsonPerformanceFileExists()):
-            print ( badaAircraft.getAircraftJsonPerformanceFile() )
+            #print ( badaAircraft.getAircraftJsonPerformanceFile() )
             
             aircraftPerformance = AircraftJsonPerformance(badaAircraft.getICAOcode(), badaAircraft.getAircraftJsonPerformanceFile())
             if ( aircraftPerformance.read() ):
