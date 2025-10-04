@@ -5,6 +5,7 @@ Created on 21 déc. 2020
 '''
 
 import math
+from methodtools import lru_cache
 
 from trajectory.Guidance.Haversine import  LatitudeLongitudeAtDistanceBearing
 
@@ -64,7 +65,6 @@ class GeographicalPoint(object):
         new_y_meters = ( ( 2 * math.pi * EarthRadiusMeters ) / 360.0 ) * new_y_deg
         return new_y_meters
  
- 
     def new_x_coord(self):
         """Converts a lat, longitude location to a new transformed latitude
         """
@@ -85,7 +85,7 @@ class GeographicalPoint(object):
         new_x_meters = ( ( 2 * math.pi * EarthRadiusMeters ) / 360.0 ) * new_x_deg
         return new_x_meters
                       
-
+    @lru_cache()
     def getAltitudeMeanSeaLevelMeters(self):
         return self.AltitudeMeanSeaLevelMeters
     
@@ -94,10 +94,12 @@ class GeographicalPoint(object):
         
     def setAltitudeAboveSeaLevelMeters(self, levelMeters):
         self.AltitudeMeanSeaLevelMeters = levelMeters
-        
+    
+    @lru_cache()
     def getLatitudeDegrees(self):
         return self.LatitudeDegrees
     
+    @lru_cache()
     def getLongitudeDegrees(self):
         return self.LongitudeDegrees
         

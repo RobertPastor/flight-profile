@@ -103,20 +103,21 @@ class FlightPathOpenap(FlightPlan):
         self.aircraft.setAircraftMassKilograms(takeOffMassKilograms)
         self.aircraft.setInitialMassKilograms(takeOffMassKilograms)
         
-        logging.info ( self.className + " : Max TakeOff Weight kilograms = {0:.2f}".format(self.aircraft.getMaximumTakeOffMassKilograms() ) )   
-        logging.info ( self.className + " : Max Cruise Altitude Feet = {0:.2f}".format(self.aircraft.getMaxCruiseAltitudeFeet() ) )   
-        logging.info ( self.className + " : Max Speed MMO Cruise Mach = {0:.2f}".format(self.aircraft.getMaximumSpeedMmoMach() ) )
+        #logging.info ( self.className + " : Max TakeOff Weight kilograms = {0:.2f}".format(self.aircraft.getMaximumTakeOffMassKilograms() ) )   
+        #logging.info ( self.className + " : Max Cruise Altitude Feet = {0:.2f}".format(self.aircraft.getMaxCruiseAltitudeFeet() ) )   
+        #logging.info ( self.className + " : Max Speed MMO Cruise Mach = {0:.2f}".format(self.aircraft.getMaximumSpeedMmoMach() ) )
         
         #self.RequestedFlightLevel = self.aircraft.getMaxCruiseAltitudeFeet() / 100.0
         ''' requested flight level such as FL 330 '''
         self.RequestedFlightLevel = RequestedFlightLevel
         
         ''' sanity checks '''
-        assert self.RequestedFlightLevel >= MinFlightLevel and self.RequestedFlightLevel <= MaxFlightLevel
-        logging.info( self.className +  " - set cruise level = {0:.2f} feet".format( self.RequestedFlightLevel * 100.0 ))
+        #assert self.RequestedFlightLevel >= MinFlightLevel and self.RequestedFlightLevel <= MaxFlightLevel
+        #logging.info( self.className +  " - set cruise level = {0:.2f} feet".format( self.RequestedFlightLevel * 100.0 ))
+        
         self.aircraft.setCruiseLevelFeet(self.RequestedFlightLevel * 100.0)
         
-        logging.info( self.className +  " - set target cruise mach")
+        #logging.info( self.className +  " - set target cruise mach")
         self.aircraft.setTargetCruiseMach(targetCruiseMach = cruiseMach)
         # 17th july 2023
         #self.aircraft.setReducedClimbPowerCoeff( reducedClimbPowerCoeff )
@@ -125,11 +126,11 @@ class FlightPathOpenap(FlightPlan):
         if (self.arrivalAirport is None):
             logging.info (self.className + ' there is no arrival airport => flight is out-bound !!!')
         #assert isinstance(self.arrivalAirport, Airport) and not(self.arrivalAirport is None)
-        assert isinstance ( self.arrivalAirport , Airport ) and not ( self.arrivalAirport is None)
+        #assert isinstance ( self.arrivalAirport , Airport ) and not ( self.arrivalAirport is None)
         self.aircraft.setArrivalRunwayMSLmeters( self.arrivalAirport.getFieldElevationAboveSeaLevelMeters())
         
         self.departureAirport = self.getDepartureAirport()
-        assert isinstance(self.departureAirport, Airport) and not(self.departureAirport is None)
+        #assert isinstance(self.departureAirport, Airport) and not(self.departureAirport is None)
         self.aircraft.setDepartureRunwayMSLmeters ( self.departureAirport.getFieldElevationAboveSeaLevelMeters())
         
     def getAircraft(self):

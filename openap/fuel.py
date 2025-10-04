@@ -14,6 +14,7 @@ curr_path = os.path.dirname(os.path.realpath(__file__))
 dir_fuelmodel = os.path.join(curr_path, "data/fuel/")
 file_synonym = os.path.join(curr_path, "data/fuel/_synonym.csv")
 
+print(" openap/fuel : =================== read data fuel synonym.csv file ==============")
 fuel_synonym = pd.read_csv(file_synonym)
 
 
@@ -82,6 +83,7 @@ class FuelFlow(object):
 
         f = dir_fuelmodel + ac + ".yml"
         with open(f, "r") as file:
+            print(" openap/fuel : ============= read fuel file = " + ac + ".yml")
             params = yaml.safe_load(file.read())
         return params
 

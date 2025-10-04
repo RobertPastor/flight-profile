@@ -13,6 +13,7 @@ dir_aircraft = os.path.join(curr_path, "data/aircraft/")
 file_engine = os.path.join(curr_path, "data/engine/engines.csv")
 file_synonym = os.path.join(curr_path, "data/aircraft/_synonym.csv")
 
+print(" openap/prop : ==================== read data/aircraft/_synonym.csv =====================")
 aircraft_synonym = pd.read_csv(file_synonym)
 
 
@@ -24,6 +25,7 @@ def available_aircraft(use_synonym=False):
         list of string: aircraft types.
 
     """
+    print(" openap/prop : ================== read available aircrafts ==================")
     files = sorted(glob.glob(dir_aircraft + "*.yml"))
     acs = [f[-8:-4] for f in files]
 

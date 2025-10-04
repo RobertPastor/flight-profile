@@ -51,7 +51,8 @@ The great circles are the geodesics of the sphere.
 '''
 
 import math
-import logging
+#import logging
+from methodtools import lru_cache
 
 from trajectory.Openap.AircraftMainFile import OpenapAircraft
 from trajectory.Guidance.GraphFile import Graph
@@ -105,6 +106,7 @@ class GreatCircleRoute(Graph):
         self.ptlon2_radians = math.radians(ptlon2)
         self.ptlat2_radians = math.radians(ptlat2)
 
+    @lru_cache()
     def computeGreatCircle(self, 
                            deltaTimeSeconds,
                            elapsedTimeSeconds,

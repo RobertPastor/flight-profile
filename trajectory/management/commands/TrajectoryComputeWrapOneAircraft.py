@@ -1,8 +1,9 @@
 
 from time import time
-
+import cProfile
+import pstats
+from io import StringIO
 import logging
-
 
 from django.core.management.base import BaseCommand
 from airline.models import AirlineRoute
@@ -18,12 +19,8 @@ from openap import prop
 
 class Command(BaseCommand):
     help = 'Computes one predefined trajectory for test purpose only'
-
-    def handle(self, *args, **options):
-        
-        logging.basicConfig(level=logging.INFO)
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.DEBUG)
+    
+    def commandComputeWrap(self):
         
         earth = Earth()
         atmosphere = Atmosphere()
@@ -46,13 +43,7 @@ class Command(BaseCommand):
         
         available_acs = prop.available_aircraft(use_synonym=True)
 
-        for aircraftICAOcode in available_acs:
-            
-            if ( str( aircraftICAOcode ).lower() in ['a359','a388','b38m','b744','b748','b752','b763','b773','b77w','b788','b789','c550'] \
-                 or str( aircraftICAOcode ).lower() in ['e145','glf6','a124','a306','a310','at72','at75','at76','b733','b735','b762','b77l'] \
-                 or str ( aircraftICAOcode ).lower() in ['c25a','c525','c56x','crj2','crj9','e290','glf5','gl5t','gl6t','tj45','md11','pc24','su95','lj45','bx3m'] ):
-                #pass
-                continue
+        if aircraftICAOcode in available_acs:
         
             ac = OpenapAircraft( aircraftICAOcode , earth , atmosphere , initialMassKilograms = None)
             logging.info( ac.getAircraftName())
@@ -66,7 +57,7 @@ class Command(BaseCommand):
             logging.info( "target cruise mach = {0:.2f} ".format( targetCruiseMach ) )
             
             if not ( aircraftICAOcode in prop.available_aircraft(use_synonym=True) ):
-                print ( "Aircraft code = {0} not in openap Wrap".format( aircraftICAOcode ))
+                logging.error( "Aircraft code = {0} not in openap Wrap".format( aircraftICAOcode ))
             else:
             
                 Adep = str(route).split("-")[0]
@@ -91,10 +82,11 @@ class Command(BaseCommand):
                     
                         hours, rest = divmod(seconds_elapsed, 3600)
                         minutes, seconds = divmod(rest, 60)
-                        print ( "hours = {0} - minutes = {1} - seconds = {2:.2f}".format( hours, minutes, seconds))
-                    
-                        flightPath.createStateVectorHistoryFile()
-                        flightPath.createKmlXmlDocument()
+                        logging.info ( "hours = {0} - minutes = {1} - seconds = {2:.2f}".format( hours, minutes, seconds))
+                        
+                        
+                        #flightPath.createStateVectorHistoryFile()
+                        #flightPath.createKmlXmlDocument()
                     
                     except Exception as e:
                         logging.error("Trajectory Compute Wrap - Exception = {0}".format( str(e ) ) )
@@ -110,5 +102,26 @@ class Command(BaseCommand):
                     
                 else:
                     print ('airline route not found = {0}'.format(route))
+        
+
+    def handle(self, *args, **options):
+        ''' start profiling '''
+        profiler = cProfile.Profile()
+        profiler.enable()
+        
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
+        
+        ''' launch the command '''
+        self.commandComputeWrap()
+        
+        profiler.disable()
+        s = StringIO()
+        ps = pstats.Stats(profiler, stream=s).sort_stats('cumulative')
+        ps.print_stats()
+
+        # Output profiling results
+        self.stdout.write(s.getvalue())
             
             

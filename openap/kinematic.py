@@ -23,13 +23,14 @@ Examples:
 
 import glob
 import os
-
+from methodtools import lru_cache
 import pandas as pd
 
 curr_path = os.path.dirname(os.path.realpath(__file__))
 dir_wrap = os.path.join(curr_path, "data/wrap/")
 file_synonym = os.path.join(curr_path, "data/wrap/_synonym.csv")
 
+print(" openap/kinematic : ========================== read data wrap synonym.csv file =================")
 wrap_synonym = pd.read_csv(file_synonym)
 
 
@@ -63,8 +64,10 @@ class WRAP(object):
             else:
                 raise ValueError(f"Kinematic model for {self.ac} not available.")
 
+        print(" openap/kinematic : ================ read wrap performance file ================= " + self.ac + ".txt")
         self.df = pd.read_fwf(os.path.join(dir_wrap, self.ac + ".txt"))
 
+    @lru_cache()
     def _get_var(self, var):
         r = self.df[self.df["variable"] == var]
 
@@ -106,30 +109,37 @@ class WRAP(object):
         """Get climb range distance (in km)."""
         return self._get_var("cl_d_range")
 
+    @lru_cache()
     def climb_const_vcas(self):
         """Get speed for constant CAS climb."""
         return self._get_var("cl_v_cas_const")
 
+    @lru_cache()
     def climb_const_mach(self):
         """Get speed during constant Mach climb."""
         return self._get_var("cl_v_mach_const")
 
+    @lru_cache()
     def climb_cross_alt_concas(self):
         """Get cross over altitude when constant CAS climb starts."""
         return self._get_var("cl_h_cas_const")
-
+    
+    @lru_cache()
     def climb_cross_alt_conmach(self):
         """Get cross over altitude from constant CAS to Mach climb."""
         return self._get_var("cl_h_mach_const")
 
+    @lru_cache()
     def climb_vs_pre_concas(self):
         """Get vertical rate before constant CAS climb."""
         return self._get_var("cl_vs_avg_pre_cas")
 
+    @lru_cache()
     def climb_vs_concas(self):
         """Get vertical rate during constant CAS climb."""
         return self._get_var("cl_vs_avg_cas_const")
 
+    @lru_cache()
     def climb_vs_conmach(self):
         """Get vertical rate during constant Mach climb."""
         return self._get_var("cl_vs_avg_mach_const")
@@ -158,30 +168,37 @@ class WRAP(object):
         """Get average cruise Mach number."""
         return self._get_var("cr_v_mach_mean")
 
+    @lru_cache()
     def descent_range(self):
         """Get descent range."""
         return self._get_var("de_d_range")
 
+    @lru_cache()
     def descent_const_mach(self):
         """Get speed during the constant Mach descent."""
         return self._get_var("de_v_mach_const")
 
+    @lru_cache()
     def descent_const_vcas(self):
         """Get speed during the constant CAS descent."""
         return self._get_var("de_v_cas_const")
 
+    @lru_cache()
     def descent_cross_alt_conmach(self):
         """Get crossover altitude from constant Mach to CAS descent."""
         return self._get_var("de_h_mach_const")
 
+    @lru_cache()
     def descent_cross_alt_concas(self):
         """Get crossover altitude from constant Mach to CAS descent."""
         return self._get_var("de_h_cas_const")
 
+    @lru_cache()
     def descent_vs_conmach(self):
         """Get vertical rate during constant Mach descent."""
         return self._get_var("de_vs_avg_mach_const")
 
+    @lru_cache()
     def descent_vs_concas(self):
         """Get vertical rate during constant CAS descent."""
         return self._get_var("de_vs_avg_cas_const")
