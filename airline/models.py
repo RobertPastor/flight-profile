@@ -4,10 +4,10 @@ from django.db import models
 from trajectory.models import AirlineAirport, AirlineRunWay, AirlineStandardDepartureArrivalRoute
 
 from trajectory.Environment.RunWayFile import RunWay
-from trajectory.Environment.Constants import NauticalMiles2Meter , Meter2NauticalMiles, ConstantClimbRampLengthNauticalMiles
+from trajectory.Environment.Constants import NauticalMiles2Meter , Meter2NauticalMiles, ConstantClimbRampLengthNauticalMiles , EarthRadiusMeters
 
 from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
-from trajectory.Environment.Earth import EarthRadiusMeters
+from trajectory.Environment.Earth import Earth
 from trajectory.models import AirlineWayPoint
 
 class Airline(models.Model):
@@ -116,7 +116,6 @@ class AirlineRoute(models.Model):
                                                                             FirstLastRouteWayPoint = lastWayPointInRoute).first()
             if sidStar:
                 return sidStar.getWayPointsListAsString(isSID)
-        
         return ""
     
     def getFirstRouteWayPoint(self):
@@ -216,15 +215,13 @@ class AirlineRoute(models.Model):
         strRoute = str(strRoute).replace("--", "-")        
         return strRoute
   
-    ''' best departure run-way is the one with minimal distance between end of 5 nautical climb ramp and first point of the route '''
+    ''' best departure run-way is the one with minimal distance between end of 5 nautical miles climb ramp and first point of the route '''
     def computeBestDepartureRunWay(self):
-        
         firstRouteWayPoint = AirlineRouteWayPoints.objects.all().filter(Route=self).distinct().order_by("Order").first()
         if ( firstRouteWayPoint ):
             wayPoint = AirlineWayPoint.objects.all().filter( WayPointName = firstRouteWayPoint.WayPoint ).first()
             if (wayPoint):
                 firstRouteWayPoint = GeographicalPoint(wayPoint.Latitude , wayPoint.Longitude , EarthRadiusMeters)
-                
                 Adep = self.DepartureAirportICAOCode
                 minimalDistanceMeters = 0.0
                 bestRunWay = None
@@ -240,7 +237,6 @@ class AirlineRoute(models.Model):
                     ''' 5 Nm after end of run-way '''
                     latitudeDegrees , longitudeDegrees = rwyEnd.getGeoPointAtDistanceHeading( ConstantClimbRampLengthNauticalMiles * NauticalMiles2Meter, runWay.getTrueHeadingDegrees())
                     pathEnd = GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
-        
                     distanceMeters = pathEnd.computeDistanceMetersTo(firstRouteWayPoint)
                     if first:
                         first = False
@@ -256,18 +252,15 @@ class AirlineRoute(models.Model):
                 return "Error - computeBestDepartureRunWay"
         else:
             return "Error - computeBestDepartureRunWay"
-  
-  
-    ''' best arrival run-way is the one with minimal distance between start of 5 nautic descent ramp and last point of the route '''
+
+    ''' best arrival run-way is the one with minimal distance between start of 5 nautical miles descent ramp and last point of the route '''
     def computeBestArrivalRunWay(self):
         
         lastRouteWayPoint = AirlineRouteWayPoints.objects.all().filter(Route=self).distinct().order_by("Order").last()
         if ( lastRouteWayPoint ):
             wayPoint = AirlineWayPoint.objects.all().filter( WayPointName = lastRouteWayPoint.WayPoint ).first()
             if ( wayPoint ):
-        
                 lastRouteWayPoint = GeographicalPoint(wayPoint.Latitude , wayPoint.Longitude , EarthRadiusMeters)
-        
                 Ades =  self.ArrivalAirportICAOCode
                 minimalDistanceMeters = 0.0
                 bestRunWay = None

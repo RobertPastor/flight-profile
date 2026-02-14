@@ -28,8 +28,6 @@ Created on Jul 1, 2014
 '''
 import math
 
-from trajectory.Environment.Constants import EarthRadiusMeters
-
 class Earth():
     
     radiusMeters = 6378135.0 # earth’s radius in meters
@@ -42,12 +40,14 @@ class Earth():
                  mu = 3.986004e14 ): # mu = GMe %earth’s grav. const (m^3/s^2)
 
         self.className = self.__class__.__name__
-
         self.radiusMeters = radius
         self.omega = omega
         self.mu = mu
         
     def getRadiusMeters(self):
+        return self.radiusMeters
+    
+    def getEarthRadiusMeters(self):
         return self.radiusMeters
     
     def gravityWelmec(self, heightMSLmeters, latitudeDegrees):

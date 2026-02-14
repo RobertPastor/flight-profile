@@ -34,8 +34,6 @@ from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
 
 from trajectory.Environment.RunWaysDatabaseFile import RunWayDataBase
 
-
-
 def to_positive_angle(angleDegrees):
     angleDegrees = math.fmod(angleDegrees, 360);
     if (angleDegrees < 0): 

@@ -513,9 +513,10 @@ function init() {
 		setTimeout( function() {
 			initMain(viewExtent);
 			// check if firefox is used
-			if (navigator.userAgent.indexOf("Firefox") == -1 ) { 
-					showMessage("Browser usage" , "Please envisage using FireFox to see the globe map");
-			}
+			//if (navigator.userAgent.indexOf("Firefox") == -1 ) { 
+			//		showMessage("Browser usage" , "Please envisage using FireFox to see the globe map");
+			//}
+			showMessage("Website Shutdown" , "Please be aware of a website shutdown <br>planned beginning of March 2026");
 				
 		} , 500 );
 	}

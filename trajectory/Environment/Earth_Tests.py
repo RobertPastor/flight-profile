@@ -9,6 +9,7 @@ import csv
 import unittest
 import os
 import math
+import logging
 
 from trajectory.Environment.Earth import Earth
 
@@ -26,7 +27,7 @@ class Test_Main(unittest.TestCase):
         earthRadiusMeters = 6378.135e3
         try:
             writer = csv.writer(CsvFile, delimiter=";")
-            print (   type (("latitude in degrees").encode()) )
+            logging.info (   type (("latitude in degrees").encode()) )
             #writer.writerow( "latitude in degrees".encode() )
             writer.writerow( ("latitude in degrees", "latitude radians", "radius in meters", "gc" , "gnorth"))
             earth = Earth()

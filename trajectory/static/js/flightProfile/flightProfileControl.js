@@ -1,10 +1,8 @@
 
 import { Control } from "../og/og.es.js";
-    
 import { clickToHide } from "../main/main.js";
 
 export const SingletonFlightProfileControlClass = (function () {
-	
 	let instance;
     function createInstance() {
         var object = new FlightProfileControl();
@@ -48,9 +46,8 @@ export class FlightProfileControl extends Control {
 	}
 	/**
 	 * as they are radio / toggle buttons only one can be checked
-	 */
+	*/
 	getSelectedBadaWrapMode() {
-		
 		const radioButtons = document.querySelectorAll('input[name="BadaWrap"]');
 		for (const radioButton of radioButtons) {
 			if (radioButton.checked) {
@@ -61,11 +58,10 @@ export class FlightProfileControl extends Control {
 	}
 	
 	createRowWithAircraftSelector() {
-		
 		let row = document.createElement('tr');
 		let td_1 = document.createElement('td');
-		//td.colSpan = "4";
 		
+		//td.colSpan = "4";
 		let div_1 = document.createElement('div');
 		div_1.id = "aircraftSelectionId";
 		div_1.style.textAlign = "center";
@@ -111,7 +107,6 @@ export class FlightProfileControl extends Control {
 		
 		// select BADA or Wrap
 		let td_3 = document.createElement('td');
-		
 		let div_3 = document.createElement('div');
 		div_3.id = "BadaId";
 		div_3.style.textAlign = "center";
@@ -144,7 +139,6 @@ export class FlightProfileControl extends Control {
 		let label_4 = document.createElement("label");
 		label_4.innerHTML = " WRAP -> " ;
 		label_4.title = "Tick to select WRAP aircraft performances"
-
 		div_4.appendChild(label_4);
 		
 		let checkboxWrap   = document.createElement('input');
@@ -305,7 +299,6 @@ export class FlightProfileControl extends Control {
 	createRowWithRouteSelector() {
 		
 		let row = document.createElement('tr');
-		
 		let td = document.createElement('td');
 		td.colSpan = "4";
 		
@@ -326,7 +319,6 @@ export class FlightProfileControl extends Control {
 		td.appendChild(div_1);
 		
 		// route selector
-
 		let div_2 = document.createElement('div');
 		div_2.id = "routesSelectionId";
 		div_2.classList.add("routesSelectionClass");
@@ -341,7 +333,6 @@ export class FlightProfileControl extends Control {
 		select_2.id = "airlineRouteId";
 		select_2.name = "airlineRouteName";
 		select_2.title = "click to select the route";
-
 		div_2.appendChild(select_2);
 		td.appendChild(div_2);
 		
@@ -387,7 +378,7 @@ export class FlightProfileControl extends Control {
 	
 	/**
 	 * 14th August 2023 - add a checkbox to select the Best Runway
-	 */
+	*/
 	createRowWithRunwaySelector() {
 		
 		let row = document.createElement('tr');
@@ -399,13 +390,12 @@ export class FlightProfileControl extends Control {
 		div_3.classList.add("runWaysSelectionFlightProfileClass");
 		
 		// add a checkbox
-		let checkboxBestDepartureRunway = document.createElement('input');
-		checkboxBestDepartureRunway.type = "checkbox";
-		checkboxBestDepartureRunway.name = "BestDepartureRunwayCheckBox";
+		let checkboxBestDepartureRunway   = document.createElement('input');
+		checkboxBestDepartureRunway.type  = "checkbox";
+		checkboxBestDepartureRunway.name  = "BestDepartureRunwayCheckBox";
 		checkboxBestDepartureRunway.value = "value";
 		checkboxBestDepartureRunway.title = "Tick to select best departure runway"
 		checkboxBestDepartureRunway.id    = this.getBestDepartureRunwayCheckBoxId();
-		
 		div_3.appendChild(checkboxBestDepartureRunway);
 		
 		let label_3 = document.createElement("label");

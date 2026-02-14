@@ -10,7 +10,7 @@ from airline.models import Airline,  AirlineAircraft, AirlineRoute, AirlineCosts
 from trajectory.models import  AirlineRunWay , BadaSynonymAircraft
 from trajectory.BadaAircraftPerformance.BadaAircraftJsonPerformanceFile import AircraftJsonPerformance
 
-from trajectory.Environment.Earth import EarthRadiusMeters
+from trajectory.Environment.Constants import EarthRadiusMeters
 from trajectory.Environment.Constants import Meter2NauticalMiles
 from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
 

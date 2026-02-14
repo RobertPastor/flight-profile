@@ -7,7 +7,7 @@ Created on 14 nov. 2024
 #sys.path.append("C:/Users/rober/git/openap/") #replace PATH with the path to Foo
 
 from trajectory.Environment.Constants import Meter2Feet , MeterSecond2Knots, RollingFrictionCoefficient
-from trajectory.Environment.Constants import Meter2NauticalMiles, FeetMinutes2MetersSeconds
+from trajectory.Environment.Constants import  FeetMinutes2MetersSeconds
 from trajectory.Environment.Constants import MeterSeconds2FeetMinutes 
 from trajectory.Environment.Constants import Knots2MetersSeconds , ConstantTaxiSpeedCasKnots
 
@@ -205,7 +205,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             
         
         if self.isTakeOff():
-            
+            ''' similar to ground run '''
             #logger.info(self.className + " --> TakeOff phase")
             
             rateOfClimbFeetMinutes = 0.0
@@ -317,7 +317,7 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             ''' dVTAS/dt = ( T - D ) / m - ( ( g0 * dh /dt ) / VTas ) '''
             aircraftAccelerationMetersSecondSquare = ((thrustNewtons - dragNewtons) / aircraftMassKilograms) - ((gravityCenterMetersPerSquaredSeconds * rateOfClimbMetersSeconds )/ trueAirSpeedMetersSecond ) 
             #trueAirSpeedMetersSecond = trueAirSpeedMetersSecond + aircraftAccelerationMetersSecondSquare * deltaTimeSeconds
-            
+            ''' compute climb CAS using interpolation from WRAP speeds '''
             climbCASknots = self.computeClimbCASknots( altitudeMSLfeet = altitudeMSLfeet ,
                                                        CASknots        = tas2cas ( 
                                                                             tas         = self.getCurrentTASspeedKnots() ,
@@ -339,7 +339,6 @@ class OpenapAircraftConfiguration(OpenapAircraftSpeeds):
             self.setCurrentTASmetersSeconds(trueAirSpeedMetersSecond , altitudeMSLfeet)
             ''' verify that speeds limits have been met '''
             trueAirSpeedMetersSecond = self.getCurrentTASmetersSeconds()
-
              
             ''' distance flown '''
             flightPathAngleDegrees = self.computeFlightPathAngleDegrees( rateOfClimbMetersSeconds , trueAirSpeedMetersSecond )

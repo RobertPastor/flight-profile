@@ -25,7 +25,10 @@ def getAircraft(request):
         acMaxOpAltitudeFeet = 0.0
         
         aircraftICAOcode = request.GET['aircraft']
-        BadaWrapMode = request.GET['BadaWrap']
+        try:
+            BadaWrapMode = request.GET['BadaWrap']
+        except:
+            BadaWrapMode = "Wrap"
         
         if ( BadaWrapMode == "BADA" ):
         

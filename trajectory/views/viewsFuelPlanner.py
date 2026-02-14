@@ -18,8 +18,8 @@ def launchFuelPlanner(request , airlineName):
         
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
-            
-            airlineAircraftsList    = getAirlineAircraftsFromDB( airline )     
+            BadaWrapMode = "Wrap"
+            airlineAircraftsList    = getAirlineAircraftsFromDB( airline , BadaWrapMode)     
             airlineRoutesList       = getAirlineRoutesFromDB( airline )
             aircraftPerformanceList = getAirlineTripPerformanceFromDB( airline )
 

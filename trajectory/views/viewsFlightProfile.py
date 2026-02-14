@@ -77,7 +77,6 @@ def launchFlightProfile(request , airlineName , BadaWrap ):
         #print ( "Bada or wrap mode = {0}".format( BadaWrap ))
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
-            
             airlineAircraftsList = getAirlineAircraftsFromDB(airline , BadaWrap)     
             airlineRoutesList    = getAirlineRoutesFromDB(airline)
             airlineRunWaysList   = getAirlineRunWaysFromDB()
@@ -226,11 +225,12 @@ def computeWrapFlightProfile( request , airlineName ):
             direct = getDirectRouteFromRequest(request)
  
             '''  use run-ways defined in the page '''
-            routeAsString = airlineRoute.getRouteAsString(AdepRunWayName = departureAirportRunWayName, AdesRunWayName = arrivalAirportRunWayName, direct=direct)
+            routeAsString = airlineRoute.getRouteAsString(AdepRunWayName = departureAirportRunWayName, 
+                                                          AdesRunWayName = arrivalAirportRunWayName, 
+                                                          direct=direct)
 
             ''' try with direct route '''
             logging.info ( "Trajectory Compute Wrap - " + routeAsString )
-                    
             flightPath = FlightPathOpenap(
                         route                = routeAsString, 
                         aircraftICAOcode     = aircraftICAOcode.lower(),
@@ -269,10 +269,8 @@ def computeFlightProfile( request, airlineName , BadaWrap ):
     
     #routeWayPointsList = []
     if (request.method == 'GET'):
-        
         airline = Airline.objects.filter(Name=airlineName).first()
         if (airline):
-        
             if BadaWrap == "BADA": 
                 return computeBadaFlightProfile(request , airlineName)
             else:

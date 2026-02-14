@@ -6,7 +6,7 @@ Created on 24 déc. 2022
 
 import os
 
-from trajectory.models import AirlineWayPoint
+from trajectory.Guidance.WayPointFile import WayPoint
 import pandas as pd
 from trajectory.views.utils import convertDegreeMinuteSecondToDecimal
 
@@ -34,7 +34,6 @@ class WayPointsDatabaseXlsx(object):
 
     def exists(self):
         return os.path.exists(self.FilesFolder) and os.path.isfile(self.FilePath)
-    
     
     def read(self):
         assert len(self.FilePath)>0
@@ -77,7 +76,7 @@ class WayPointsDatabaseXlsx(object):
                         Continent = 'Europe'
                     if (wayPointDict['Latitude'] >= 5. and wayPointDict['Longitude'] >= 50. and wayPointDict['Longitude'] < 90.):
                         Continent = 'India'
-                    wayPoint = AirlineWayPoint(WayPointName = wayPointDict['WayPoint'],
+                    wayPoint = WayPoint(WayPointName = wayPointDict['WayPoint'],
                                             Type = 'WayPoint',
                                             Continent = Continent,
                                             Latitude = wayPointDict['Latitude'],

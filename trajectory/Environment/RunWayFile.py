@@ -5,11 +5,9 @@ Created on 21 déc. 2020
 '''
 
 import math
-from trajectory.Environment.Constants import Feet2Meter
-from trajectory.Environment.Earth import EarthRadiusMeters
-
+from trajectory.Environment.Constants import Feet2Meter , EarthRadiusMeters
 from trajectory.Guidance.GeographicalPointFile import GeographicalPoint
-
+from trajectory.Environment.Earth import Earth
 
 class RunWay(GeographicalPoint):    
     '''
@@ -62,8 +60,10 @@ class RunWay(GeographicalPoint):
         assert not (LongitudeDegrees is None) and (isinstance(LongitudeDegrees, float))
         assert (-180.0 <= LongitudeDegrees) and (LongitudeDegrees <= 180.0)
         
-        GeographicalPoint.__init__(self, LatitudeDegrees=LatitudeDegrees, LongitudeDegrees=LongitudeDegrees, AltitudeMeanSeaLevelMeters=EarthRadiusMeters)
-            
+        GeographicalPoint.__init__(self, LatitudeDegrees=LatitudeDegrees, 
+                                   LongitudeDegrees=LongitudeDegrees, 
+                                   AltitudeMeanSeaLevelMeters= EarthRadiusMeters)
+        
         self.airportICAOcode = airportICAOcode
         self.Name = Name
         self.LengthFeet = LengthFeet
@@ -100,7 +100,7 @@ class RunWay(GeographicalPoint):
     
     def getEndOfRunWay(self):
         latitudeDegrees , longitudeDegrees = self.getGeoPointAtDistanceHeading(self.getLengthMeters(), self.getTrueHeadingDegrees())
-        return GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters)
+        return GeographicalPoint(latitudeDegrees , longitudeDegrees, EarthRadiusMeters )
     
     def computeShortestDistanceToRunway(self, geographicalPoint):
         ''' https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line '''

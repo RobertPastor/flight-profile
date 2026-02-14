@@ -92,3 +92,27 @@ ValueError: Missing staticfiles manifest entry for 'images/favicon.ico'
 
 ->>> perform --->>> python manage.py collectstatic
 
+
+## install methodtools and import lru_cache
+
+pip install 
+
+## pip install methodtools locally
+
+$ pip install methodtools
+Collecting methodtools
+  Downloading methodtools-0.4.7-py2.py3-none-any.whl.metadata (3.0 kB)
+Collecting wirerope>=0.4.7 (from methodtools)
+  Downloading wirerope-1.0.0-py2.py3-none-any.whl.metadata (3.3 kB)
+Requirement already satisfied: six>=1.11.0 in c:\users\rober\appdata\local\programs\python\python311\lib\site-packages (from wirerope>=0.4.7->methodtools) (1.16.0)
+Downloading methodtools-0.4.7-py2.py3-none-any.whl (4.0 kB)
+Downloading wirerope-1.0.0-py2.py3-none-any.whl (9.2 kB)
+Installing collected packages: wirerope, methodtools
+Successfully installed methodtools-0.4.7 wirerope-1.0.0
+
+[notice] A new release of pip is available: 24.2 -> 25.2
+[notice] To update, run: python.exe -m pip install --upgrade pip
+
+rober@RobertPastor MINGW64 ~/git/flight-profile (master)
+$
+

@@ -8,16 +8,13 @@ import { SingletonFlightProfileControlClass } from "../flightProfile/flightProfi
 import { VerticalProfile } from "./verticalProfile.js";
 
 document.addEventListener('DOMContentLoaded', () => { 
-       	 
 	$("#trComputeFlightProfileId").hide();
 	$("#aircraftSelectionId").hide();
 	$("#routesSelectionId").hide();
 	$("#launchComputeId").hide();
-
 }); 
 
 export const SingletonProfileCosts = (function () {
-	
 	let instance;
     function createInstance() {
         let object = new AirlineProfileCosts();
@@ -32,7 +29,6 @@ export const SingletonProfileCosts = (function () {
         }
     };
 })();
-
 
 // Profile and Costs
 class AirlineProfileCosts {
@@ -61,7 +57,6 @@ class AirlineProfileCosts {
 			elemMaxTOMassKg.value = aircraftPerformanceData["acMaxTakeOffWeightKg"];
 			//console.log(elemMaxTOMassKg.value);
 		}
-		
 		let elemFL = document.getElementById('requestedFlightLevelId');
 		elemFL.value = aircraftPerformanceData["acMaxOpAltitudeFeet"];
 		
@@ -102,7 +97,6 @@ class AirlineProfileCosts {
 		}
 		
 		let elemMaxFL = document.getElementById('maxFlightLevelId');
-		
 		// set Max Flight Level
 		let elemFL = document.getElementById('requestedFlightLevelId');
 		for (let index = 0; index < airlineAircraftsArray.length; index++) {
@@ -121,7 +115,7 @@ class AirlineProfileCosts {
 		let inputId = this.flightProfileControl.getAdepICAOcodeInputId();
 		let inputElement = document.getElementById(inputId);
 		inputElement.value = selectedRoute.split("-")[0];
-			
+		
 		inputId = this.flightProfileControl.getAdesICAOcodeInputId();
 		inputElement = document.getElementById(inputId);
 		inputElement.value = selectedRoute.split("-")[1];
@@ -143,11 +137,9 @@ class AirlineProfileCosts {
 		$('#airlineRouteId').empty();
 
 		for (let index = 0; index < airlineRoutesArray.length; index++) {
-			
 			let airlineRouteName = airlineRoutesArray[index]["DepartureAirport"] + " -> " + airlineRoutesArray[index]["ArrivalAirport"];
 			let airlineRouteKey  = airlineRoutesArray[index]["DepartureAirportICAOCode"] + "-" + airlineRoutesArray[index]["ArrivalAirportICAOCode"];
 			$('#airlineRouteId').append('<option value="' + airlineRouteKey + '">' + airlineRouteName + '</option>');
-			
 			// this.routes is used further ... please see below
 			this.routes.push({ "airline" : airlineName , 
 								"aDep"   : airlineRoutesArray[index]["DepartureAirportICAOCode"] , 
@@ -173,7 +165,6 @@ class AirlineProfileCosts {
 		if (waypoint.hasOwnProperty("name")) {
 			name = parseFloat(waypoint.name);
 		}
-		
 		layerWayPoints.add(new Entity({
 				lonlat: [longitude, latitude],
 				label: {
@@ -194,7 +185,6 @@ class AirlineProfileCosts {
 	}
 
 	loadFlightProfileWayPoints( layerWayPoints, dataJson) {
-	
 		// get all waypoints
 		let waypoints = [];
 		if ( dataJson.hasOwnProperty('waypoints')) {
@@ -208,7 +198,6 @@ class AirlineProfileCosts {
 	}
 
 	loadFlightProfileOneAirport( layerAirports, airport ) {
-	
 		let longitude = 0.0;
 		if (airport.hasOwnProperty("Longitude")) {
 			longitude = parseFloat(airport.Longitude);
@@ -221,7 +210,6 @@ class AirlineProfileCosts {
 		if (airport.hasOwnProperty("AirportName")) {
 			name = airport.AirportName;
 		}
-		
 		layerAirports.add(new Entity({
 				lonlat: [longitude, latitude],
 				label: {
@@ -242,27 +230,22 @@ class AirlineProfileCosts {
 	}
 
 	loadOneRay( rayLayer, placeMark ) {
-	
 		/**
 		 * @TODO get these constants from og
-		 */ 
+		*/ 
 		let ellipsoid = new Ellipsoid(6378137.0, 6356752.3142);
-		
 		let latitude = 0.0;
 		if ( placeMark.hasOwnProperty("latitude")) {
 			latitude = parseFloat(placeMark["latitude"]);
 		}
-
 		let longitude = 0.0;
 		if ( placeMark.hasOwnProperty("longitude")) {
 			longitude = parseFloat(placeMark["longitude"]);
 		}
-		
 		let height = 0.0;
 		if ( placeMark.hasOwnProperty("height")) {
 			height = parseFloat(placeMark["height"]);
 		}
-		
 		let lonlat = new LonLat(longitude, latitude , 0.0);
 		//coordinate above Bochum to allow a upwards direction of ray
 		let lonlatAir = new LonLat(longitude, latitude , height);
@@ -319,7 +302,7 @@ class AirlineProfileCosts {
 		let finalLayerName = "FlightProfile-" + layerName ;
 		/**
 		 * @TODO removeLayer defined in the main.js
-		 */
+		*/
 		removeLayer( globus , finalLayerName );
 		
 		let layerKML = new KML( finalLayerName , {
@@ -338,7 +321,7 @@ class AirlineProfileCosts {
 	/**
 	 * unique way to define a global layer name for all airlines
 	 * @TODO warning = not applicable if several identical Adep Ades routes for one airline
-	 */
+	*/
 	getLayerPrefix() {
 		// get the name of the airline
 		let airlineName = SingletonMainClass.getInstance().getSelectedAirline();
@@ -347,16 +330,13 @@ class AirlineProfileCosts {
 	
 	/**
 	 * called when a new Ray Layer has to be created or a new layer with the same Adep Ades.
-	 */
+	*/
 	deleteCreateRayLayer( globus , route ) {
-		
 		//console.log ( route );
 		let layerPrefix = SingletonProfileCosts.getInstance().getLayerPrefix();
-	
 		// route format = "Adep"+"-"+"Ades"
 		let layerName = layerPrefix + "-" + route;
 		//console.log( layerName );
-		
 		/**
 		 * @TODO removeLayer to use Promise !!!
 		 * removeLayer defined in the main.js
@@ -365,7 +345,6 @@ class AirlineProfileCosts {
 		if ( ogLayer ) {
 			removeLayer( globus , layerName );
 		}
-
 		//polygonOffsetUnits is needed to hide rays behind globe
 		let rayLayer = new Vector( layerName , { polygonOffsetUnits: 0 });
 		rayLayer.addTo(globus.planet);
@@ -376,31 +355,25 @@ class AirlineProfileCosts {
 				
 		// add layer to the og Cleaner table
 		SingletonOgLayerCleaner.getInstance().addLayer( layerName , airlineName , route.split("-")[0] , route.split("-")[1]);
-		
 		return rayLayer;
 	}
 
 	// using D3 library - display a vertical profile
 	displayD3LineChart( arrayAltitudeMSLtime ) {
-	
 		let verticalProfile = new VerticalProfile();
 		verticalProfile.displayVerticalProfile (arrayAltitudeMSLtime);
 	}
 	
 	populateBestDepartureRunway(airlineRoutesArray) {
-		
 		$('#airlineDepartureRunWayFlightProfileId').empty();
-				
 		for ( let index = 0 ; index < airlineRoutesArray.length ; index++) {
-				
-				let route = $("#airlineRouteId option:selected").val();
-				if ( ( route.split("-")[0] == airlineRoutesArray[index]["DepartureAirportICAOCode"] )
-					&& ( route.split("-")[1] == airlineRoutesArray[index]["ArrivalAirportICAOCode"] ) ) {
-					
-					// fill only one option è> the best runway -> BestDepartureRunway
-					let airlineRunWayKey = airlineRoutesArray[index]["BestDepartureRunway"];
-					$('#airlineDepartureRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayKey + '</option>');
-				}
+			let route = $("#airlineRouteId option:selected").val();
+			if ( ( route.split("-")[0] == airlineRoutesArray[index]["DepartureAirportICAOCode"] )
+				&& ( route.split("-")[1] == airlineRoutesArray[index]["ArrivalAirportICAOCode"] ) ) {
+				// fill only one option -> the best runway -> BestDepartureRunway
+				let airlineRunWayKey = airlineRoutesArray[index]["BestDepartureRunway"];
+				$('#airlineDepartureRunWayFlightProfileId').append('<option value="' + airlineRunWayKey + '">' + airlineRunWayKey + '</option>');
+			}
 		}
 	}
 	
@@ -424,7 +397,6 @@ class AirlineProfileCosts {
 
 	// 15th August 2023 - use checkbox to use only the Best Departure or arrival runway
 	populateAirlineRunWaysFlightProfileSelector( airlineRunWaysArray , airlineRoutesArray ) {
-	
 		$("#tableFlightProfileId").show();
 		$("#trComputeFlightProfileId").show();
 		
@@ -433,11 +405,8 @@ class AirlineProfileCosts {
 		
 		let departureRunwayCheckBoxId = this.flightProfileControl.getBestDepartureRunwayCheckBoxId();
 		if ( $("#"+departureRunwayCheckBoxId).is(":checked") ) {
-			
 			this.populateBestDepartureRunway(airlineRoutesArray);
-			
 		} else {
-			
 			for ( let index = 0 ; index < airlineRunWaysArray.length ; index++) {
 			
 				let route = $("#airlineRouteId option:selected").val();
@@ -510,7 +479,9 @@ class AirlineProfileCosts {
 							let dataJson = eval(data);
 							// airlineRunWays
 							if ( dataJson.hasOwnProperty( "airlineRunWays" ) && dataJson.hasOwnProperty( "airlineRoutes" ) ) {
-								SingletonProfileCosts.getInstance().populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] , dataJson["airlineRoutes"]);
+								SingletonProfileCosts
+										.getInstance()
+										.populateAirlineRunWaysFlightProfileSelector( dataJson["airlineRunWays"] , dataJson["airlineRoutes"]);
 							}
 						},
 						error: function(data, status) {
